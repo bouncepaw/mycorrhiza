@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 )
 
 type Hypha struct {
@@ -36,39 +38,29 @@ func (h Hypha) String() string {
 		revbuf)
 }
 
-type Revision struct {
-	// Revision is hypha's state at some point in time. Future revisions are not really supported. Most data here is stored in m.ini.
-	Id int
-	// Name used at this revision
-	Name string `json:"name"`
-	// Present in every hypha. Stored in t.txt.
-	TextPath string
-	// In at least one markup. Supported ones are "myco", "html", "md", "plain"
-	Markup string `json:"markup"`
-	// Some hyphæ have binary contents such as images. Their presence change hypha's behavior in a lot of ways (see methods' implementations). If stored, it is stored in b (filename "b")
-	BinaryPath string
-	// To tell what is meaning of binary content, mimeType for them is stored. If the hypha has no binary content, this field must be "application/x-hypha"
-	MimeType string `json:"mimeType"`
-	// Every revision was created at some point. This field stores the creation time of the latest revision
-	RevisionTime int `json:"createdAt"`
-	// Every hypha has any number of tags
-	Tags []string `json:"tags"`
-	// Current revision is authored by someone
-	RevisionAuthor string `json:"author"`
-	// and has a comment in plain text
-	RevisionComment string `json:"comment"`
-	// Rest of fields are ignored
+func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string) (Revision, error) {
+	for name, _ := range hyphae {
+		if name == hyphaName {
+			for _, r := range hyphae[name].Revisions {
+				id, err := strconv.Atoi(rev)
+				if err != nil {
+					return Revision{}, err
+				}
+				if r.Id == id {
+					return r, nil
+				}
+			}
+		}
+	}
+	return Revision{}, errors.New("Some error idk")
 }
 
-func (h Revision) String() string {
-	return fmt.Sprintf(`Revision %v created at %v {
-	name: %v
-	textPath: %v
-	markup: %v
-	binaryPath: %v
-	mimeType: %v
-	tags: %v
-	revisionAuthor: %v
-	revisionComment: %v
-}`, h.Id, h.RevisionTime, h.Name, h.TextPath, h.Markup, h.BinaryPath, h.MimeType, h.Tags, h.RevisionAuthor, h.RevisionComment)
+// `rev` is the id of revision to render. If it = 0, the last one is rendered. If the revision is not found, an error is returned.
+func (h Hypha) Render(hyphae map[string]*Hypha, rev int) (ret string, err error) {
+	for _, r := range h.Revisions {
+		if r.Id == rev {
+			return r.Render(hyphae)
+		}
+	}
+	return "", errors.New("Revision was not found")
 }

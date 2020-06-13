@@ -96,7 +96,7 @@ func recurFindHyphae(fullPath string) (hyphae []*Hypha) {
 
 	// Fill in every revision
 	for _, possibleRevisionPath := range possibleRevisionPaths {
-		rev, err := makeRevision(possibleRevisionPath)
+		rev, err := makeRevision(possibleRevisionPath, h.Name)
 		if err == nil {
 			h.Revisions = append(h.Revisions, rev)
 		}
@@ -119,7 +119,7 @@ func recurFindHyphae(fullPath string) (hyphae []*Hypha) {
 	return hyphae
 }
 
-func makeRevision(fullPath string) (r Revision, err error) {
+func makeRevision(fullPath string, fullName string) (r Revision, err error) {
 	// fullPath is expected to be a path to a dir.
 	// Revision directory must have at least `m.json` and `t.txt` files.
 	var (
@@ -159,7 +159,7 @@ func makeRevision(fullPath string) (r Revision, err error) {
 		return r, err
 	}
 
-	r = Revision{}
+	r = Revision{FullName: fullName}
 	err = json.Unmarshal(mJsonContents, &r)
 	if err != nil {
 		fmt.Println(fullPath, ">\tError:", err)
@@ -174,6 +174,7 @@ func makeRevision(fullPath string) (r Revision, err error) {
 		// Do not check for binary file presence, attempt to read it will fail anyway
 		if bPresent {
 			r.BinaryPath = filepath.Join(fullPath, "b")
+			r.BinaryRequest = fmt.Sprintf("%s?rev=%d&action=getBinary", r.FullName, r.Id)
 		} else {
 			return r, errors.New("makeRevision: b file not present")
 		}
