@@ -65,6 +65,26 @@ func main() {
 			log.Println("Showing image of", rev.FullName)
 		})
 
+	r.HandleFunc("/{hypha:"+hyphaPattern+"}",
+		func(w http.ResponseWriter, r *http.Request) {
+			vars := mux.Vars(r)
+			rev, err := GetRevision(hyphae, vars["hypha"], "0")
+			if err != nil {
+				log.Println("Failed to show image of", rev.FullName)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			html, err := rev.Render(hyphae)
+			if err != nil {
+				log.Println("Failed to show image of", rev.FullName)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, HyphaPage(hyphae, rev, html))
+			log.Println("Rendering", rev.FullName)
+		})
+
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)

@@ -53,7 +53,7 @@ func (r Revision) Render(hyphae map[string]*Hypha) (ret string, err error) {
 	// If it is a binary hypha (we support only images for now):
 	// TODO: support things other than images.
 	if r.MimeType != "application/x-hypha" {
-		ret += fmt.Sprintf(`<img src="%s" class="page__image"/>`, r.BinaryRequest)
+		ret += fmt.Sprintf(`<img src="/%s" class="page__image"/>`, r.BinaryRequest)
 	}
 
 	contents, err := ioutil.ReadFile(r.TextPath)
