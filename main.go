@@ -12,7 +12,94 @@ import (
 	"time"
 )
 
+func RevInMap(m map[string]string) string {
+	if val, ok := m["rev"]; ok {
+		return val
+	}
+	return "0"
+}
+
+// handlers
+func HandlerGetBinary(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	revno := RevInMap(vars)
+	rev, err := GetRevision(hyphae, vars["hypha"], revno)
+	if err != nil {
+		log.Println("Failed to show image of", rev.FullName)
+	}
+	fileContents, err := ioutil.ReadFile(rev.BinaryPath)
+	if err != nil {
+		log.Println("Failed to show image of", rev.FullName)
+	}
+	log.Println("Contents:", fileContents[:10], "...")
+	w.Header().Set("Content-Type", rev.MimeType)
+	// w.Header().Set("Content-Length", strconv.Itoa(len(fileContents)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(fileContents)
+	log.Println("Showing image of", rev.FullName)
+}
+
+func HandlerRaw(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerZen(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerView(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	rev, err := GetRevision(hyphae, vars["hypha"], "0")
+	if err != nil {
+		log.Println("Failed to show image of", rev.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	html, err := rev.Render(hyphae)
+	if err != nil {
+		log.Println("Failed to show image of", rev.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, HyphaPage(hyphae, rev, html))
+	log.Println("Rendering", rev.FullName)
+}
+
+func HandlerHistory(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerEdit(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerRewind(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerDelete(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerRename(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
+func HandlerUpdate(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
+}
+
 var rootWikiDir string
+var hyphae map[string]*Hypha
 
 func hyphaeAsMap(hyphae []*Hypha) map[string]*Hypha {
 	mh := make(map[string]*Hypha)
@@ -33,57 +120,51 @@ func main() {
 		panic(err)
 	}
 
-	hyphae := hyphaeAsMap(recurFindHyphae(rootWikiDir))
+	hyphae = hyphaeAsMap(recurFindHyphae(rootWikiDir))
 	setRelations(hyphae)
 
 	// Start server code
 	r := mux.NewRouter()
-	r.HandleFunc("/showHyphae", func(w http.ResponseWriter, r *http.Request) {
-		for _, h := range hyphae {
-			fmt.Fprintln(w, h)
-		}
-	})
-	r.Queries(
-		"action", "getBinary",
-		"rev", "{rev:[\\d]+}",
-	).Path("/{hypha:" + hyphaPattern + "}").
-		HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			vars := mux.Vars(r)
-			rev, err := GetRevision(hyphae, vars["hypha"], vars["rev"])
-			if err != nil {
-				log.Println("Failed to show image of", rev.FullName)
-			}
-			fileContents, err := ioutil.ReadFile(rev.BinaryPath)
-			if err != nil {
-				log.Println("Failed to show image of", rev.FullName)
-			}
-			log.Println("Contents:", fileContents[:10], "...")
-			w.Header().Set("Content-Type", rev.MimeType)
-			// w.Header().Set("Content-Length", strconv.Itoa(len(fileContents)))
-			w.WriteHeader(http.StatusOK)
-			w.Write(fileContents)
-			log.Println("Showing image of", rev.FullName)
-		})
 
-	r.HandleFunc("/{hypha:"+hyphaPattern+"}",
-		func(w http.ResponseWriter, r *http.Request) {
-			vars := mux.Vars(r)
-			rev, err := GetRevision(hyphae, vars["hypha"], "0")
-			if err != nil {
-				log.Println("Failed to show image of", rev.FullName)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-			html, err := rev.Render(hyphae)
-			if err != nil {
-				log.Println("Failed to show image of", rev.FullName)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, HyphaPage(hyphae, rev, html))
-			log.Println("Rendering", rev.FullName)
-		})
+	r.Queries("action", "getBinary", "rev", revQuery).Path(hyphaUrl).
+		HandlerFunc(HandlerGetBinary)
+	r.Queries("action", "getBinary").Path(hyphaUrl).
+		HandlerFunc(HandlerGetBinary)
+
+	r.Queries("action", "raw", "rev", revQuery).Path(hyphaUrl).
+		HandlerFunc(HandlerRaw)
+	r.Queries("action", "raw").Path(hyphaUrl).
+		HandlerFunc(HandlerRaw)
+
+	r.Queries("action", "zen", "rev", revQuery).Path(hyphaUrl).
+		HandlerFunc(HandlerZen)
+	r.Queries("action", "zen").Path(hyphaUrl).
+		HandlerFunc(HandlerZen)
+
+	r.Queries("action", "view", "rev", revQuery).Path(hyphaUrl).
+		HandlerFunc(HandlerView)
+	r.Queries("action", "view").Path(hyphaUrl).
+		HandlerFunc(HandlerView)
+
+	r.Queries("action", "history").Path(hyphaUrl).
+		HandlerFunc(HandlerHistory)
+
+	r.Queries("action", "edit").Path(hyphaUrl).
+		HandlerFunc(HandlerEdit)
+
+	r.Queries("action", "rewind", "rev", revQuery).Path(hyphaUrl).
+		HandlerFunc(HandlerRewind)
+
+	r.Queries("action", "delete").Path(hyphaUrl).
+		HandlerFunc(HandlerDelete)
+
+	r.Queries("action", "rename", "to", hyphaPattern).Path(hyphaUrl).
+		HandlerFunc(HandlerRename)
+
+	r.Queries("action", "update").Path(hyphaUrl).
+		HandlerFunc(HandlerUpdate)
+
+	r.HandleFunc(hyphaUrl, HandlerView)
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -97,6 +178,7 @@ func main() {
 			fmt.Fprintln(w, html)
 		}
 	})
+
 	http.Handle("/", r)
 
 	srv := &http.Server{

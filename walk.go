@@ -66,6 +66,8 @@ func hyphaName(fullPath string) string {
 const (
 	hyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
 	revisionPattern = `[\d]+`
+	hyphaUrl        = "/{hypha:" + hyphaPattern + "}"
+	revQuery        = `{rev:[\d]+}`
 )
 
 // Sends found hyphae to the `ch`. `fullPath` is tested for hyphaness, then its subdirs with hyphaesque names are tested too using goroutines for each subdir. The function is recursive.
