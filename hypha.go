@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 )
 
@@ -38,21 +40,23 @@ func (h Hypha) String() string {
 		revbuf)
 }
 
-func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string) (Revision, error) {
+func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string, w http.ResponseWriter) (Revision, bool) {
 	for name, _ := range hyphae {
 		if name == hyphaName {
 			for _, r := range hyphae[name].Revisions {
 				id, err := strconv.Atoi(rev)
 				if err != nil {
-					return Revision{}, err
+					log.Println("No such revision", rev, "at hypha", hyphaName)
+					w.WriteHeader(http.StatusNotFound)
+					return Revision{}, false
 				}
 				if r.Id == id {
-					return r, nil
+					return r, true
 				}
 			}
 		}
 	}
-	return Revision{}, errors.New("Some error idk")
+	return Revision{}, false
 }
 
 // `rev` is the id of revision to render. If it = 0, the last one is rendered. If the revision is not found, an error is returned.

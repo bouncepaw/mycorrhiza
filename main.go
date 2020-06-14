@@ -23,46 +23,73 @@ func RevInMap(m map[string]string) string {
 func HandlerGetBinary(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	revno := RevInMap(vars)
-	rev, err := GetRevision(hyphae, vars["hypha"], revno)
-	if err != nil {
-		log.Println("Failed to show image of", rev.FullName)
+	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
+	if !ok {
+		return
 	}
 	fileContents, err := ioutil.ReadFile(rev.BinaryPath)
 	if err != nil {
-		log.Println("Failed to show image of", rev.FullName)
+		log.Println("Failed to load binary data of", rev.FullName, rev.Id)
+		w.WriteHeader(http.StatusNotFound)
+		return
 	}
-	log.Println("Contents:", fileContents[:10], "...")
 	w.Header().Set("Content-Type", rev.MimeType)
-	// w.Header().Set("Content-Length", strconv.Itoa(len(fileContents)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
-	log.Println("Showing image of", rev.FullName)
+	log.Println("Showing image of", rev.FullName, rev.Id)
 }
 
 func HandlerRaw(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
+	vars := mux.Vars(r)
+	revno := RevInMap(vars)
+	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
+	if !ok {
+		return
+	}
+	fileContents, err := ioutil.ReadFile(rev.TextPath)
+	if err != nil {
+		log.Println("Failed to load text data of", rev.FullName, rev.Id)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(http.StatusOK)
+	w.Write(fileContents)
+	log.Println("Serving text data of", rev.FullName, rev.Id)
 }
 
 func HandlerZen(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerView(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	rev, err := GetRevision(hyphae, vars["hypha"], "0")
-	if err != nil {
-		log.Println("Failed to show image of", rev.FullName)
-		w.WriteHeader(http.StatusInternalServerError)
+	revno := RevInMap(vars)
+	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
+	if !ok {
 		return
 	}
 	html, err := rev.Render(hyphae)
 	if err != nil {
-		log.Println("Failed to show image of", rev.FullName)
+		log.Println("Failed to render", rev.FullName)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, html)
+}
+
+func HandlerView(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	revno := RevInMap(vars)
+	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
+	if !ok {
+		return
+	}
+	html, err := rev.Render(hyphae)
+	if err != nil {
+		log.Println("Failed to render", rev.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, HyphaPage(hyphae, rev, html))
 	log.Println("Rendering", rev.FullName)
