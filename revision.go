@@ -5,55 +5,39 @@ import (
 	"fmt"
 	"github.com/gomarkdown/markdown"
 	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 type Revision struct {
-	// Revision is hypha's state at some point in time. Future revisions are not really supported. Most data here is stored in m.ini.
-	Id int
-	// Name used at this revision
-	Name string `json:"name"`
-	// Name of hypha
-	FullName string
-	// Present in every hypha. Stored in t.txt.
-	TextPath string
-	// In at least one markup. Supported ones are "myco", "html", "md", "plain"
-	Markup string `json:"markup"`
-	// Some hyphæ have binary contents such as images. Their presence change hypha's behavior in a lot of ways (see methods' implementations). If stored, it is stored in b (filename "b")
-	BinaryPath    string
-	BinaryRequest string
-	// To tell what is meaning of binary content, mimeType for them is stored. If the hypha has no binary content, this field must be "application/x-hypha"
-	MimeType string `json:"mimeType"`
-	// Every revision was created at some point. This field stores the creation time of the latest revision
-	RevisionTime int `json:"createdAt"`
-	// Every hypha has any number of tags
-	Tags []string `json:"tags"`
-	// Current revision is authored by someone
-	RevisionAuthor string `json:"author"`
-	// and has a comment in plain text
-	RevisionComment string `json:"comment"`
+	Id         int
+	Tags       []string `json:"tags"`
+	FullName   string   `json:"name"`
+	Comment    string   `json:"comment"`
+	Author     string   `json:"author"`
+	Time       int      `json:"time"`
+	TextMime   string   `json:"text_mime"`
+	BinaryMime string   `json:"binary_mime"`
+	TextPath   string
+	BinaryPath string
 }
 
-func (h Revision) String() string {
-	return fmt.Sprintf(`Revision %v created at %v {
-	name: %v
-	textPath: %v
-	markup: %v
-	binaryPath: %v
-	mimeType: %v
-	tags: %v
-	revisionAuthor: %v
-	revisionComment: %v
-}`, h.Id, h.RevisionTime, h.Name, h.TextPath, h.Markup, h.BinaryPath, h.MimeType, h.Tags, h.RevisionAuthor, h.RevisionComment)
+// During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data.
+func (r *Revision) hasBinaryData() bool {
+	return r.BinaryMime != ""
 }
 
-// This method is meant to be called only by Hypha#Render.
-func (r Revision) Render(hyphae map[string]*Hypha) (ret string, err error) {
+func (r *Revision) urlOfBinary() string {
+	return fmt.Sprintf("/%s?action=getBinary&rev=%d", r.FullName, r.Id)
+}
+
+// TODO: use templates https://github.com/bouncepaw/mycorrhiza/issues/2
+func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
 	ret += `<article class="page">
 `
-	// If it is a binary hypha (we support only images for now):
-	// TODO: support things other than images.
-	if r.MimeType != "application/x-hypha" {
-		ret += fmt.Sprintf(`<img src="/%s" class="page__image"/>`, r.BinaryRequest)
+	// TODO: support things other than images
+	if r.hasBinaryData() {
+		ret += fmt.Sprintf(`<img src="/%s" class="page__image"/>`, r.urlOfBinary())
 	}
 
 	contents, err := ioutil.ReadFile(r.TextPath)
@@ -63,17 +47,71 @@ func (r Revision) Render(hyphae map[string]*Hypha) (ret string, err error) {
 
 	// TODO: support more markups.
 	// TODO: support mycorrhiza extensions like transclusion.
-	switch r.Markup {
-	case "plain":
+	switch r.TextMime {
+	case "text/plain":
 		ret += fmt.Sprintf(`<pre>%s</pre>`, contents)
-	case "md":
+	case "text/markdown":
 		html := markdown.ToHTML(contents, nil, nil)
 		ret += string(html)
 	default:
-		return "", errors.New("Unsupported markup: " + r.Markup)
+		return "", errors.New("Unsupported mime-type: " + r.TextMime)
 	}
 
 	ret += `
 </article>`
 	return ret, nil
+}
+
+func (r *Revision) ActionGetBinary(w http.ResponseWriter) {
+	fileContents, err := ioutil.ReadFile(r.urlOfBinary())
+	if err != nil {
+		log.Println("Failed to load binary data of", r.FullName, r.Id)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", r.BinaryMime)
+	w.WriteHeader(http.StatusOK)
+	w.Write(fileContents)
+	log.Println("Serving binary data of", r.FullName, r.Id)
+}
+
+func (r *Revision) ActionRaw(w http.ResponseWriter) {
+	fileContents, err := ioutil.ReadFile(r.TextPath)
+	if err != nil {
+		log.Println("Failed to load text data of", r.FullName, r.Id)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", r.TextMime)
+	w.WriteHeader(http.StatusOK)
+	w.Write(fileContents)
+	log.Println("Serving text data of", r.FullName, r.Id)
+}
+
+func (r *Revision) ActionZen(w http.ResponseWriter, hyphae map[string]*Hypha) {
+	html, err := r.AsHtml(hyphae)
+	if err != nil {
+		log.Println("Failed to render", r.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, html)
+}
+
+func (r *Revision) ActionView(w http.ResponseWriter, hyphae map[string]*Hypha, layoutFun func(map[string]*Hypha, Revision, string) string) {
+	html, err := r.AsHtml(hyphae)
+	if err != nil {
+		log.Println("Failed to render", r.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, layoutFun(hyphae, *r, html))
+	log.Println("Rendering", r.FullName)
+}
+func (r *Revision) Name() string {
+	return r.FullName
 }

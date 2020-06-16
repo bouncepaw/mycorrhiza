@@ -9,8 +9,8 @@ type Genealogy struct {
 
 func setRelations(hyphae map[string]*Hypha) {
 	for name, h := range hyphae {
-		if _, ok := hyphae[h.ParentName]; ok && h.ParentName != "." {
-			hyphae[h.ParentName].ChildrenNames = append(hyphae[h.ParentName].ChildrenNames, name)
+		if _, ok := hyphae[h.ParentName()]; ok && h.ParentName() != "." {
+			hyphae[h.ParentName()].ChildrenNames = append(hyphae[h.ParentName()].ChildrenNames, name)
 		}
 	}
 }
