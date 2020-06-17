@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gomarkdown/markdown"
 	"io/ioutil"
@@ -11,8 +10,9 @@ import (
 
 type Revision struct {
 	Id         int
+	FullName   string
 	Tags       []string `json:"tags"`
-	FullName   string   `json:"name"`
+	ShortName  string   `json:"name"`
 	Comment    string   `json:"comment"`
 	Author     string   `json:"author"`
 	Time       int      `json:"time"`
@@ -34,10 +34,11 @@ func (r *Revision) urlOfBinary() string {
 // TODO: use templates https://github.com/bouncepaw/mycorrhiza/issues/2
 func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
 	ret += `<article class="page">
+	<h1 class="page__title">` + r.FullName + `</h1>
 `
 	// TODO: support things other than images
 	if r.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="/%s" class="page__image"/>`, r.urlOfBinary())
+		ret += fmt.Sprintf(`<img src="%s" class="page__amnt"/>`, r.urlOfBinary())
 	}
 
 	contents, err := ioutil.ReadFile(r.TextPath)
@@ -48,13 +49,11 @@ func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
 	// TODO: support more markups.
 	// TODO: support mycorrhiza extensions like transclusion.
 	switch r.TextMime {
-	case "text/plain":
-		ret += fmt.Sprintf(`<pre>%s</pre>`, contents)
 	case "text/markdown":
 		html := markdown.ToHTML(contents, nil, nil)
 		ret += string(html)
 	default:
-		return "", errors.New("Unsupported mime-type: " + r.TextMime)
+		ret += fmt.Sprintf(`<pre>%s</pre>`, contents)
 	}
 
 	ret += `

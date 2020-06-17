@@ -6,7 +6,7 @@
 		"author":	"bouncepaw", 
 		"comment":	"add apple pic hehehe", 
 		"tags":		["img"], 
-		"text_mime":	"plain", 
+		"text_mime":	"text/plain", 
 		"binary_mime":	"image/jpeg"
 	}
 }

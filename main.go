@@ -13,9 +13,13 @@ import (
 )
 
 func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string, w http.ResponseWriter) (Revision, bool) {
-	for name, _ := range hyphae {
+	log.Println("Getting hypha", hyphaName, rev)
+	for name, hypha := range hyphae {
 		if name == hyphaName {
-			for id, r := range hyphae[name].Revisions {
+			if rev == "0" {
+				rev = hypha.NewestRevision()
+			}
+			for id, r := range hypha.Revisions {
 				if rev == id {
 					return *r, true
 				}
@@ -65,7 +69,7 @@ func HandlerRaw(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Type", rev.TextMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
 	log.Println("Serving text data of", rev.FullName, rev.Id)
@@ -160,7 +164,10 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("Welcome to MycorrhizaWiki α")
+	log.Println("Indexing hyphae...")
 	hyphae = recurFindHyphae(rootWikiDir)
+	log.Println("Indexed", len(hyphae), "hyphae. Ready to accept requests.")
 	// setRelations(hyphae)
 
 	// Start server code

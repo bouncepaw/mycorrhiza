@@ -137,6 +137,7 @@ func recurFindHyphae(fullPath string) map[string]*Hypha {
 	// Fill in every revision paths
 	for id, paths := range revs {
 		if r, ok := h.Revisions[id]; ok {
+			r.FullName = filepath.Join(h.parentName, r.ShortName)
 			for fType, fPath := range paths {
 				switch fType {
 				case "bin":
