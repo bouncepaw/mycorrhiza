@@ -1,0 +1,2 @@
+b { color: red; }
+article { border: 1px black solid; }

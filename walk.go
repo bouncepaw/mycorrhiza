@@ -2,60 +2,93 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"path/filepath"
 	"regexp"
-	"strconv"
 )
 
-func scanHyphaDir(fullPath string) (structureMet bool, possibleRevisionPaths []string, possibleHyphaPaths []string, reterr error) {
+const (
+	hyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
+	hyphaUrl        = `/{hypha:` + hyphaPattern + `}`
+	revisionPattern = `[\d]+`
+	revQuery        = `{rev:` + revisionPattern + `}`
+	revTxtPattern   = revisionPattern + `\.txt`
+	revBinPattern   = revisionPattern + `\.bin`
+	metaJsonPattern = `meta\.json`
+)
+
+var (
+	leadingInt = regexp.MustCompile(`^[-+]?\d+`)
+)
+
+func matchNameToEverything(name string) (hyphaM bool, revTxtM bool, revBinM bool, metaJsonM bool) {
+	simpleMatch := func(s string, p string) bool {
+		m, _ := regexp.MatchString(p, s)
+		return m
+	}
+	switch {
+	case simpleMatch(name, revTxtPattern):
+		revTxtM = true
+	case simpleMatch(name, revBinPattern):
+		revBinM = true
+	case simpleMatch(name, metaJsonPattern):
+		metaJsonM = true
+	case simpleMatch(name, hyphaPattern):
+		hyphaM = true
+	}
+	return
+}
+
+func stripLeadingInt(s string) string {
+	return leadingInt.FindString(s)
+}
+
+func hyphaDirRevsValidate(dto map[string]map[string]string) (res bool) {
+	for k, _ := range dto {
+		switch k {
+		case "0":
+			delete(dto, "0")
+		default:
+			res = true
+		}
+	}
+	return res
+}
+
+func scanHyphaDir(fullPath string) (valid bool, revs map[string]map[string]string, possibleSubhyphae []string, metaJsonPath string, err error) {
+	revs = make(map[string]map[string]string)
 	nodes, err := ioutil.ReadDir(fullPath)
 	if err != nil {
-		reterr = err
 		return // implicit return values
 	}
 
-	var (
-		mmJsonPresent  bool
-		zeroDirPresent bool
-	)
-
 	for _, node := range nodes {
-		matchedHypha, _ := regexp.MatchString(hyphaPattern, node.Name())
-		matchedRev, _ := regexp.MatchString(revisionPattern, node.Name())
+		hyphaM, revTxtM, revBinM, metaJsonM := matchNameToEverything(node.Name())
 		switch {
-		case matchedRev && node.IsDir():
-			if node.Name() == "0" {
-				zeroDirPresent = true
+		case hyphaM && node.IsDir():
+			possibleSubhyphae = append(possibleSubhyphae, filepath.Join(fullPath, node.Name()))
+		case revTxtM && !node.IsDir():
+			revId := stripLeadingInt(node.Name())
+			if _, ok := revs[revId]; !ok {
+				revs[revId] = make(map[string]string)
 			}
-			possibleRevisionPaths = append(
-				possibleRevisionPaths,
-				filepath.Join(fullPath, node.Name()),
-			)
-		case (node.Name() == "mm.json") && !node.IsDir():
-			mmJsonPresent = true
-		case matchedHypha && node.IsDir():
-			possibleHyphaPaths = append(
-				possibleHyphaPaths,
-				filepath.Join(fullPath, node.Name()),
-			)
+			revs[revId]["txt"] = filepath.Join(fullPath, node.Name())
+		case revBinM && !node.IsDir():
+			revId := stripLeadingInt(node.Name())
+			if _, ok := revs[revId]; !ok {
+				revs[revId] = make(map[string]string)
+			}
+			revs[revId]["bin"] = filepath.Join(fullPath, node.Name())
+		case metaJsonM && !node.IsDir():
+			metaJsonPath = filepath.Join(fullPath, "meta.json")
 			// Other nodes are ignored. It is not promised they will be ignored in future versions
 		}
 	}
 
-	if mmJsonPresent && zeroDirPresent {
-		structureMet = true
-	}
+	valid = hyphaDirRevsValidate(revs)
 
 	return // implicit return values
-}
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
 }
 
 // Hypha name is rootWikiDir/{here}
@@ -63,129 +96,63 @@ func hyphaName(fullPath string) string {
 	return fullPath[len(rootWikiDir)+1:]
 }
 
-const (
-	hyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
-	revisionPattern = `[\d]+`
-	hyphaUrl        = "/{hypha:" + hyphaPattern + "}"
-	revQuery        = `{rev:[\d]+}`
-)
-
-// Sends found hyphae to the `ch`. `fullPath` is tested for hyphaness, then its subdirs with hyphaesque names are tested too using goroutines for each subdir. The function is recursive.
-func recurFindHyphae(fullPath string) (hyphae []*Hypha) {
-
-	structureMet, possibleRevisionPaths, possibleHyphaPaths, err := scanHyphaDir(fullPath)
+func recurFindHyphae(fullPath string) map[string]*Hypha {
+	hyphae := make(map[string]*Hypha)
+	valid, revs, possibleSubhyphae, metaJsonPath, err := scanHyphaDir(fullPath)
 	if err != nil {
 		return hyphae
 	}
 
-	// First, let's process inner hyphae
-	for _, possibleHyphaPath := range possibleHyphaPaths {
-		hyphae = append(hyphae, recurFindHyphae(possibleHyphaPath)...)
+	// First, let's process subhyphae
+	for _, possibleSubhypha := range possibleSubhyphae {
+		for k, v := range recurFindHyphae(possibleSubhypha) {
+			hyphae[k] = v
+		}
 	}
 
 	// This folder is not a hypha itself, nothing to do here
-	if !structureMet {
+	if !valid {
 		return hyphae
 	}
 
-	// Template hypha struct. Other fields are default jsont values.
+	// Template hypha struct. Other fields are default json values.
 	h := Hypha{
+		FullName:   hyphaName(fullPath),
 		Path:       fullPath,
-		Name:       hyphaName(fullPath),
-		ParentName: filepath.Dir(hyphaName(fullPath)),
+		parentName: filepath.Dir(hyphaName(fullPath)),
 		// Children names are unknown now
 	}
 
-	// Fill in every revision
-	for _, possibleRevisionPath := range possibleRevisionPaths {
-		rev, err := makeRevision(possibleRevisionPath, h.Name)
-		if err == nil {
-			h.Revisions = append(h.Revisions, rev)
-		}
+	metaJsonContents, err := ioutil.ReadFile(metaJsonPath)
+	if err != nil {
+		log.Printf("Error when reading `%s`; skipping", metaJsonPath)
+		return hyphae
+	}
+	err = json.Unmarshal(metaJsonContents, &h)
+	if err != nil {
+		log.Printf("Error when unmarshaling `%s`; skipping", metaJsonPath)
+		return hyphae
 	}
 
-	mmJsonPath := filepath.Join(fullPath, "mm.json")
-	mmJsonContents, err := ioutil.ReadFile(mmJsonPath)
-	if err != nil {
-		fmt.Println(fullPath, ">\tError:", err)
-		return hyphae
-	}
-	err = json.Unmarshal(mmJsonContents, &h)
-	if err != nil {
-		fmt.Println(fullPath, ">\tError:", err)
-		return hyphae
+	// Fill in every revision paths
+	for id, paths := range revs {
+		if r, ok := h.Revisions[id]; ok {
+			r.FullName = filepath.Join(h.parentName, r.ShortName)
+			for fType, fPath := range paths {
+				switch fType {
+				case "bin":
+					r.BinaryPath = fPath
+				case "txt":
+					r.TextPath = fPath
+				}
+			}
+		} else {
+			log.Printf("Error when reading hyphae from disk: hypha `%s`'s meta.json provided no information about revision `%s`, but files %s are provided; skipping\n", h.FullName, id, paths)
+		}
 	}
 
 	// Now the hypha should be ok, gotta send structs
-	hyphae = append(hyphae, &h)
+	hyphae[h.FullName] = &h
 	return hyphae
-}
 
-func makeRevision(fullPath string, fullName string) (r Revision, err error) {
-	// fullPath is expected to be a path to a dir.
-	// Revision directory must have at least `m.json` and `t.txt` files.
-	var (
-		mJsonPresent bool
-		tTxtPresent  bool
-		bPresent     bool
-	)
-
-	nodes, err := ioutil.ReadDir(fullPath)
-	if err != nil {
-		return r, err
-	}
-
-	for _, node := range nodes {
-		if node.IsDir() {
-			continue
-		}
-		switch node.Name() {
-		case "m.json":
-			mJsonPresent = true
-		case "t.txt":
-			tTxtPresent = true
-		case "b":
-			bPresent = true
-		}
-	}
-
-	if !(mJsonPresent && tTxtPresent) {
-		return r, errors.New("makeRevision: m.json and t.txt files are not found")
-	}
-
-	// If all the flags are true, this directory is assumed to be a revision. Gotta check further. This is template Revision struct. Other fields fall back to default init values.
-	mJsonPath := filepath.Join(fullPath, "m.json")
-	mJsonContents, err := ioutil.ReadFile(mJsonPath)
-	if err != nil {
-		fmt.Println(fullPath, ">\tError:", err)
-		return r, err
-	}
-
-	r = Revision{FullName: fullName}
-	err = json.Unmarshal(mJsonContents, &r)
-	if err != nil {
-		fmt.Println(fullPath, ">\tError:", err)
-		return r, err
-	}
-
-	// Now, let's fill in t.txt path
-	r.TextPath = filepath.Join(fullPath, "t.txt")
-
-	// There's sense in reading binary file only if the hypha is marked as such
-	if r.MimeType != "application/x-hypha" {
-		// Do not check for binary file presence, attempt to read it will fail anyway
-		if bPresent {
-			r.BinaryPath = filepath.Join(fullPath, "b")
-			r.BinaryRequest = fmt.Sprintf("%s?rev=%d&action=getBinary", r.FullName, r.Id)
-		} else {
-			return r, errors.New("makeRevision: b file not present")
-		}
-	}
-
-	// So far, so good. Let's fill in id. It is guaranteed to be correct, so no error checking
-	id, _ := strconv.Atoi(filepath.Base(fullPath))
-	r.Id = id
-
-	// It is safe now to return, I guess
-	return r, nil
 }

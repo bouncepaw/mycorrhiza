@@ -12,6 +12,23 @@ import (
 	"time"
 )
 
+func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string, w http.ResponseWriter) (Revision, bool) {
+	log.Println("Getting hypha", hyphaName, rev)
+	for name, hypha := range hyphae {
+		if name == hyphaName {
+			if rev == "0" {
+				rev = hypha.NewestRevision()
+			}
+			for id, r := range hypha.Revisions {
+				if rev == id {
+					return *r, true
+				}
+			}
+		}
+	}
+	return Revision{}, false
+}
+
 func RevInMap(m map[string]string) string {
 	if val, ok := m["rev"]; ok {
 		return val
@@ -33,7 +50,7 @@ func HandlerGetBinary(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", rev.MimeType)
+	w.Header().Set("Content-Type", rev.BinaryMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
 	log.Println("Showing image of", rev.FullName, rev.Id)
@@ -52,7 +69,7 @@ func HandlerRaw(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Type", rev.TextMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
 	log.Println("Serving text data of", rev.FullName, rev.Id)
@@ -65,7 +82,7 @@ func HandlerZen(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	html, err := rev.Render(hyphae)
+	html, err := rev.AsHtml(hyphae)
 	if err != nil {
 		log.Println("Failed to render", rev.FullName)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -83,7 +100,7 @@ func HandlerView(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	html, err := rev.Render(hyphae)
+	html, err := rev.AsHtml(hyphae)
 	if err != nil {
 		log.Println("Failed to render", rev.FullName)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -131,7 +148,7 @@ var hyphae map[string]*Hypha
 func hyphaeAsMap(hyphae []*Hypha) map[string]*Hypha {
 	mh := make(map[string]*Hypha)
 	for _, h := range hyphae {
-		mh[h.Name] = h
+		mh[h.Name()] = h
 	}
 	return mh
 }
@@ -147,8 +164,11 @@ func main() {
 		panic(err)
 	}
 
-	hyphae = hyphaeAsMap(recurFindHyphae(rootWikiDir))
-	setRelations(hyphae)
+	log.Println("Welcome to MycorrhizaWiki α")
+	log.Println("Indexing hyphae...")
+	hyphae = recurFindHyphae(rootWikiDir)
+	log.Println("Indexed", len(hyphae), "hyphae. Ready to accept requests.")
+	// setRelations(hyphae)
 
 	// Start server code
 	r := mux.NewRouter()
@@ -197,8 +217,8 @@ func main() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		for _, v := range hyphae {
-			log.Println("Rendering latest revision of hypha", v.Name)
-			html, err := v.Render(hyphae, 0)
+			log.Println("Rendering latest revision of hypha", v.Name())
+			html, err := v.AsHtml(hyphae, "0")
 			if err != nil {
 				fmt.Fprintln(w, err)
 			}
