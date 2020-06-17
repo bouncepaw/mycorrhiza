@@ -118,8 +118,8 @@ func HandlerHistory(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerEdit(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
+	vars := mux.Vars(r)
+	ActionEdit(vars["hypha"], w)
 }
 
 func HandlerRewind(w http.ResponseWriter, r *http.Request) {

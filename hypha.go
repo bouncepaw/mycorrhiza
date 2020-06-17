@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Hypha struct {
@@ -49,4 +52,29 @@ func (h *Hypha) NewestRevision() string {
 
 func (h *Hypha) ParentName() string {
 	return h.parentName
+}
+
+func ActionEdit(hyphaName string, w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	var initContents, initTextMime, initBinaryMime, initTags string
+	hypha, ok := hyphae[hyphaName]
+	if !ok {
+		initContents = "Describe " + hyphaName + "here."
+		initTextMime = "text/markdown"
+	} else {
+		newestRev := hypha.Revisions[hypha.NewestRevision()]
+		contents, err := ioutil.ReadFile(newestRev.TextPath)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("<b>Sorry, something went wrong</b>"))
+			return
+		}
+		initContents = string(contents)
+		initTextMime = newestRev.TextMime
+		initBinaryMime = newestRev.BinaryMime
+		initTags = strings.Join(newestRev.Tags, ",")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(EditHyphaPage(hyphaName, initTextMime, initBinaryMime, initContents, initTags)))
 }
