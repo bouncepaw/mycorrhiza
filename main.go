@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,112 +33,6 @@ func RevInMap(m map[string]string) string {
 		return val
 	}
 	return "0"
-}
-
-// handlers
-func HandlerGetBinary(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	revno := RevInMap(vars)
-	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
-	if !ok {
-		return
-	}
-	fileContents, err := ioutil.ReadFile(rev.BinaryPath)
-	if err != nil {
-		log.Println("Failed to load binary data of", rev.FullName, rev.Id)
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	w.Header().Set("Content-Type", rev.BinaryMime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
-	log.Println("Showing image of", rev.FullName, rev.Id)
-}
-
-func HandlerRaw(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	revno := RevInMap(vars)
-	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
-	if !ok {
-		return
-	}
-	fileContents, err := ioutil.ReadFile(rev.TextPath)
-	if err != nil {
-		log.Println("Failed to load text data of", rev.FullName, rev.Id)
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	w.Header().Set("Content-Type", rev.TextMime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
-	log.Println("Serving text data of", rev.FullName, rev.Id)
-}
-
-func HandlerZen(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	revno := RevInMap(vars)
-	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
-	if !ok {
-		return
-	}
-	html, err := rev.AsHtml(hyphae)
-	if err != nil {
-		log.Println("Failed to render", rev.FullName)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, html)
-}
-
-func HandlerView(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	revno := RevInMap(vars)
-	rev, ok := GetRevision(hyphae, vars["hypha"], revno, w)
-	if !ok {
-		return
-	}
-	html, err := rev.AsHtml(hyphae)
-	if err != nil {
-		log.Println("Failed to render", rev.FullName)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, HyphaPage(hyphae, rev, html))
-	log.Println("Rendering", rev.FullName)
-}
-
-func HandlerHistory(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerEdit(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	ActionEdit(vars["hypha"], w)
-}
-
-func HandlerRewind(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerDelete(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerRename(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerUpdate(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
 }
 
 var rootWikiDir string

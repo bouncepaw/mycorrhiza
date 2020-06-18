@@ -62,7 +62,7 @@ func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
 }
 
 func (r *Revision) ActionGetBinary(w http.ResponseWriter) {
-	fileContents, err := ioutil.ReadFile(r.urlOfBinary())
+	fileContents, err := ioutil.ReadFile(r.BinaryPath)
 	if err != nil {
 		log.Println("Failed to load binary data of", r.FullName, r.Id)
 		w.WriteHeader(http.StatusNotFound)
@@ -87,7 +87,7 @@ func (r *Revision) ActionRaw(w http.ResponseWriter) {
 	log.Println("Serving text data of", r.FullName, r.Id)
 }
 
-func (r *Revision) ActionZen(w http.ResponseWriter, hyphae map[string]*Hypha) {
+func (r *Revision) ActionZen(w http.ResponseWriter) {
 	html, err := r.AsHtml(hyphae)
 	if err != nil {
 		log.Println("Failed to render", r.FullName)
@@ -99,7 +99,7 @@ func (r *Revision) ActionZen(w http.ResponseWriter, hyphae map[string]*Hypha) {
 	fmt.Fprint(w, html)
 }
 
-func (r *Revision) ActionView(w http.ResponseWriter, hyphae map[string]*Hypha, layoutFun func(map[string]*Hypha, Revision, string) string) {
+func (r *Revision) ActionView(w http.ResponseWriter, layoutFun func(map[string]*Hypha, Revision, string) string) {
 	html, err := r.AsHtml(hyphae)
 	if err != nil {
 		log.Println("Failed to render", r.FullName)
@@ -111,6 +111,7 @@ func (r *Revision) ActionView(w http.ResponseWriter, hyphae map[string]*Hypha, l
 	fmt.Fprint(w, layoutFun(hyphae, *r, html))
 	log.Println("Rendering", r.FullName)
 }
+
 func (r *Revision) Name() string {
 	return r.FullName
 }
