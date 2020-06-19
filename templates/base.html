@@ -1,11 +1,25 @@
 <html>
 	<head>
 		<title>{{ .Title }}</title>
+		{{ .Head }}
 	</head>
 	<body>
-		<header class="header">{{ .Header }}</header>
+        <div class="shroom">
+            <button class="shroom__button" id="shroomBtn"><span>🍄</span> Open mycelium</button>
+        </div>
 		<main class="main">{{ .Main }}</main>
-		<aside class="sidebar">{{ .Sidebar }}</aside>
-		<footer class="footer">{{ .Footer }}</footer>
+        <div class="left-panel" id="shroomburgerMenu">
+            <div class="left-panel__in">
+                <div class="shroom mushroom">
+                    <button class="shroom__button" id="mushroomBtn"><span>🍄</span> Close mycelium</button>
+                </div>
+                <div class="left-panel__contents">
+                    <header class="header">{{ .Header }}</header>
+                    <aside class="sidebar">{{ .Sidebar }}</aside>
+                    <footer class="footer">{{ .Footer }}</footer>
+                </div>
+            </div>
+        </div>
+		{{ .BodyBottom }}
 	</body>
 </html>

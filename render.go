@@ -3,29 +3,36 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"path"
 	"text/template"
 )
 
-func EditHyphaPage(name, text_mime, binary_mime, content, tags string) string {
+func EditHyphaPage(name, textMime, content, tags string) string {
 	keys := map[string]string{
-		"Title": fmt.Sprintf(TitleTemplate, name),
+		"Title":  fmt.Sprintf(TitleTemplate, "Edit "+name),
+		"Header": renderFromString(name, "Hypha/edit/header.html"),
 	}
 	page := map[string]string{
 		"Text":     content,
-		"TextMime": text_mime,
-		"BinMime":  binary_mime,
+		"TextMime": textMime,
 		"Name":     name,
 		"Tags":     tags,
 	}
-	return renderBase(renderFromMap(page, "Hypha/edit.html"), keys)
+	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
 func HyphaPage(hyphae map[string]*Hypha, rev Revision, content string) string {
-	keys := map[string]string{
-		"Title": fmt.Sprintf(TitleTemplate, rev.FullName),
+	sidebar := DefaultSidebar
+	bside, err := ioutil.ReadFile("Hypha/view/sidebar.html")
+	if err == nil {
+		sidebar = string(bside)
 	}
-	return renderBase(renderFromString(content, "Hypha/index.html"), keys)
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(TitleTemplate, rev.FullName),
+		"Sidebar": sidebar,
+	}
+	return renderBase(renderFromString(content, "Hypha/view/index.html"), keys)
 }
 
 /*
@@ -36,11 +43,13 @@ Args:
 */
 func renderBase(content string, keys map[string]string) string {
 	page := map[string]string{
-		"Title":   DefaultTitle,
-		"Header":  renderFromString(DefaultHeaderText, "header.html"),
-		"Footer":  renderFromString(DefaultFooterText, "footer.html"),
-		"Sidebar": DefaultSidebar,
-		"Main":    DefaultContent,
+		"Title":      DefaultTitle,
+		"Head":       DefaultStyles,
+		"Sidebar":    DefaultSidebar,
+		"Main":       DefaultContent,
+		"BodyBottom": DefaultBodyBottom,
+		"Header":     renderFromString(DefaultHeaderText, "header.html"),
+		"Footer":     renderFromString(DefaultFooterText, "footer.html"),
 	}
 	for key, val := range keys {
 		page[key] = val
