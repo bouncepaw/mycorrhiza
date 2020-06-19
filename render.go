@@ -24,12 +24,15 @@ func Layout(f map[string]string) string {
 	return fmt.Sprintf(template, f["title"], f["head"], f["header"], f["main"], f["sidebar"], FooterText, f["bodyBottom"])
 }
 
-func EditHyphaPage(name, text_mime, binary_mime, content, tags string) string {
+func EditHyphaPage(name, text_mime, content, tags string) string {
 	template := `
 <div class="naviwrapper">
-	<form class="naviwrapper__edit edit-box">
+	<form class="naviwrapper__edit edit-box"
+	      method="POST"
+	      enctype="multipart/form-data"
+	      action="?action=update">
 		<div class="naviwrapper__buttons">
-			<input type="submit" name="action" value="update"/>
+			<input type="submit" value="update"/>
 		</div>
 
 		<div class="edit-box__left">
@@ -48,17 +51,13 @@ func EditHyphaPage(name, text_mime, binary_mime, content, tags string) string {
 			<p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
 			<input type="text" name="text_mime" value="%s"/>
 
-			<h4>Media MIME-type</h4>
-			<p>For now, only image formats are supported. Choose any, but <code>image/jpeg</code> and <code>image/png</code> are recommended</p>
-			<input type="text" name="binary_mime" value="%s"/>
-
 			<h4>Revision comment</h4>
 			<p>Please make your comment helpful</p>
 			<input type="text" name="comment" value="%s"/>
 
 			<h4>Edit tags</h4>
 			<p>Tags are separated by commas, whitespace is ignored</p>
-			<input type="text" name="comment" value="%s"/>
+			<input type="text" name="tags" value="%s"/>
 		</div>
 	</form>
 </div>
@@ -67,7 +66,7 @@ func EditHyphaPage(name, text_mime, binary_mime, content, tags string) string {
 		"title":   fmt.Sprintf(TitleTemplate, "Edit "+name),
 		"head":    DefaultStyles,
 		"header":  `<h1 class="header__edit-title">Edit ` + name + `</h1>`,
-		"main":    fmt.Sprintf(template, content, text_mime, binary_mime, "Update "+name, tags),
+		"main":    fmt.Sprintf(template, content, text_mime, "Update "+name, tags),
 		"sidebar": "",
 		"footer":  FooterText,
 	}

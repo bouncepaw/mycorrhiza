@@ -101,7 +101,9 @@ func main() {
 	r.Queries("action", "rename", "to", hyphaPattern).Path(hyphaUrl).
 		HandlerFunc(HandlerRename)
 
-	r.Queries("action", "update").Path(hyphaUrl).
+	r.Queries(
+		"action", "update",
+	).Path(hyphaUrl).Methods("POST").
 		HandlerFunc(HandlerUpdate)
 
 	r.HandleFunc(hyphaUrl, HandlerView)

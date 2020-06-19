@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
+// In different places, revision variable is called `r`. But when there is an http.Request as well, the revision becomes `rev`. TODO: name them consistently.
 type Revision struct {
-	Id         int
-	FullName   string
+	Id         int      `json:"-"`
+	FullName   string   `json:"-"`
 	Tags       []string `json:"tags"`
 	ShortName  string   `json:"name"`
 	Comment    string   `json:"comment"`
@@ -18,8 +20,12 @@ type Revision struct {
 	Time       int      `json:"time"`
 	TextMime   string   `json:"text_mime"`
 	BinaryMime string   `json:"binary_mime"`
-	TextPath   string
-	BinaryPath string
+	TextPath   string   `json:"-"`
+	BinaryPath string   `json:"-"`
+}
+
+func (r *Revision) IdAsStr() string {
+	return strconv.Itoa(r.Id)
 }
 
 // During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data.
