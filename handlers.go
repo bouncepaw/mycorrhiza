@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // Boilerplate code present in many handlers. Good to have it.

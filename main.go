@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	// "strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string, w http.ResponseWriter) (Revision, bool) {

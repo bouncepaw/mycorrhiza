@@ -1,0 +1,36 @@
+<div class="naviwrapper">
+	<form class="naviwrapper__edit edit-box">
+		<div class="naviwrapper__buttons">
+			<input type="submit" name="action" value="update"/>
+		</div>
+
+		<div class="edit-box__left">
+			<h4>Edit box</h4>
+			<textarea class="edit-box__text" name="text" cols="80" rows="25">
+        {{ .Text }}
+			</textarea>
+
+			<h4>Upload file</h4>
+			<p>If this hypha has a file like that, the text above is meant to be a description of it</p>
+			<input type="file" name="binary"/>
+		</div>
+
+		<div class="edit-box__right">
+			<h4>Text MIME-type</h4>
+			<p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
+			<input type="text" name="text_mime" value="{{ .TextMime }}"/>
+
+			<h4>Media MIME-type</h4>
+			<p>For now, only image formats are supported. Choose any, but <code>image/jpeg</code> and <code>image/png</code> are recommended</p>
+			<input type="text" name="binary_mime" value="{{ .BinMime }}"/>
+
+			<h4>Revision comment</h4>
+			<p>Please make your comment helpful</p>
+			<input type="text" name="comment" value="Update {{ .Name }}"/>
+
+			<h4>Edit tags</h4>
+			<p>Tags are separated by commas, whitespace is ignored</p>
+			<input type="text" name="comment" value="{{ .Tags }}"/>
+		</div>
+	</form>
+</div>

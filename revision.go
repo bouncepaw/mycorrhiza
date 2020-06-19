@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gomarkdown/markdown"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/gomarkdown/markdown"
 )
 
 type Revision struct {
@@ -106,12 +107,10 @@ func (r *Revision) ActionView(w http.ResponseWriter, layoutFun func(map[string]*
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
+
 	fmt.Fprint(w, layoutFun(hyphae, *r, html))
 	log.Println("Rendering", r.FullName)
-}
-
-func (r *Revision) Name() string {
-	return r.FullName
 }
