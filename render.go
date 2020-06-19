@@ -1,126 +1,85 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
+	"path"
+	"text/template"
 )
 
-func Layout(f map[string]string) string {
-	template := `
-<!doctype html>
-<html>
-	<head>
-		<title>%s</title>
-		%s
-	</head>
-	<body>
-        <div class="shroom">
-            <button class="shroom__button" id="shroomBtn"><span>🍄</span> Open mycelium</button>
-        </div>
-		<main class="main">%s</main>
-        <div class="left-panel" id="shroomburgerMenu">
-            <div class="left-panel__in">
-                <div class="shroom mushroom">
-                    <button class="shroom__button" id="mushroomBtn"><span>🍄</span> Close mycelium</button>
-                </div>
-                <div class="left-panel__contents">
-                    <header class="header">%s</header>
-                    <aside class="sidebar">%s</aside>
-                    <footer class="footer">%s</footer>
-                </div>
-            </div>
-        </div>
-		%s
-	</body>
-</html>
-`
-	return fmt.Sprintf(template, f["title"], f["head"], f["main"], f["header"], f["sidebar"], FooterText, f["bodyBottom"])
-}
-
-func EditHyphaPage(name, text_mime, content, tags string) string {
-	template := `
-<div class="naviwrapper">
-	<form class="naviwrapper__edit edit-box"
-	      method="POST"
-	      enctype="multipart/form-data"
-	      action="?action=update">
-		<div class="naviwrapper__buttons">
-			<input type="submit" value="update"/>
-		</div>
-
-		<div class="edit-box__left">
-			<h4>Edit box</h4>
-			<textarea class="edit-box__text" name="text" cols="80" rows="25">
-%s
-			</textarea>
-
-			<h4>Upload file</h4>
-			<p>If this hypha has a file like that, the text above is meant to be a description of it</p>
-			<input type="file" name="binary"/>
-		</div>
-
-		<div class="edit-box__right">
-			<h4>Text MIME-type</h4>
-			<p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
-			<input type="text" name="text_mime" value="%s"/>
-
-			<h4>Revision comment</h4>
-			<p>Please make your comment helpful</p>
-			<input type="text" name="comment" value="%s"/>
-
-			<h4>Edit tags</h4>
-			<p>Tags are separated by commas, whitespace is ignored</p>
-			<input type="text" name="tags" value="%s"/>
-		</div>
-	</form>
-</div>
-`
-	args := map[string]string{
-		"title":   fmt.Sprintf(TitleTemplate, "Edit "+name),
-		"head":    DefaultStyles,
-		"header":  `<h1 class="header__edit-title">Edit ` + name + `</h1>`,
-		"main":    fmt.Sprintf(template, content, text_mime, "Update "+name, tags),
-		"sidebar": "",
-		"footer":  FooterText,
+func EditHyphaPage(name, textMime, content, tags string) string {
+	keys := map[string]string{
+		"Title":  fmt.Sprintf(TitleTemplate, "Edit "+name),
+		"Header": renderFromString(name, "Hypha/edit/header.html"),
 	}
-
-	return Layout(args)
+	page := map[string]string{
+		"Text":     content,
+		"TextMime": textMime,
+		"Name":     name,
+		"Tags":     tags,
+	}
+	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
 func HyphaPage(hyphae map[string]*Hypha, rev Revision, content string) string {
-	sidebar := `
-<div class="naviwrapper">
-    <div class="hypha-actions">
-        <ul>
-            <li><a href="?action=edit">Edit</a>
-            <li><a href="?action=getBinary">Download</a>
-            <li><a href="?action=zen">Zen mode</a>
-            <li><a href="?action=raw">View raw</a>
-        </ul>
-    </div>
-</div>
-`
-
-	bodyBottom := `
-<script type="text/javascript">
-    var menu = document.getElementById('shroomburgerMenu');
-    document.getElementById('shroomBtn').addEventListener('click', function() {
-        menu.classList.add('active');
-    });
-    document.getElementById('mushroomBtn').addEventListener('click', function() {
-        menu.classList.remove('active');
-    });
-</script>
-`
-
-	args := map[string]string{
-		"title":      fmt.Sprintf(TitleTemplate, rev.FullName),
-		"head":       DefaultStyles,
-		"header":     DefaultHeader,
-		"main":       content,
-		"sidebar":    sidebar,
-		"footer":     FooterText,
-		"bodyBottom": bodyBottom,
+	sidebar := DefaultSidebar
+	bside, err := ioutil.ReadFile("Hypha/view/sidebar.html")
+	if err == nil {
+		sidebar = string(bside)
 	}
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(TitleTemplate, rev.FullName),
+		"Sidebar": sidebar,
+	}
+	return renderBase(renderFromString(content, "Hypha/view/index.html"), keys)
+}
 
-	return Layout(args)
+/*
+Collect and render page from base template
+Args:
+	content: string or pre-rendered template
+	keys: map with replaced standart fields
+*/
+func renderBase(content string, keys map[string]string) string {
+	page := map[string]string{
+		"Title":      DefaultTitle,
+		"Head":       DefaultStyles,
+		"Sidebar":    DefaultSidebar,
+		"Main":       DefaultContent,
+		"BodyBottom": DefaultBodyBottom,
+		"Header":     renderFromString(DefaultHeaderText, "header.html"),
+		"Footer":     renderFromString(DefaultFooterText, "footer.html"),
+	}
+	for key, val := range keys {
+		page[key] = val
+	}
+	page["Main"] = content
+	return renderFromMap(page, "base.html")
+}
+
+func renderFromMap(data map[string]string, templatePath string) string {
+	filePath := path.Join("templates", templatePath)
+	tmpl, err := template.ParseFiles(filePath)
+	if err != nil {
+		return err.Error()
+	}
+	buf := new(bytes.Buffer)
+	if err := tmpl.Execute(buf, data); err != nil {
+		return err.Error()
+	}
+	return buf.String()
+}
+
+func renderFromString(data string, templatePath string) string {
+	filePath := path.Join("templates", templatePath)
+	tmpl, err := template.ParseFiles(filePath)
+	if err != nil {
+		return err.Error()
+	}
+	buf := new(bytes.Buffer)
+	if err := tmpl.Execute(buf, data); err != nil {
+		return err.Error()
+	}
+	return buf.String()
 }

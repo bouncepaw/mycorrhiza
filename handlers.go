@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -9,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 // Boilerplate code present in many handlers. Good to have it.
