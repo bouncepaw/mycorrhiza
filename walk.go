@@ -22,40 +22,34 @@ var (
 	leadingInt = regexp.MustCompile(`^[-+]?\d+`)
 )
 
-func matchNameToEverything(name string) (hyphaM bool, revTxtM bool, revBinM bool, metaJsonM bool) {
+// matchNameToEverything matches `name` to all filename patterns and returns 4 boolean results.
+func matchNameToEverything(name string) (revTxtM, revBinM, metaJsonM, hyphaM bool) {
+	// simpleMatch reduces boilerplate. Errors are ignored because I trust my regex skills.
 	simpleMatch := func(s string, p string) bool {
 		m, _ := regexp.MatchString(p, s)
 		return m
 	}
-	switch {
-	case simpleMatch(name, revTxtPattern):
-		revTxtM = true
-	case simpleMatch(name, revBinPattern):
-		revBinM = true
-	case simpleMatch(name, metaJsonPattern):
-		metaJsonM = true
-	case simpleMatch(name, hyphaPattern):
-		hyphaM = true
-	}
-	return
+	return simpleMatch(name, revTxtPattern),
+		simpleMatch(name, revBinPattern),
+		simpleMatch(name, metaJsonPattern),
+		simpleMatch(name, hyphaPattern)
 }
 
+// stripLeadingInt finds number in the beginning of `s` and returns it.
 func stripLeadingInt(s string) string {
 	return leadingInt.FindString(s)
 }
 
+// hyphaDirRevsValidate checks if `dto` is ok.
+// It also deletes pair with "0" as key so there is no revision with this id.
 func hyphaDirRevsValidate(dto map[string]map[string]string) (res bool) {
-	for k, _ := range dto {
-		switch k {
-		case "0":
-			delete(dto, "0")
-		default:
-			res = true
-		}
+	if _, ok := dto["0"]; ok {
+		delete(dto, "0")
 	}
-	return res
+	return len(dto) > 0
 }
 
+// scanHyphaDir scans directory at `fullPath` and tells what it has found.
 func scanHyphaDir(fullPath string) (valid bool, revs map[string]map[string]string, possibleSubhyphae []string, metaJsonPath string, err error) {
 	revs = make(map[string]map[string]string)
 	nodes, err := ioutil.ReadDir(fullPath)
@@ -64,7 +58,7 @@ func scanHyphaDir(fullPath string) (valid bool, revs map[string]map[string]strin
 	}
 
 	for _, node := range nodes {
-		hyphaM, revTxtM, revBinM, metaJsonM := matchNameToEverything(node.Name())
+		revTxtM, revBinM, metaJsonM, hyphaM := matchNameToEverything(node.Name())
 		switch {
 		case hyphaM && node.IsDir():
 			possibleSubhyphae = append(possibleSubhyphae, filepath.Join(fullPath, node.Name()))
@@ -87,15 +81,16 @@ func scanHyphaDir(fullPath string) (valid bool, revs map[string]map[string]strin
 	}
 
 	valid = hyphaDirRevsValidate(revs)
-
 	return // implicit return values
 }
 
-// Hypha name is rootWikiDir/{here}
+// hyphaName gets name of a hypha by stripping path to the hypha in `fullPath`
 func hyphaName(fullPath string) string {
+	// {rootWikiDir}/{the name}
 	return fullPath[len(rootWikiDir)+1:]
 }
 
+// recurFindHyphae recursively searches for hyphae in passed directory path.
 func recurFindHyphae(fullPath string) map[string]*Hypha {
 	hyphae := make(map[string]*Hypha)
 	valid, revs, possibleSubhyphae, metaJsonPath, err := scanHyphaDir(fullPath)
@@ -154,5 +149,4 @@ func recurFindHyphae(fullPath string) map[string]*Hypha {
 	// Now the hypha should be ok, gotta send structs
 	hyphae[h.FullName] = &h
 	return hyphae
-
 }

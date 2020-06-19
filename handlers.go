@@ -12,64 +12,67 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// There are handlers below. See main() for their usage.
+
 // Boilerplate code present in many handlers. Good to have it.
-func HandlerBase(w http.ResponseWriter, r *http.Request) (Revision, bool) {
-	vars := mux.Vars(r)
+func HandlerBase(w http.ResponseWriter, rq *http.Request) (Revision, bool) {
+	vars := mux.Vars(rq)
 	revno := RevInMap(vars)
-	return GetRevision(hyphae, vars["hypha"], revno, w)
+	return GetRevision(vars["hypha"], revno)
 }
 
-func HandlerGetBinary(w http.ResponseWriter, r *http.Request) {
-	if rev, ok := HandlerBase(w, r); ok {
+func HandlerGetBinary(w http.ResponseWriter, rq *http.Request) {
+	if rev, ok := HandlerBase(w, rq); ok {
 		rev.ActionGetBinary(w)
 	}
 }
 
-func HandlerRaw(w http.ResponseWriter, r *http.Request) {
-	if rev, ok := HandlerBase(w, r); ok {
+func HandlerRaw(w http.ResponseWriter, rq *http.Request) {
+	if rev, ok := HandlerBase(w, rq); ok {
 		rev.ActionRaw(w)
 	}
 }
 
-func HandlerZen(w http.ResponseWriter, r *http.Request) {
-	if rev, ok := HandlerBase(w, r); ok {
+func HandlerZen(w http.ResponseWriter, rq *http.Request) {
+	if rev, ok := HandlerBase(w, rq); ok {
 		rev.ActionZen(w)
 	}
 }
 
-func HandlerView(w http.ResponseWriter, r *http.Request) {
-	if rev, ok := HandlerBase(w, r); ok {
+func HandlerView(w http.ResponseWriter, rq *http.Request) {
+	if rev, ok := HandlerBase(w, rq); ok {
 		rev.ActionView(w, HyphaPage)
 	}
 }
 
-func HandlerHistory(w http.ResponseWriter, r *http.Request) {
+func HandlerHistory(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	log.Println("Attempt to access an unimplemented thing")
 }
 
-func HandlerEdit(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
+	vars := mux.Vars(rq)
 	ActionEdit(vars["hypha"], w)
 }
 
-func HandlerRewind(w http.ResponseWriter, r *http.Request) {
+func HandlerRewind(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	log.Println("Attempt to access an unimplemented thing")
 }
 
-func HandlerDelete(w http.ResponseWriter, r *http.Request) {
+func HandlerDelete(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	log.Println("Attempt to access an unimplemented thing")
 }
 
-func HandlerRename(w http.ResponseWriter, r *http.Request) {
+func HandlerRename(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	log.Println("Attempt to access an unimplemented thing")
 }
 
+// makeTagsSlice turns strings like `"foo,, bar,kek"` to slice of strings that represent tag names. Whitespace around commas is insignificant.
+// Expected output for string above: []string{"foo", "bar", "kek"}
 func makeTagsSlice(responseTagsString string) (ret []string) {
-	// `responseTagsString` is string like "foo,, bar,kek". Whitespace around commas is insignificant. Expected output: []string{"foo", "bar", "kek"}
 	for _, tag := range strings.Split(responseTagsString, ",") {
 		if trimmed := strings.TrimSpace(tag); "" == trimmed {
 			ret = append(ret, trimmed)
@@ -78,7 +81,7 @@ func makeTagsSlice(responseTagsString string) (ret []string) {
 	return ret
 }
 
-// Return an existing hypha it exists in `hyphae` or create a new one. If it `isNew`, you'll have to insert it to `hyphae` yourself.
+// getHypha returns an existing hypha if it exists in `hyphae` or creates a new one. If it `isNew`, you'll have to insert it to `hyphae` yourself.
 func getHypha(name string) (*Hypha, bool) {
 	log.Println("Accessing hypha", name)
 	if h, ok := hyphae[name]; ok {
@@ -95,26 +98,27 @@ func getHypha(name string) (*Hypha, bool) {
 	return h, true
 }
 
-// Create a new revison for hypha `h`. All data is fetched from `r`, except for BinaryMime and BinaryPath which require additional processing. You'll have te insert the revision to `h` yourself.
-func revisionFromHttpData(h *Hypha, r *http.Request) *Revision {
+// revisionFromHttpData creates a new revison for hypha `h`. All data is fetched from `rq`, except for BinaryMime and BinaryPath which require additional processing. You'll have te insert the revision to `h` yourself.
+func revisionFromHttpData(h *Hypha, rq *http.Request) *Revision {
 	idStr := strconv.Itoa(h.NewestRevisionInt() + 1)
 	log.Println(idStr)
 	rev := &Revision{
 		Id:       h.NewestRevisionInt() + 1,
 		FullName: h.FullName,
-		Tags:     makeTagsSlice(r.PostFormValue("tags")),
-		Comment:  r.PostFormValue("comment"),
-		Author:   r.PostFormValue("author"),
+		Tags:     makeTagsSlice(rq.PostFormValue("tags")),
+		Comment:  rq.PostFormValue("comment"),
+		Author:   rq.PostFormValue("author"),
 		Time:     int(time.Now().Unix()),
-		TextMime: r.PostFormValue("text_mime"),
+		TextMime: rq.PostFormValue("text_mime"),
 		TextPath: filepath.Join(h.Path, idStr+".txt"),
-		// Left: BinaryMime, BinaryPath
+		// Fields left: BinaryMime, BinaryPath
 	}
 	return rev
 }
 
-func writeTextFileFromHttpData(rev *Revision, r *http.Request) error {
-	data := []byte(r.PostFormValue("text"))
+// writeTextFileFromHttpData tries to fetch text content from `rq` for revision `rev` and write it to a corresponding text file. It used in `HandlerUpdate`.
+func writeTextFileFromHttpData(rev *Revision, rq *http.Request) error {
+	data := []byte(rq.PostFormValue("text"))
 	err := ioutil.WriteFile(rev.TextPath, data, 0644)
 	if err != nil {
 		log.Println("Failed to write", len(data), "bytes to", rev.TextPath)
@@ -122,11 +126,12 @@ func writeTextFileFromHttpData(rev *Revision, r *http.Request) error {
 	return err
 }
 
-func writeBinaryFileFromHttpData(h *Hypha, oldRev Revision, newRev *Revision, r *http.Request) error {
+// writeBinaryFileFromHttpData tries to fetch binary content from `rq` for revision `newRev` and write it to a corresponding binary file. If there is no content, it is taken from `oldRev`.
+func writeBinaryFileFromHttpData(h *Hypha, oldRev Revision, newRev *Revision, rq *http.Request) error {
 	// 10 MB file size limit
-	r.ParseMultipartForm(10 << 20)
+	rq.ParseMultipartForm(10 << 20)
 	// Read file
-	file, handler, err := r.FormFile("binary")
+	file, handler, err := rq.FormFile("binary")
 	if file != nil {
 		defer file.Close()
 	}
@@ -154,22 +159,22 @@ func writeBinaryFileFromHttpData(h *Hypha, oldRev Revision, newRev *Revision, r 
 	return nil
 }
 
-func HandlerUpdate(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	log.Println("Attempt to update hypha", mux.Vars(r)["hypha"])
+func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
+	vars := mux.Vars(rq)
+	log.Println("Attempt to update hypha", mux.Vars(rq)["hypha"])
 	h, isNew := getHypha(vars["hypha"])
 	oldRev := h.GetNewestRevision()
-	newRev := revisionFromHttpData(h, r)
+	newRev := revisionFromHttpData(h, rq)
 
 	if isNew {
 		h.CreateDir()
 	}
-	err := writeTextFileFromHttpData(newRev, r)
+	err := writeTextFileFromHttpData(newRev, rq)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	err = writeBinaryFileFromHttpData(h, oldRev, newRev, r)
+	err = writeBinaryFileFromHttpData(h, oldRev, newRev, rq)
 	if err != nil {
 		log.Println(err)
 		return

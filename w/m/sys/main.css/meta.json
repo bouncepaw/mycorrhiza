@@ -1,11 +1,1 @@
-{
-"revisions":{
-	"1":{
-		"name":		"main.css", 
-		"time":		1592244023, 
-		"author":	"wikimind", 
-		"comment":	"make a placeholder style", 
-		"text_mime":	"text/css"
-	}
-}
-}
+{"views":0,"deleted":false,"revisions":{"1":{"tags":null,"name":"main.css","comment":"make a placeholder style","author":"wikimind","time":1592244023,"text_mime":"text/css","binary_mime":""},"2":{"tags":[""],"name":"","comment":"Update sys/main.css","author":"","time":1592589679,"text_mime":"text/css","binary_mime":""}}}

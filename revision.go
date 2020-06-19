@@ -5,13 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
 	"strconv"
 
 	"github.com/gomarkdown/markdown"
 )
 
-// In different places, revision variable is called `r`. But when there is an http.Request as well, the revision becomes `rev`. TODO: name them consistently.
+// Revision represents a revision, duh.
+// A revision is a version of a hypha at a point in time.
 type Revision struct {
 	Id         int      `json:"-"`
 	FullName   string   `json:"-"`
@@ -26,37 +26,42 @@ type Revision struct {
 	BinaryPath string   `json:"-"`
 }
 
-func (r *Revision) IdAsStr() string {
-	return strconv.Itoa(r.Id)
+// IdAsStr returns revision's id as a string.
+func (rev *Revision) IdAsStr() string {
+	return strconv.Itoa(rev.Id)
 }
 
+// hasBinaryData returns true if the revision has any binary data associated.
 // During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data.
-func (r *Revision) hasBinaryData() bool {
-	return r.BinaryMime != ""
+func (rev *Revision) hasBinaryData() bool {
+	return rev.BinaryMime != ""
 }
 
-func (r *Revision) urlOfBinary() string {
-	return fmt.Sprintf("/%s?action=getBinary&rev=%d", r.FullName, r.Id)
-}
-
-// TODO: use templates https://github.com/bouncepaw/mycorrhiza/issues/2
-func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
+// AsHtml returns HTML representation of the revision.
+// If there is an error, it will be told about it in `w`.
+// In any case, some http data is written to `w`.
+func (rev *Revision) AsHtml(w http.ResponseWriter) (ret string, err error) {
 	ret += `<article class="page">
-	<h1 class="page__title">` + r.FullName + `</h1>
+	<h1 class="page__title">` + rev.FullName + `</h1>
 `
 	// TODO: support things other than images
-	if r.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="%s" class="page__amnt"/>`, r.urlOfBinary())
+	if rev.hasBinaryData() {
+		ret += fmt.Sprintf(`<img src="/%s?action=getBinary&rev=%d" class="page__amnt"/>`, rev.FullName, rev.Id)
 	}
 
-	contents, err := ioutil.ReadFile(r.TextPath)
+	contents, err := ioutil.ReadFile(rev.TextPath)
 	if err != nil {
+		log.Println("Failed to render", rev.FullName)
+		w.WriteHeader(http.StatusInternalServerError)
 		return "", err
 	}
 
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+
 	// TODO: support more markups.
 	// TODO: support mycorrhiza extensions like transclusion.
-	switch r.TextMime {
+	switch rev.TextMime {
 	case "text/markdown":
 		html := markdown.ToHTML(contents, nil, nil)
 		ret += string(html)
@@ -69,55 +74,50 @@ func (r *Revision) AsHtml(hyphae map[string]*Hypha) (ret string, err error) {
 	return ret, nil
 }
 
-func (r *Revision) ActionGetBinary(w http.ResponseWriter) {
-	fileContents, err := ioutil.ReadFile(r.BinaryPath)
+// ActionGetBinary is used with `?action=getBinary`.
+// It writes binary data of the revision. It also sets the MIME-type.
+func (rev *Revision) ActionGetBinary(w http.ResponseWriter) {
+	fileContents, err := ioutil.ReadFile(rev.BinaryPath)
 	if err != nil {
-		log.Println("Failed to load binary data of", r.FullName, r.Id)
+		log.Println("Failed to load binary data of", rev.FullName, rev.Id)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", r.BinaryMime)
+	w.Header().Set("Content-Type", rev.BinaryMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
-	log.Println("Serving binary data of", r.FullName, r.Id)
+	log.Println("Serving binary data of", rev.FullName, rev.Id)
 }
 
-func (r *Revision) ActionRaw(w http.ResponseWriter) {
-	fileContents, err := ioutil.ReadFile(r.TextPath)
+// ActionRaw is used with `?action=raw`.
+// It writes text content of the revision without any parsing or rendering.
+func (rev *Revision) ActionRaw(w http.ResponseWriter) {
+	fileContents, err := ioutil.ReadFile(rev.TextPath)
 	if err != nil {
-		log.Println("Failed to load text data of", r.FullName, r.Id)
-		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", r.TextMime)
+	w.Header().Set("Content-Type", rev.TextMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
-	log.Println("Serving text data of", r.FullName, r.Id)
+	log.Println("Serving text data of", rev.FullName, rev.Id)
 }
 
-func (r *Revision) ActionZen(w http.ResponseWriter) {
-	html, err := r.AsHtml(hyphae)
-	if err != nil {
-		log.Println("Failed to render", r.FullName)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+// ActionZen is used with `?action=zen`.
+// It renders the revision without any layout or navigation.
+func (rev *Revision) ActionZen(w http.ResponseWriter) {
+	html, err := rev.AsHtml(w)
+	if err == nil {
+		fmt.Fprint(w, html)
+		log.Println("Rendering", rev.FullName, "in zen mode")
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, html)
 }
 
-func (r *Revision) ActionView(w http.ResponseWriter, layoutFun func(map[string]*Hypha, Revision, string) string) {
-	html, err := r.AsHtml(hyphae)
-	if err != nil {
-		log.Println("Failed to render", r.FullName)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+// ActionView is used with `?action=view` or without any action.
+// It renders the revision with layout and navigation.
+func (rev *Revision) ActionView(w http.ResponseWriter, layoutFun func(Revision, string) string) {
+	html, err := rev.AsHtml(w)
+	if err == nil {
+		fmt.Fprint(w, layoutFun(*rev, html))
+		log.Println("Rendering", rev.FullName)
 	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprint(w, layoutFun(hyphae, *r, html))
-	log.Println("Rendering", r.FullName)
 }

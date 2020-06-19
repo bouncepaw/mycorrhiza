@@ -11,40 +11,36 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetRevision(hyphae map[string]*Hypha, hyphaName string, rev string, w http.ResponseWriter) (Revision, bool) {
-	log.Println("Getting hypha", hyphaName, rev)
-	for name, hypha := range hyphae {
-		if name == hyphaName {
-			if rev == "0" {
-				rev = hypha.NewestRevision()
-			}
-			for id, r := range hypha.Revisions {
-				if rev == id {
-					return *r, true
-				}
-			}
+// GetRevision finds revision with id `id` of `hyphaName` in `hyphae`.
+// If `id` is `"0"`, it means the last revision.
+// If no such revision is found, last return value is false.
+func GetRevision(hyphaName string, id string) (Revision, bool) {
+	log.Println("Getting hypha", hyphaName, id)
+	if hypha, ok := hyphae[hyphaName]; ok {
+		if id == "0" {
+			id = hypha.NewestRevision()
+		}
+		if rev, ok := hypha.Revisions[id]; ok {
+			return *rev, true
 		}
 	}
 	return Revision{}, false
 }
 
+// RevInMap finds value of `rev` (the one from URL queries like) in the passed map that is usually got from `mux.Vars(*http.Request)`.
+// If there is no `rev`, return "0".
 func RevInMap(m map[string]string) string {
-	if val, ok := m["rev"]; ok {
-		return val
+	if id, ok := m["rev"]; ok {
+		return id
 	}
 	return "0"
 }
 
+// `rootWikiDir` is a directory where all wiki files reside.
 var rootWikiDir string
-var hyphae map[string]*Hypha
 
-func hyphaeAsMap(hyphae []*Hypha) map[string]*Hypha {
-	mh := make(map[string]*Hypha)
-	for _, h := range hyphae {
-		mh[h.Name()] = h
-	}
-	return mh
-}
+// `hyphae` is a map with all hyphae. Many functions use it.
+var hyphae map[string]*Hypha
 
 func main() {
 	if len(os.Args) == 1 {
@@ -61,9 +57,8 @@ func main() {
 	log.Println("Indexing hyphae...")
 	hyphae = recurFindHyphae(rootWikiDir)
 	log.Println("Indexed", len(hyphae), "hyphae. Ready to accept requests.")
-	// setRelations(hyphae)
 
-	// Start server code
+	// Start server code. See handlers.go for handlers' implementations.
 	r := mux.NewRouter()
 
 	r.Queries("action", "getBinary", "rev", revQuery).Path(hyphaUrl).
@@ -101,19 +96,20 @@ func main() {
 	r.Queries("action", "rename", "to", hyphaPattern).Path(hyphaUrl).
 		HandlerFunc(HandlerRename)
 
-	r.Queries(
-		"action", "update",
-	).Path(hyphaUrl).Methods("POST").
+	r.Queries("action", "update").Path(hyphaUrl).Methods("POST").
 		HandlerFunc(HandlerUpdate)
 
 	r.HandleFunc(hyphaUrl, HandlerView)
 
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// Debug page that renders all hyphae.
+	// TODO: make it redirect to home page.
+	// TODO: make a home page.
+	r.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		for _, v := range hyphae {
-			log.Println("Rendering latest revision of hypha", v.Name())
-			html, err := v.AsHtml(hyphae, "0")
+		for _, h := range hyphae {
+			log.Println("Rendering latest revision of hypha", h.FullName)
+			html, err := h.AsHtml("0", w)
 			if err != nil {
 				fmt.Fprintln(w, err)
 			}

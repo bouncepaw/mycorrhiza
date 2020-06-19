@@ -1,6 +1,7 @@
 package main
 
 const (
+	TitleEditTemplate = `Edit %s at MycorrhizaWiki`
 	TitleTemplate     = `%s at MycorrhizaWiki`
 	DefaultTitle      = "MycorrhizaWiki"
 	DefaultHeaderText = `MycorrhizaWiki 🍄`
@@ -11,4 +12,5 @@ const (
 	DefaultStyles     = `
 <link rel="stylesheet" href="/sys/main.css?action=raw">
 `
+	GenericErrorMsg = `<b>Sorry, something went wrong</b>`
 )

@@ -8,9 +8,10 @@ import (
 	"text/template"
 )
 
+// EditHyphaPage returns HTML page of hypha editor.
 func EditHyphaPage(name, textMime, content, tags string) string {
 	keys := map[string]string{
-		"Title":  fmt.Sprintf(TitleTemplate, "Edit "+name),
+		"Title":  fmt.Sprintf(TitleEditTemplate, name),
 		"Header": renderFromString(name, "Hypha/edit/header.html"),
 	}
 	page := map[string]string{
@@ -22,7 +23,8 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
-func HyphaPage(hyphae map[string]*Hypha, rev Revision, content string) string {
+// HyphaPage returns HTML page of hypha viewer.
+func HyphaPage(rev Revision, content string) string {
 	sidebar := DefaultSidebar
 	bside, err := ioutil.ReadFile("Hypha/view/sidebar.html")
 	if err == nil {
@@ -35,12 +37,10 @@ func HyphaPage(hyphae map[string]*Hypha, rev Revision, content string) string {
 	return renderBase(renderFromString(content, "Hypha/view/index.html"), keys)
 }
 
-/*
-Collect and render page from base template
-Args:
-	content: string or pre-rendered template
-	keys: map with replaced standart fields
-*/
+// renderBase collects and renders page from base template
+// Args:
+//   content: string or pre-rendered template
+//   keys: map with replaced standart fields
 func renderBase(content string, keys map[string]string) string {
 	page := map[string]string{
 		"Title":      DefaultTitle,
@@ -58,6 +58,7 @@ func renderBase(content string, keys map[string]string) string {
 	return renderFromMap(page, "base.html")
 }
 
+// renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
 	filePath := path.Join("templates", templatePath)
 	tmpl, err := template.ParseFiles(filePath)
@@ -71,6 +72,7 @@ func renderFromMap(data map[string]string, templatePath string) string {
 	return buf.String()
 }
 
+// renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
 	filePath := path.Join("templates", templatePath)
 	tmpl, err := template.ParseFiles(filePath)
