@@ -13,15 +13,27 @@ func Layout(f map[string]string) string {
 		%s
 	</head>
 	<body>
-		<header class="header">%s</header>
+        <div class="shroom">
+            <button class="shroom__button" id="shroomBtn"><span>🍄</span> Open mycelium</button>
+        </div>
 		<main class="main">%s</main>
-		<aside class="sidebar">%s</aside>
-		<footer class="footer">%s</footer>
+        <div class="left-panel" id="shroomburgerMenu">
+            <div class="left-panel__in">
+                <div class="shroom mushroom">
+                    <button class="shroom__button" id="mushroomBtn"><span>🍄</span> Close mycelium</button>
+                </div>
+                <div class="left-panel__contents">
+                    <header class="header">%s</header>
+                    <aside class="sidebar">%s</aside>
+                    <footer class="footer">%s</footer>
+                </div>
+            </div>
+        </div>
 		%s
 	</body>
 </html>
 `
-	return fmt.Sprintf(template, f["title"], f["head"], f["header"], f["main"], f["sidebar"], FooterText, f["bodyBottom"])
+	return fmt.Sprintf(template, f["title"], f["head"], f["main"], f["header"], f["sidebar"], FooterText, f["bodyBottom"])
 }
 
 func EditHyphaPage(name, text_mime, content, tags string) string {
@@ -75,24 +87,39 @@ func EditHyphaPage(name, text_mime, content, tags string) string {
 }
 
 func HyphaPage(hyphae map[string]*Hypha, rev Revision, content string) string {
-	template := `
+	sidebar := `
 <div class="naviwrapper">
-	<form class="naviwrapper__buttons">
-		<input type="submit" name="action" value="edit"/>
-		<input type="submit" name="action" value="getBinary"/>
-		<input type="submit" name="action" value="zen"/>
-		<input type="submit" name="action" value="raw"/>
-	</form>
-	%s
+    <div class="hypha-actions">
+        <ul>
+            <li><a href="?action=edit">Edit</a>
+            <li><a href="?action=getBinary">Download</a>
+            <li><a href="?action=zen">Zen mode</a>
+            <li><a href="?action=raw">View raw</a>
+        </ul>
+    </div>
 </div>
 `
+
+	bodyBottom := `
+<script type="text/javascript">
+    var menu = document.getElementById('shroomburgerMenu');
+    document.getElementById('shroomBtn').addEventListener('click', function() {
+        menu.classList.add('active');
+    });
+    document.getElementById('mushroomBtn').addEventListener('click', function() {
+        menu.classList.remove('active');
+    });
+</script>
+`
+
 	args := map[string]string{
-		"title":   fmt.Sprintf(TitleTemplate, rev.FullName),
-		"head":    DefaultStyles,
-		"header":  DefaultHeader,
-		"main":    fmt.Sprintf(template, content),
-		"sidebar": "",
-		"footer":  FooterText,
+		"title":      fmt.Sprintf(TitleTemplate, rev.FullName),
+		"head":       DefaultStyles,
+		"header":     DefaultHeader,
+		"main":       content,
+		"sidebar":    sidebar,
+		"footer":     FooterText,
+		"bodyBottom": bodyBottom,
 	}
 
 	return Layout(args)
