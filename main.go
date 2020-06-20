@@ -37,7 +37,8 @@ func RevInMap(m map[string]string) string {
 }
 
 // `rootWikiDir` is a directory where all wiki files reside.
-var rootWikiDir string
+// `templatesDir` is where templates are.
+var rootWikiDir, templatesDir string
 
 // `hyphae` is a map with all hyphae. Many functions use it.
 var hyphae map[string]*Hypha
@@ -52,6 +53,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	templatesDir = filepath.Join(filepath.Dir(rootWikiDir), "templates")
 
 	log.Println("Welcome to MycorrhizaWiki α")
 	log.Println("Indexing hyphae...")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"text/template"
 )
 
@@ -26,7 +27,7 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 // HyphaPage returns HTML page of hypha viewer.
 func HyphaPage(rev Revision, content string) string {
 	sidebar := DefaultSidebar
-	bside, err := ioutil.ReadFile("Hypha/view/sidebar.html")
+	bside, err := ioutil.ReadFile(filepath.Join(templatesDir, "Hypha/view/sidebar.html"))
 	if err == nil {
 		sidebar = string(bside)
 	}
@@ -60,7 +61,7 @@ func renderBase(content string, keys map[string]string) string {
 
 // renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
-	filePath := path.Join("templates", templatePath)
+	filePath := path.Join(templatesDir, templatePath)
 	tmpl, err := template.ParseFiles(filePath)
 	if err != nil {
 		return err.Error()
@@ -74,7 +75,7 @@ func renderFromMap(data map[string]string, templatePath string) string {
 
 // renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
-	filePath := path.Join("templates", templatePath)
+	filePath := path.Join(templatesDir, templatePath)
 	tmpl, err := template.ParseFiles(filePath)
 	if err != nil {
 		return err.Error()
