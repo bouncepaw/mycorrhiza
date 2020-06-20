@@ -71,7 +71,7 @@ func (h *Hypha) CreateDir() error {
 
 // SaveJson dumps the hypha's metadata to `meta.json` file.
 func (h *Hypha) SaveJson() {
-	data, err := json.Marshal(h)
+	data, err := json.MarshalIndent(h, "", "\t")
 	if err != nil {
 		log.Println("Failed to create JSON of hypha.", err)
 		return

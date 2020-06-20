@@ -101,18 +101,20 @@ func getHypha(name string) (*Hypha, bool) {
 // revisionFromHttpData creates a new revison for hypha `h`. All data is fetched from `rq`, except for BinaryMime and BinaryPath which require additional processing. You'll have te insert the revision to `h` yourself.
 func revisionFromHttpData(h *Hypha, rq *http.Request) *Revision {
 	idStr := strconv.Itoa(h.NewestRevisionInt() + 1)
-	log.Println(idStr)
+	log.Printf("Creating revision %s from http data", idStr)
 	rev := &Revision{
-		Id:       h.NewestRevisionInt() + 1,
-		FullName: h.FullName,
-		Tags:     makeTagsSlice(rq.PostFormValue("tags")),
-		Comment:  rq.PostFormValue("comment"),
-		Author:   rq.PostFormValue("author"),
-		Time:     int(time.Now().Unix()),
-		TextMime: rq.PostFormValue("text_mime"),
-		TextPath: filepath.Join(h.Path, idStr+".txt"),
-		// Fields left: BinaryMime, BinaryPath
+		Id:        h.NewestRevisionInt() + 1,
+		FullName:  h.FullName,
+		ShortName: filepath.Base(h.FullName),
+		Tags:      makeTagsSlice(rq.PostFormValue("tags")),
+		Comment:   rq.PostFormValue("comment"),
+		Author:    rq.PostFormValue("author"),
+		Time:      int(time.Now().Unix()),
+		TextMime:  rq.PostFormValue("text_mime"),
+		// Fields left: BinaryMime, BinaryPath, BinaryName, TextName, TextPath
 	}
+	rev.desiredTextFilename() // TextName is set now
+	rev.TextPath = filepath.Join(h.Path, rev.TextName)
 	return rev
 }
 
@@ -139,11 +141,13 @@ func writeBinaryFileFromHttpData(h *Hypha, oldRev Revision, newRev *Revision, rq
 		log.Println("No binary data passed for", newRev.FullName)
 		newRev.BinaryMime = oldRev.BinaryMime
 		newRev.BinaryPath = oldRev.BinaryPath
+		newRev.BinaryName = oldRev.BinaryName
 		log.Println("Set previous revision's binary data")
 		return nil
 	}
 	newRev.BinaryMime = handler.Header.Get("Content-Type")
 	newRev.BinaryPath = filepath.Join(h.Path, newRev.IdAsStr()+".bin")
+	newRev.BinaryName = newRev.desiredBinaryFilename()
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Println(err)
@@ -186,5 +190,7 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Current hyphae storage is", hyphae)
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Saved successfully"))
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	d := map[string]string{"Name": h.FullName}
+	w.Write([]byte(renderFromMap(d, "updateOk.html")))
 }

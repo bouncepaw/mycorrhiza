@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime"
 	"net/http"
 	"strconv"
 
@@ -24,6 +25,8 @@ type Revision struct {
 	BinaryMime string   `json:"binary_mime"`
 	TextPath   string   `json:"-"`
 	BinaryPath string   `json:"-"`
+	TextName   string   `json:"text_name"`
+	BinaryName string   `json:"binary_name"`
 }
 
 // IdAsStr returns revision's id as a string.
@@ -37,9 +40,34 @@ func (rev *Revision) hasBinaryData() bool {
 	return rev.BinaryMime != ""
 }
 
+// desiredBinaryFilename returns string that represents filename to use when saving  a binary content file of a new revison.
+// It also sets the corresponding field in `rev`.
+func (rev *Revision) desiredBinaryFilename() string {
+	ts, err := mime.ExtensionsByType(rev.BinaryMime)
+	if err != nil || ts == nil {
+		rev.BinaryName = rev.IdAsStr() + ".bin"
+	} else {
+		rev.BinaryName = rev.IdAsStr() + ts[0]
+	}
+	return rev.BinaryName
+}
+
+// desiredTextFilename returns string that represents filename to use when saving a text content file of a new revison.
+// It also sets the corresponding field in `rev`.
+func (rev *Revision) desiredTextFilename() string {
+	ts, err := mime.ExtensionsByType(rev.TextMime)
+	if err != nil || ts == nil {
+		log.Println("No idea how I should name this one:", rev.TextMime)
+		rev.TextName = rev.IdAsStr() + ".txt"
+	} else {
+		log.Println("A good extension would be one of these:", ts)
+		rev.TextName = rev.IdAsStr() + ts[0]
+	}
+	return rev.TextName
+}
+
 // AsHtml returns HTML representation of the revision.
 // If there is an error, it will be told about it in `w`.
-// In any case, some http data is written to `w`.
 func (rev *Revision) AsHtml(w http.ResponseWriter) (ret string, err error) {
 	ret += `<article class="page">
 	<h1 class="page__title">` + rev.FullName + `</h1>
@@ -55,9 +83,6 @@ func (rev *Revision) AsHtml(w http.ResponseWriter) (ret string, err error) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return "", err
 	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
 
 	// TODO: support more markups.
 	// TODO: support mycorrhiza extensions like transclusion.

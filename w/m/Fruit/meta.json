@@ -6,7 +6,8 @@
 		"author":	"bouncepaw", 
 		"comment":	"create Fruit", 
 		"tags":		["fetus", "tasty"], 
-		"text_mime":	"text/markdown"
+		"text_mime":	"text/markdown", 
+		"text_name":	"1.md"
 	}, 
 	"2":{
 		"name":		"Fruit", 
@@ -14,7 +15,8 @@
 		"author":	"fungimaster", 
 		"comment":	"update Fruit", 
 		"tags":		["fetus", "tasty"], 
-		"text_mime":	"text/markdown" 
+		"text_mime":	"text/markdown", 
+		"text_name":	"2.md"
 	}
 }
 }
