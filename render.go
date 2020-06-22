@@ -22,19 +22,29 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
+// Hypha404 returns 404 page for nonexistent page.
+func Hypha404(name string) string {
+	return HyphaGeneric(name, name, "Hypha/view/404.html")
+}
+
 // HyphaPage returns HTML page of hypha viewer.
 func HyphaPage(rev Revision, content string) string {
+	return HyphaGeneric(rev.FullName, content, "Hypha/view/index.html")
+}
+
+// HyphaGeneric is used when building renderers for all types of hypha pages
+func HyphaGeneric(name string, content, templatePath string) string {
 	sidebar := DefaultSidebar
 	if bside := renderFromMap(map[string]string{
-		"Tree": GetTree(rev.FullName, true).AsHtml(),
+		"Tree": GetTree(name, true).AsHtml(),
 	}, "Hypha/view/sidebar.html"); bside != "" {
 		sidebar = bside
 	}
 	keys := map[string]string{
-		"Title":   fmt.Sprintf(TitleTemplate, rev.FullName),
+		"Title":   fmt.Sprintf(TitleTemplate, name),
 		"Sidebar": sidebar,
 	}
-	return renderBase(renderFromString(content, "Hypha/view/index.html"), keys)
+	return renderBase(renderFromString(content, templatePath), keys)
 }
 
 // renderBase collects and renders page from base template

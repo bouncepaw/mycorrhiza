@@ -42,6 +42,10 @@ func HandlerZen(w http.ResponseWriter, rq *http.Request) {
 func HandlerView(w http.ResponseWriter, rq *http.Request) {
 	if rev, ok := HandlerBase(w, rq); ok {
 		rev.ActionView(w, HyphaPage)
+	} else { // Hypha does not exist
+		log.Println("Hypha does not exist, showing 404")
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(Hypha404(mux.Vars(rq)["hypha"])))
 	}
 }
 
