@@ -167,12 +167,21 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
 	log.Println("Attempt to update hypha", mux.Vars(rq)["hypha"])
 	h, isNew := getHypha(vars["hypha"])
-	oldRev := h.GetNewestRevision()
+	var oldRev Revision
+	if !isNew {
+		oldRev = h.GetNewestRevision()
+	} else {
+		h = &Hypha{
+			FullName:   vars["hypha"],
+			Path:       filepath.Join(rootWikiDir, vars["hypha"]),
+			Revisions:  make(map[string]*Revision),
+			parentName: filepath.Dir(vars["hypha"]),
+		}
+		h.CreateDir()
+		oldRev = Revision{}
+	}
 	newRev := revisionFromHttpData(h, rq)
 
-	if isNew {
-		h.CreateDir()
-	}
 	err := writeTextFileFromHttpData(newRev, rq)
 	if err != nil {
 		log.Println(err)
@@ -186,6 +195,9 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 
 	h.Revisions[newRev.IdAsStr()] = newRev
 	h.SaveJson()
+	if isNew {
+		hyphae[h.FullName] = h
+	}
 
 	log.Println("Current hyphae storage is", hyphae)
 

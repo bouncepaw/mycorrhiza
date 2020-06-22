@@ -66,7 +66,7 @@ func (h *Hypha) MetaJsonPath() string {
 // CreateDir creates directory where the hypha must reside.
 // It is meant to be used with new hyphae.
 func (h *Hypha) CreateDir() error {
-	return os.MkdirAll(h.Path, 0644)
+	return os.MkdirAll(h.Path, os.ModePerm)
 }
 
 // SaveJson dumps the hypha's metadata to `meta.json` file.

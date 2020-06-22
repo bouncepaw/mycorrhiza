@@ -3,9 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"path"
-	"path/filepath"
 	"text/template"
 )
 
@@ -27,9 +25,10 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 // HyphaPage returns HTML page of hypha viewer.
 func HyphaPage(rev Revision, content string) string {
 	sidebar := DefaultSidebar
-	bside, err := ioutil.ReadFile(filepath.Join(templatesDir, "Hypha/view/sidebar.html"))
-	if err == nil {
-		sidebar = string(bside)
+	if bside := renderFromMap(map[string]string{
+		"Tree": GetTree(rev.FullName, true).AsHtml(),
+	}, "Hypha/view/sidebar.html"); bside != "" {
+		sidebar = bside
 	}
 	keys := map[string]string{
 		"Title":   fmt.Sprintf(TitleTemplate, rev.FullName),
