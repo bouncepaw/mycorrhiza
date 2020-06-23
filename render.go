@@ -12,8 +12,9 @@ import (
 // EditHyphaPage returns HTML page of hypha editor.
 func EditHyphaPage(name, textMime, content, tags string) string {
 	keys := map[string]string{
-		"Title":  fmt.Sprintf(cfg.TitleEditTemplate, name),
-		"Header": renderFromString(name, "Hypha/edit/header.html"),
+		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
+		"Header":  renderFromString(name, "Hypha/edit/header.html"),
+		"Sidebar": renderFromString("", "Hypha/edit/sidebar.html"),
 	}
 	page := map[string]string{
 		"Text":     content,
@@ -36,11 +37,11 @@ func HyphaPage(rev Revision, content string) string {
 
 // HyphaGeneric is used when building renderers for all types of hypha pages
 func HyphaGeneric(name string, content, templatePath string) string {
-	sidebar := cfg.DefaultSidebar
-	if bside := renderFromMap(map[string]string{
+	var sidebar string
+	if aside := renderFromMap(map[string]string{
 		"Tree": GetTree(name, true).AsHtml(),
-	}, "Hypha/view/sidebar.html"); bside != "" {
-		sidebar = bside
+	}, "Hypha/view/sidebar.html"); aside != "" {
+		sidebar = aside
 	}
 	keys := map[string]string{
 		"Title":   fmt.Sprintf(cfg.TitleTemplate, name),
@@ -55,13 +56,9 @@ func HyphaGeneric(name string, content, templatePath string) string {
 //   keys: map with replaced standart fields
 func renderBase(content string, keys map[string]string) string {
 	page := map[string]string{
-		"Title":      cfg.DefaultTitle,
-		"Head":       cfg.DefaultStyles,
-		"Sidebar":    cfg.DefaultSidebar,
-		"Main":       cfg.DefaultContent,
-		"BodyBottom": cfg.DefaultBodyBottom,
-		"Header":     renderFromString(cfg.DefaultHeaderText, "header.html"),
-		"Footer":     renderFromString(cfg.DefaultFooterText, "footer.html"),
+		"Title":     cfg.SiteTitle,
+		"Main":      "",
+		"SiteTitle": cfg.SiteTitle,
 	}
 	for key, val := range keys {
 		page[key] = val

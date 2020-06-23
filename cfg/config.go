@@ -18,16 +18,7 @@ var (
 	TitleEditTemplate = `Edit %s`
 	TitleTemplate     = `%s`
 	GenericErrorMsg   = `<b>Sorry, something went wrong</b>`
-
-	DefaultTitle      = "MycorrhizaWiki"
-	DefaultHeaderText = `MycorrhizaWiki 🍄`
-	DefaultFooterText = `This website runs <a href="https://github.com/bouncepaw/mycorrhiza">MycorrhizaWiki</a>.`
-	DefaultSidebar    = ""
-	DefaultBodyBottom = ""
-	DefaultContent    = "It is empty here"
-	DefaultStyles     = `
-<link rel="stylesheet" href="/sys/main.css?action=raw">
-`
+	SiteTitle         = `MycorrhizaWiki`
 )
 
 func InitConfig(wd string) bool {
@@ -55,6 +46,7 @@ func readConfig() bool {
 
 	cfg := struct {
 		Address        string `json:"address"`
+		SiteTitle      string `json:"site-title"`
 		TitleTemplates struct {
 			EditHypha string `json:"edit-hypha"`
 			ViewHypha string `json:"view-hypha"`
@@ -68,6 +60,7 @@ func readConfig() bool {
 	}
 
 	Address = cfg.Address
+	SiteTitle = cfg.SiteTitle
 	TitleEditTemplate = cfg.TitleTemplates.EditHypha
 	TitleTemplate = cfg.TitleTemplates.ViewHypha
 
