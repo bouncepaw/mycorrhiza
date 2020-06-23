@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 // `Hypha` represents a hypha. It is the thing MycorrhizaWiki generally serves.
@@ -95,7 +97,7 @@ func ActionEdit(hyphaName string, w http.ResponseWriter) {
 		if err != nil {
 			log.Println("Could not read", newestRev.TextPath)
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(GenericErrorMsg))
+			w.Write([]byte(cfg.GenericErrorMsg))
 			return
 		}
 		initContents = string(contents)

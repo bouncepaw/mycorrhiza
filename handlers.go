@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/gorilla/mux"
 )
 
@@ -95,7 +96,7 @@ func getHypha(name string) (*Hypha, bool) {
 	log.Println("Create hypha", name)
 	h := &Hypha{
 		FullName:   name,
-		Path:       filepath.Join(rootWikiDir, name),
+		Path:       filepath.Join(cfg.WikiDir, name),
 		Revisions:  make(map[string]*Revision),
 		parentName: filepath.Dir(name),
 	}
@@ -177,7 +178,7 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		h = &Hypha{
 			FullName:   vars["hypha"],
-			Path:       filepath.Join(rootWikiDir, vars["hypha"]),
+			Path:       filepath.Join(cfg.WikiDir, vars["hypha"]),
 			Revisions:  make(map[string]*Revision),
 			parentName: filepath.Dir(vars["hypha"]),
 		}

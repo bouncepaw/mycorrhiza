@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 const (
@@ -58,8 +60,8 @@ func scanHyphaDir(fullPath string) (valid bool, possibleSubhyphae []string, meta
 
 // hyphaName gets name of a hypha by stripping path to the hypha in `fullPath`
 func hyphaName(fullPath string) string {
-	// {rootWikiDir}/{the name}
-	return fullPath[len(rootWikiDir)+1:]
+	// {cfg.WikiDir}/{the name}
+	return fullPath[len(cfg.WikiDir)+1:]
 }
 
 // recurFindHyphae recursively searches for hyphae in passed directory path.

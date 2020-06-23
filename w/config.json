@@ -1,0 +1,7 @@
+{
+	"address": "127.0.0.1:1737", 
+	"title-templates": {
+		"edit-hypha": "Edit %s at MycorrhizaWiki", 
+		"view-hypha": "%s at MycorrhizaWiki"
+	}
+}
