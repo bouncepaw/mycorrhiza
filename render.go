@@ -69,8 +69,9 @@ func renderBase(content string, keys map[string]string) string {
 
 // renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
-	filePath := path.Join(cfg.TemplatesDir, templatePath)
-	tmpl, err := template.ParseFiles(filePath)
+	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
+	rev, _ := GetRevision(hyphPath, "0")
+	tmpl, err := template.ParseFiles(rev.TextPath)
 	if err != nil {
 		return err.Error()
 	}
@@ -83,8 +84,9 @@ func renderFromMap(data map[string]string, templatePath string) string {
 
 // renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
-	filePath := path.Join(cfg.TemplatesDir, templatePath)
-	tmpl, err := template.ParseFiles(filePath)
+	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
+	rev, _ := GetRevision(hyphPath, "0")
+	tmpl, err := template.ParseFiles(rev.TextPath)
 	if err != nil {
 		return err.Error()
 	}
