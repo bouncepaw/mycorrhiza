@@ -1,63 +1,73 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
+	// "io/ioutil"
+	// "log"
 	"net/http"
-	"path/filepath"
-	"strconv"
-	"strings"
-	"time"
+	// "path/filepath"
+	// "strconv"
+	// "strings"
+	// "time"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/fs"
 	"github.com/gorilla/mux"
 )
 
 // There are handlers below. See main() for their usage.
 
 // Boilerplate code present in many handlers. Good to have it.
-func HandlerBase(w http.ResponseWriter, rq *http.Request) (Revision, bool) {
+func HandlerBase(w http.ResponseWriter, rq *http.Request) (*fs.Hypha, bool) {
 	vars := mux.Vars(rq)
-	revno := RevInMap(vars)
-	return GetRevision(vars["hypha"], revno)
-}
-
-func HandlerGetBinary(w http.ResponseWriter, rq *http.Request) {
-	if rev, ok := HandlerBase(w, rq); ok {
-		rev.ActionGetBinary(w)
+	h, err := hs.Open(vars["hypha"])
+	if err != nil {
+		log.Println(err)
+		return nil, false
 	}
+	err = h.OnRevision(RevInMap(vars))
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(*h)
+	return h, true
 }
 
 func HandlerRaw(w http.ResponseWriter, rq *http.Request) {
-	if rev, ok := HandlerBase(w, rq); ok {
-		rev.ActionRaw(w)
+	log.Println("?action=raw")
+	if h, ok := HandlerBase(w, rq); ok {
+		h.ActionRaw(w)
 	}
 }
 
+func HandlerGetBinary(w http.ResponseWriter, rq *http.Request) {
+	log.Println("?action=getBinary")
+	if h, ok := HandlerBase(w, rq); ok {
+		h.ActionGetBinary(w)
+	}
+}
+
+/*
 func HandlerZen(w http.ResponseWriter, rq *http.Request) {
-	if rev, ok := HandlerBase(w, rq); ok {
-		rev.ActionZen(w)
+	if h, ok := HandlerBase(w, rq); ok {
+		h.ActionZen(w)
 	}
 }
 
 func HandlerView(w http.ResponseWriter, rq *http.Request) {
-	if rev, ok := HandlerBase(w, rq); ok {
-		rev.ActionView(w, HyphaPage)
-	} else { // Hypha does not exist
-		log.Println("Hypha does not exist, showing 404")
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(Hypha404(mux.Vars(rq)["hypha"])))
+	if h, ok := HandlerBase(w, rq); ok {
+		h.ActionView(w, HyphaPage)
 	}
-}
-
-func HandlerHistory(w http.ResponseWriter, rq *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
 }
 
 func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
 	ActionEdit(vars["hypha"], w)
+}
+
+func HandlerHistory(w http.ResponseWriter, rq *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+	log.Println("Attempt to access an unimplemented thing")
 }
 
 func HandlerRewind(w http.ResponseWriter, rq *http.Request) {
@@ -74,7 +84,9 @@ func HandlerRename(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	log.Println("Attempt to access an unimplemented thing")
 }
+*/
 
+/*
 // makeTagsSlice turns strings like `"foo,, bar,kek"` to slice of strings that represent tag names. Whitespace around commas is insignificant.
 // Expected output for string above: []string{"foo", "bar", "kek"}
 func makeTagsSlice(responseTagsString string) (ret []string) {
@@ -211,3 +223,4 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	d := map[string]string{"Name": h.FullName}
 	w.Write([]byte(renderFromMap(d, "updateOk.html")))
 }
+*/

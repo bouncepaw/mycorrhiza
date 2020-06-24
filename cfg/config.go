@@ -8,6 +8,13 @@ import (
 	"path/filepath"
 )
 
+const (
+	HyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
+	HyphaUrl        = `/{hypha:` + HyphaPattern + `}`
+	RevisionPattern = `[\d]+`
+	RevQuery        = `{rev:` + RevisionPattern + `}`
+)
+
 var (
 	WikiDir        string
 	TemplatesDir   string

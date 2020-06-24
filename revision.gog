@@ -114,19 +114,6 @@ func (rev *Revision) ActionGetBinary(w http.ResponseWriter) {
 	log.Println("Serving binary data of", rev.FullName, rev.Id)
 }
 
-// ActionRaw is used with `?action=raw`.
-// It writes text content of the revision without any parsing or rendering.
-func (rev *Revision) ActionRaw(w http.ResponseWriter) {
-	fileContents, err := ioutil.ReadFile(rev.TextPath)
-	if err != nil {
-		return
-	}
-	w.Header().Set("Content-Type", rev.TextMime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
-	log.Println("Serving text data of", rev.FullName, rev.Id)
-}
-
 // ActionZen is used with `?action=zen`.
 // It renders the revision without any layout or navigation.
 func (rev *Revision) ActionZen(w http.ResponseWriter) {

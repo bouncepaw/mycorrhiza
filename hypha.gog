@@ -14,18 +14,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
-// `Hypha` represents a hypha. It is the thing MycorrhizaWiki generally serves.
-// Each hypha has 1 or more revisions.
-type Hypha struct {
-	FullName      string               `json:"-"`
-	Path          string               `json:"-"`
-	ViewCount     int                  `json:"views"`
-	Deleted       bool                 `json:"deleted"`
-	Revisions     map[string]*Revision `json:"revisions"`
-	ChildrenNames []string             `json:"-"`
-	parentName    string
-}
-
 // AsHtml returns HTML representation of the hypha.
 // No layout or navigation are present here. Just the hypha.
 func (h *Hypha) AsHtml(id string, w http.ResponseWriter) (string, error) {
@@ -36,33 +24,6 @@ func (h *Hypha) AsHtml(id string, w http.ResponseWriter) (string, error) {
 		return rev.AsHtml(w)
 	}
 	return "", fmt.Errorf("Hypha %v has no such revision: %v", h.FullName, id)
-}
-
-// GetNewestRevision returns the most recent Revision.
-func (h *Hypha) GetNewestRevision() Revision {
-	return *h.Revisions[h.NewestRevision()]
-}
-
-// NewestRevision returns the most recent revision's id as a string.
-func (h *Hypha) NewestRevision() string {
-	return strconv.Itoa(h.NewestRevisionInt())
-}
-
-// NewestRevision returns the most recent revision's id as an integer.
-func (h *Hypha) NewestRevisionInt() (ret int) {
-	for k, _ := range h.Revisions {
-		id, _ := strconv.Atoi(k)
-		if id > ret {
-			ret = id
-		}
-	}
-	return ret
-}
-
-// MetaJsonPath returns rooted path to the hypha's `meta.json` file.
-// It is not promised that the file exists.
-func (h *Hypha) MetaJsonPath() string {
-	return filepath.Join(h.Path, "meta.json")
 }
 
 // CreateDir creates directory where the hypha must reside.
