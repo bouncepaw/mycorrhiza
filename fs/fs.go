@@ -21,7 +21,6 @@ func InitStorage() *Storage {
 		root:  cfg.WikiDir,
 	}
 	s.indexHyphae(s.root)
-	log.Println(s.paths)
 	log.Printf("Indexed %v hyphae\n", len(s.paths))
 	return s
 }
@@ -50,7 +49,6 @@ func (s *Storage) indexHyphae(path string) {
 		case matchesHypha && node.IsDir():
 			s.indexHyphae(name)
 		case node.Name() == "meta.json" && !node.IsDir():
-			log.Printf("%v seems to be a hypha, adding it to the list\n", path)
 			s.paths[hyphaName(path)] = path
 		}
 	}

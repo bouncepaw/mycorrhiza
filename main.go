@@ -50,31 +50,20 @@ func main() {
 		HandlerFunc(HandlerRaw)
 	r.Queries("action", "raw").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerRaw)
-		/*
-			r.Queries("action", "zen", "rev", revQuery).Path(hyphaUrl).
-				HandlerFunc(HandlerZen)
-			r.Queries("action", "zen").Path(hyphaUrl).
-				HandlerFunc(HandlerZen)
 
+	r.Queries("action", "zen", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerZen)
+	r.Queries("action", "zen").Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerZen)
+
+		/*
 			r.Queries("action", "view", "rev", revQuery).Path(hyphaUrl).
 				HandlerFunc(HandlerView)
 			r.Queries("action", "view").Path(hyphaUrl).
 				HandlerFunc(HandlerView)
 
-			r.Queries("action", "history").Path(hyphaUrl).
-				HandlerFunc(HandlerHistory)
-
-			 r.Queries("action", "edit").Path(hyphaUrl).
-			 	HandlerFunc(HandlerEdit)
-
-			r.Queries("action", "rewind", "rev", revQuery).Path(hyphaUrl).
-				HandlerFunc(HandlerRewind)
-
-			r.Queries("action", "delete").Path(hyphaUrl).
-				HandlerFunc(HandlerDelete)
-
-			r.Queries("action", "rename", "to", hyphaPattern).Path(hyphaUrl).
-				HandlerFunc(HandlerRename)
+			r.Queries("action", "edit").Path(hyphaUrl).
+				HandlerFunc(HandlerEdit)
 
 			r.Queries("action", "update").Path(hyphaUrl).Methods("POST").
 				HandlerFunc(HandlerUpdate)

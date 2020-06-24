@@ -3,6 +3,7 @@ package fs
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/gomarkdown/markdown"
 )
 
 type Hypha struct {
@@ -57,7 +59,6 @@ func (s *Storage) Open(name string) (*Hypha, error) {
 		err = h.OnRevision("0")
 		return h, err
 	}
-	log.Println(h)
 	return h, nil
 }
 
@@ -108,6 +109,45 @@ func (h *Hypha) mimeTypeForActionRaw() string {
 	return h.actual.TextMime
 }
 
+// hasBinaryData returns true if the revision has any binary data associated.
+// During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data. (is it?)
+func (h *Hypha) hasBinaryData() bool {
+	return h.actual.BinaryMime != ""
+}
+
+func (h *Hypha) asHtml() (string, error) {
+	rev := h.actual
+	ret := `<article class="page">
+	<h1 class="page__title">` + rev.FullName + `</h1>
+`
+	// What about using <figure>?
+	if h.hasBinaryData() {
+		ret += fmt.Sprintf(`<img src="/%s?action=getBinary&rev=%d" cla
+ss="page__amnt"/>`, rev.FullName, rev.Id)
+	}
+
+	contents, err := ioutil.ReadFile(rev.TextPath)
+	if err != nil {
+		log.Println("Failed to render", rev.FullName, ":", err)
+		return "", err
+	}
+
+	// TODO: support more markups.
+	// TODO: support mycorrhiza extensions like transclusion.
+	switch rev.TextMime {
+	case "text/markdown":
+		html := markdown.ToHTML(contents, nil, nil)
+		ret += string(html)
+	default:
+		ret += fmt.Sprintf(`<pre>%s</pre>`, contents)
+	}
+
+	ret += `
+</article>`
+
+	return ret, nil
+}
+
 // ActionRaw is used with `?action=raw`.
 // It writes text content of the revision without any parsing or rendering.
 func (h *Hypha) ActionRaw(w http.ResponseWriter) {
@@ -134,4 +174,19 @@ func (h *Hypha) ActionGetBinary(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
 	h.PlainLog("Serving raw text")
+}
+
+// ActionZen is used with `?action=zen`.
+// It renders the hypha but without any layout or styles. Pure. Zen.
+func (h *Hypha) ActionZen(w http.ResponseWriter) {
+	html, err := h.asHtml()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(html))
+	h.PlainLog("Rendering zen")
 }

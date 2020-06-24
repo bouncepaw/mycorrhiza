@@ -47,13 +47,13 @@ func HandlerGetBinary(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-/*
 func HandlerZen(w http.ResponseWriter, rq *http.Request) {
 	if h, ok := HandlerBase(w, rq); ok {
 		h.ActionZen(w)
 	}
 }
 
+/*
 func HandlerView(w http.ResponseWriter, rq *http.Request) {
 	if h, ok := HandlerBase(w, rq); ok {
 		h.ActionView(w, HyphaPage)
@@ -65,25 +65,6 @@ func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	ActionEdit(vars["hypha"], w)
 }
 
-func HandlerHistory(w http.ResponseWriter, rq *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerRewind(w http.ResponseWriter, rq *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerDelete(w http.ResponseWriter, rq *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
-
-func HandlerRename(w http.ResponseWriter, rq *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-	log.Println("Attempt to access an unimplemented thing")
-}
 */
 
 /*
