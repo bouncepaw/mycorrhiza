@@ -108,6 +108,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 .edit-box__left { grid-column: 1; grid-row: 2 }
 .edit-box__right { grid-column: 2; grid-row: 1 / span 2; padding-right: 16px }
+.edit-box__text {
+    border-radius: 1rem;
+    color: #c8c8c8;
+    padding: 16px;
+    background-color: rgba(255,255,255,.05);
+}
 
 footer {
     padding: 1em 0;
@@ -210,15 +216,6 @@ footer a, footer a:visited {
 }
 
 aside .hypha-actions a:hover {
-    background: #eaeaea;
+    background-color: #272b30;
+    color: #73ca73;
 }
-
-
-			
-			
-			
-			
-			
-			
-			
-			
