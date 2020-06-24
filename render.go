@@ -11,16 +11,16 @@ import (
 
 // EditHyphaPage returns HTML page of hypha editor.
 func EditHyphaPage(name, textMime, content, tags string) string {
-	keys := map[string]string{
-		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
-		"Header":  renderFromString(name, "Hypha/edit/header.html"),
-		"Sidebar": renderFromString("", "Hypha/edit/sidebar.html"),
-	}
 	page := map[string]string{
 		"Text":     content,
 		"TextMime": textMime,
 		"Name":     name,
 		"Tags":     tags,
+	}
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
+		"Header":  renderFromString(name, "Hypha/edit/header.html"),
+		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
 	}
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
@@ -69,8 +69,9 @@ func renderBase(content string, keys map[string]string) string {
 
 // renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
-	filePath := path.Join(cfg.TemplatesDir, templatePath)
-	tmpl, err := template.ParseFiles(filePath)
+	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
+	rev, _ := GetRevision(hyphPath, "0")
+	tmpl, err := template.ParseFiles(rev.TextPath)
 	if err != nil {
 		return err.Error()
 	}
@@ -83,8 +84,9 @@ func renderFromMap(data map[string]string, templatePath string) string {
 
 // renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
-	filePath := path.Join(cfg.TemplatesDir, templatePath)
-	tmpl, err := template.ParseFiles(filePath)
+	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
+	rev, _ := GetRevision(hyphPath, "0")
+	tmpl, err := template.ParseFiles(rev.TextPath)
 	if err != nil {
 		return err.Error()
 	}
