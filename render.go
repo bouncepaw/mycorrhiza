@@ -11,16 +11,16 @@ import (
 
 // EditHyphaPage returns HTML page of hypha editor.
 func EditHyphaPage(name, textMime, content, tags string) string {
-	keys := map[string]string{
-		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
-		"Header":  renderFromString(name, "Hypha/edit/header.html"),
-		"Sidebar": renderFromString("", "Hypha/edit/sidebar.html"),
-	}
 	page := map[string]string{
 		"Text":     content,
 		"TextMime": textMime,
 		"Name":     name,
 		"Tags":     tags,
+	}
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
+		"Header":  renderFromString(name, "Hypha/edit/header.html"),
+		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
 	}
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
