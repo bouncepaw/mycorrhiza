@@ -26,12 +26,13 @@ var (
 	TitleTemplate     = `%s`
 	GenericErrorMsg   = `<b>Sorry, something went wrong</b>`
 	SiteTitle         = `MycorrhizaWiki`
+	Theme             = `default-light`
 )
 
 func InitConfig(wd string) bool {
 	log.Println("WikiDir is", wd)
 	WikiDir = wd
-	TemplatesDir = filepath.Join(filepath.Dir(WikiDir), "templates")
+	TemplatesDir = "Templates"
 	configJsonPath = filepath.Join(filepath.Dir(WikiDir), "config.json")
 
 	if _, err := os.Stat(configJsonPath); os.IsNotExist(err) {
@@ -53,6 +54,7 @@ func readConfig() bool {
 
 	cfg := struct {
 		Address        string `json:"address"`
+		Theme          string `json:"theme"`
 		SiteTitle      string `json:"site-title"`
 		TitleTemplates struct {
 			EditHypha string `json:"edit-hypha"`
@@ -67,6 +69,7 @@ func readConfig() bool {
 	}
 
 	Address = cfg.Address
+	Theme = cfg.Theme
 	SiteTitle = cfg.SiteTitle
 	TitleEditTemplate = cfg.TitleTemplates.EditHypha
 	TitleTemplate = cfg.TitleTemplates.ViewHypha

@@ -1,0 +1,16 @@
+<div class="naviwrapper">
+	<form class="naviwrapper__edit edit-box"
+		  method="POST"
+		  id="editform"
+	      enctype="multipart/form-data"
+	      action="?action=update">
+
+		<div class="edit-box__left">
+			<h4 class="">Edit box</h4>
+			<!-- It is important that there is no indent ↓ -->
+			<textarea class="edit-box__text" name="text" cols="80" rows="25">
+{{ .Text }}
+			</textarea>
+		</div>
+	</form>
+</div>

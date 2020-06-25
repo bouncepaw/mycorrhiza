@@ -14,15 +14,16 @@ type Storage struct {
 	root  string
 }
 
+var Hs *Storage
+
 // InitStorage initiates filesystem-based hypha storage. It has to be called after configuration was inited.
-func InitStorage() *Storage {
-	s := &Storage{
+func InitStorage() {
+	Hs = &Storage{
 		paths: make(map[string]string),
 		root:  cfg.WikiDir,
 	}
-	s.indexHyphae(s.root)
-	log.Printf("Indexed %v hyphae\n", len(s.paths))
-	return s
+	Hs.indexHyphae(Hs.root)
+	log.Printf("Indexed %v hyphae\n", len(Hs.paths))
 }
 
 // hyphaName gets name of a hypha by stripping path to the hypha in `fullPath`

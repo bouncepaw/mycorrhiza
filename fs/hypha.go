@@ -23,6 +23,10 @@ type Hypha struct {
 	actual    *Revision            `json:"-"`
 }
 
+func (h *Hypha) TextPath() string {
+	return h.actual.TextPath
+}
+
 func (s *Storage) Open(name string) (*Hypha, error) {
 	h := &Hypha{
 		Exists:   true,
@@ -98,7 +102,11 @@ func (h *Hypha) NewestId() string {
 }
 
 func (h *Hypha) PlainLog(s string) {
-	log.Println(h.FullName, h.actual.Id, s)
+	if h.Exists {
+		log.Println(h.FullName, h.actual.Id, s)
+	} else {
+		log.Println("nonexistent", h.FullName, s)
+	}
 }
 
 func (h *Hypha) mimeTypeForActionRaw() string {
@@ -122,8 +130,7 @@ func (h *Hypha) asHtml() (string, error) {
 `
 	// What about using <figure>?
 	if h.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="/%s?action=getBinary&rev=%d" cla
-ss="page__amnt"/>`, rev.FullName, rev.Id)
+		ret += fmt.Sprintf(`<img src="/%s?action=binary&rev=%d" class="page__amnt"/>`, rev.FullName, rev.Id)
 	}
 
 	contents, err := ioutil.ReadFile(rev.TextPath)
@@ -162,9 +169,9 @@ func (h *Hypha) ActionRaw(w http.ResponseWriter) {
 	h.PlainLog("Serving raw text")
 }
 
-// ActionGetBinary is used with `?action=getBinary`.
+// ActionBinary is used with `?action=binary`.
 // It writes contents of binary content file.
-func (h *Hypha) ActionGetBinary(w http.ResponseWriter) {
+func (h *Hypha) ActionBinary(w http.ResponseWriter) {
 	fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
 	if err != nil {
 		log.Fatal(err)
@@ -189,4 +196,27 @@ func (h *Hypha) ActionZen(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(html))
 	h.PlainLog("Rendering zen")
+}
+
+// ActionView is used with `?action=view` or no action at all.
+// It renders the page, the layout and everything else.
+func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists func(string, string) string) {
+	var html string
+	var err error
+	if h.Exists {
+		html, err = h.asHtml()
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if h.Exists {
+		w.Write([]byte(renderExists(h.FullName, html)))
+	} else {
+		w.Write([]byte(renderNotExists(h.FullName, "")))
+	}
+	h.PlainLog("Rendering hypha view")
 }

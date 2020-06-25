@@ -11,6 +11,7 @@ import (
 	// "time"
 
 	"github.com/bouncepaw/mycorrhiza/fs"
+	"github.com/bouncepaw/mycorrhiza/render"
 	"github.com/gorilla/mux"
 )
 
@@ -19,7 +20,7 @@ import (
 // Boilerplate code present in many handlers. Good to have it.
 func HandlerBase(w http.ResponseWriter, rq *http.Request) (*fs.Hypha, bool) {
 	vars := mux.Vars(rq)
-	h, err := hs.Open(vars["hypha"])
+	h, err := fs.Hs.Open(vars["hypha"])
 	if err != nil {
 		log.Println(err)
 		return nil, false
@@ -40,10 +41,10 @@ func HandlerRaw(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func HandlerGetBinary(w http.ResponseWriter, rq *http.Request) {
-	log.Println("?action=getBinary")
+func HandlerBinary(w http.ResponseWriter, rq *http.Request) {
+	log.Println("?action=binary")
 	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionGetBinary(w)
+		h.ActionBinary(w)
 	}
 }
 
@@ -53,13 +54,13 @@ func HandlerZen(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-/*
 func HandlerView(w http.ResponseWriter, rq *http.Request) {
 	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionView(w, HyphaPage)
+		h.ActionView(w, render.HyphaPage, render.Hypha404)
 	}
 }
 
+/*
 func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
 	ActionEdit(vars["hypha"], w)

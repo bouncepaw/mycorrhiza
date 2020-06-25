@@ -22,8 +22,6 @@ func RevInMap(m map[string]string) string {
 	return "0"
 }
 
-var hs *fs.Storage
-
 func main() {
 	if len(os.Args) == 1 {
 		panic("Expected a root wiki pages directory")
@@ -36,15 +34,19 @@ func main() {
 	log.Println("Welcome to MycorrhizaWiki α")
 	cfg.InitConfig(wikiDir)
 	log.Println("Indexing hyphae...")
-	hs = fs.InitStorage()
+	fs.InitStorage()
 
 	// Start server code. See handlers.go for handlers' implementations.
 	r := mux.NewRouter()
 
-	r.Queries("action", "getBinary", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerGetBinary)
-	r.Queries("action", "getBinary").Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerGetBinary)
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+		http.ServeFile(w, rq, filepath.Join(filepath.Dir(cfg.WikiDir), "favicon.ico"))
+	})
+
+	r.Queries("action", "binary", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerBinary)
+	r.Queries("action", "binary").Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerBinary)
 
 	r.Queries("action", "raw", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerRaw)
@@ -56,12 +58,12 @@ func main() {
 	r.Queries("action", "zen").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerZen)
 
-		/*
-			r.Queries("action", "view", "rev", revQuery).Path(hyphaUrl).
-				HandlerFunc(HandlerView)
-			r.Queries("action", "view").Path(hyphaUrl).
-				HandlerFunc(HandlerView)
+	r.Queries("action", "view", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerView)
+	r.Queries("action", "view").Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerView)
 
+		/*
 			r.Queries("action", "edit").Path(hyphaUrl).
 				HandlerFunc(HandlerEdit)
 
@@ -69,7 +71,7 @@ func main() {
 				HandlerFunc(HandlerUpdate)
 		*/
 
-	// r.HandleFunc(hyphaUrl, HandlerView)
+	r.HandleFunc(cfg.HyphaUrl, HandlerView)
 
 	// Debug page that renders all hyphae.
 	// TODO: make it redirect to home page.
