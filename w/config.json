@@ -1,6 +1,6 @@
 {
 	"address": "127.0.0.1:1737", 
-	"theme": "default-light", 
+	"theme": "default-dark", 
 	"site-title": "🍄 MycorrhizaWiki", 
 	"title-templates": {
 		"edit-hypha": "Edit %s at MycorrhizaWiki", 

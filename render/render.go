@@ -26,6 +26,21 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
+func HyphaEdit(h *fs.Hypha) string {
+	page := map[string]string{
+		"Name":     h.FullName,
+		"Tags":     h.TagsJoined(),
+		"TextMime": h.TextMime(),
+		"Text":     h.TextContent(),
+	}
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
+		"Header":  renderFromString(h.FullName, "Hypha/edit/header.html"),
+		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
+	}
+	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
+}
+
 // Hypha404 returns 404 page for nonexistent page.
 func Hypha404(name, _ string) string {
 	return HyphaGeneric(name, name, "Hypha/view/404.html")

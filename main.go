@@ -63,10 +63,10 @@ func main() {
 	r.Queries("action", "view").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerView)
 
-		/*
-			r.Queries("action", "edit").Path(hyphaUrl).
-				HandlerFunc(HandlerEdit)
+	r.Queries("action", "edit").Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerEdit)
 
+		/*
 			r.Queries("action", "update").Path(hyphaUrl).Methods("POST").
 				HandlerFunc(HandlerUpdate)
 		*/

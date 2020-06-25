@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/gomarkdown/markdown"
 )
 
 type Hypha struct {
@@ -25,6 +25,32 @@ type Hypha struct {
 
 func (h *Hypha) TextPath() string {
 	return h.actual.TextPath
+}
+
+func (h *Hypha) TagsJoined() string {
+	if h.Exists {
+		return strings.Join(h.actual.Tags, ", ")
+	}
+	return ""
+}
+
+func (h *Hypha) TextMime() string {
+	if h.Exists {
+		return h.actual.TextMime
+	}
+	return "text/markdown"
+}
+
+func (h *Hypha) TextContent() string {
+	if h.Exists {
+		contents, err := ioutil.ReadFile(h.TextPath())
+		if err != nil {
+			log.Println("Could not read", h.FullName)
+			return "Error: could not hypha text content file. It is recommended to cancel editing. Please contact the wiki admin. If you are the admin, see the logs."
+		}
+		return string(contents)
+	}
+	return fmt.Sprintf(cfg.DescribeHyphaHerePattern, h.FullName)
 }
 
 func (s *Storage) Open(name string) (*Hypha, error) {
@@ -121,38 +147,6 @@ func (h *Hypha) mimeTypeForActionRaw() string {
 // During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data. (is it?)
 func (h *Hypha) hasBinaryData() bool {
 	return h.actual.BinaryMime != ""
-}
-
-func (h *Hypha) asHtml() (string, error) {
-	rev := h.actual
-	ret := `<article class="page">
-	<h1 class="page__title">` + rev.FullName + `</h1>
-`
-	// What about using <figure>?
-	if h.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="/%s?action=binary&rev=%d" class="page__amnt"/>`, rev.FullName, rev.Id)
-	}
-
-	contents, err := ioutil.ReadFile(rev.TextPath)
-	if err != nil {
-		log.Println("Failed to render", rev.FullName, ":", err)
-		return "", err
-	}
-
-	// TODO: support more markups.
-	// TODO: support mycorrhiza extensions like transclusion.
-	switch rev.TextMime {
-	case "text/markdown":
-		html := markdown.ToHTML(contents, nil, nil)
-		ret += string(html)
-	default:
-		ret += fmt.Sprintf(`<pre>%s</pre>`, contents)
-	}
-
-	ret += `
-</article>`
-
-	return ret, nil
 }
 
 // ActionRaw is used with `?action=raw`.

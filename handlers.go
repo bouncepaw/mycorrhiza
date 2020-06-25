@@ -29,8 +29,6 @@ func HandlerBase(w http.ResponseWriter, rq *http.Request) (*fs.Hypha, bool) {
 	if err != nil {
 		log.Println(err)
 	}
-
-	log.Println(*h)
 	return h, true
 }
 
@@ -60,13 +58,19 @@ func HandlerView(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-/*
 func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	ActionEdit(vars["hypha"], w)
+	h, err := fs.Hs.Open(vars["hypha"])
+	// How could this happen?
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	h.OnRevision("0")
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(render.HyphaEdit(h)))
 }
-
-*/
 
 /*
 // makeTagsSlice turns strings like `"foo,, bar,kek"` to slice of strings that represent tag names. Whitespace around commas is insignificant.

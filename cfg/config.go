@@ -16,9 +16,10 @@ const (
 )
 
 var (
-	WikiDir        string
-	TemplatesDir   string
-	configJsonPath string
+	DescribeHyphaHerePattern = "Describe %s here"
+	WikiDir                  string
+	TemplatesDir             string
+	configJsonPath           string
 
 	// Default values that can be overriden in config.json
 	Address           = "127.0.0.1:80"
