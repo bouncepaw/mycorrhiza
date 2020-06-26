@@ -66,6 +66,13 @@ func HyphaGeneric(name string, content, templatePath string) string {
 	return renderBase(renderFromString(content, templatePath), keys)
 }
 
+func HyphaUpdateOk(h *fs.Hypha) string {
+	data := map[string]string{
+		"Name": h.FullName,
+	}
+	return renderFromMap(data, "updateOk.html")
+}
+
 // renderBase collects and renders page from base template
 // Args:
 //   content: string or pre-rendered template
@@ -86,8 +93,7 @@ func renderBase(content string, keys map[string]string) string {
 // renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
 	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	h, _ := fs.Hs.Open(hyphPath)
-	h.OnRevision("0")
+	h := fs.Hs.Open(hyphPath).OnRevision("0")
 	tmpl, err := template.ParseFiles(h.TextPath())
 	if err != nil {
 		return err.Error()
@@ -102,8 +108,7 @@ func renderFromMap(data map[string]string, templatePath string) string {
 // renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
 	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	h, _ := fs.Hs.Open(hyphPath)
-	h.OnRevision("0")
+	h := fs.Hs.Open(hyphPath).OnRevision("0")
 	tmpl, err := template.ParseFiles(h.TextPath())
 	if err != nil {
 		return err.Error()

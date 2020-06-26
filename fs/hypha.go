@@ -7,9 +7,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 )
@@ -21,6 +23,22 @@ type Hypha struct {
 	Deleted   bool                 `json:"deleted"`
 	Revisions map[string]*Revision `json:"revisions"`
 	actual    *Revision            `json:"-"`
+	Invalid   bool
+	Err       error
+}
+
+func (h *Hypha) Invalidate(err error) *Hypha {
+	h.Invalid = true
+	h.Err = err
+	return h
+}
+
+func (h *Hypha) MetaJsonPath() string {
+	return filepath.Join(h.Path(), "meta.json")
+}
+
+func (h *Hypha) Path() string {
+	return filepath.Join(cfg.WikiDir, h.FullName)
 }
 
 func (h *Hypha) TextPath() string {
@@ -53,7 +71,7 @@ func (h *Hypha) TextContent() string {
 	return fmt.Sprintf(cfg.DescribeHyphaHerePattern, h.FullName)
 }
 
-func (s *Storage) Open(name string) (*Hypha, error) {
+func (s *Storage) Open(name string) *Hypha {
 	h := &Hypha{
 		Exists:   true,
 		FullName: name,
@@ -67,14 +85,12 @@ func (s *Storage) Open(name string) (*Hypha, error) {
 	} else {
 		metaJsonText, err := ioutil.ReadFile(filepath.Join(path, "meta.json"))
 		if err != nil {
-			log.Fatal(err)
-			return nil, err
+			return h.Invalidate(err)
 		}
 
 		err = json.Unmarshal(metaJsonText, &h)
 		if err != nil {
-			log.Fatal(err)
-			return nil, err
+			return h.Invalidate(err)
 		}
 		// fill in rooted paths to content files and full names
 		for idStr, rev := range h.Revisions {
@@ -86,10 +102,9 @@ func (s *Storage) Open(name string) (*Hypha, error) {
 			rev.TextPath = filepath.Join(path, rev.TextName)
 		}
 
-		err = h.OnRevision("0")
-		return h, err
+		return h.OnRevision("0")
 	}
-	return h, nil
+	return h
 }
 
 func (h *Hypha) parentName() string {
@@ -101,9 +116,12 @@ func (h *Hypha) metaJsonPath() string {
 }
 
 // OnRevision tries to change to a revision specified by `id`.
-func (h *Hypha) OnRevision(id string) error {
+func (h *Hypha) OnRevision(id string) *Hypha {
+	if h.Invalid || !h.Exists {
+		return h
+	}
 	if len(h.Revisions) == 0 {
-		return errors.New("This hypha has no revisions")
+		return h.Invalidate(errors.New("This hypha has no revisions"))
 	}
 	if id == "0" {
 		id = h.NewestId()
@@ -112,7 +130,7 @@ func (h *Hypha) OnRevision(id string) error {
 	if rev, _ := h.Revisions[id]; true {
 		h.actual = rev
 	}
-	return nil
+	return h
 }
 
 // NewestId finds the largest id among all revisions.
@@ -213,4 +231,148 @@ func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists 
 		w.Write([]byte(renderNotExists(h.FullName, "")))
 	}
 	h.PlainLog("Rendering hypha view")
+}
+
+// CreateDirIfNeeded creates directory where the hypha must reside if needed.
+// It is not needed if the dir already exists.
+func (h *Hypha) CreateDirIfNeeded() *Hypha {
+	if h.Invalid {
+		return h
+	}
+	// os.MkdirAll created dir if it is not there. Basically, checks it for us.
+	err := os.MkdirAll(filepath.Join(cfg.WikiDir, h.FullName), os.ModePerm)
+	if err != nil {
+		h.Invalidate(err)
+	}
+	return h
+}
+
+// makeTagsSlice turns strings like `"foo,, bar,kek"` to slice of strings that represent tag names. Whitespace around commas is insignificant.
+// Expected output for string above: []string{"foo", "bar", "kek"}
+func makeTagsSlice(responseTagsString string) (ret []string) {
+	for _, tag := range strings.Split(responseTagsString, ",") {
+		if trimmed := strings.TrimSpace(tag); "" == trimmed {
+			ret = append(ret, trimmed)
+		}
+	}
+	return ret
+}
+
+// revisionFromHttpData creates a new revison for hypha `h`. All data is fetched from `rq`, except for BinaryMime and BinaryPath which require additional processing. The revision is inserted for you. You'll have to pop it out if there is an error.
+func (h *Hypha) AddRevisionFromHttpData(rq *http.Request) *Hypha {
+	if h.Invalid {
+		return h
+	}
+	id := 1
+	if h.Exists {
+		id = h.actual.Id + 1
+	}
+	log.Printf("Creating revision %d from http data", id)
+	rev := &Revision{
+		Id:        id,
+		FullName:  h.FullName,
+		ShortName: filepath.Base(h.FullName),
+		Tags:      makeTagsSlice(rq.PostFormValue("tags")),
+		Comment:   rq.PostFormValue("comment"),
+		Author:    rq.PostFormValue("author"),
+		Time:      int(time.Now().Unix()),
+		TextMime:  rq.PostFormValue("text_mime"),
+		// Fields left: BinaryMime, BinaryPath, BinaryName, TextName, TextPath
+	}
+	rev.generateTextFilename() // TextName is set now
+	rev.TextPath = filepath.Join(h.Path(), rev.TextName)
+	return h.AddRevision(rev)
+}
+
+func (h *Hypha) AddRevision(rev *Revision) *Hypha {
+	if h.Invalid {
+		return h
+	}
+	h.Revisions[strconv.Itoa(rev.Id)] = rev
+	h.actual = rev
+	return h
+}
+
+// WriteTextFileFromHttpData tries to fetch text content from `rq` for revision `rev` and write it to a corresponding text file. It used in `HandlerUpdate`.
+func (h *Hypha) WriteTextFileFromHttpData(rq *http.Request) *Hypha {
+	if h.Invalid {
+		return h
+	}
+	data := []byte(rq.PostFormValue("text"))
+	err := ioutil.WriteFile(h.TextPath(), data, 0644)
+	if err != nil {
+		log.Println("Failed to write", len(data), "bytes to", h.TextPath())
+		h.Invalidate(err)
+	}
+	return h
+}
+
+// WriteBinaryFileFromHttpData tries to fetch binary content from `rq` for revision `newRev` and write it to a corresponding binary file. If there is no content, it is taken from a previous revision, if there is any.
+func (h *Hypha) WriteBinaryFileFromHttpData(rq *http.Request) *Hypha {
+	if h.Invalid {
+		return h
+	}
+	// 10 MB file size limit
+	rq.ParseMultipartForm(10 << 20)
+	// Read file
+	file, handler, err := rq.FormFile("binary")
+	if file != nil {
+		defer file.Close()
+	}
+	// If file is not passed:
+	if err != nil {
+		// Let's hope there are no other errors 🙏
+		// TODO: actually check if there any other errors
+		log.Println("No binary data passed for", h.FullName)
+		// It is expected there is at least one revision
+		if len(h.Revisions) > 1 {
+			prevRev := h.Revisions[strconv.Itoa(h.actual.Id-1)]
+			h.actual.BinaryMime = prevRev.BinaryMime
+			h.actual.BinaryPath = prevRev.BinaryPath
+			h.actual.BinaryName = prevRev.BinaryName
+			log.Println("Set previous revision's binary data")
+		}
+		return h
+	}
+	// If file is passed:
+	h.actual.BinaryMime = handler.Header.Get("Content-Type")
+	h.actual.generateBinaryFilename()
+	h.actual.BinaryPath = filepath.Join(h.Path(), h.actual.BinaryName)
+
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return h.Invalidate(err)
+	}
+	log.Println("Got", len(data), "of binary data for", h.FullName)
+	err = ioutil.WriteFile(h.actual.BinaryPath, data, 0644)
+	if err != nil {
+		return h.Invalidate(err)
+	}
+	log.Println("Written", len(data), "of binary data for", h.FullName)
+	return h
+}
+
+// SaveJson dumps the hypha's metadata to `meta.json` file.
+func (h *Hypha) SaveJson() *Hypha {
+	if h.Invalid {
+		return h
+	}
+	data, err := json.MarshalIndent(h, "", "\t")
+	if err != nil {
+		return h.Invalidate(err)
+	}
+	err = ioutil.WriteFile(h.MetaJsonPath(), data, 0644)
+	if err != nil {
+		return h.Invalidate(err)
+	}
+	log.Println("Saved JSON data of", h.FullName)
+	return h
+}
+
+// Store adds `h` to the `Hs` if it is not already there
+func (h *Hypha) Store() *Hypha {
+	if !h.Invalid {
+		Hs.paths[h.FullName] = h.Path()
+	}
+	return h
 }

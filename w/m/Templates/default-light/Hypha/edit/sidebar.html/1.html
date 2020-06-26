@@ -1,19 +1,19 @@
 <div style=""><h4>Text MIME-type</h4>
 <p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
-<input type="text" name="text_mime" value="{{ .TextMime }}"/>
+<input type="text" name="text_mime" value="{{ .TextMime }}" form="edit-form"/>
 
 <h4>Revision comment</h4>
 <p>Please make your comment helpful</p>
-<input type="text" name="comment" value="Update {{ .Name }}"/>
+<input type="text" name="comment" value="Update {{ .Name }}" form="edit-form"/>
 
 <h4>Edit tags</h4>
 <p>Tags are separated by commas, whitespace is ignored</p>
-<input type="text" name="tags" value="{{ .Tags }}"/>
+<input type="text" name="tags" value="{{ .Tags }}" form="edit-form"/>
 
 <h4>Upload file</h4>
 <p>If this hypha has a file like that, the text above is meant to be a description of it</p>
-<input type="file" name="binary"/>
+<input type="file" name="binary" form="edit-form"/>
 
 
-<p><input type="submit" value="update"/></p>
+<p><input type="submit" value="update" form="edit-form"/></p>
 </div>
