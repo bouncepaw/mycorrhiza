@@ -2,18 +2,35 @@
 	<form class="naviwrapper__edit edit-box"
 	      method="POST"
 	      enctype="multipart/form-data"
-	      action="?action=update"
-	      id="edit-form">
+	      action="?action=update">
+		<div class="naviwrapper__buttons">
+			<input type="submit" value="update"/>
+		</div>
 
 		<div class="edit-box__left">
 			<h4>Edit box</h4>
 			<!-- It is important that there is no indent ↓ -->
 			<textarea class="edit-box__text" name="text" cols="80" rows="25">
-{{ .Text }}</textarea>
+{{ .Text }}
+			</textarea>
 
 			<h4>Upload file</h4>
 			<p>If this hypha has a file like that, the text above is meant to be a description of it</p>
 			<input type="file" name="binary"/>
+		</div>
+
+		<div class="edit-box__right">
+			<h4>Text MIME-type</h4>
+			<p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
+			<input type="text" name="text_mime" value="{{ .TextMime }}"/>
+
+			<h4>Revision comment</h4>
+			<p>Please make your comment helpful</p>
+			<input type="text" name="comment" value="Update {{ .Name }}"/>
+
+			<h4>Edit tags</h4>
+			<p>Tags are separated by commas, whitespace is ignored</p>
+			<input type="text" name="tags" value="{{ .Tags }}"/>
 		</div>
 	</form>
 </div>
