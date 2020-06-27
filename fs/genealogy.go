@@ -1,5 +1,4 @@
-/* Genealogy is all about relationships between hyphae.*/
-package main
+package fs
 
 import (
 	"fmt"
@@ -9,18 +8,7 @@ import (
 	"strings"
 )
 
-// setRelations fills in all children names based on what hyphae call their parents.
-func setRelations(hyphae map[string]*Hypha) {
-	for name, h := range hyphae {
-		if _, ok := hyphae[h.parentName]; ok && h.parentName != "." {
-			hyphae[h.parentName].ChildrenNames = append(hyphae[h.parentName].ChildrenNames, name)
-		}
-	}
-}
-
-// AddChild adds a name to the list of children names of the hypha.
-func (h *Hypha) AddChild(childName string) {
-	h.ChildrenNames = append(h.ChildrenNames, childName)
+func (s *Storage) RenderHypha(h *Hypha) {
 }
 
 // If Name == "", the tree is empty.
@@ -35,11 +23,10 @@ type Tree struct {
 // GetTree generates a Tree for the given hypha name.
 // It can also generate trees for non-existent hyphae, that's why we use `name string` instead of making it a method on `Hypha`.
 // In `root` is `false`, siblings will not be fetched.
-// Parameter `limit` is unused now but it is meant to limit how many subhyphae can be shown.
-func GetTree(name string, root bool, limit ...int) *Tree {
+func (s *Storage) GetTree(name string, root bool) *Tree {
 	t := &Tree{Name: name, Root: root}
-	for hyphaName, _ := range hyphae {
-		t.compareNamesAndAppend(hyphaName)
+	for hyphaName, _ := range s.paths {
+		s.compareNamesAndAppend(t, hyphaName)
 	}
 	sort.Slice(t.Ancestors, func(i, j int) bool {
 		return strings.Count(t.Ancestors[i], "/") < strings.Count(t.Ancestors[j], "/")
@@ -55,7 +42,7 @@ func GetTree(name string, root bool, limit ...int) *Tree {
 }
 
 // Compares names appends name2 to an array of `t`:
-func (t *Tree) compareNamesAndAppend(name2 string) {
+func (s *Storage) compareNamesAndAppend(t *Tree, name2 string) {
 	switch {
 	case t.Name == name2:
 	case strings.HasPrefix(t.Name, name2):
@@ -64,11 +51,11 @@ func (t *Tree) compareNamesAndAppend(name2 string) {
 		(filepath.Dir(t.Name) == filepath.Dir(name2))):
 		t.Siblings = append(t.Siblings, name2)
 	case strings.HasPrefix(name2, t.Name):
-		t.Descendants = append(t.Descendants, GetTree(name2, false))
+		t.Descendants = append(t.Descendants, s.GetTree(name2, false))
 	}
 }
 
-// AsHtml returns HTML representation of a tree.
+// asHtml returns HTML representation of a tree.
 // It recursively itself on the tree's children.
 // TODO: redo with templates. I'm not in mood for it now.
 func (t *Tree) AsHtml() (html string) {
@@ -78,16 +65,13 @@ func (t *Tree) AsHtml() (html string) {
 	html += `<ul class="navitree__node">`
 	if t.Root {
 		for _, ancestor := range t.Ancestors {
-			html += navitreeEntry(ancestor)
+			html += navitreeEntry(ancestor, "navitree__ancestor")
 		}
-	}
-	html += navitreeEntry(t.Name)
-
-	if t.Root {
 		for _, siblingName := range t.Siblings {
-			html += navitreeEntry(siblingName)
+			html += navitreeEntry(siblingName, "navitree__sibling")
 		}
 	}
+	html += navitreeEntry(t.Name, "navitree__name")
 
 	for _, subtree := range t.Descendants {
 		html += subtree.AsHtml()
@@ -99,9 +83,9 @@ func (t *Tree) AsHtml() (html string) {
 
 // navitreeEntry is a small utility function that makes generating html easier.
 // Someone please redo it in templates.
-func navitreeEntry(name string) string {
+func navitreeEntry(name, class string) string {
 	return fmt.Sprintf(`<li class="navitree__entry">
-	<a class="navitree__link" href="/%s">%s</a>
+	<a class="navitree__link %s" href="/%s">%s</a>
 </li>
-`, name, filepath.Base(name))
+`, class, name, filepath.Base(name))
 }

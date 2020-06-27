@@ -8,10 +8,18 @@ import (
 	"path/filepath"
 )
 
+const (
+	HyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
+	HyphaUrl        = `/{hypha:` + HyphaPattern + `}`
+	RevisionPattern = `[\d]+`
+	RevQuery        = `{rev:` + RevisionPattern + `}`
+)
+
 var (
-	WikiDir        string
-	TemplatesDir   string
-	configJsonPath string
+	DescribeHyphaHerePattern = "Describe %s here"
+	WikiDir                  string
+	TemplatesDir             string
+	configJsonPath           string
 
 	// Default values that can be overriden in config.json
 	Address           = "127.0.0.1:80"

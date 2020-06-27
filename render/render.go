@@ -1,4 +1,4 @@
-package main
+package render
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/fs"
 )
 
 // EditHyphaPage returns HTML page of hypha editor.
@@ -25,21 +26,36 @@ func EditHyphaPage(name, textMime, content, tags string) string {
 	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
 }
 
+func HyphaEdit(h *fs.Hypha) string {
+	page := map[string]string{
+		"Name":     h.FullName,
+		"Tags":     h.TagsJoined(),
+		"TextMime": h.TextMime(),
+		"Text":     h.TextContent(),
+	}
+	keys := map[string]string{
+		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
+		"Header":  renderFromString(h.FullName, "Hypha/edit/header.html"),
+		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
+	}
+	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
+}
+
 // Hypha404 returns 404 page for nonexistent page.
-func Hypha404(name string) string {
+func Hypha404(name, _ string) string {
 	return HyphaGeneric(name, name, "Hypha/view/404.html")
 }
 
 // HyphaPage returns HTML page of hypha viewer.
-func HyphaPage(rev Revision, content string) string {
-	return HyphaGeneric(rev.FullName, content, "Hypha/view/index.html")
+func HyphaPage(name, content string) string {
+	return HyphaGeneric(name, content, "Hypha/view/index.html")
 }
 
 // HyphaGeneric is used when building renderers for all types of hypha pages
 func HyphaGeneric(name string, content, templatePath string) string {
 	var sidebar string
 	if aside := renderFromMap(map[string]string{
-		"Tree": GetTree(name, true).AsHtml(),
+		"Tree": fs.Hs.GetTree(name, true).AsHtml(),
 	}, "Hypha/view/sidebar.html"); aside != "" {
 		sidebar = aside
 	}
@@ -48,6 +64,13 @@ func HyphaGeneric(name string, content, templatePath string) string {
 		"Sidebar": sidebar,
 	}
 	return renderBase(renderFromString(content, templatePath), keys)
+}
+
+func HyphaUpdateOk(h *fs.Hypha) string {
+	data := map[string]string{
+		"Name": h.FullName,
+	}
+	return renderFromMap(data, "updateOk.html")
 }
 
 // renderBase collects and renders page from base template
@@ -70,8 +93,8 @@ func renderBase(content string, keys map[string]string) string {
 // renderFromMap applies `data` map to template in `templatePath` and returns the result.
 func renderFromMap(data map[string]string, templatePath string) string {
 	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	rev, _ := GetRevision(hyphPath, "0")
-	tmpl, err := template.ParseFiles(rev.TextPath)
+	h := fs.Hs.Open(hyphPath).OnRevision("0")
+	tmpl, err := template.ParseFiles(h.TextPath())
 	if err != nil {
 		return err.Error()
 	}
@@ -85,8 +108,8 @@ func renderFromMap(data map[string]string, templatePath string) string {
 // renderFromMap applies `data` string to template in `templatePath` and returns the result.
 func renderFromString(data string, templatePath string) string {
 	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	rev, _ := GetRevision(hyphPath, "0")
-	tmpl, err := template.ParseFiles(rev.TextPath)
+	h := fs.Hs.Open(hyphPath).OnRevision("0")
+	tmpl, err := template.ParseFiles(h.TextPath())
 	if err != nil {
 		return err.Error()
 	}

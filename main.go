@@ -9,24 +9,9 @@ import (
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/fs"
 	"github.com/gorilla/mux"
 )
-
-// GetRevision finds revision with id `id` of `hyphaName` in `hyphae`.
-// If `id` is `"0"`, it means the last revision.
-// If no such revision is found, last return value is false.
-func GetRevision(hyphaName string, id string) (Revision, bool) {
-	log.Println("Getting hypha", hyphaName, id)
-	if hypha, ok := hyphae[hyphaName]; ok {
-		if id == "0" {
-			id = hypha.NewestRevision()
-		}
-		if rev, ok := hypha.Revisions[id]; ok {
-			return *rev, true
-		}
-	}
-	return Revision{}, false
-}
 
 // RevInMap finds value of `rev` (the one from URL queries like) in the passed map that is usually got from `mux.Vars(*http.Request)`.
 // If there is no `rev`, return "0".
@@ -36,9 +21,6 @@ func RevInMap(m map[string]string) string {
 	}
 	return "0"
 }
-
-// `hyphae` is a map with all hyphae. Many functions use it.
-var hyphae map[string]*Hypha
 
 func main() {
 	if len(os.Args) == 1 {
@@ -52,51 +34,42 @@ func main() {
 	log.Println("Welcome to MycorrhizaWiki α")
 	cfg.InitConfig(wikiDir)
 	log.Println("Indexing hyphae...")
-	hyphae = recurFindHyphae(wikiDir)
-	log.Println("Indexed", len(hyphae), "hyphae. Ready to accept requests.")
+	fs.InitStorage()
 
 	// Start server code. See handlers.go for handlers' implementations.
 	r := mux.NewRouter()
 
-	r.Queries("action", "getBinary", "rev", revQuery).Path(hyphaUrl).
-		HandlerFunc(HandlerGetBinary)
-	r.Queries("action", "getBinary").Path(hyphaUrl).
-		HandlerFunc(HandlerGetBinary)
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+		http.ServeFile(w, rq, filepath.Join(filepath.Dir(cfg.WikiDir), "favicon.ico"))
+	})
 
-	r.Queries("action", "raw", "rev", revQuery).Path(hyphaUrl).
+	r.Queries("action", "binary", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerBinary)
+	r.Queries("action", "binary").Path(cfg.HyphaUrl).
+		HandlerFunc(HandlerBinary)
+
+	r.Queries("action", "raw", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerRaw)
-	r.Queries("action", "raw").Path(hyphaUrl).
+	r.Queries("action", "raw").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerRaw)
 
-	r.Queries("action", "zen", "rev", revQuery).Path(hyphaUrl).
+	r.Queries("action", "zen", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerZen)
-	r.Queries("action", "zen").Path(hyphaUrl).
+	r.Queries("action", "zen").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerZen)
 
-	r.Queries("action", "view", "rev", revQuery).Path(hyphaUrl).
+	r.Queries("action", "view", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerView)
-	r.Queries("action", "view").Path(hyphaUrl).
+	r.Queries("action", "view").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerView)
 
-	r.Queries("action", "history").Path(hyphaUrl).
-		HandlerFunc(HandlerHistory)
-
-	r.Queries("action", "edit").Path(hyphaUrl).
+	r.Queries("action", "edit").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerEdit)
 
-	r.Queries("action", "rewind", "rev", revQuery).Path(hyphaUrl).
-		HandlerFunc(HandlerRewind)
-
-	r.Queries("action", "delete").Path(hyphaUrl).
-		HandlerFunc(HandlerDelete)
-
-	r.Queries("action", "rename", "to", hyphaPattern).Path(hyphaUrl).
-		HandlerFunc(HandlerRename)
-
-	r.Queries("action", "update").Path(hyphaUrl).Methods("POST").
+	r.Queries("action", "update").Path(cfg.HyphaUrl).Methods("POST").
 		HandlerFunc(HandlerUpdate)
 
-	r.HandleFunc(hyphaUrl, HandlerView)
+	r.HandleFunc(cfg.HyphaUrl, HandlerView)
 
 	// Debug page that renders all hyphae.
 	// TODO: make it redirect to home page.
@@ -104,14 +77,10 @@ func main() {
 	r.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		for _, h := range hyphae {
-			log.Println("Rendering latest revision of hypha", h.FullName)
-			html, err := h.AsHtml("0", w)
-			if err != nil {
-				fmt.Fprintln(w, err)
-			}
-			fmt.Fprintln(w, html)
-		}
+		fmt.Fprintln(w, `
+<p>Check out <a href="/Fruit">Fruit</a> maybe.</p>
+<p><strong>TODO:</strong> make this page usable</p>
+		`)
 	})
 
 	http.Handle("/", r)
