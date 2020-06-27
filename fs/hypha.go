@@ -3,7 +3,6 @@ package fs
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -31,44 +30,6 @@ func (h *Hypha) Invalidate(err error) *Hypha {
 	h.Invalid = true
 	h.Err = err
 	return h
-}
-
-func (h *Hypha) MetaJsonPath() string {
-	return filepath.Join(h.Path(), "meta.json")
-}
-
-func (h *Hypha) Path() string {
-	return filepath.Join(cfg.WikiDir, h.FullName)
-}
-
-func (h *Hypha) TextPath() string {
-	return h.actual.TextPath
-}
-
-func (h *Hypha) TagsJoined() string {
-	if h.Exists {
-		return strings.Join(h.actual.Tags, ", ")
-	}
-	return ""
-}
-
-func (h *Hypha) TextMime() string {
-	if h.Exists {
-		return h.actual.TextMime
-	}
-	return "text/markdown"
-}
-
-func (h *Hypha) TextContent() string {
-	if h.Exists {
-		contents, err := ioutil.ReadFile(h.TextPath())
-		if err != nil {
-			log.Println("Could not read", h.FullName)
-			return "Error: could not hypha text content file. It is recommended to cancel editing. Please contact the wiki admin. If you are the admin, see the logs."
-		}
-		return string(contents)
-	}
-	return fmt.Sprintf(cfg.DescribeHyphaHerePattern, h.FullName)
 }
 
 func (s *Storage) Open(name string) *Hypha {
@@ -107,14 +68,6 @@ func (s *Storage) Open(name string) *Hypha {
 	return h
 }
 
-func (h *Hypha) parentName() string {
-	return filepath.Dir(h.FullName)
-}
-
-func (h *Hypha) metaJsonPath() string {
-	return filepath.Join(cfg.WikiDir, h.FullName, "meta.json")
-}
-
 // OnRevision tries to change to a revision specified by `id`.
 func (h *Hypha) OnRevision(id string) *Hypha {
 	if h.Invalid || !h.Exists {
@@ -133,18 +86,6 @@ func (h *Hypha) OnRevision(id string) *Hypha {
 	return h
 }
 
-// NewestId finds the largest id among all revisions.
-func (h *Hypha) NewestId() string {
-	var largest int
-	for k, _ := range h.Revisions {
-		id, _ := strconv.Atoi(k)
-		if id > largest {
-			largest = id
-		}
-	}
-	return strconv.Itoa(largest)
-}
-
 func (h *Hypha) PlainLog(s string) {
 	if h.Exists {
 		log.Println(h.FullName, h.actual.Id, s)
@@ -153,74 +94,74 @@ func (h *Hypha) PlainLog(s string) {
 	}
 }
 
-func (h *Hypha) mimeTypeForActionRaw() string {
-	// If text mime type is text/html, it is not good as it will be rendered.
-	if h.actual.TextMime == "text/html" {
-		return "text/plain"
+func (h *Hypha) LogSuccMaybe(succMsg string) *Hypha {
+	if h.Invalid {
+		h.PlainLog(h.Err.Error())
+	} else {
+		h.PlainLog(succMsg)
 	}
-	return h.actual.TextMime
-}
-
-// hasBinaryData returns true if the revision has any binary data associated.
-// During initialisation, it is guaranteed that r.BinaryMime is set to "" if the revision has no binary data. (is it?)
-func (h *Hypha) hasBinaryData() bool {
-	return h.actual.BinaryMime != ""
+	return h
 }
 
 // ActionRaw is used with `?action=raw`.
 // It writes text content of the revision without any parsing or rendering.
-func (h *Hypha) ActionRaw(w http.ResponseWriter) {
+func (h *Hypha) ActionRaw(w http.ResponseWriter) *Hypha {
+	if h.Invalid {
+		return h
+	}
 	fileContents, err := ioutil.ReadFile(h.actual.TextPath)
 	if err != nil {
-		log.Fatal(err)
-		return
+		return h.Invalidate(err)
 	}
 	w.Header().Set("Content-Type", h.mimeTypeForActionRaw())
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
-	h.PlainLog("Serving raw text")
+	return h
 }
 
 // ActionBinary is used with `?action=binary`.
 // It writes contents of binary content file.
-func (h *Hypha) ActionBinary(w http.ResponseWriter) {
+func (h *Hypha) ActionBinary(w http.ResponseWriter) *Hypha {
+	if h.Invalid {
+		return h
+	}
 	fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
 	if err != nil {
-		log.Fatal(err)
-		return
+		return h.Invalidate(err)
 	}
 	w.Header().Set("Content-Type", h.actual.BinaryMime)
 	w.WriteHeader(http.StatusOK)
 	w.Write(fileContents)
-	h.PlainLog("Serving raw text")
+	return h
 }
 
 // ActionZen is used with `?action=zen`.
 // It renders the hypha but without any layout or styles. Pure. Zen.
-func (h *Hypha) ActionZen(w http.ResponseWriter) {
+func (h *Hypha) ActionZen(w http.ResponseWriter) *Hypha {
+	if h.Invalid {
+		return h
+	}
 	html, err := h.asHtml()
 	if err != nil {
-		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return h.Invalidate(err)
 	}
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(html))
-	h.PlainLog("Rendering zen")
+	return h
 }
 
 // ActionView is used with `?action=view` or no action at all.
 // It renders the page, the layout and everything else.
-func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists func(string, string) string) {
+func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists func(string, string) string) *Hypha {
 	var html string
 	var err error
 	if h.Exists {
 		html, err = h.asHtml()
 		if err != nil {
-			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
-			return
+			return h.Invalidate(err)
 		}
 	}
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
@@ -230,7 +171,7 @@ func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists 
 	} else {
 		w.Write([]byte(renderNotExists(h.FullName, "")))
 	}
-	h.PlainLog("Rendering hypha view")
+	return h
 }
 
 // CreateDirIfNeeded creates directory where the hypha must reside if needed.

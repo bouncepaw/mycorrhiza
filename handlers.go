@@ -2,13 +2,7 @@ package main
 
 import (
 	"log"
-	// "io/ioutil"
-	// "log"
 	"net/http"
-	// "path/filepath"
-	// "strconv"
-	// "strings"
-	// "time"
 
 	"github.com/bouncepaw/mycorrhiza/fs"
 	"github.com/bouncepaw/mycorrhiza/render"
@@ -18,40 +12,31 @@ import (
 // There are handlers below. See main() for their usage.
 
 // Boilerplate code present in many handlers. Good to have it.
-func HandlerBase(w http.ResponseWriter, rq *http.Request) (*fs.Hypha, bool) {
+func HandlerBase(w http.ResponseWriter, rq *http.Request) *fs.Hypha {
 	vars := mux.Vars(rq)
-	h := fs.Hs.Open(vars["hypha"]).OnRevision(RevInMap(vars))
-	if h.Invalid {
-		log.Println(h.Err)
-		return h, false
-	}
-	return h, true
+	return fs.Hs.Open(vars["hypha"]).OnRevision(RevInMap(vars))
 }
 
 func HandlerRaw(w http.ResponseWriter, rq *http.Request) {
 	log.Println("?action=raw")
-	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionRaw(w)
-	}
+	HandlerBase(w, rq).ActionRaw(w).LogSuccMaybe("Serving raw text")
 }
 
 func HandlerBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println("?action=binary")
-	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionBinary(w)
-	}
+	HandlerBase(w, rq).ActionBinary(w).LogSuccMaybe("Serving binary data")
 }
 
 func HandlerZen(w http.ResponseWriter, rq *http.Request) {
-	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionZen(w)
-	}
+	log.Println("?action=zen")
+	HandlerBase(w, rq).ActionZen(w).LogSuccMaybe("Rendering zen")
 }
 
 func HandlerView(w http.ResponseWriter, rq *http.Request) {
-	if h, ok := HandlerBase(w, rq); ok {
-		h.ActionView(w, render.HyphaPage, render.Hypha404)
-	}
+	log.Println("?action=view")
+	HandlerBase(w, rq).
+		ActionView(w, render.HyphaPage, render.Hypha404).
+		LogSuccMaybe("Rendering hypha view")
 }
 
 func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
@@ -72,14 +57,12 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 		WriteTextFileFromHttpData(rq).
 		WriteBinaryFileFromHttpData(rq).
 		SaveJson().
-		Store()
+		Store().
+		LogSuccMaybe("Saved changes")
 
-	if h.Invalid {
-		log.Println(h.Err)
-		return
+	if !h.Invalid {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Write([]byte(render.HyphaUpdateOk(h)))
 	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte(render.HyphaUpdateOk(h)))
 }
