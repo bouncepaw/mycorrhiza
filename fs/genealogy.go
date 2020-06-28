@@ -70,8 +70,10 @@ func (t *Tree) AsHtml() (html string) {
 		for _, siblingName := range t.Siblings {
 			html += navitreeEntry(siblingName, "navitree__sibling")
 		}
+		html += navitreeEntry(t.Name, "navitree__pagename")
+	} else {
+		html += navitreeEntry(t.Name, "navitree__name")
 	}
-	html += navitreeEntry(t.Name, "navitree__name")
 
 	for _, subtree := range t.Descendants {
 		html += subtree.AsHtml()
@@ -84,8 +86,8 @@ func (t *Tree) AsHtml() (html string) {
 // navitreeEntry is a small utility function that makes generating html easier.
 // Someone please redo it in templates.
 func navitreeEntry(name, class string) string {
-	return fmt.Sprintf(`<li class="navitree__entry">
-	<a class="navitree__link %s" href="/%s">%s</a>
+	return fmt.Sprintf(`<li class="navitree__entry %s">
+	<a class="navitree__link" href="/%s">%s</a>
 </li>
 `, class, name, filepath.Base(name))
 }
