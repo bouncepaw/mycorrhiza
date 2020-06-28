@@ -10,74 +10,52 @@ import (
 	"github.com/bouncepaw/mycorrhiza/fs"
 )
 
-// EditHyphaPage returns HTML page of hypha editor.
-func EditHyphaPage(name, textMime, content, tags string) string {
-	page := map[string]string{
-		"Text":     content,
-		"TextMime": textMime,
-		"Name":     name,
-		"Tags":     tags,
-	}
-	keys := map[string]string{
-		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, name),
-		"Header":  renderFromString(name, "Hypha/edit/header.html"),
-		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
-	}
-	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
-}
-
-func HyphaEdit(h *fs.Hypha) string {
-	page := map[string]string{
+// HyphaEdit renders hypha editor.
+func HyphaEdit(h *fs.Hypha) []byte { //
+	hyphaData := map[string]string{
 		"Name":     h.FullName,
 		"Tags":     h.TagsJoined(),
 		"TextMime": h.TextMime(),
 		"Text":     h.TextContent(),
 	}
-	keys := map[string]string{
-		"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
-		"Header":  renderFromString(h.FullName, "Hypha/edit/header.html"),
-		"Sidebar": renderFromMap(page, "Hypha/edit/sidebar.html"),
-	}
-	return renderBase(renderFromMap(page, "Hypha/edit/index.html"), keys)
+	return layout("edit/index").
+		withMap(hyphaData).
+		wrapInBase(map[string]string{
+			"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
+			"Header":  layout("edit/header").withString(h.FullName).String(),
+			"Sidebar": layout("edit/sidebar").withMap(hyphaData).String(),
+		})
 }
 
-// Hypha404 returns 404 page for nonexistent page.
-func Hypha404(name, _ string) string {
-	return HyphaGeneric(name, name, "Hypha/view/404.html")
+// HyphaUpdateOk is used to inform that update was successful.
+func HyphaUpdateOk(h *fs.Hypha) []byte { //
+	return layout("updateOk").
+		withMap(map[string]string{"Name": h.FullName}).
+		Bytes()
 }
 
-// HyphaPage returns HTML page of hypha viewer.
-func HyphaPage(name, content string) string {
-	return HyphaGeneric(name, content, "Hypha/view/index.html")
+// Hypha404 renders 404 page for nonexistent page.
+func Hypha404(name, _ string) []byte {
+	return hyphaGeneric(name, name, "view/404")
 }
 
-// HyphaGeneric is used when building renderers for all types of hypha pages
-func HyphaGeneric(name string, content, templatePath string) string {
-	var sidebar string
-	if aside := renderFromMap(map[string]string{
-		"Tree": fs.Hs.GetTree(name, true).AsHtml(),
-	}, "Hypha/view/sidebar.html"); aside != "" {
-		sidebar = aside
-	}
-	keys := map[string]string{
-		"Title":   fmt.Sprintf(cfg.TitleTemplate, name),
-		"Sidebar": sidebar,
-	}
-	return renderBase(renderFromString(content, templatePath), keys)
+// HyphaPage renders hypha viewer.
+func HyphaPage(name, content string) []byte {
+	return hyphaGeneric(name, content, "view/index")
 }
 
-func HyphaUpdateOk(h *fs.Hypha) string {
-	data := map[string]string{
-		"Name": h.FullName,
-	}
-	return renderFromMap(data, "updateOk.html")
+// hyphaGeneric is used when building renderers for all types of hypha pages
+func hyphaGeneric(name, content, templateName string) []byte {
+	return layout(templateName).
+		withString(content).
+		wrapInBase(map[string]string{
+			"Title":   fmt.Sprintf(cfg.TitleTemplate, name),
+			"Sidebar": hyphaTree(name),
+		})
 }
 
-// renderBase collects and renders page from base template
-// Args:
-//   content: string or pre-rendered template
-//   keys: map with replaced standart fields
-func renderBase(content string, keys map[string]string) string {
+// wrapInBase is used to wrap layouts in things that are present on all pages.
+func (lyt *Layout) wrapInBase(keys map[string]string) []byte {
 	page := map[string]string{
 		"Title":     cfg.SiteTitle,
 		"Main":      "",
@@ -86,36 +64,67 @@ func renderBase(content string, keys map[string]string) string {
 	for key, val := range keys {
 		page[key] = val
 	}
-	page["Main"] = content
-	return renderFromMap(page, "base.html")
+	page["Main"] = lyt.String()
+	return layout("base").withMap(page).Bytes()
 }
 
-// renderFromMap applies `data` map to template in `templatePath` and returns the result.
-func renderFromMap(data map[string]string, templatePath string) string {
-	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	h := fs.Hs.Open(hyphPath).OnRevision("0")
-	tmpl, err := template.ParseFiles(h.TextPath())
-	if err != nil {
-		return err.Error()
-	}
-	buf := new(bytes.Buffer)
-	if err := tmpl.Execute(buf, data); err != nil {
-		return err.Error()
-	}
-	return buf.String()
+func hyphaTree(name string) string {
+	return layout("view/sidebar").
+		withMap(map[string]string{"Tree": fs.Hs.GetTree(name, true).AsHtml()}).
+		String()
 }
 
-// renderFromMap applies `data` string to template in `templatePath` and returns the result.
-func renderFromString(data string, templatePath string) string {
-	hyphPath := path.Join(cfg.TemplatesDir, cfg.Theme, templatePath)
-	h := fs.Hs.Open(hyphPath).OnRevision("0")
+type Layout struct {
+	tmpl    *template.Template
+	buf     *bytes.Buffer
+	invalid bool
+	err     error
+}
+
+func layout(name string) *Layout {
+	h := fs.Hs.Open(path.Join(cfg.TemplatesDir, cfg.Theme, name+".html")).OnRevision("0")
+	if h.Invalid {
+		return &Layout{nil, nil, true, h.Err}
+	}
 	tmpl, err := template.ParseFiles(h.TextPath())
 	if err != nil {
-		return err.Error()
+		return &Layout{nil, nil, true, err}
 	}
-	buf := new(bytes.Buffer)
-	if err := tmpl.Execute(buf, data); err != nil {
-		return err.Error()
+	return &Layout{tmpl, new(bytes.Buffer), false, nil}
+}
+
+func (lyt *Layout) withString(data string) *Layout {
+	if lyt.invalid {
+		return lyt
 	}
-	return buf.String()
+	if err := lyt.tmpl.Execute(lyt.buf, data); err != nil {
+		lyt.invalid = true
+		lyt.err = err
+	}
+	return lyt
+}
+
+func (lyt *Layout) withMap(data map[string]string) *Layout {
+	if lyt.invalid {
+		return lyt
+	}
+	if err := lyt.tmpl.Execute(lyt.buf, data); err != nil {
+		lyt.invalid = true
+		lyt.err = err
+	}
+	return lyt
+}
+
+func (lyt *Layout) Bytes() []byte {
+	if lyt.invalid {
+		return []byte(lyt.err.Error())
+	}
+	return lyt.buf.Bytes()
+}
+
+func (lyt *Layout) String() string {
+	if lyt.invalid {
+		return lyt.err.Error()
+	}
+	return lyt.buf.String()
 }

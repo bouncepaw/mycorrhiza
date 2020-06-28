@@ -154,7 +154,7 @@ func (h *Hypha) ActionZen(w http.ResponseWriter) *Hypha {
 
 // ActionView is used with `?action=view` or no action at all.
 // It renders the page, the layout and everything else.
-func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists func(string, string) string) *Hypha {
+func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists func(string, string) []byte) *Hypha {
 	var html string
 	var err error
 	if h.Exists {
@@ -167,9 +167,9 @@ func (h *Hypha) ActionView(w http.ResponseWriter, renderExists, renderNotExists 
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if h.Exists {
-		w.Write([]byte(renderExists(h.FullName, html)))
+		w.Write(renderExists(h.FullName, html))
 	} else {
-		w.Write([]byte(renderNotExists(h.FullName, "")))
+		w.Write(renderNotExists(h.FullName, ""))
 	}
 	return h
 }

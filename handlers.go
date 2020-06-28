@@ -44,7 +44,7 @@ func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	h := fs.Hs.Open(vars["hypha"]).OnRevision("0")
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(render.HyphaEdit(h)))
+	w.Write(render.HyphaEdit(h))
 }
 
 func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
@@ -63,6 +63,6 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	if !h.Invalid {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(render.HyphaUpdateOk(h)))
+		w.Write(render.HyphaUpdateOk(h))
 	}
 }
