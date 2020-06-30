@@ -38,12 +38,10 @@ func InitConfig(wd string) bool {
 
 	if _, err := os.Stat(configJsonPath); os.IsNotExist(err) {
 		log.Println("config.json not found, using default values")
-	} else {
-		log.Println("config.json found, overriding default values...")
-		return readConfig()
+		return false
 	}
-
-	return true
+	log.Println("config.json found, overriding default values...")
+	return readConfig()
 }
 
 func readConfig() bool {

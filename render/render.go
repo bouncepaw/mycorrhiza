@@ -29,7 +29,7 @@ func HyphaEdit(h *fs.Hypha) []byte { //
 
 // HyphaUpdateOk is used to inform that update was successful.
 func HyphaUpdateOk(h *fs.Hypha) []byte { //
-	return layout("updateOk").
+	return layout("update_ok").
 		withMap(map[string]string{"Name": h.FullName}).
 		Bytes()
 }
@@ -56,6 +56,9 @@ func hyphaGeneric(name, content, templateName string) []byte {
 
 // wrapInBase is used to wrap layouts in things that are present on all pages.
 func (lyt *Layout) wrapInBase(keys map[string]string) []byte {
+	if lyt.invalid {
+		return lyt.Bytes()
+	}
 	page := map[string]string{
 		"Title":     cfg.SiteTitle,
 		"Main":      "",

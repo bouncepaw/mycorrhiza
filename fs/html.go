@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/bouncepaw/mycorrhiza/util"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
@@ -20,7 +21,7 @@ func (h *Hypha) asHtml() (string, error) {
 `
 	// What about using <figure>?
 	if h.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="/%s?action=binary&rev=%d" class="page__amnt"/>`, rev.FullName, rev.Id)
+		ret += fmt.Sprintf(`<img src="/%s?action=binary&rev=%d" class="page__amnt"/>`, util.DisplayToCanonical(rev.FullName), rev.Id)
 	}
 
 	contents, err := ioutil.ReadFile(rev.TextPath)

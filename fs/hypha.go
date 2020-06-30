@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 type Hypha struct {
@@ -33,9 +34,10 @@ func (h *Hypha) Invalidate(err error) *Hypha {
 }
 
 func (s *Storage) Open(name string) *Hypha {
+	name = util.UrlToCanonical(name)
 	h := &Hypha{
 		Exists:   true,
-		FullName: name,
+		FullName: util.CanonicalToDisplay(name),
 	}
 	path, ok := s.paths[name]
 	// This hypha does not exist yet

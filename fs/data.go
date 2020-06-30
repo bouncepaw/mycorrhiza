@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func (h *Hypha) MetaJsonPath() string {
@@ -17,7 +18,7 @@ func (h *Hypha) MetaJsonPath() string {
 }
 
 func (h *Hypha) Path() string {
-	return filepath.Join(cfg.WikiDir, h.FullName)
+	return filepath.Join(cfg.WikiDir, util.UrlToCanonical(h.FullName))
 }
 
 func (h *Hypha) TextPath() string {
@@ -25,7 +26,7 @@ func (h *Hypha) TextPath() string {
 }
 
 func (h *Hypha) parentName() string {
-	return filepath.Dir(h.FullName)
+	return filepath.Dir(util.UrlToCanonical(h.FullName))
 }
 
 // hasBinaryData returns true if the revision has any binary data associated.

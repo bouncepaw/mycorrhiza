@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func (s *Storage) RenderHypha(h *Hypha) {
@@ -24,6 +26,7 @@ type Tree struct {
 // It can also generate trees for non-existent hyphae, that's why we use `name string` instead of making it a method on `Hypha`.
 // In `root` is `false`, siblings will not be fetched.
 func (s *Storage) GetTree(name string, root bool) *Tree {
+	name = util.UrlToCanonical(name)
 	t := &Tree{Name: name, Root: root}
 	for hyphaName, _ := range s.paths {
 		s.compareNamesAndAppend(t, hyphaName)
@@ -65,14 +68,14 @@ func (t *Tree) AsHtml() (html string) {
 	html += `<ul class="navitree__node">`
 	if t.Root {
 		for _, ancestor := range t.Ancestors {
-			html += navitreeEntry(ancestor, "navitree__ancestor")
+			html += navitreeEntry(util.CanonicalToDisplay(ancestor), "navitree__ancestor")
 		}
 		for _, siblingName := range t.Siblings {
-			html += navitreeEntry(siblingName, "navitree__sibling")
+			html += navitreeEntry(util.CanonicalToDisplay(siblingName), "navitree__sibling")
 		}
-		html += navitreeEntry(t.Name, "navitree__pagename")
+		html += navitreeEntry(util.CanonicalToDisplay(t.Name), "navitree__pagename")
 	} else {
-		html += navitreeEntry(t.Name, "navitree__name")
+		html += navitreeEntry(util.CanonicalToDisplay(t.Name), "navitree__name")
 	}
 
 	for _, subtree := range t.Descendants {
@@ -89,5 +92,5 @@ func navitreeEntry(name, class string) string {
 	return fmt.Sprintf(`<li class="navitree__entry %s">
 	<a class="navitree__link" href="/%s">%s</a>
 </li>
-`, class, name, filepath.Base(name))
+`, class, util.DisplayToCanonical(name), filepath.Base(name))
 }

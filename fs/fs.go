@@ -54,6 +54,3 @@ func (s *Storage) indexHyphae(path string) {
 		}
 	}
 }
-
-func (h *Hypha) Close() {
-}
