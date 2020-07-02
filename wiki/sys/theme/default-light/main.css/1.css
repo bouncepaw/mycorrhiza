@@ -12,6 +12,7 @@ header a, header a:visited { color: black; text-decoration:none; }
 header a:active, header a:hover { color: #005f87; }
 
 h1, h2, h3, h4, h5, h6 { margin: 0.5em 0 0.25em; }
+code { background-color: #f4f4f4; }
 .page { line-height: 1.666; max-width: 40rem; hyphens: auto; }
 .page img { max-width:100%; }
 .page pre { white-space: break-spaces; }

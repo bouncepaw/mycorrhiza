@@ -85,7 +85,7 @@ type Layout struct {
 }
 
 func layout(name string) *Layout {
-	h := fs.Hs.Open(path.Join(cfg.TemplatesDir, cfg.Theme, name+".html")).OnRevision("0")
+	h := fs.Hs.Open(path.Join(fs.SystemMycelium, "theme", cfg.Theme, name+".html")).OnRevision("0")
 	if h.Invalid {
 		return &Layout{nil, nil, true, h.Err}
 	}

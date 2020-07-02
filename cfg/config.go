@@ -8,17 +8,23 @@ import (
 	"path/filepath"
 )
 
+type MyceliumConfig struct {
+	Names []string `json:"names"`
+	Type  string   `json:"type"`
+}
+
 const (
 	HyphaPattern    = `[^\s\d:/?&\\][^:?&\\]*`
 	HyphaUrl        = `/{hypha:` + HyphaPattern + `}`
 	RevisionPattern = `[\d]+`
 	RevQuery        = `{rev:` + RevisionPattern + `}`
+	MyceliumPattern = `:` + HyphaPattern
+	MyceliumUrl     = `/{mycelium:` + MyceliumPattern + `}`
 )
 
 var (
 	DescribeHyphaHerePattern = "Describe %s here"
 	WikiDir                  string
-	TemplatesDir             string
 	configJsonPath           string
 
 	// Default values that can be overriden in config.json
@@ -28,13 +34,16 @@ var (
 	GenericErrorMsg   = `<b>Sorry, something went wrong</b>`
 	SiteTitle         = `MycorrhizaWiki`
 	Theme             = `default-light`
+	Mycelia           = []MyceliumConfig{
+		{[]string{"main"}, "main"},
+		{[]string{"sys", "system"}, "system"},
+	}
 )
 
 func InitConfig(wd string) bool {
 	log.Println("WikiDir is", wd)
 	WikiDir = wd
-	TemplatesDir = "Templates"
-	configJsonPath = filepath.Join(filepath.Dir(WikiDir), "config.json")
+	configJsonPath = filepath.Join(WikiDir, "config.json")
 
 	if _, err := os.Stat(configJsonPath); os.IsNotExist(err) {
 		log.Println("config.json not found, using default values")
@@ -52,9 +61,10 @@ func readConfig() bool {
 	}
 
 	cfg := struct {
-		Address        string `json:"address"`
-		Theme          string `json:"theme"`
-		SiteTitle      string `json:"site-title"`
+		Address        string           `json:"address"`
+		Theme          string           `json:"theme"`
+		SiteTitle      string           `json:"site-title"`
+		Mycelia        []MyceliumConfig `json:"mycelia"`
 		TitleTemplates struct {
 			EditHypha string `json:"edit-hypha"`
 			ViewHypha string `json:"view-hypha"`
@@ -72,6 +82,7 @@ func readConfig() bool {
 	SiteTitle = cfg.SiteTitle
 	TitleEditTemplate = cfg.TitleTemplates.EditHypha
 	TitleTemplate = cfg.TitleTemplates.ViewHypha
+	Mycelia = cfg.Mycelia
 
 	return true
 }

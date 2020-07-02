@@ -17,8 +17,12 @@ func (h *Hypha) MetaJsonPath() string {
 	return filepath.Join(h.Path(), "meta.json")
 }
 
+func (h *Hypha) CanonicalName() string {
+	return util.UrlToCanonical(h.FullName)
+}
+
 func (h *Hypha) Path() string {
-	return filepath.Join(cfg.WikiDir, util.UrlToCanonical(h.FullName))
+	return filepath.Join(cfg.WikiDir, h.CanonicalName())
 }
 
 func (h *Hypha) TextPath() string {

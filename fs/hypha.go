@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -23,8 +22,8 @@ type Hypha struct {
 	Deleted   bool                 `json:"deleted"`
 	Revisions map[string]*Revision `json:"revisions"`
 	actual    *Revision            `json:"-"`
-	Invalid   bool
-	Err       error
+	Invalid   bool                 `json:"-"`
+	Err       error                `json:"-"`
 }
 
 func (h *Hypha) Invalidate(err error) *Hypha {
@@ -183,7 +182,7 @@ func (h *Hypha) CreateDirIfNeeded() *Hypha {
 		return h
 	}
 	// os.MkdirAll created dir if it is not there. Basically, checks it for us.
-	err := os.MkdirAll(filepath.Join(cfg.WikiDir, h.FullName), os.ModePerm)
+	err := os.MkdirAll(h.Path(), os.ModePerm)
 	if err != nil {
 		h.Invalidate(err)
 	}
@@ -315,7 +314,7 @@ func (h *Hypha) SaveJson() *Hypha {
 // Store adds `h` to the `Hs` if it is not already there
 func (h *Hypha) Store() *Hypha {
 	if !h.Invalid {
-		Hs.paths[h.FullName] = h.Path()
+		Hs.paths[h.CanonicalName()] = h.Path()
 	}
 	return h
 }

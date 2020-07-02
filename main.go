@@ -22,6 +22,25 @@ func RevInMap(m map[string]string) string {
 	return "0"
 }
 
+func IdempotentRouterBoiler(router *mux.Router, action string, handler func(w http.ResponseWriter, rq *http.Request)) {
+	router.
+		Queries("action", action, "rev", cfg.RevQuery).
+		Path(cfg.MyceliumUrl + cfg.HyphaUrl).
+		HandlerFunc(handler)
+	router.
+		Queries("action", action).
+		Path(cfg.MyceliumUrl + cfg.HyphaUrl).
+		HandlerFunc(handler)
+	router.
+		Queries("action", action, "rev", cfg.RevQuery).
+		Path(cfg.HyphaUrl).
+		HandlerFunc(handler)
+	router.
+		Queries("action", action).
+		Path(cfg.HyphaUrl).
+		HandlerFunc(handler)
+}
+
 func main() {
 	if len(os.Args) == 1 {
 		panic("Expected a root wiki pages directory")
@@ -34,6 +53,7 @@ func main() {
 	log.Println("Welcome to MycorrhizaWiki α")
 	cfg.InitConfig(wikiDir)
 	log.Println("Indexing hyphae...")
+	fs.VerifyMycelia()
 	fs.InitStorage()
 
 	// Start server code. See handlers.go for handlers' implementations.
@@ -43,31 +63,20 @@ func main() {
 		http.ServeFile(w, rq, filepath.Join(filepath.Dir(cfg.WikiDir), "favicon.ico"))
 	})
 
-	r.Queries("action", "binary", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerBinary)
-	r.Queries("action", "binary").Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerBinary)
+	IdempotentRouterBoiler(r, "binary", HandlerBinary)
+	IdempotentRouterBoiler(r, "raw", HandlerRaw)
+	IdempotentRouterBoiler(r, "zen", HandlerZen)
+	IdempotentRouterBoiler(r, "view", HandlerView)
 
-	r.Queries("action", "raw", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerRaw)
-	r.Queries("action", "raw").Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerRaw)
-
-	r.Queries("action", "zen", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerZen)
-	r.Queries("action", "zen").Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerZen)
-
-	r.Queries("action", "view", "rev", cfg.RevQuery).Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerView)
-	r.Queries("action", "view").Path(cfg.HyphaUrl).
-		HandlerFunc(HandlerView)
-
+	r.Queries("action", "edit").Path(cfg.MyceliumUrl + cfg.HyphaUrl).
+		HandlerFunc(HandlerEdit)
 	r.Queries("action", "edit").Path(cfg.HyphaUrl).
 		HandlerFunc(HandlerEdit)
 
-	r.Queries("action", "update").Path(cfg.HyphaUrl).Methods("POST").
-		HandlerFunc(HandlerUpdate)
+	r.Queries("action", "update").Path(cfg.MyceliumUrl + cfg.HyphaUrl).
+		Methods("POST").HandlerFunc(HandlerUpdate)
+	r.Queries("action", "update").Path(cfg.HyphaUrl).
+		Methods("POST").HandlerFunc(HandlerUpdate)
 
 	r.HandleFunc(cfg.HyphaUrl, HandlerView)
 
