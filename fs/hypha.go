@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/mycelium"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -32,7 +33,16 @@ func (h *Hypha) Invalidate(err error) *Hypha {
 	return h
 }
 
-func (s *Storage) Open(name string) *Hypha {
+func (s *Storage) OpenFromMap(m map[string]string) *Hypha {
+	name := mycelium.NameWithMyceliumInMap(m)
+	h := s.open(name)
+	if rev, ok := m["rev"]; ok {
+		return h.OnRevision(rev)
+	}
+	return h
+}
+
+func (s *Storage) open(name string) *Hypha {
 	name = util.UrlToCanonical(name)
 	h := &Hypha{
 		Exists:   true,
@@ -110,13 +120,18 @@ func (h *Hypha) ActionRaw(w http.ResponseWriter) *Hypha {
 	if h.Invalid {
 		return h
 	}
-	fileContents, err := ioutil.ReadFile(h.actual.TextPath)
-	if err != nil {
-		return h.Invalidate(err)
+	if h.Exists {
+		fileContents, err := ioutil.ReadFile(h.actual.TextPath)
+		if err != nil {
+			return h.Invalidate(err)
+		}
+		w.Header().Set("Content-Type", h.mimeTypeForActionRaw())
+		w.WriteHeader(http.StatusOK)
+		w.Write(fileContents)
+	} else {
+		log.Println("Hypha", h.FullName, "has no actual revision")
+		w.WriteHeader(http.StatusNotFound)
 	}
-	w.Header().Set("Content-Type", h.mimeTypeForActionRaw())
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
 	return h
 }
 
@@ -126,13 +141,18 @@ func (h *Hypha) ActionBinary(w http.ResponseWriter) *Hypha {
 	if h.Invalid {
 		return h
 	}
-	fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
-	if err != nil {
-		return h.Invalidate(err)
+	if h.Exists {
+		fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
+		if err != nil {
+			return h.Invalidate(err)
+		}
+		w.Header().Set("Content-Type", h.actual.BinaryMime)
+		w.WriteHeader(http.StatusOK)
+		w.Write(fileContents)
+	} else {
+		log.Println("Hypha", h.FullName, "has no actual revision")
+		w.WriteHeader(http.StatusNotFound)
 	}
-	w.Header().Set("Content-Type", h.actual.BinaryMime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
 	return h
 }
 

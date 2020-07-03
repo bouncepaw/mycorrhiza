@@ -10,6 +10,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/fs"
+	"github.com/bouncepaw/mycorrhiza/mycelium"
 	"github.com/gorilla/mux"
 )
 
@@ -53,7 +54,7 @@ func main() {
 	log.Println("Welcome to MycorrhizaWiki α")
 	cfg.InitConfig(wikiDir)
 	log.Println("Indexing hyphae...")
-	fs.VerifyMycelia()
+	mycelium.Init()
 	fs.InitStorage()
 
 	// Start server code. See handlers.go for handlers' implementations.
@@ -78,6 +79,7 @@ func main() {
 	r.Queries("action", "update").Path(cfg.HyphaUrl).
 		Methods("POST").HandlerFunc(HandlerUpdate)
 
+	r.HandleFunc(cfg.MyceliumUrl+cfg.HyphaUrl, HandlerView)
 	r.HandleFunc(cfg.HyphaUrl, HandlerView)
 
 	// Debug page that renders all hyphae.

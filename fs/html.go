@@ -21,7 +21,7 @@ func (h *Hypha) asHtml() (string, error) {
 `
 	// What about using <figure>?
 	if h.hasBinaryData() {
-		ret += fmt.Sprintf(`<img src="/%s?action=binary&rev=%d" class="page__amnt"/>`, util.DisplayToCanonical(rev.FullName), rev.Id)
+		ret += fmt.Sprintf(`<img src="/:%s?action=binary&rev=%d" class="page__amnt"/>`, util.DisplayToCanonical(rev.FullName), rev.Id)
 	}
 
 	contents, err := ioutil.ReadFile(rev.TextPath)

@@ -18,8 +18,8 @@ const (
 	HyphaUrl        = `/{hypha:` + HyphaPattern + `}`
 	RevisionPattern = `[\d]+`
 	RevQuery        = `{rev:` + RevisionPattern + `}`
-	MyceliumPattern = `:` + HyphaPattern
-	MyceliumUrl     = `/{mycelium:` + MyceliumPattern + `}`
+	MyceliumPattern = `[^\s\d:/?&\\][^:?&\\/]*`
+	MyceliumUrl     = `/:{mycelium:` + MyceliumPattern + `}`
 )
 
 var (

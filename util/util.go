@@ -5,12 +5,28 @@ import (
 	"unicode"
 )
 
+func addColonPerhaps(name string) string {
+	if strings.HasPrefix(name, ":") {
+		return name
+	}
+	return ":" + name
+}
+
+func removeColonPerhaps(name string) string {
+	if strings.HasPrefix(name, ":") {
+		return name[1:]
+	}
+	return name
+}
+
 func UrlToCanonical(name string) string {
-	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+	return removeColonPerhaps(
+		strings.ToLower(strings.ReplaceAll(name, " ", "_")))
 }
 
 func DisplayToCanonical(name string) string {
-	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+	return removeColonPerhaps(
+		strings.ToLower(strings.ReplaceAll(name, " ", "_")))
 }
 
 func CanonicalToDisplay(name string) (res string) {
@@ -29,5 +45,5 @@ func CanonicalToDisplay(name string) (res string) {
 		}
 		res += string(ch)
 	}
-	return res
+	return addColonPerhaps(res)
 }

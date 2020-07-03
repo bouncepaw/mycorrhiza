@@ -15,10 +15,10 @@ h1, h2, h3, h4, h5, h6 { margin: 0.5em 0 0.25em; }
 code { background-color: #f4f4f4; }
 .page { line-height: 1.666; max-width: 40rem; hyphens: auto; }
 .page img { max-width:100%; }
-.page pre { white-space: break-spaces; }
+.page pre { white-space: break-spaces; background-color: #f4f4f4; }
 .page__title { font-size: 2rem; margin: 0; }
 
-footer { padding: 1rem 0; font-size: .8rem; bottom: 0; position: absolute; }
+footer { padding: 1rem 0; font-size: .8rem; }
 footer a, footer a:visited { color: black; }
 /* Sidebar section */
 .sidebar { padding: 1rem 0; background: #f4f4f4; }

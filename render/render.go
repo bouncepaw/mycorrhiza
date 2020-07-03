@@ -8,6 +8,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/fs"
+	"github.com/bouncepaw/mycorrhiza/mycelium"
 )
 
 // HyphaEdit renders hypha editor.
@@ -85,7 +86,12 @@ type Layout struct {
 }
 
 func layout(name string) *Layout {
-	h := fs.Hs.Open(path.Join(fs.SystemMycelium, "theme", cfg.Theme, name+".html")).OnRevision("0")
+	lytName := path.Join("theme", cfg.Theme, name+".html")
+	h := fs.Hs.OpenFromMap(map[string]string{
+		"mycelium": mycelium.SystemMycelium,
+		"hypha":    lytName,
+		"rev":      "0",
+	})
 	if h.Invalid {
 		return &Layout{nil, nil, true, h.Err}
 	}

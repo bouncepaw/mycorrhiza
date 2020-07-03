@@ -92,5 +92,5 @@ func navitreeEntry(name, class string) string {
 	return fmt.Sprintf(`<li class="navitree__entry %s">
 	<a class="navitree__link" href="/%s">%s</a>
 </li>
-`, class, util.DisplayToCanonical(name), filepath.Base(name))
+`, class, ":"+util.DisplayToCanonical(name), filepath.Base(name))
 }

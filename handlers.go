@@ -14,7 +14,7 @@ import (
 // Boilerplate code present in many handlers. Good to have it.
 func HandlerBase(w http.ResponseWriter, rq *http.Request) *fs.Hypha {
 	vars := mux.Vars(rq)
-	return fs.Hs.Open(vars["hypha"]).OnRevision(RevInMap(vars))
+	return fs.Hs.OpenFromMap(vars).OnRevision(RevInMap(vars))
 }
 
 func HandlerRaw(w http.ResponseWriter, rq *http.Request) {
@@ -41,7 +41,7 @@ func HandlerView(w http.ResponseWriter, rq *http.Request) {
 
 func HandlerEdit(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	h := fs.Hs.Open(vars["hypha"]).OnRevision("0")
+	h := fs.Hs.OpenFromMap(vars).OnRevision("0")
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write(render.HyphaEdit(h))
@@ -51,7 +51,7 @@ func HandlerUpdate(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
 	log.Println("Attempt to update hypha", vars["hypha"])
 	h := fs.Hs.
-		Open(vars["hypha"]).
+		OpenFromMap(vars).
 		CreateDirIfNeeded().
 		AddRevisionFromHttpData(rq).
 		WriteTextFileFromHttpData(rq).
