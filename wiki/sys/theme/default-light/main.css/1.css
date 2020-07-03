@@ -1,0 +1,54 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; }
+body { font: 15px/1.5 'PT Sans', system-ui, sans-serif;
+	min-height: 100%; padding: 0; margin:0; }
+.msg { background-color: #f4f4f4; padding: 1rem; border-radius: 1rem; }
+a { color: #44e; } 
+a:visited { color: #44a; }
+header { margin: 0 2rem; }
+header * { display: inline; }
+header h1 { margin: 0; font-size: 1rem; }
+header a, header a:visited { color: black; text-decoration:none; }
+header a:active, header a:hover { color: #005f87; }
+
+h1, h2, h3, h4, h5, h6 { margin: 0.5em 0 0.25em; }
+code { background-color: #f4f4f4; }
+.page { line-height: 1.666; max-width: 40rem; hyphens: auto; }
+.page img { max-width:100%; }
+.page pre { white-space: break-spaces; background-color: #f4f4f4; }
+.page__title { font-size: 2rem; margin: 0; }
+
+footer { padding: 1rem 0; font-size: .8rem; }
+footer a, footer a:visited { color: black; }
+/* Sidebar section */
+.sidebar { padding: 1rem 0; background: #f4f4f4; }
+.sidebar div { margin-left: 1rem; }
+.sidebar-controller { font: inherit; padding: .25rem 1rem;
+font-size: 2rem; float: right; }
+
+.hypha-actions ul { margin: 0; padding: 0; }
+.hypha-actions li { list-style: none; }
+.hypha-actions a { display: block; padding: .25rem 1rem; font: inherit;
+text-decoration: none; color: black; }
+.hypha-actions a:hover { background: #eaeaea; }
+
+.navitree__node { padding-left: 2rem; }
+.navitree__entry { margin-bottom: .5rem; }
+.navitree__link, .navitree__link:visited { color:black; text-decoration:none; }
+.navitree__link:hover, .navitree__link:active { text-decoration:underline; }
+.navitree__ancestor { list-style: none; margin-left: -1rem; }
+.navitree__pagename a { font-weight: bold; }
+
+@media (max-width: 950px) {
+	.hidden_mobile { display: none; }
+	aside { height: 100%; }
+	main, footer, header { margin: 0 1rem; }
+	header, header * { display:inline; }
+	.edit-box__text { width: 100%; height: 70%; }
+}
+@media (min-width: 950px) {
+	.sidebar-controller { display: none; }
+	aside { float:right; width: 300px; padding: 0; }
+	main, footer { margin: 0 0 auto 2rem; }
+	.edit-box__text { min-width: 600px; height: 70%; }
+}

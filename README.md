@@ -1,2 +1,6 @@
 # mycorrhiza wiki
-Simple wiki engine inspired by fungi.
+A wiki engine inspired by fungi.
+
+Current version: 0.5.
+
+Not production-ready.

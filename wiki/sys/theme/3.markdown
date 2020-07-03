@@ -1,0 +1,11 @@
+# Themes
+
+In MycorrhizaWiki, themes are used to specify what is shown to a user, the front-end. So, a theme consists of:
+
+- **HTML templates.** Data is inserted into them.
+- **CSS.**
+- **JS.**
+
+Your HTML template structure must be identical to the one. You can include any CSS and JS in your themes.
+
+See [default-light](/:sys/theme/default-light) theme for more information. This is the only theme that is guaranteed to work.

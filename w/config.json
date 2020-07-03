@@ -1,9 +1,0 @@
-{
-	"address": "127.0.0.1:1737", 
-	"theme": "default-light", 
-	"site-title": "🍄 MycorrhizaWiki", 
-	"title-templates": {
-		"edit-hypha": "Edit %s at MycorrhizaWiki", 
-		"view-hypha": "%s at MycorrhizaWiki"
-	}
-}

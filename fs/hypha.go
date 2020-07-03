@@ -12,7 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/mycelium"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 type Hypha struct {
@@ -22,8 +23,8 @@ type Hypha struct {
 	Deleted   bool                 `json:"deleted"`
 	Revisions map[string]*Revision `json:"revisions"`
 	actual    *Revision            `json:"-"`
-	Invalid   bool
-	Err       error
+	Invalid   bool                 `json:"-"`
+	Err       error                `json:"-"`
 }
 
 func (h *Hypha) Invalidate(err error) *Hypha {
@@ -32,10 +33,20 @@ func (h *Hypha) Invalidate(err error) *Hypha {
 	return h
 }
 
-func (s *Storage) Open(name string) *Hypha {
+func (s *Storage) OpenFromMap(m map[string]string) *Hypha {
+	name := mycelium.NameWithMyceliumInMap(m)
+	h := s.open(name)
+	if rev, ok := m["rev"]; ok {
+		return h.OnRevision(rev)
+	}
+	return h
+}
+
+func (s *Storage) open(name string) *Hypha {
+	name = util.UrlToCanonical(name)
 	h := &Hypha{
 		Exists:   true,
-		FullName: name,
+		FullName: util.CanonicalToDisplay(name),
 	}
 	path, ok := s.paths[name]
 	// This hypha does not exist yet
@@ -109,13 +120,18 @@ func (h *Hypha) ActionRaw(w http.ResponseWriter) *Hypha {
 	if h.Invalid {
 		return h
 	}
-	fileContents, err := ioutil.ReadFile(h.actual.TextPath)
-	if err != nil {
-		return h.Invalidate(err)
+	if h.Exists {
+		fileContents, err := ioutil.ReadFile(h.actual.TextPath)
+		if err != nil {
+			return h.Invalidate(err)
+		}
+		w.Header().Set("Content-Type", h.mimeTypeForActionRaw())
+		w.WriteHeader(http.StatusOK)
+		w.Write(fileContents)
+	} else {
+		log.Println("Hypha", h.FullName, "has no actual revision")
+		w.WriteHeader(http.StatusNotFound)
 	}
-	w.Header().Set("Content-Type", h.mimeTypeForActionRaw())
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
 	return h
 }
 
@@ -125,13 +141,18 @@ func (h *Hypha) ActionBinary(w http.ResponseWriter) *Hypha {
 	if h.Invalid {
 		return h
 	}
-	fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
-	if err != nil {
-		return h.Invalidate(err)
+	if h.Exists {
+		fileContents, err := ioutil.ReadFile(h.actual.BinaryPath)
+		if err != nil {
+			return h.Invalidate(err)
+		}
+		w.Header().Set("Content-Type", h.actual.BinaryMime)
+		w.WriteHeader(http.StatusOK)
+		w.Write(fileContents)
+	} else {
+		log.Println("Hypha", h.FullName, "has no actual revision")
+		w.WriteHeader(http.StatusNotFound)
 	}
-	w.Header().Set("Content-Type", h.actual.BinaryMime)
-	w.WriteHeader(http.StatusOK)
-	w.Write(fileContents)
 	return h
 }
 
@@ -181,7 +202,7 @@ func (h *Hypha) CreateDirIfNeeded() *Hypha {
 		return h
 	}
 	// os.MkdirAll created dir if it is not there. Basically, checks it for us.
-	err := os.MkdirAll(filepath.Join(cfg.WikiDir, h.FullName), os.ModePerm)
+	err := os.MkdirAll(h.Path(), os.ModePerm)
 	if err != nil {
 		h.Invalidate(err)
 	}
@@ -313,7 +334,7 @@ func (h *Hypha) SaveJson() *Hypha {
 // Store adds `h` to the `Hs` if it is not already there
 func (h *Hypha) Store() *Hypha {
 	if !h.Invalid {
-		Hs.paths[h.FullName] = h.Path()
+		Hs.paths[h.CanonicalName()] = h.Path()
 	}
 	return h
 }
