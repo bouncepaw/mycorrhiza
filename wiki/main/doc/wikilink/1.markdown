@@ -40,7 +40,7 @@ wikilink    actual path
 foo      == /foo
 ::foo    == /:example/foo
 :bar/foo == /:bar/foo
-/baz     == /:example/baz
-./baz    == /:example/baz
+/baz     == /:example/test/baz
+./baz    == /:example/test/baz
 ../qux   == /:example/qux
 ```
