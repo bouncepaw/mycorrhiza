@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/m4tty/cajun v0.0.0-20150303030909-35de273cc87b
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	gopkg.in/russross/blackfriday.v2 v2.0.1
 )
