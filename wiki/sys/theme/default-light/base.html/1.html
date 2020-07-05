@@ -2,6 +2,7 @@
 	<head>
 		<title>{{ .Title }}</title>
 		<link rel="stylesheet" href="/:sys/theme/default-light/main.css?action=raw">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
 		<header class="header">
@@ -13,10 +14,8 @@
 				≡
 			</button>
 		</header>
-		<aside class="sidebar hidden_mobile" id="sidebar">
-			{{ .Sidebar }}
-		</aside>
-		<main class="main">{{ .Main }}</main>
+		<!-- <main> and <aside> are in .Content -->
+		{{ .Content }}
 		<footer>
 			<p>This website runs <a href='https://github.com/bouncepaw/mycorrhiza'>MycorrhizaWiki</a></p>
 		</footer>

@@ -22,7 +22,6 @@ footer { padding: 1rem 0; font-size: .8rem; }
 footer a, footer a:visited { color: black; }
 /* Sidebar section */
 .sidebar { padding: 1rem 0; background: #f4f4f4; }
-.sidebar div { margin-left: 1rem; }
 .sidebar-controller { font: inherit; padding: .25rem 1rem;
 font-size: 2rem; float: right; }
 
@@ -39,6 +38,8 @@ text-decoration: none; color: black; }
 .navitree__ancestor { list-style: none; margin-left: -1rem; }
 .navitree__pagename a { font-weight: bold; }
 
+.edit-box aside { padding-left: 1rem; }
+
 @media (max-width: 950px) {
 	.hidden_mobile { display: none; }
 	aside { height: 100%; }
@@ -52,3 +53,7 @@ text-decoration: none; color: black; }
 	main, footer { margin: 0 0 auto 2rem; }
 	.edit-box__text { min-width: 600px; height: 70%; }
 }
+
+legend { font-weight: bold; padding: 0; }
+fieldset { border: 0; padding: 0; margin: 0; margin-bottom: .5rem; }
+fieldset * { margin: 0; }

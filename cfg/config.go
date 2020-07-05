@@ -28,7 +28,7 @@ var (
 	configJsonPath           string
 
 	// Default values that can be overriden in config.json
-	Address           = "127.0.0.1:80"
+	Address           = "0.0.0.0:80"
 	TitleEditTemplate = `Edit %s`
 	TitleTemplate     = `%s`
 	GenericErrorMsg   = `<b>Sorry, something went wrong</b>`

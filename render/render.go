@@ -23,7 +23,6 @@ func HyphaEdit(h *fs.Hypha) []byte { //
 		withMap(hyphaData).
 		wrapInBase(map[string]string{
 			"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
-			"Header":  layout("edit/header").withString(h.FullName).String(),
 			"Sidebar": layout("edit/sidebar").withMap(hyphaData).String(),
 		})
 }
@@ -37,12 +36,26 @@ func HyphaUpdateOk(h *fs.Hypha) []byte { //
 
 // Hypha404 renders 404 page for nonexistent page.
 func Hypha404(name, _ string) []byte {
-	return hyphaGeneric(name, name, "view/404")
+	return layout("view/404").
+		withMap(map[string]string{
+			"PageTitle": name,
+			"Tree":      hyphaTree(name),
+		}).
+		wrapInBase(map[string]string{
+			"Title": fmt.Sprintf(cfg.TitleTemplate, name),
+		})
 }
 
 // HyphaPage renders hypha viewer.
 func HyphaPage(name, content string) []byte {
-	return hyphaGeneric(name, content, "view/index")
+	return layout("view/index").
+		withMap(map[string]string{
+			"Content": content,
+			"Tree":    hyphaTree(name),
+		}).
+		wrapInBase(map[string]string{
+			"Title": fmt.Sprintf(cfg.TitleTemplate, name),
+		})
 }
 
 // hyphaGeneric is used when building renderers for all types of hypha pages
@@ -62,20 +75,17 @@ func (lyt *Layout) wrapInBase(keys map[string]string) []byte {
 	}
 	page := map[string]string{
 		"Title":     cfg.SiteTitle,
-		"Main":      "",
+		"Content":   lyt.String(),
 		"SiteTitle": cfg.SiteTitle,
 	}
 	for key, val := range keys {
 		page[key] = val
 	}
-	page["Main"] = lyt.String()
 	return layout("base").withMap(page).Bytes()
 }
 
 func hyphaTree(name string) string {
-	return layout("view/sidebar").
-		withMap(map[string]string{"Tree": fs.Hs.GetTree(name, true).AsHtml()}).
-		String()
+	return fs.Hs.GetTree(name, true).AsHtml()
 }
 
 type Layout struct {

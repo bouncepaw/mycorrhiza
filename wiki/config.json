@@ -1,5 +1,5 @@
 {
-	"address": "127.0.0.1:1737", 
+	"address": "0.0.0.0:1737", 
 	"theme": "default-light", 
 	"site-title": "🍄 MycorrhizaWiki", 
 	"title-templates": {
