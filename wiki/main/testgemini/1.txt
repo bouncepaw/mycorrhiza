@@ -19,7 +19,32 @@ Here's a quote                  from Maciej Cegłowski:
 
 > I contend that text-based websites should not exceed in size the      major works of Russian literature.
 Lines which start with ``` will cause clients to toggle in and out of ordinary rendering mode and preformatted mode. In preformatted mode, Gemtext syntax is ignored so links etc. will not be rendered, and text will appear in a monospace font.
-``` =>https://not-a-href.com preformatted
-
+``` ALT TEXT
+          .
+        ('
+        '|
+        |'
+       [::]
+       [::]   _......_
+       [::].-'      _.-`.
+       [:.'    .-. '-._.-`.
+       [/ /\   |  \        `-..
+       / / |   `-.'      .-.   `-.
+      /  `-'            (   `.    `.
+     |           /\      `-._/      \
+     '    .'\   /  `.           _.-'|
+    /    /  /   \_.-'        _.':;:/
+  .'     \_/             _.-':;_.-'
+ /   .-.             _.-' \;.-'
+/   (   \       _..-'     |
+\    `._/  _..-'    .--.  |
+ `-.....-'/  _ _  .'    '.|
+          | |_|_| |      | \  (o)
+     (o)  | |_|_| |      | | (\'/)
+    (\'/)/  ''''' |     o|  \;:;
+     :;  |        |      |  |/)
+      ;: `-.._    /__..--'\.' ;:
+          :;  `--' :;   :;
+```
 => https://proxy.vulpes.one/gemini/gemini.circumlunar.space/docs/cheatsheet.gmi Original cheatsheet
 => https://proxy.vulpes.one/gemini/gemini.circumlunar.space/docs/cheatsheet.gmi
