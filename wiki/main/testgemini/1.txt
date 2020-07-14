@@ -1,0 +1,50 @@
+# Gemtext cheatsheet
+Here's the basics of how text works in Gemtext:
+
+Long lines get wrapped by the client to fit the screen
+Short lines *don't* get joined together
+Write paragraphs as single long lines
+Blank lines are rendered verbatim
+You get three levels of heading:
+
+# Heading
+## Sub-heading
+### Sub-subheading
+You get one kind of list and you can't nest them:
+
+* Mercury
+* Gemini
+* Apollo
+Here's a quote                  from Maciej Cegłowski:
+
+> I contend that text-based websites should not exceed in size the      major works of Russian literature.
+Lines which start with ``` will cause clients to toggle in and out of ordinary rendering mode and preformatted mode. In preformatted mode, Gemtext syntax is ignored so links etc. will not be rendered, and text will appear in a monospace font.
+``` ALT TEXT
+          .
+        ('
+        '|
+        |'
+       [::]
+       [::]   _......_
+       [::].-'      _.-`.
+       [:.'    .-. '-._.-`.
+       [/ /\   |  \        `-..
+       / / |   `-.'      .-.   `-.
+      /  `-'            (   `.    `.
+     |           /\      `-._/      \
+     '    .'\   /  `.           _.-'|
+    /    /  /   \_.-'        _.':;:/
+  .'     \_/             _.-':;_.-'
+ /   .-.             _.-' \;.-'
+/   (   \       _..-'     |
+\    `._/  _..-'    .--.  |
+ `-.....-'/  _ _  .'    '.|
+          | |_|_| |      | \  (o)
+     (o)  | |_|_| |      | | (\'/)
+    (\'/)/  ''''' |     o|  \;:;
+     :;  |        |      |  |/)
+      ;: `-.._    /__..--'\.' ;:
+          :;  `--' :;   :;
+```
+=> https://proxy.vulpes.one/gemini/gemini.circumlunar.space/docs/cheatsheet.gmi Original cheatsheet
+=> https://proxy.vulpes.one/gemini/gemini.circumlunar.space/docs/cheatsheet.gmi
