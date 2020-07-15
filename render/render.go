@@ -22,8 +22,7 @@ func HyphaEdit(h *fs.Hypha) []byte { //
 	return layout("edit/index").
 		withMap(hyphaData).
 		wrapInBase(map[string]string{
-			"Title":   fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
-			"Sidebar": layout("edit/sidebar").withMap(hyphaData).String(),
+			"Title": fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
 		})
 }
 
