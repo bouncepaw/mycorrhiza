@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -82,16 +81,8 @@ func main() {
 	r.HandleFunc(cfg.MyceliumUrl+cfg.HyphaUrl, HandlerView)
 	r.HandleFunc(cfg.HyphaUrl, HandlerView)
 
-	// Debug page that renders all hyphae.
-	// TODO: make it redirect to home page.
-	// TODO: make a home page.
 	r.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, `
-<p>Check out <a href="/Fruit">Fruit</a> maybe.</p>
-<p><strong>TODO:</strong> make this page usable</p>
-		`)
+		http.Redirect(w, rq, cfg.HomePage, http.StatusSeeOther)
 	})
 
 	http.Handle("/", r)

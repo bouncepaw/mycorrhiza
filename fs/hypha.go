@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/mycelium"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -275,7 +276,7 @@ func (h *Hypha) WriteBinaryFileFromHttpData(rq *http.Request) *Hypha {
 		return h
 	}
 	// 10 MB file size limit
-	rq.ParseMultipartForm(10 << 20)
+	rq.ParseMultipartForm(cfg.BinaryLimit)
 	// Read file
 	file, handler, err := rq.FormFile("binary")
 	if file != nil {

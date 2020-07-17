@@ -28,13 +28,15 @@ var (
 	configJsonPath           string
 
 	// Default values that can be overriden in config.json
-	Address           = "0.0.0.0:80"
-	TitleEditTemplate = `Edit %s`
-	TitleTemplate     = `%s`
-	GenericErrorMsg   = `<b>Sorry, something went wrong</b>`
-	SiteTitle         = `MycorrhizaWiki`
-	Theme             = `default-light`
-	Mycelia           = []MyceliumConfig{
+	Address                 = "0.0.0.0:80"
+	TitleEditTemplate       = `Edit %s`
+	TitleTemplate           = `%s`
+	GenericErrorMsg         = `<b>Sorry, something went wrong</b>`
+	SiteTitle               = `MycorrhizaWiki`
+	Theme                   = `default-light`
+	HomePage                = `/Home`
+	BinaryLimit       int64 = 10 << 20
+	Mycelia                 = []MyceliumConfig{
 		{[]string{"main"}, "main"},
 		{[]string{"sys", "system"}, "system"},
 	}
@@ -64,6 +66,8 @@ func readConfig() bool {
 		Address        string           `json:"address"`
 		Theme          string           `json:"theme"`
 		SiteTitle      string           `json:"site-title"`
+		HomePage       string           `json:"home-page"`
+		BinaryLimitMB  int64            `json:"binary-limit-mb"`
 		Mycelia        []MyceliumConfig `json:"mycelia"`
 		TitleTemplates struct {
 			EditHypha string `json:"edit-hypha"`
@@ -82,6 +86,8 @@ func readConfig() bool {
 	SiteTitle = cfg.SiteTitle
 	TitleEditTemplate = cfg.TitleTemplates.EditHypha
 	TitleTemplate = cfg.TitleTemplates.ViewHypha
+	HomePage = "/" + cfg.HomePage
+	BinaryLimit = 1024 * cfg.BinaryLimitMB
 	Mycelia = cfg.Mycelia
 
 	return true

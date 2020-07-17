@@ -15,6 +15,7 @@ func (h *Hypha) asHtml() (string, error) {
 	<h1 class="page__title">` + rev.FullName + `</h1>
 `
 	// What about using <figure>?
+	// TODO: support other things
 	if h.hasBinaryData() {
 		ret += fmt.Sprintf(`<img src="/:%s?action=binary&rev=%d" class="page__amnt"/>`, util.DisplayToCanonical(rev.FullName), rev.Id)
 	}
