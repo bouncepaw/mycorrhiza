@@ -45,7 +45,7 @@ func geminiLineToHtml(line string) (res string) {
 		res = fmt.Sprintf("<h%v>%v</h%v>", level, content, level)
 	case linkToken:
 		source, content := makeOutLink(arr[1:])
-		res = fmt.Sprintf(`<a href="%v">%v</a>`, source, content)
+		res = fmt.Sprintf(`<p><a href="%v">%v</a></p>`, source, content)
 	case quoteToken:
 		res = "<blockquote>" + LinesToString(arr[1:], " ") + "</blockquote>"
 	case preformattedToken:
