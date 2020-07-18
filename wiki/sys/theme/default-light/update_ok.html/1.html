@@ -1,9 +1,9 @@
 <html>
 	<head>
-		<title>Saved {{ .Name }}</title>
+		<title>{{printf (index .Locale "update ok/title") .Name}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<p>Saved successfully. <a href="/{{ .Name }}">Go back</a></p>
+		<p>{{printf (index .Locale "update ok/msg") .Name}}</p>
 	</body>
 </html>

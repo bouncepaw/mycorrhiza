@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/bouncepaw/mycorrhiza/plugin/lang"
 )
 
 type MyceliumConfig struct {
@@ -23,20 +25,18 @@ const (
 )
 
 var (
-	DescribeHyphaHerePattern = "Describe %s here"
-	WikiDir                  string
-	configJsonPath           string
+	Locale         map[string]string
+	WikiDir        string
+	configJsonPath string
 
 	// Default values that can be overriden in config.json
-	Address                 = "0.0.0.0:80"
-	TitleEditTemplate       = `Edit %s`
-	TitleTemplate           = `%s`
-	GenericErrorMsg         = `<b>Sorry, something went wrong</b>`
-	SiteTitle               = `MycorrhizaWiki`
-	Theme                   = `default-light`
-	HomePage                = `/Home`
-	BinaryLimit       int64 = 10 << 20
-	Mycelia                 = []MyceliumConfig{
+	Address           = "0.0.0.0:80"
+	LocaleName        = "en"
+	SiteTitle         = `MycorrhizaWiki`
+	Theme             = `default-light`
+	HomePage          = `/Home`
+	BinaryLimit int64 = 10 << 20
+	Mycelia           = []MyceliumConfig{
 		{[]string{"main"}, "main"},
 		{[]string{"sys", "system"}, "system"},
 	}
@@ -63,16 +63,13 @@ func readConfig() bool {
 	}
 
 	cfg := struct {
-		Address        string           `json:"address"`
-		Theme          string           `json:"theme"`
-		SiteTitle      string           `json:"site-title"`
-		HomePage       string           `json:"home-page"`
-		BinaryLimitMB  int64            `json:"binary-limit-mb"`
-		Mycelia        []MyceliumConfig `json:"mycelia"`
-		TitleTemplates struct {
-			EditHypha string `json:"edit-hypha"`
-			ViewHypha string `json:"view-hypha"`
-		} `json:"title-templates"`
+		Address       string           `json:"address"`
+		Theme         string           `json:"theme"`
+		SiteTitle     string           `json:"site-title"`
+		HomePage      string           `json:"home-page"`
+		BinaryLimitMB int64            `json:"binary-limit-mb"`
+		LocaleName    string           `json:"locale"`
+		Mycelia       []MyceliumConfig `json:"mycelia"`
 	}{}
 
 	err = json.Unmarshal(configJsonContents, &cfg)
@@ -84,11 +81,16 @@ func readConfig() bool {
 	Address = cfg.Address
 	Theme = cfg.Theme
 	SiteTitle = cfg.SiteTitle
-	TitleEditTemplate = cfg.TitleTemplates.EditHypha
-	TitleTemplate = cfg.TitleTemplates.ViewHypha
 	HomePage = "/" + cfg.HomePage
 	BinaryLimit = 1024 * cfg.BinaryLimitMB
 	Mycelia = cfg.Mycelia
+
+	switch cfg.LocaleName {
+	case "en":
+		Locale = lang.EnglishMap
+	default:
+		Locale = lang.EnglishMap
+	}
 
 	return true
 }

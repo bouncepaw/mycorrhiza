@@ -17,7 +17,7 @@
 		<!-- <main> and <aside> are in .Content -->
 		{{ .Content }}
 		<footer>
-			<p>This website runs <a href='https://github.com/bouncepaw/mycorrhiza'>MycorrhizaWiki</a></p>
+			{{index .Locale "this site runs mycowiki"}}
 		</footer>
 		<script src="/:sys/theme/default-light/main.js?action=raw"></script>
 	</body>

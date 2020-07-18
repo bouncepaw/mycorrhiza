@@ -5,38 +5,39 @@
       id="edit-form">
 	<aside class="sidebar hidden_mobile" id="sidebar"><!-- TODO: i18n -->
 		<fieldset><!-- TODO: make this thing work with radiobuttons that are generated automatically for all supported mimes -->
-			<legend>Text MIME-type</legend>
-			<p>Good types are <code>text/markdown</code> and <code>text/plain</code></p>
+			<legend>{{index .Locale "edit/text mime type"}}</legend>
+			<p>{{index .Locale "edit/text mime type/tip"}}
 			<input type="text" name="text_mime" value="{{ .TextMime }}" id="text_mime"/>
 		</fieldset>
 
 		<fieldset>
-			<legend>Revision comment</legend>
-			<p>Please make your comment helpful</p>
-			<input type="text" name="comment" value="Update {{ .Name }}" id="comment"/>
+			<legend>{{index .Locale "edit/revision comment"}}</legend>
+			<p>{{index .Locale "edit/revision comment/tip"}}</p>
+			<input type="text" name="comment" id="comment"
+			       value='{{printf (index .Locale "edit/revision comment/old") .Name}}'/>
 		</fieldset>
 
 		<fieldset>
-			<legend>Edit tags</legend>
-			<p>Tags are separated by commas, whitespace is ignored</p>
+			<legend>{{index .Locale "edit/tags"}}</legend>
+			<p>{{index .Locale "edit/tags/tip"}}</p>
 			<input type="text" name="tags" value="{{ .Tags }}" id="tags"/>
 		</fieldset>
 
 		<fieldset>
-			<legend>Upload file</legend>
-			<p>Only images are supported for now</p>
+			<legend>{{index .Locale "edit/upload file"}}</legend>
+			<p>{{index .Locale "edit/upload file/tip"}}</p>
 			<input type="file" name="binary" id="binary"/>
 		</fieldset>
 
 		<p>
 			<input type="submit" value="update" form="edit-form"/>
-			<a href="?">Cancel</a>
+			<a href="?">{{index .Locale "edit/cancel"}}</a>
 		</p>
 	</aside>	
 	<main class="main">
-		<h1 class="page__title">Edit {{ .Name }}</h1>
+		<h1 class="page__title">{{printf (index .Locale "edit/box/title") .Name}}</h1>
 		<fieldset>
-			<legend>Edit box</legend>
+			<legend>{{index .Locale "edit/box"}}</legend>
 			<textarea class="edit-box__text" name="text">{{ .Text }}</textarea>
 		</fieldset>
 	</main>

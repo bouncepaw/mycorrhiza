@@ -82,5 +82,5 @@ func (h *Hypha) TextContent() string {
 		}
 		return string(contents)
 	}
-	return fmt.Sprintf(cfg.DescribeHyphaHerePattern, h.FullName)
+	return fmt.Sprintf(cfg.Locale["edit/box/help pattern"], h.FullName)
 }

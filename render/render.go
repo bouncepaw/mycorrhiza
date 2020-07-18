@@ -11,59 +11,59 @@ import (
 	"github.com/bouncepaw/mycorrhiza/mycelium"
 )
 
+func titleTemplateView(name string) string {
+	return fmt.Sprintf(cfg.Locale["view hypha title template"], name)
+}
+
 // HyphaEdit renders hypha editor.
 func HyphaEdit(h *fs.Hypha) []byte { //
-	hyphaData := map[string]string{
+	hyphaData := map[string]interface{}{
 		"Name":     h.FullName,
 		"Tags":     h.TagsJoined(),
 		"TextMime": h.TextMime(),
 		"Text":     h.TextContent(),
+		"Locale":   cfg.Locale,
 	}
 	return layout("edit/index").
 		withMap(hyphaData).
 		wrapInBase(map[string]string{
-			"Title": fmt.Sprintf(cfg.TitleEditTemplate, h.FullName),
+			"Title": fmt.Sprintf(cfg.Locale["edit hypha title template"], h.FullName),
 		})
 }
 
 // HyphaUpdateOk is used to inform that update was successful.
 func HyphaUpdateOk(h *fs.Hypha) []byte { //
 	return layout("update_ok").
-		withMap(map[string]string{"Name": h.FullName}).
+		withMap(map[string]interface{}{
+			"Name":   h.FullName,
+			"Locale": cfg.Locale,
+		}).
 		Bytes()
 }
 
 // Hypha404 renders 404 page for nonexistent page.
 func Hypha404(name, _ string) []byte {
 	return layout("view/404").
-		withMap(map[string]string{
+		withMap(map[string]interface{}{
 			"PageTitle": name,
 			"Tree":      hyphaTree(name),
+			"Locale":    cfg.Locale,
 		}).
 		wrapInBase(map[string]string{
-			"Title": fmt.Sprintf(cfg.TitleTemplate, name),
+			"Title": titleTemplateView(name),
 		})
 }
 
 // HyphaPage renders hypha viewer.
 func HyphaPage(name, content string) []byte {
 	return layout("view/index").
-		withMap(map[string]string{
+		withMap(map[string]interface{}{
 			"Content": content,
 			"Tree":    hyphaTree(name),
+			"Locale":  cfg.Locale,
 		}).
 		wrapInBase(map[string]string{
-			"Title": fmt.Sprintf(cfg.TitleTemplate, name),
-		})
-}
-
-// hyphaGeneric is used when building renderers for all types of hypha pages
-func hyphaGeneric(name, content, templateName string) []byte {
-	return layout(templateName).
-		withString(content).
-		wrapInBase(map[string]string{
-			"Title":   fmt.Sprintf(cfg.TitleTemplate, name),
-			"Sidebar": hyphaTree(name),
+			"Title": titleTemplateView(name),
 		})
 }
 
@@ -72,9 +72,10 @@ func (lyt *Layout) wrapInBase(keys map[string]string) []byte {
 	if lyt.invalid {
 		return lyt.Bytes()
 	}
-	page := map[string]string{
-		"Title":     cfg.SiteTitle,
+	page := map[string]interface{}{
 		"Content":   lyt.String(),
+		"Locale":    cfg.Locale,
+		"Title":     cfg.SiteTitle,
 		"SiteTitle": cfg.SiteTitle,
 	}
 	for key, val := range keys {
@@ -122,7 +123,7 @@ func (lyt *Layout) withString(data string) *Layout {
 	return lyt
 }
 
-func (lyt *Layout) withMap(data map[string]string) *Layout {
+func (lyt *Layout) withMap(data map[string]interface{}) *Layout {
 	if lyt.invalid {
 		return lyt
 	}

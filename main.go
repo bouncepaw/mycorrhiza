@@ -60,7 +60,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
-		http.ServeFile(w, rq, filepath.Join(filepath.Dir(cfg.WikiDir), "favicon.ico"))
+		http.ServeFile(w, rq, filepath.Join(cfg.WikiDir, "favicon.ico"))
 	})
 
 	IdempotentRouterBoiler(r, "binary", HandlerBinary)

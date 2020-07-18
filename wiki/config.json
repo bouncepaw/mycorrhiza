@@ -4,10 +4,7 @@
 	"site-title": "🍄 MycorrhizaWiki", 
 	"home-page": "Home", 
 	"binary-limit-mb": 10, 
-	"title-templates": {
-		"edit-hypha": "Edit %s at MycorrhizaWiki", 
-		"view-hypha": "%s at MycorrhizaWiki"
-	}, 
+	"locale": "en", 
 	"mycelia": [
 		{
 			"names": ["main"],
