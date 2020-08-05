@@ -19,6 +19,13 @@ var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%]+`)
 // HyphaStorage is a mapping between canonical hypha names and their meta information.
 var HyphaStorage = make(map[string]*HyphaData)
 
+// IterateHyphaNamesWith is a closure to be passed to subpackages to let them iterate all hypha names read-only.
+func IterateHyphaNamesWith(f func(string)) {
+	for hyphaName, _ := range HyphaStorage {
+		f(hyphaName)
+	}
+}
+
 // HttpErr is used by many handlers to signal errors in a compact way.
 func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	log.Println(errMsg, "for", name)

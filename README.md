@@ -1,7 +1,16 @@
 # mycorrhiza wiki
 A wiki engine inspired by fungi. Not production-ready.
 
-Current version: 0.7 (or more?)
+This branch is devoted to version 0.8.
+* [ ] Tree generation
+  * [x] Basic generation
+  * [ ] Generation that takes non-existent hyphae into account¹
+* [ ] History
+  * [ ] Saving all changes to git
+  * [ ] Make it possible to see any previous version
+  * [ ] A nice UI for that
+
+¹ Current algorithm won't detect `a/b/c` as a child of `a` if `a/b` does not exist.
 
 ## Current features
 * Edit pages through html forms

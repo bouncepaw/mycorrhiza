@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
+	"github.com/bouncepaw/mycorrhiza/tree"
 )
 
 func init() {
@@ -70,7 +71,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 				%[2]s
 				%[3]s
 			</article>
-			<hr>
+			<hr/>
 			<form action="/upload-binary/%[1]s"
 			      method="post" enctype="multipart/form-data">
 				<label for="upload-binary__input">Upload new binary part</label>
@@ -78,8 +79,15 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 				<input type="file" id="upload-binary__input" name="binary"/>
 				<input type="submit"/>
 			</form>
+			<hr/>
+			<aside>
+				%[4]s
+			</aside>
 		</main>
-`, hyphaName, naviTitle(hyphaName), contents)
+`, hyphaName,
+		naviTitle(hyphaName),
+		contents,
+		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(base(hyphaName, form)))
