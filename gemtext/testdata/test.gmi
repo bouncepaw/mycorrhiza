@@ -1,0 +1,24 @@
+# 1
+## 2
+### 3
+> quote
+
+* li 1
+* li 2
+text
+more text
+=> Pear some link
+
+* li\n"+
+```alt text goes here
+=> preformatted text
+where gemtext is not lexed
+```it ends here"
+=>linking
+
+text
+```
+()
+/\
+```
+<= Apple : 1..3

@@ -1,7 +1,0 @@
-Unlike earliest wiki engines, MycorrhizaWiki supports authorization system and non-authorized edits are disabled by default. Anyone can get an account on a MycorrhizaWiki wiki by signing up. There must be a form for that.
-
-* Each user is part of one or more user groups.
-* Each user has a username. Usernames follow the same naming conventions as hyphae but additionally the forward slash / character is prohibited in usernames. Please note that usernames are case-insensitive, thus //shroom// and //Shroom// mean the same; spaces and underscores are also the same, //amanita muscaria// = //amanita_muscaria//.
-* Password chosen by the user is not directly stored on the server. Only its hash is salted so even if a server is hacked, a hacker won't get the passwords. There are no restrictions on passwords. Server administrator doesn't have access to the password as well.
-* Each user gets their own hypha in the //:user// mycelium. The hypha has the same name as the user. Subhyphae can also be added.
-* If an authenticated user makes an edit, the fact that they have made the edit is stored in the revision history.

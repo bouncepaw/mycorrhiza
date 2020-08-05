@@ -1,0 +1,3 @@
+[submodule "metarrhiza"]
+	path = metarrhiza
+	url = https://github.com/bouncepaw/metarrhiza.git

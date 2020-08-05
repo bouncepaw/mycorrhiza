@@ -3,14 +3,6 @@ module github.com/bouncepaw/mycorrhiza
 go 1.14
 
 require (
-	github.com/gorilla/mux v1.7.4
-	mvdan.cc/gogrep v0.0.0-20200420132841-24e8804e5b3c // indirect
+	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
+	golang.org/x/tools v0.0.0-20200731060945-b5fad4ed8dd6 // indirect
 )
-
-require (
-	github.com/m4tty/cajun v0.0.0-20150303030909-35de273cc87b
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	gopkg.in/russross/blackfriday.v2 v2.0.1
-)
-
-replace gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.0.1
