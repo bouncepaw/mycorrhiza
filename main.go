@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/history"
 )
 
 // WikiDir is a rooted path to the wiki storage directory.
@@ -111,6 +113,28 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Indexed", len(HyphaStorage), "hyphae")
 }
 
+func handlerListCommits(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(history.CommitsTable()))
+}
+
+func handlerStatus(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(history.StatusTable()))
+}
+
+func handlerCommitTest(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	history.CommitTest()
+	w.Write([]byte("if you are here, a commit has been done"))
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 
@@ -124,11 +148,16 @@ func main() {
 	Index(WikiDir)
 	log.Println("Indexed", len(HyphaStorage), "hyphae")
 
+	history.Start(WikiDir)
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	// See http_readers.go for /page/, /text/, /binary/.
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/.
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
+	http.HandleFunc("/git/list", handlerListCommits)
+	http.HandleFunc("/git/status", handlerStatus)
+	http.HandleFunc("/git/commit", handlerCommitTest)
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
