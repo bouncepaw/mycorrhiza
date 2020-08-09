@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/bouncepaw/mycorrhiza/history"
+	// "github.com/bouncepaw/mycorrhiza/history"
 )
 
 func init() {
@@ -93,7 +92,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData.textType = TextGemini
 		hyphaData.textPath = fullPath
 	}
-	history.Stage(shorterPath(fullPath))
+	// TODO: make history changes
 	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 

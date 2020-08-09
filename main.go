@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // WikiDir is a rooted path to the wiki storage directory.
@@ -38,14 +38,8 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 		errMsg, name)))
 }
 
-// shorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
-func shorterPath(fullPath string) string {
-	tmp := strings.TrimPrefix(fullPath, WikiDir)
-	if tmp == "" {
-		return ""
-	}
-	return tmp[1:]
-}
+// shorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir. It was moved to util package, this is an alias. TODO: demolish.
+var shorterPath = util.ShorterPath
 
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
@@ -140,6 +134,7 @@ func main() {
 
 	var err error
 	WikiDir, err = filepath.Abs(os.Args[1])
+	util.WikiDir = WikiDir
 	if err != nil {
 		log.Fatal(err)
 	}
