@@ -11,23 +11,13 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
-/*
-// 10 should be enough
-const ShortHashLength = 10
-
-type EditType int
+type OpType int
 
 const (
-	TypeRename EditType = iota
-	TypeDelete
+	TypeNone OpType = iota
 	TypeEditText
 	TypeEditBinary
 )
-
-type Revision struct {
-	ShortHash [ShortHashLength]byte
-	Type      EditType
-}*/
 
 var WikiRepo *git.Repository
 var Worktree *git.Worktree
@@ -47,9 +37,18 @@ func Start(wikiDir string) {
 
 type HistoryOp struct {
 	Errs      []error
+	opType    OpType
 	userMsg   string
 	signature *object.Signature
 	isDone    bool
+}
+
+func Operation(opType OpType) *HistoryOp {
+	hop := &HistoryOp{
+		Errs:   []error{},
+		opType: opType,
+	}
+	return hop
 }
 
 // WithFiles stages all passed `paths`. Paths can be rooted or not.
@@ -63,8 +62,8 @@ func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
 	return hop
 }
 
-// WithUserMsg sets what user message will be used for the future commit. If it == "", a default one be used. If user messages are not supported for this one type of history operation, this user message will be dropped. If user messages exceeds one line, it is stripped down.
-func (hop *HistoryOp) WithUserMsg(userMsg string) *HistoryOp {
+// WithMsg sets what message will be used for the future commit. If user message exceeds one line, it is stripped down.
+func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 	// Isn't it too imperative?
 	var firstLine string
 	for _, ch := range userMsg {
@@ -73,7 +72,7 @@ func (hop *HistoryOp) WithUserMsg(userMsg string) *HistoryOp {
 		}
 		firstLine += string(ch)
 	}
-	hop.userMsg = userMsg
+	hop.userMsg = firstLine
 	return hop
 }
 
@@ -108,12 +107,10 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 	return hop
 }
 
-func CommitTest() {
-	(&HistoryOp{}).
-		WithUserMsg("This is a test commit").
-		WithSignature("wikimind").
-		Apply()
-	log.Println("Made a test commit")
+func Rename(from, to string) error {
+	log.Println(util.ShorterPath(from), util.ShorterPath(to))
+	_, err := Worktree.Move(util.ShorterPath(from), util.ShorterPath(to))
+	return err
 }
 
 func StatusTable() (html string) {

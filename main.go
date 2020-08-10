@@ -121,14 +121,6 @@ func handlerStatus(w http.ResponseWriter, rq *http.Request) {
 	w.Write([]byte(history.StatusTable()))
 }
 
-func handlerCommitTest(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	history.CommitTest()
-	w.Write([]byte("if you are here, a commit has been done"))
-}
-
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 
@@ -152,7 +144,6 @@ func main() {
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/git/list", handlerListCommits)
 	http.HandleFunc("/git/status", handlerStatus)
-	http.HandleFunc("/git/commit", handlerCommitTest)
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})

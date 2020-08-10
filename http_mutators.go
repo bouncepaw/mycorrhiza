@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	// "github.com/bouncepaw/mycorrhiza/history"
+
+	"github.com/bouncepaw/mycorrhiza/history"
 )
 
 func init() {
@@ -92,7 +93,11 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData.textType = TextGemini
 		hyphaData.textPath = fullPath
 	}
-	// TODO: make history changes
+	history.Operation(history.TypeEditText).
+		WithFiles(fullPath).
+		WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName)).
+		WithSignature("anon").
+		Apply()
 	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 
@@ -141,13 +146,20 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		}
 	} else {
 		if hyphaData.binaryPath != fullPath {
-			if err := os.Remove(hyphaData.binaryPath); err != nil {
+			if err := history.Rename(hyphaData.binaryPath, fullPath); err != nil {
 				log.Println(err)
+			} else {
+				log.Println("Moved", hyphaData.binaryPath, "to", fullPath)
 			}
 		}
 		hyphaData.binaryPath = fullPath
 		hyphaData.binaryType = mimeType
 	}
 	log.Println("Written", len(data), "of binary data for", hyphaName, "to path", fullPath)
+	history.Operation(history.TypeEditText).
+		WithFiles(fullPath).
+		WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mimeType.Mime())).
+		WithSignature("anon").
+		Apply()
 	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
