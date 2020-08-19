@@ -130,6 +130,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if err := os.Chdir(WikiDir); err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")
 	Index(WikiDir)
@@ -138,7 +141,7 @@ func main() {
 	history.Start(WikiDir)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
-	// See http_readers.go for /page/, /text/, /binary/.
+	// See http_readers.go for /page/, /text/, /binary/, /history/.
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/.
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)

@@ -3,6 +3,7 @@ package history
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -107,9 +108,10 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 	return hop
 }
 
+// Rename renames from `from` to `to`. NB. It uses os.Rename internally rather than git.Move because git.Move works wrong for some reason.
 func Rename(from, to string) error {
 	log.Println(util.ShorterPath(from), util.ShorterPath(to))
-	_, err := Worktree.Move(util.ShorterPath(from), util.ShorterPath(to))
+	err := os.Rename(from, to)
 	return err
 }
 

@@ -60,9 +60,6 @@ func (t *tree) fill() {
 // It applies itself recursively on the tree's children.
 func (t *tree) asHtml() (html string) {
 	if t.root {
-		for _, siblingName := range t.siblings {
-			html += navitreeEntry(siblingName, "navitree__sibling")
-		}
 		html += navitreeEntry(t.name, "navitree__pagename")
 	} else {
 		html += navitreeEntry(t.name, "navitree__name")
@@ -70,6 +67,12 @@ func (t *tree) asHtml() (html string) {
 
 	for _, subtree := range t.descendants {
 		html += subtree.asHtml()
+	}
+
+	if t.root {
+		for _, siblingName := range t.siblings {
+			html += navitreeEntry(siblingName, "navitree__sibling")
+		}
 	}
 
 	return `<ul class="navitree__node">` + html + `</ul>`

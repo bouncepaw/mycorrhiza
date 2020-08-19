@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
+	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/tree"
 )
 
@@ -15,6 +16,49 @@ func init() {
 	http.HandleFunc("/page/", handlerPage)
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
+	http.HandleFunc("/history/", handlerHistory)
+}
+
+// handlerHistory lists all revisions of a hypha
+func handlerHistory(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	hyphaName := HyphaNameFromRq(rq, "history")
+	var tbody string
+	if data, ok := HyphaStorage[hyphaName]; ok {
+		revsT, err := history.Revisions(data.textPath)
+		if err == nil {
+			for _, rev := range revsT {
+				tbody += rev.AsHtmlTableRow()
+			}
+		}
+		revsB, err := history.Revisions(data.binaryPath)
+		if err == nil {
+			for _, rev := range revsB {
+				tbody += rev.AsHtmlTableRow()
+			}
+		}
+		log.Println(revsT, revsB)
+	}
+
+	table := fmt.Sprintf(`
+		<main>
+			<table>
+				<thead>
+					<tr>
+						<th>Hash</th>
+						<th>Username</th>
+						<th>Time</th>
+						<th>Message</th>
+					</tr>
+				</thead>
+				<tbody>
+					%s
+				</tbody>
+			</table>
+		</main>`, tbody)
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(base(hyphaName, table)))
 }
 
 // handlerText serves raw source text of the hypha.

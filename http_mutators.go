@@ -134,11 +134,6 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
 		log.Println(err)
 	}
-	if err = ioutil.WriteFile(fullPath, data, 0644); err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-			"Could not save passed data")
-		return
-	}
 	if !isOld {
 		HyphaStorage[hyphaName] = &HyphaData{
 			binaryPath: fullPath,
@@ -155,9 +150,14 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		hyphaData.binaryPath = fullPath
 		hyphaData.binaryType = mimeType
 	}
+	if err = ioutil.WriteFile(fullPath, data, 0644); err != nil {
+		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
+			"Could not save passed data")
+		return
+	}
 	log.Println("Written", len(data), "of binary data for", hyphaName, "to path", fullPath)
 	history.Operation(history.TypeEditText).
-		WithFiles(fullPath).
+		WithFiles(fullPath, hyphaData.binaryPath).
 		WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mimeType.Mime())).
 		WithSignature("anon").
 		Apply()
