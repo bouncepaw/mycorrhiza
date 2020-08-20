@@ -89,12 +89,17 @@ func parseRevisionLine(line string) *Revision {
 	return &rev
 }
 
-func (rev *Revision) AsHtmlTableRow() string {
+func (rev *Revision) AsHtmlTableRow(hyphaName string) string {
 	return fmt.Sprintf(`
 <tr>
-	<td>%s</td>
+	<td><a href="/rev/%s/%s">%s</a></td>
 	<td>%s</td>
 	<td><time>%s</time></td>
 	<td>%s</td>
-</tr>`, rev.Hash, rev.Username, rev.Time.String(), rev.Message)
+</tr>`, rev.Hash, hyphaName, rev.Hash, rev.Username, rev.Time.String(), rev.Message)
+}
+
+func FileAtRevision(filepath, hash string) (string, error) {
+	out, err := gitsh("show", hash+":"+filepath)
+	return out.String(), err
 }

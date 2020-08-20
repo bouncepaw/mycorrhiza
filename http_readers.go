@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -17,6 +19,48 @@ func init() {
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
 	http.HandleFunc("/history/", handlerHistory)
+	http.HandleFunc("/rev/", handlerRevision)
+}
+
+// handlerRevision displays a specific revision of text part a page
+func handlerRevision(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
+		revHash           = path.Dir(shorterUrl)
+		hyphaName         = CanonicalName(strings.TrimPrefix(shorterUrl, revHash+"/"))
+		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
+		textPath          = hyphaName + "&.gmi"
+		textContents, err = history.FileAtRevision(textPath, revHash)
+	)
+	log.Println(revHash, hyphaName, textPath, textContents, err)
+	if err == nil {
+		contents = gemtext.ToHtml(hyphaName, textContents)
+	}
+	form := fmt.Sprintf(`
+		<main>
+			<nav>
+				<ul>
+					<li><a href="/page/%[1]s">See the last revision</a></li>
+					<li><a href="/history/%[1]s">History</a></li>
+				</ul>
+			</nav>
+			<article>
+				%[2]s
+				%[3]s
+			</article>
+			<hr/>
+			<aside>
+				%[4]s
+			</aside>
+		</main>
+`, hyphaName,
+		naviTitle(hyphaName),
+		contents,
+		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(base(hyphaName, form)))
 }
 
 // handlerHistory lists all revisions of a hypha
@@ -28,13 +72,13 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 		revsT, err := history.Revisions(data.textPath)
 		if err == nil {
 			for _, rev := range revsT {
-				tbody += rev.AsHtmlTableRow()
+				tbody += rev.AsHtmlTableRow(hyphaName)
 			}
 		}
 		revsB, err := history.Revisions(data.binaryPath)
 		if err == nil {
 			for _, rev := range revsB {
-				tbody += rev.AsHtmlTableRow()
+				tbody += rev.AsHtmlTableRow(hyphaName)
 			}
 		}
 		log.Println(revsT, revsB)
