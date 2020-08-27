@@ -3,12 +3,9 @@ package history
 import (
 	"fmt"
 	"log"
-	"os"
-	"time"
 
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/go-git/go-git/v5"
-	// "github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
@@ -33,6 +30,8 @@ func Start(wikiDir string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	gitsh("config", "user.name", "wikimind")
+	gitsh("config", "user.email", "wikimind@mycorrhiza")
 	log.Println("Wiki repository found")
 }
 
@@ -41,7 +40,8 @@ type HistoryOp struct {
 	opType    OpType
 	userMsg   string
 	signature *object.Signature
-	isDone    bool
+	name      string
+	email     string
 }
 
 func Operation(opType OpType) *HistoryOp {
@@ -52,66 +52,55 @@ func Operation(opType OpType) *HistoryOp {
 	return hop
 }
 
-// WithFiles stages all passed `paths`. Paths can be rooted or not.
-func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
-	for _, path := range paths {
-		if _, err := Worktree.Add(util.ShorterPath(path)); err != nil {
-			log.Println(err)
-			hop.Errs = append(hop.Errs, err)
-		}
+func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
+	out, err := gitsh(args...)
+	fmt.Println("out:", out.String())
+	if err != nil {
+		hop.Errs = append(hop.Errs, err)
 	}
 	return hop
 }
 
+// WithFiles stages all passed `paths`. Paths can be rooted or not.
+func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
+	for i, path := range paths {
+		paths[i] = util.ShorterPath(path)
+	}
+	return hop.gitop(append([]string{"add"}, paths...)...)
+}
+
 // WithMsg sets what message will be used for the future commit. If user message exceeds one line, it is stripped down.
 func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
-	// Isn't it too imperative?
-	var firstLine string
 	for _, ch := range userMsg {
 		if ch == '\r' || ch == '\n' {
 			break
 		}
-		firstLine += string(ch)
+		hop.userMsg += string(ch)
 	}
-	hop.userMsg = firstLine
 	return hop
 }
 
 // WithSignature sets a signature for the future commit. You need to pass a username only, the rest is upon us (including email and time).
 func (hop *HistoryOp) WithSignature(username string) *HistoryOp {
-	hop.signature = &object.Signature{
-		Name: username,
-		// A fake email, why not
-		Email: username + "@mycorrhiza",
-		When:  time.Now(),
-	}
+	hop.name = username
+	hop.email = username + "@mycorrhiza" // A fake email, why not
 	return hop
 }
 
-// Apply applies history operation by doing the commit. You can't apply the same operation more than once.
+// Apply applies history operation by doing the commit.
 func (hop *HistoryOp) Apply() *HistoryOp {
-	if !hop.isDone {
-		opts := &git.CommitOptions{
-			All:    false,
-			Author: hop.signature,
-		}
-		err := opts.Validate(WikiRepo)
-		if err != nil {
-			hop.Errs = append(hop.Errs, err)
-		}
-		// TODO: work on this section:
-		_, err = Worktree.Commit(hop.userMsg, opts)
-		if err != nil {
-			hop.Errs = append(hop.Errs, err)
-		}
-	}
+	hop.gitop(
+		"commit",
+		"--author='"+hop.name+" <"+hop.email+">'",
+		"--message="+hop.userMsg,
+	)
 	return hop
 }
 
 // Rename renames from `from` to `to`. NB. It uses os.Rename internally rather than git.Move because git.Move works wrong for some reason.
 func Rename(from, to string) error {
 	log.Println(util.ShorterPath(from), util.ShorterPath(to))
-	err := os.Rename(from, to)
+	_, err := gitsh("mv", from, to)
 	return err
 }
 

@@ -1,45 +1,10 @@
 package history
 
 import (
-	"bytes"
 	"fmt"
-	"log"
-	"os/exec"
 	"regexp"
-	"strconv"
 	"strings"
-	"time"
 )
-
-type Revision struct {
-	Hash     string
-	Username string
-	Time     time.Time
-	Message  string
-}
-
-var gitpath string
-
-func init() {
-	path, err := exec.LookPath("git")
-	if err != nil {
-		log.Fatal("Cound not find the git executable. Check your $PATH.")
-	} else {
-		log.Println("Git path is", path)
-	}
-	gitpath = path
-}
-
-// I pronounce it as [gɪt͡ʃ].
-func gitsh(args ...string) (out bytes.Buffer, err error) {
-	cmd := exec.Command(gitpath, args...)
-	cmd.Stdout = &out
-	cmd.Run()
-	if err != nil {
-		log.Println("gitsh:", err)
-	}
-	return out, err
-}
 
 func Revisions(filepath string) ([]Revision, error) {
 	if filepath == "" {
@@ -62,15 +27,6 @@ func Revisions(filepath string) ([]Revision, error) {
 		}
 	}
 	return revs, err
-}
-
-func unixTimestampAsTime(ts string) *time.Time {
-	i, err := strconv.ParseInt(ts, 10, 64)
-	if err != nil {
-		return nil
-	}
-	tm := time.Unix(i, 0)
-	return &tm
 }
 
 // This regex is wrapped in "". For some reason, these quotes appear at some time and we have to get rid of them.
