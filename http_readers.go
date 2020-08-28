@@ -33,7 +33,6 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		textPath          = hyphaName + "&.gmi"
 		textContents, err = history.FileAtRevision(textPath, revHash)
 	)
-	log.Println(revHash, hyphaName, textPath, textContents, err)
 	if err == nil {
 		contents = gemtext.ToHtml(hyphaName, textContents)
 	}
@@ -41,8 +40,11 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		<main>
 			<nav>
 				<ul>
-					<li><a href="/page/%[1]s">See the latest revision</a></li>
+					<li><a href="/page/%[1]s">Hypha</a></li>
+					<li><a href="/edit/%[1]s">Edit</a></li>
+					<li><a href="/text/%[1]s">Raw text</a></li>
 					<li><a href="/history/%[1]s">History</a></li>
+					<li><b>%[5]s</b></li>
 				</ul>
 			</nav>
 			<article>
@@ -58,7 +60,8 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 `, hyphaName,
 		naviTitle(hyphaName),
 		contents,
-		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))
+		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith),
+		revHash)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(base(hyphaName, form)))
@@ -81,6 +84,14 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 
 	table := fmt.Sprintf(`
 		<main>
+			<nav>
+				<ul>
+					<li><a href="/page/%[1]s">Hypha</a></li>
+					<li><a href="/edit/%[1]s">Edit</a></li>
+					<li><a href="/text/%[1]s">Raw text</a></li>
+					<li><b>History</b></li>
+				</ul>
+			</nav>
 			<table>
 				<thead>
 					<tr>
@@ -91,10 +102,10 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 					</tr>
 				</thead>
 				<tbody>
-					%s
+					%[2]s
 				</tbody>
 			</table>
-		</main>`, tbody)
+		</main>`, hyphaName, tbody)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(base(hyphaName, table)))
@@ -144,9 +155,9 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 		<main>
 			<nav>
 				<ul>
+					<li><b>Hypha</b></li>
 					<li><a href="/edit/%[1]s">Edit</a></li>
 					<li><a href="/text/%[1]s">Raw text</a></li>
-					<li><a href="/binary/%[1]s">Binary part</a></li>
 					<li><a href="/history/%[1]s">History</a></li>
 				</ul>
 			</nav>
