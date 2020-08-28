@@ -6,16 +6,13 @@ import (
 	"strings"
 )
 
-func Revisions(filepath string) ([]Revision, error) {
-	if filepath == "" {
-		return []Revision{}, nil
-	}
+func Revisions(hyphaName string) ([]Revision, error) {
 	var (
 		out, err = gitsh(
 			"log", "--oneline", "--no-merges",
 			// Hash, Commiter email, Commiter time, Commit msg separated by tab
 			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
-			"--", filepath,
+			"--", hyphaName+"&.*",
 		)
 		revs []Revision
 	)

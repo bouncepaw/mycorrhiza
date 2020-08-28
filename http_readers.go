@@ -41,11 +41,12 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		<main>
 			<nav>
 				<ul>
-					<li><a href="/page/%[1]s">See the last revision</a></li>
+					<li><a href="/page/%[1]s">See the latest revision</a></li>
 					<li><a href="/history/%[1]s">History</a></li>
 				</ul>
 			</nav>
 			<article>
+				<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 				%[2]s
 				%[3]s
 			</article>
@@ -68,20 +69,14 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "history")
 	var tbody string
-	if data, ok := HyphaStorage[hyphaName]; ok {
-		revsT, err := history.Revisions(data.textPath)
+	if _, ok := HyphaStorage[hyphaName]; ok {
+		revs, err := history.Revisions(hyphaName)
 		if err == nil {
-			for _, rev := range revsT {
+			for _, rev := range revs {
 				tbody += rev.AsHtmlTableRow(hyphaName)
 			}
 		}
-		revsB, err := history.Revisions(data.binaryPath)
-		if err == nil {
-			for _, rev := range revsB {
-				tbody += rev.AsHtmlTableRow(hyphaName)
-			}
-		}
-		log.Println(revsT, revsB)
+		log.Println(revs)
 	}
 
 	table := fmt.Sprintf(`
