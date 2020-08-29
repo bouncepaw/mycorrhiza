@@ -95,9 +95,9 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 			<table>
 				<thead>
 					<tr>
+						<th>Time</th>
 						<th>Hash</th>
 						<th>Username</th>
-						<th>Time</th>
 						<th>Message</th>
 					</tr>
 				</thead>

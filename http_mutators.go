@@ -93,12 +93,12 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData.textType = TextGemini
 		hyphaData.textPath = fullPath
 	}
+	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 	history.Operation(history.TypeEditText).
 		WithFiles(fullPath).
 		WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName)).
 		WithSignature("anon").
 		Apply()
-	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 
 // handlerUploadBinary uploads a new binary part for the hypha.
@@ -156,10 +156,10 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	log.Println("Written", len(data), "of binary data for", hyphaName, "to path", fullPath)
+	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 	history.Operation(history.TypeEditText).
 		WithFiles(fullPath, hyphaData.binaryPath).
 		WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mimeType.Mime())).
 		WithSignature("anon").
 		Apply()
-	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
