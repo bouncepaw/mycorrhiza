@@ -1,3 +1,5 @@
+//go:generate go get -u github.com/valyala/quicktemplate/qtc
+//go:generate qtc -dir=templates
 package main
 
 import (
@@ -9,6 +11,7 @@ import (
 	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -38,29 +41,13 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 		errMsg, name)))
 }
 
-// shorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir. It was moved to util package, this is an alias. TODO: demolish.
-var shorterPath = util.ShorterPath
-
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	buf := `
-	<h1>List of pages</h1>
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Text path</th>
-				<th>Text type</th>
-				<th>Binary path</th>
-				<th>Binary type</th>
-			</tr>
-		</thead>
-		<tbody>`
+	var tbody string
+	// It should be moved to templates too, right?
 	for name, data := range HyphaStorage {
-		buf += fmt.Sprintf(`
+		tbody += fmt.Sprintf(`
 			<tr>
 				<td><a href="/page/%s">%s</a></td>
 				<td>%s</td>
@@ -69,33 +56,15 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 				<td>%d</td>
 			</tr>`,
 			name, name,
-			shorterPath(data.textPath), data.textType,
-			shorterPath(data.binaryPath), data.binaryType,
+			util.ShorterPath(data.textPath), data.textType,
+			util.ShorterPath(data.binaryPath), data.binaryType,
 		)
 	}
-	buf += `
-		</tbody>
-	</table>
-`
-	w.Write([]byte(base("List of pages", buf)))
+	util.HTTP200Page(w, base("List of pages", templates.PageListHTML(tbody)))
 }
 
 // This part is present in all html documents.
-func base(title, body string) string {
-	return fmt.Sprintf(`
-<!doctype html>
-<html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="/static/common.css">
-		<title>%s</title>
-	</head>
-	<body>
-		%s
-	</body>
-</html>
-`, title, body)
-}
+var base = templates.BaseHTML
 
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {

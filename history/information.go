@@ -48,8 +48,7 @@ func (rev *Revision) AsHtmlTableRow(hyphaName string) string {
 	<td><time>%s</time></td>
 	<td><a href="/rev/%s/%s">%s</a></td>
 	<td>%s</td>
-	<td>%s</td>
-</tr>`, rev.Time.Format(time.RFC822), rev.Hash, hyphaName, rev.Hash, rev.Username, rev.Message)
+</tr>`, rev.Time.Format(time.RFC822), rev.Hash, hyphaName, rev.Hash, rev.Message)
 }
 
 // See how the file with `filepath` looked at commit with `hash`.

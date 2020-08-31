@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
@@ -38,24 +40,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	form := fmt.Sprintf(`
-		<main>
-			<h1>Edit %[1]s</h1>
-			%[3]s
-			<form method="post" class="upload-text-form"
-			      action="/upload-text/%[1]s">
-				<textarea name="text">%[2]s</textarea>
-				<br/>
-				<input type="submit"/>
-				<a href="/page/%[1]s">Cancel</a>
-			</form>
-		</main>
-`, hyphaName, textAreaFill, warning)
-
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(
-		"Edit "+hyphaName, form)))
+	util.HTTP200Page(w, base("Edit"+hyphaName, templates.EditHTML(hyphaName, textAreaFill, warning)))
 }
 
 // handlerUploadText uploads a new text part for the hypha.

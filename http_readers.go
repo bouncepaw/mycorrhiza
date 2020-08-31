@@ -11,7 +11,9 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
@@ -36,35 +38,16 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	if err == nil {
 		contents = gemtext.ToHtml(hyphaName, textContents)
 	}
-	form := fmt.Sprintf(`
-		<main>
-			<nav>
-				<ul>
-					<li><a href="/page/%[1]s">Hypha</a></li>
-					<li><a href="/edit/%[1]s">Edit</a></li>
-					<li><a href="/text/%[1]s">Raw text</a></li>
-					<li><a href="/history/%[1]s">History</a></li>
-					<li><b>%[5]s</b></li>
-				</ul>
-			</nav>
-			<article>
-				<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
-				%[2]s
-				%[3]s
-			</article>
-			<hr/>
-			<aside>
-				%[4]s
-			</aside>
-		</main>
-`, hyphaName,
+	page := templates.RevisionHTML(
+		hyphaName,
 		naviTitle(hyphaName),
 		contents,
 		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith),
-		revHash)
+		revHash,
+	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, form)))
+	w.Write([]byte(base(hyphaName, page)))
 }
 
 // handlerHistory lists all revisions of a hypha
@@ -82,33 +65,8 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 		log.Println(revs)
 	}
 
-	table := fmt.Sprintf(`
-		<main>
-			<nav>
-				<ul>
-					<li><a href="/page/%[1]s">Hypha</a></li>
-					<li><a href="/edit/%[1]s">Edit</a></li>
-					<li><a href="/text/%[1]s">Raw text</a></li>
-					<li><b>History</b></li>
-				</ul>
-			</nav>
-			<table>
-				<thead>
-					<tr>
-						<th>Time</th>
-						<th>Hash</th>
-						<th>Username</th>
-						<th>Message</th>
-					</tr>
-				</thead>
-				<tbody>
-					%[2]s
-				</tbody>
-			</table>
-		</main>`, hyphaName, tbody)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, table)))
+	util.HTTP200Page(w,
+		base(hyphaName, templates.HistoryHTML(hyphaName, tbody)))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -138,8 +96,8 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
 		hyphaName         = HyphaNameFromRq(rq, "page")
-		contents          = fmt.Sprintf(`<p>This hypha has no text. Why not <a href="/edit/%s">create it</a>?</p>`, hyphaName)
 		data, hyphaExists = HyphaStorage[hyphaName]
+		contents          string
 	)
 	if hyphaExists {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
@@ -151,38 +109,8 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents
 		}
 	}
-	form := fmt.Sprintf(`
-		<main>
-			<nav>
-				<ul>
-					<li><b>Hypha</b></li>
-					<li><a href="/edit/%[1]s">Edit</a></li>
-					<li><a href="/text/%[1]s">Raw text</a></li>
-					<li><a href="/history/%[1]s">History</a></li>
-				</ul>
-			</nav>
-			<article>
-				%[2]s
-				%[3]s
-			</article>
-			<hr/>
-			<form action="/upload-binary/%[1]s"
-			      method="post" enctype="multipart/form-data">
-				<label for="upload-binary__input">Upload new binary part</label>
-				<br>
-				<input type="file" id="upload-binary__input" name="binary"/>
-				<input type="submit"/>
-			</form>
-			<hr/>
-			<aside>
-				%[4]s
-			</aside>
-		</main>
-`, hyphaName,
+	util.HTTP200Page(w, base(hyphaName, templates.PageHTML(hyphaName,
 		naviTitle(hyphaName),
 		contents,
-		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, form)))
+		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))))
 }

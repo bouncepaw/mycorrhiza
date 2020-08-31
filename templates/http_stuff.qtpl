@@ -1,0 +1,33 @@
+{% func BaseHTML(title, body string) %}
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/static/common.css">
+		<title>{%s title %}</title>
+	</head>
+	<body>
+		{%s= body %}
+	</body>
+</html>
+{% endfunc %}
+
+{% func PageListHTML(tbody string) %}
+<main>
+	<h1>List of pages</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Text path</th>
+				<th>Text type</th>
+				<th>Binary path</th>
+				<th>Binary type</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%s= tbody %}
+		</tbody>
+	</table>
+</main>
+{% endfunc %}

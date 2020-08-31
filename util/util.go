@@ -1,6 +1,7 @@
 package util
 
 import (
+	"net/http"
 	"strings"
 )
 
@@ -16,4 +17,11 @@ func ShorterPath(path string) string {
 		return tmp[1:]
 	}
 	return path
+}
+
+// HTTP200Page wraps some frequently used things for successful 200 responses.
+func HTTP200Page(w http.ResponseWriter, page string) {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(page))
 }
