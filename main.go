@@ -44,23 +44,14 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	var tbody string
-	// It should be moved to templates too, right?
-	for name, data := range HyphaStorage {
-		tbody += fmt.Sprintf(`
-			<tr>
-				<td><a href="/page/%s">%s</a></td>
-				<td>%s</td>
-				<td>%d</td>
-				<td>%s</td>
-				<td>%d</td>
-			</tr>`,
-			name, name,
-			util.ShorterPath(data.textPath), data.textType,
-			util.ShorterPath(data.binaryPath), data.binaryType,
-		)
+	var (
+		tbody     string
+		pageCount = len(HyphaStorage)
+	)
+	for hyphaName, data := range HyphaStorage {
+		tbody += templates.HyphaListRowHTML(hyphaName, data.binaryType.Mime(), data.binaryPath != "")
 	}
-	util.HTTP200Page(w, base("List of pages", templates.PageListHTML(tbody)))
+	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount)))
 }
 
 // This part is present in all html documents.

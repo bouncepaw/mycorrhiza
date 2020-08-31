@@ -12,17 +12,15 @@
 </html>
 {% endfunc %}
 
-{% func PageListHTML(tbody string) %}
+{% func HyphaListHTML(tbody string, pageCount int) %}
 <main>
-	<h1>List of pages</h1>
+	<h1>List of hyphae</h1>
+	<p>This wiki has {%d pageCount %} hyphae.</p>
 	<table>
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Text path</th>
-				<th>Text type</th>
-				<th>Binary path</th>
-				<th>Binary type</th>
+				<th>Full name</th>
+				<th>Binary part type</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -30,4 +28,15 @@
 		</tbody>
 	</table>
 </main>
+{% endfunc %}
+
+{% func HyphaListRowHTML(hyphaName, binaryMime string, binaryPresent bool) %}
+			<tr>
+				<td><a href="/page/{%s hyphaName %}">{%s hyphaName %}</a></td>
+			{% if binaryPresent %}
+				<td>{%s binaryMime %}</td>
+			{% else %}
+				<td></td>
+			{% endif %}
+			</tr>
 {% endfunc %}
