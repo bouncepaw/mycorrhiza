@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -67,6 +68,21 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Indexed", len(HyphaStorage), "hyphae")
 }
 
+// Redirect to a random hypha.
+func handlerRandom(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var randomHyphaName string
+	i := rand.Intn(len(HyphaStorage))
+	for hyphaName := range HyphaStorage {
+		if i == 0 {
+			randomHyphaName = hyphaName
+			break
+		}
+		i--
+	}
+	http.Redirect(w, rq, "/page/"+randomHyphaName, http.StatusSeeOther)
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 
@@ -91,6 +107,7 @@ func main() {
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/.
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
+	http.HandleFunc("/random", handlerRandom)
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
