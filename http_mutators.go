@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
@@ -36,24 +40,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	form := fmt.Sprintf(`
-		<main>
-			<h1>Edit %[1]s</h1>
-			%[3]s
-			<form method="post" class="upload-text-form"
-			      action="/upload-text/%[1]s">
-				<textarea name="text">%[2]s</textarea>
-				<br/>
-				<input type="submit"/>
-				<a href="/page/%[1]s">Cancel</a>
-			</form>
-		</main>
-`, hyphaName, textAreaFill, warning)
-
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(
-		"Edit "+hyphaName, form)))
+	util.HTTP200Page(w, base("Edit"+hyphaName, templates.EditHTML(hyphaName, textAreaFill, warning)))
 }
 
 // handlerUploadText uploads a new text part for the hypha.
@@ -92,6 +79,11 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData.textPath = fullPath
 	}
 	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
+	history.Operation(history.TypeEditText).
+		WithFiles(fullPath).
+		WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName)).
+		WithSignature("anon").
+		Apply()
 }
 
 // handlerUploadBinary uploads a new binary part for the hypha.
@@ -127,11 +119,6 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
 		log.Println(err)
 	}
-	if err = ioutil.WriteFile(fullPath, data, 0644); err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-			"Could not save passed data")
-		return
-	}
 	if !isOld {
 		HyphaStorage[hyphaName] = &HyphaData{
 			binaryPath: fullPath,
@@ -139,13 +126,25 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		}
 	} else {
 		if hyphaData.binaryPath != fullPath {
-			if err := os.Remove(hyphaData.binaryPath); err != nil {
+			if err := history.Rename(hyphaData.binaryPath, fullPath); err != nil {
 				log.Println(err)
+			} else {
+				log.Println("Moved", hyphaData.binaryPath, "to", fullPath)
 			}
 		}
 		hyphaData.binaryPath = fullPath
 		hyphaData.binaryType = mimeType
 	}
+	if err = ioutil.WriteFile(fullPath, data, 0644); err != nil {
+		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
+			"Could not save passed data")
+		return
+	}
 	log.Println("Written", len(data), "of binary data for", hyphaName, "to path", fullPath)
 	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
+	history.Operation(history.TypeEditText).
+		WithFiles(fullPath, hyphaData.binaryPath).
+		WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mimeType.Mime())).
+		WithSignature("anon").
+		Apply()
 }

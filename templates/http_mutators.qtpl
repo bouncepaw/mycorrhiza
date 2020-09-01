@@ -1,0 +1,14 @@
+
+{% func EditHTML(hyphaName, textAreaFill, warning string) %}
+		<main>
+			<h1>Edit {%s hyphaName %}</h1>
+			{%s= warning %}
+			<form method="post" class="upload-text-form"
+			      action="/upload-text/{%s hyphaName %}">
+				<textarea name="text">{%s textAreaFill %}</textarea>
+				<br/>
+				<input type="submit"/>
+				<a href="/page/{%s hyphaName %}">Cancel</a>
+			</form>
+		</main>
+{% endfunc %}

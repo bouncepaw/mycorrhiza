@@ -23,11 +23,6 @@ type GemLexerState struct {
 	buf string
 }
 
-// GeminiToHtml converts gemtext `content` of hypha `name` to html string.
-func GeminiToHtml(name, content string) string {
-	return "TODO: do"
-}
-
 type Line struct {
 	id int
 	// interface{} may be bad. What I need is a sum of string and Transclusion
@@ -78,7 +73,7 @@ func wikilink(src string, state *GemLexerState) (href, text, class string) {
 func lex(name, content string) (ast []Line) {
 	var state = GemLexerState{name: name}
 
-	for _, line := range strings.Split(content, "\n") {
+	for _, line := range append(strings.Split(content, "\n"), "") {
 		geminiLineToAST(line, &state, &ast)
 	}
 	return ast
@@ -86,15 +81,20 @@ func lex(name, content string) (ast []Line) {
 
 // Lex `line` in gemtext and save it to `ast` using `state`.
 func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
+	addLine := func(text interface{}) {
+		*ast = append(*ast, Line{id: state.id, contents: text})
+	}
+
 	if "" == strings.TrimSpace(line) {
+		if state.where == "list" {
+			state.where = ""
+			addLine(state.buf + "</ul>")
+		}
 		return
 	}
 
 	startsWith := func(token string) bool {
 		return strings.HasPrefix(line, token)
-	}
-	addLine := func(text interface{}) {
-		*ast = append(*ast, Line{id: state.id, contents: text})
 	}
 
 	// Beware! Usage of goto. Some may say it is considered evil but in this case it helped to make a better-structured code.

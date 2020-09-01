@@ -1,0 +1,81 @@
+{% func HistoryHTML(hyphaName, tbody string) %}
+		<main>
+			<nav>
+				<ul>
+					<li><a href="/page/{%s hyphaName %}">Hypha</a></li>
+					<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
+					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
+					<li><b>History</b></li>
+				</ul>
+			</nav>
+			<table>
+				<thead>
+					<tr>
+						<th>Time</th>
+						<th>Hash</th>
+						<th>Message</th>
+					</tr>
+				</thead>
+				<tbody>
+				{%s= tbody %}
+				</tbody>
+			</table>
+		</main>
+{% endfunc %}
+
+{% func RevisionHTML(hyphaName, naviTitle, contents, tree, revHash string) %}
+		<main>
+			<nav>
+				<ul>
+					<li><a href="/page/{%s hyphaName %}">Hypha</a></li>
+					<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
+					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
+					<li><a href="/history/{%s hyphaName %}">History</a></li>
+					<li><b>{%s revHash %}</b></li>
+				</ul>
+			</nav>
+			<article>
+				<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
+				{%s= naviTitle %}
+				{%s= contents %}
+			</article>
+			<hr/>
+			<aside>
+				{%s= tree %}
+			</aside>
+		</main>
+{% endfunc %}
+
+If `contents` == "", a helpful message is shown instead.
+{% func PageHTML(hyphaName, naviTitle, contents, tree string) %}
+		<main>
+			<nav>
+				<ul>
+					<li><b>Hypha</b></li>
+					<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
+					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
+					<li><a href="/history/{%s hyphaName %}">History</a></li>
+				</ul>
+			</nav>
+			<article>
+				{%s= naviTitle %}
+				{% if contents == "" %}
+					<p>This hypha has no text. Why not <a href="/edit/{%s hyphaName %}">create it</a>?</p>
+				{% else %}
+					{%s= contents %}
+				{% endif %}
+			</article>
+			<hr/>
+			<form action="/upload-binary/{%s hyphaName %}"
+			      method="post" enctype="multipart/form-data">
+				<label for="upload-binary__input">Upload new binary part</label>
+				<br>
+				<input type="file" id="upload-binary__input" name="binary"/>
+				<input type="submit"/>
+			</form>
+			<hr/>
+			<aside>
+				{%s= tree %}
+			</aside>
+		</main>
+{% endfunc %}

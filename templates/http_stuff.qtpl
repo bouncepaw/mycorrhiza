@@ -1,0 +1,42 @@
+{% func BaseHTML(title, body string) %}
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/static/common.css">
+		<title>{%s title %}</title>
+	</head>
+	<body>
+		{%s= body %}
+	</body>
+</html>
+{% endfunc %}
+
+{% func HyphaListHTML(tbody string, pageCount int) %}
+<main>
+	<h1>List of hyphae</h1>
+	<p>This wiki has {%d pageCount %} hyphae.</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Full name</th>
+				<th>Binary part type</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%s= tbody %}
+		</tbody>
+	</table>
+</main>
+{% endfunc %}
+
+{% func HyphaListRowHTML(hyphaName, binaryMime string, binaryPresent bool) %}
+			<tr>
+				<td><a href="/page/{%s hyphaName %}">{%s hyphaName %}</a></td>
+			{% if binaryPresent %}
+				<td>{%s binaryMime %}</td>
+			{% else %}
+				<td></td>
+			{% endif %}
+			</tr>
+{% endfunc %}

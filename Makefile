@@ -2,6 +2,7 @@ run: build
 	./mycorrhiza metarrhiza
 
 build:
+	go generate
 	go build .
 
 test:
