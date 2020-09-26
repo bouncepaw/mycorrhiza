@@ -10,6 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
@@ -83,6 +85,20 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	http.Redirect(w, rq, "/page/"+randomHyphaName, http.StatusSeeOther)
 }
 
+// Recent changes
+func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
+		n, err   = strconv.Atoi(noPrefix)
+	)
+	if err == nil {
+		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n)))
+	} else {
+		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
+	}
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 
@@ -108,6 +124,7 @@ func main() {
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)
+	http.HandleFunc("/recent-changes/", handlerRecentChanges)
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})

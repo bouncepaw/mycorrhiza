@@ -6,6 +6,7 @@ import (
 	"log"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -29,6 +30,58 @@ type Revision struct {
 	Username string
 	Time     time.Time
 	Message  string
+}
+
+// TimeString returns a human readable time representation.
+func (rev Revision) TimeString() string {
+	return rev.Time.Format(time.RFC822)
+}
+
+// HyphaeLinks returns a comma-separated list of hyphae that were affected by this revision as HTML string.
+func (rev Revision) HyphaeLinks() (html string) {
+	// diff-tree --no-commit-id --name-only -r
+	var (
+		// List of files affected by this revision, one per line.
+		out, err = gitsh("diff-tree", "--no-commit-id", "--name-only", "-r", rev.Hash)
+		// set is used to determine if a certain hypha has been already noted (hyphae are stored in 2 files at most).
+		set       = make(map[string]bool)
+		isNewName = func(hyphaName string) bool {
+			if _, present := set[hyphaName]; present {
+				return false
+			} else {
+				set[hyphaName] = true
+				return true
+			}
+		}
+	)
+	if err != nil {
+		return ""
+	}
+	for _, filename := range strings.Split(out.String(), "\n") {
+		// If filename has an ampersand:
+		if strings.IndexRune(filename, '&') >= 0 {
+			// Remove ampersanded suffix from filename:
+			ampersandPos := strings.LastIndexByte(filename, '&')
+			hyphaName := string([]byte(filename)[0:ampersandPos]) // is it safe?
+			if isNewName(hyphaName) {
+				// Entries are separated by commas
+				if len(set) > 1 {
+					html += `<span aria-hidden="true">, </span>`
+				}
+				html += fmt.Sprintf(`<a href="/rev/%[1]s/%[2]s">%[2]s</a>`, rev.Hash, hyphaName)
+			}
+		}
+	}
+	return html
+}
+
+func (rev Revision) RecentChangesEntry() (html string) {
+	return fmt.Sprintf(`
+<li><time>%s</time></li>
+<li>%s</li>
+<li>%s</li>
+<li>%s</li>
+`, rev.TimeString(), rev.Hash, rev.HyphaeLinks(), rev.Message)
 }
 
 // Path to git executable. Set at init()

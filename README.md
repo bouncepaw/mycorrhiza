@@ -1,5 +1,12 @@
-# 🍄 MycorrhizaWiki 0.8
+# 🍄 MycorrhizaWiki 0.9
 A wiki engine.
+
+## 0.9
+This is a development branch for 0.9 version. Features I want to implement in this release:
+* [x] Recent changes page.
+* [ ] Hypha deletion.
+* [ ] Hypha renaming.
+* [ ] Support async git ops.
 
 ## Installation
 ```sh
@@ -31,5 +38,4 @@ Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where som
 * Tagging system
 * Authorization
 * Better history viewing
-* Recent changes page
 * More markups
