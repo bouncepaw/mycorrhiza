@@ -4,9 +4,9 @@ A wiki engine.
 ## 0.9
 This is a development branch for 0.9 version. Features I want to implement in this release:
 * [x] Recent changes page.
-* [ ] Hypha deletion.
+* [x] Hypha deletion.
 * [ ] Hypha renaming.
-* [ ] Support async git ops.
+* [x] Support async git ops.
 
 ## Installation
 ```sh

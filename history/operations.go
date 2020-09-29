@@ -4,9 +4,13 @@ package history
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/util"
 )
+
+// gitMutex is used for blocking git operations to avoid clashes.
+var gitMutex = sync.Mutex{}
 
 // OpType is the type a history operation has. Callers shall set appropriate optypes when creating history operations.
 type OpType int
@@ -31,6 +35,7 @@ type HistoryOp struct {
 
 // Operation is a constructor of a history operation.
 func Operation(opType OpType) *HistoryOp {
+	gitMutex.Lock()
 	hop := &HistoryOp{
 		Errs:   []error{},
 		opType: opType,
@@ -75,6 +80,7 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 		"--author='"+hop.name+" <"+hop.email+">'",
 		"--message="+hop.userMsg,
 	)
+	gitMutex.Unlock()
 	return hop
 }
 

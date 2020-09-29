@@ -99,10 +99,10 @@ func init() {
 }
 
 // I pronounce it as [gɪt͡ʃ].
+// gitsh is async-safe, therefore all other git-related functions in this module are too.
 func gitsh(args ...string) (out bytes.Buffer, err error) {
 	fmt.Printf("$ %v\n", args)
 	cmd := exec.Command(gitpath, args...)
-
 	cmd.Dir = util.WikiDir
 
 	b, err := cmd.CombinedOutput()
