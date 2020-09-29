@@ -120,7 +120,7 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	// See http_readers.go for /page/, /text/, /binary/, /history/.
-	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/.
+	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/.
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)

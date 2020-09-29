@@ -6,6 +6,7 @@
 					<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
 					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
 					<li><b>History</b></li>
+					<li><a href="/delete-ask/{%s hyphaName %}">Delete</a></li>
 				</ul>
 			</nav>
 			<table>
@@ -32,6 +33,7 @@
 					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
 					<li><a href="/history/{%s hyphaName %}">History</a></li>
 					<li><b>{%s revHash %}</b></li>
+					<li><a href="/delete-ask/{%s hyphaName %}">Delete</a></li>
 				</ul>
 			</nav>
 			<article>
@@ -55,6 +57,7 @@ If `contents` == "", a helpful message is shown instead.
 					<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
 					<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
 					<li><a href="/history/{%s hyphaName %}">History</a></li>
+					<li><a href="/delete-ask/{%s hyphaName %}">Delete</a></li>
 				</ul>
 			</nav>
 			<article>

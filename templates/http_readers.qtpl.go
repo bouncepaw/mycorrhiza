@@ -40,6 +40,11 @@ func StreamHistoryHTML(qw422016 *qt422016.Writer, hyphaName, tbody string) {
 //line templates/http_readers.qtpl:7
 	qw422016.N().S(`">Raw text</a></li>
 					<li><b>History</b></li>
+					<li><a href="/delete-ask/`)
+//line templates/http_readers.qtpl:9
+	qw422016.E().S(hyphaName)
+//line templates/http_readers.qtpl:9
+	qw422016.N().S(`">Delete</a></li>
 				</ul>
 			</nav>
 			<table>
@@ -52,193 +57,203 @@ func StreamHistoryHTML(qw422016 *qt422016.Writer, hyphaName, tbody string) {
 				</thead>
 				<tbody>
 				`)
-//line templates/http_readers.qtpl:20
+//line templates/http_readers.qtpl:21
 	qw422016.N().S(tbody)
-//line templates/http_readers.qtpl:20
+//line templates/http_readers.qtpl:21
 	qw422016.N().S(`
 				</tbody>
 			</table>
 		</main>
 `)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 }
 
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 func WriteHistoryHTML(qq422016 qtio422016.Writer, hyphaName, tbody string) {
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	StreamHistoryHTML(qw422016, hyphaName, tbody)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 }
 
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 func HistoryHTML(hyphaName, tbody string) string {
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	WriteHistoryHTML(qb422016, hyphaName, tbody)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	qs422016 := string(qb422016.B)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 	return qs422016
-//line templates/http_readers.qtpl:24
+//line templates/http_readers.qtpl:25
 }
 
-//line templates/http_readers.qtpl:26
+//line templates/http_readers.qtpl:27
 func StreamRevisionHTML(qw422016 *qt422016.Writer, hyphaName, naviTitle, contents, tree, revHash string) {
-//line templates/http_readers.qtpl:26
+//line templates/http_readers.qtpl:27
 	qw422016.N().S(`
 		<main>
 			<nav>
 				<ul>
 					<li><a href="/page/`)
-//line templates/http_readers.qtpl:30
+//line templates/http_readers.qtpl:31
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:30
+//line templates/http_readers.qtpl:31
 	qw422016.N().S(`">Hypha</a></li>
 					<li><a href="/edit/`)
-//line templates/http_readers.qtpl:31
+//line templates/http_readers.qtpl:32
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:31
+//line templates/http_readers.qtpl:32
 	qw422016.N().S(`">Edit</a></li>
 					<li><a href="/text/`)
-//line templates/http_readers.qtpl:32
+//line templates/http_readers.qtpl:33
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:32
+//line templates/http_readers.qtpl:33
 	qw422016.N().S(`">Raw text</a></li>
 					<li><a href="/history/`)
-//line templates/http_readers.qtpl:33
+//line templates/http_readers.qtpl:34
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:33
+//line templates/http_readers.qtpl:34
 	qw422016.N().S(`">History</a></li>
 					<li><b>`)
-//line templates/http_readers.qtpl:34
+//line templates/http_readers.qtpl:35
 	qw422016.E().S(revHash)
-//line templates/http_readers.qtpl:34
+//line templates/http_readers.qtpl:35
 	qw422016.N().S(`</b></li>
+					<li><a href="/delete-ask/`)
+//line templates/http_readers.qtpl:36
+	qw422016.E().S(hyphaName)
+//line templates/http_readers.qtpl:36
+	qw422016.N().S(`">Delete</a></li>
 				</ul>
 			</nav>
 			<article>
 				<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 				`)
-//line templates/http_readers.qtpl:39
+//line templates/http_readers.qtpl:41
 	qw422016.N().S(naviTitle)
-//line templates/http_readers.qtpl:39
+//line templates/http_readers.qtpl:41
 	qw422016.N().S(`
 				`)
-//line templates/http_readers.qtpl:40
+//line templates/http_readers.qtpl:42
 	qw422016.N().S(contents)
-//line templates/http_readers.qtpl:40
+//line templates/http_readers.qtpl:42
 	qw422016.N().S(`
 			</article>
 			<hr/>
 			<aside>
 				`)
-//line templates/http_readers.qtpl:44
+//line templates/http_readers.qtpl:46
 	qw422016.N().S(tree)
-//line templates/http_readers.qtpl:44
+//line templates/http_readers.qtpl:46
 	qw422016.N().S(`
 			</aside>
 		</main>
 `)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 }
 
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 func WriteRevisionHTML(qq422016 qtio422016.Writer, hyphaName, naviTitle, contents, tree, revHash string) {
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	StreamRevisionHTML(qw422016, hyphaName, naviTitle, contents, tree, revHash)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 }
 
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 func RevisionHTML(hyphaName, naviTitle, contents, tree, revHash string) string {
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	WriteRevisionHTML(qb422016, hyphaName, naviTitle, contents, tree, revHash)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	qs422016 := string(qb422016.B)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 	return qs422016
-//line templates/http_readers.qtpl:47
+//line templates/http_readers.qtpl:49
 }
 
 // If `contents` == "", a helpful message is shown instead.
 
-//line templates/http_readers.qtpl:50
+//line templates/http_readers.qtpl:52
 func StreamPageHTML(qw422016 *qt422016.Writer, hyphaName, naviTitle, contents, tree string) {
-//line templates/http_readers.qtpl:50
+//line templates/http_readers.qtpl:52
 	qw422016.N().S(`
 		<main>
 			<nav>
 				<ul>
 					<li><b>Hypha</b></li>
 					<li><a href="/edit/`)
-//line templates/http_readers.qtpl:55
+//line templates/http_readers.qtpl:57
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:55
+//line templates/http_readers.qtpl:57
 	qw422016.N().S(`">Edit</a></li>
 					<li><a href="/text/`)
-//line templates/http_readers.qtpl:56
+//line templates/http_readers.qtpl:58
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:56
+//line templates/http_readers.qtpl:58
 	qw422016.N().S(`">Raw text</a></li>
 					<li><a href="/history/`)
-//line templates/http_readers.qtpl:57
+//line templates/http_readers.qtpl:59
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:57
+//line templates/http_readers.qtpl:59
 	qw422016.N().S(`">History</a></li>
+					<li><a href="/delete-ask/`)
+//line templates/http_readers.qtpl:60
+	qw422016.E().S(hyphaName)
+//line templates/http_readers.qtpl:60
+	qw422016.N().S(`">Delete</a></li>
 				</ul>
 			</nav>
 			<article>
 				`)
-//line templates/http_readers.qtpl:61
+//line templates/http_readers.qtpl:64
 	qw422016.N().S(naviTitle)
-//line templates/http_readers.qtpl:61
+//line templates/http_readers.qtpl:64
 	qw422016.N().S(`
 				`)
-//line templates/http_readers.qtpl:62
+//line templates/http_readers.qtpl:65
 	if contents == "" {
-//line templates/http_readers.qtpl:62
+//line templates/http_readers.qtpl:65
 		qw422016.N().S(`
 					<p>This hypha has no text. Why not <a href="/edit/`)
-//line templates/http_readers.qtpl:63
+//line templates/http_readers.qtpl:66
 		qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:63
+//line templates/http_readers.qtpl:66
 		qw422016.N().S(`">create it</a>?</p>
 				`)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 	} else {
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 		qw422016.N().S(`
 					`)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:68
 		qw422016.N().S(contents)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:68
 		qw422016.N().S(`
 				`)
-//line templates/http_readers.qtpl:66
+//line templates/http_readers.qtpl:69
 	}
-//line templates/http_readers.qtpl:66
+//line templates/http_readers.qtpl:69
 	qw422016.N().S(`
 			</article>
 			<hr/>
 			<form action="/upload-binary/`)
-//line templates/http_readers.qtpl:69
+//line templates/http_readers.qtpl:72
 	qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:69
+//line templates/http_readers.qtpl:72
 	qw422016.N().S(`"
 			      method="post" enctype="multipart/form-data">
 				<label for="upload-binary__input">Upload new binary part</label>
@@ -249,38 +264,38 @@ func StreamPageHTML(qw422016 *qt422016.Writer, hyphaName, naviTitle, contents, t
 			<hr/>
 			<aside>
 				`)
-//line templates/http_readers.qtpl:78
+//line templates/http_readers.qtpl:81
 	qw422016.N().S(tree)
-//line templates/http_readers.qtpl:78
+//line templates/http_readers.qtpl:81
 	qw422016.N().S(`
 			</aside>
 		</main>
 `)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 }
 
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 func WritePageHTML(qq422016 qtio422016.Writer, hyphaName, naviTitle, contents, tree string) {
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	StreamPageHTML(qw422016, hyphaName, naviTitle, contents, tree)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 }
 
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 func PageHTML(hyphaName, naviTitle, contents, tree string) string {
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	WritePageHTML(qb422016, hyphaName, naviTitle, contents, tree)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	qs422016 := string(qb422016.B)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 	return qs422016
-//line templates/http_readers.qtpl:81
+//line templates/http_readers.qtpl:84
 }

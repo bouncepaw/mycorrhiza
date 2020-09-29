@@ -17,6 +17,42 @@ func init() {
 	http.HandleFunc("/upload-binary/", handlerUploadBinary)
 	http.HandleFunc("/upload-text/", handlerUploadText)
 	http.HandleFunc("/edit/", handlerEdit)
+	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
+	http.HandleFunc("/delete-confirm/", handlerDeleteConfirm)
+}
+
+// handlerDeleteAsk shows a delete dialog.
+func handlerDeleteAsk(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "delete-ask")
+		_, isOld  = HyphaStorage[hyphaName]
+	)
+	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(hyphaName, isOld)))
+}
+
+// handlerDeleteConfirm deletes a hypha for sure
+func handlerDeleteConfirm(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName        = HyphaNameFromRq(rq, "delete-confirm")
+		hyphaData, isOld = HyphaStorage[hyphaName]
+	)
+	if isOld {
+		// If deleted successfully
+		if hop := hyphaData.DeleteHypha(hyphaName); len(hop.Errs) == 0 {
+			http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
+		} else {
+			HttpErr(w, http.StatusInternalServerError, hyphaName,
+				"Error: could not delete hypha",
+				fmt.Sprintf("Could not delete this hypha due to an internal error. Server errors: <code>%v</code>", hop.Errs))
+		}
+	} else {
+		// The precondition is to have the hypha in the first place.
+		HttpErr(w, http.StatusPreconditionFailed, hyphaName,
+			"Error: no such hypha",
+			"Could not delete this hypha because it does not exist.")
+	}
 }
 
 // handlerEdit shows the edit form. It doesn't edit anything actually.

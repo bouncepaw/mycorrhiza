@@ -1,0 +1,33 @@
+This dialog is to be shown to a user when they try to delete a hypha.
+{% func DeleteAskHTML(hyphaName string, isOld bool) %}
+<main>
+	<nav>
+		<ul>
+			<li><a href="/page/{%s hyphaName %}">Hypha</a></li>
+			<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
+			<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
+			<li><a href="/history/{%s hyphaName %}">History</a></li>
+			<li><b>Delete</b></li>
+		</ul>
+	</nav>
+{% if isOld %}
+	<section>
+		<h1>Delete {%s hyphaName %}?</h1>
+		<p>Do you really want to delete hypha <em>{%s hyphaName %}</em>?</p>
+		<p>In this version of MycorrhizaWiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
+		<p><a href="/delete-confirm/{%s hyphaName %}"><strong>Confirm</strong></a></p>
+		<p><a href="/page/{%s hyphaName %}">Cancel</a></p>
+	</section>
+{% else %}
+	{%= cannotDeleteDueToNonExistence(hyphaName) %}
+{% endif %}
+</main>
+{% endfunc %}
+
+{% func cannotDeleteDueToNonExistence(hyphaName string) %}
+	<section>
+		<h1>Cannot delete {%s hyphaName %}</h1>
+		<p>This hypha does not exist.</p>
+		<p><a href="/page/{%s hyphaName %}">Go back</a></p>
+	</section>
+{% endfunc %}

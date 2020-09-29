@@ -43,7 +43,9 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	)
 	if err == nil {
 		for _, line := range strings.Split(out.String(), "\n") {
-			revs = append(revs, parseRevisionLine(line))
+			if line != "" {
+				revs = append(revs, parseRevisionLine(line))
+			}
 		}
 	}
 	return revs, err

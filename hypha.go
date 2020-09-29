@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
+	"github.com/bouncepaw/mycorrhiza/history"
 )
 
 func init() {
@@ -35,6 +36,15 @@ type HyphaData struct {
 	textType   TextType
 	binaryPath string
 	binaryType BinaryType
+}
+
+// DeleteHypha deletes hypha and makes a history record about that.
+func (hd *HyphaData) DeleteHypha(hyphaName string) *history.HistoryOp {
+	return history.Operation(history.TypeDeleteHypha).
+		WithFilesRemoved(hd.textPath, hd.binaryPath).
+		WithMsg(fmt.Sprintf("Delete ‘%s’", hyphaName)).
+		WithSignature("anon").
+		Apply()
 }
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.

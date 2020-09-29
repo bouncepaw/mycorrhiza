@@ -15,6 +15,8 @@ const (
 	TypeNone OpType = iota
 	TypeEditText
 	TypeEditBinary
+	TypeDeleteHypha
+	TypeRenameHypha
 )
 
 // HistoryOp is an object representing a history operation.
@@ -44,6 +46,17 @@ func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
 		hop.Errs = append(hop.Errs, err)
 	}
 	return hop
+}
+
+// WithFilesRemoved git-rm-s all passed `paths`. Paths can be rooted or not. Paths that are empty strings are ignored.
+func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
+	args := []string{"rm", "--quiet", "--"}
+	for _, path := range paths {
+		if path != "" {
+			args = append(args, path)
+		}
+	}
+	return hop.gitop(args...)
 }
 
 // WithFiles stages all passed `paths`. Paths can be rooted or not.

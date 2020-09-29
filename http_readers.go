@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
@@ -29,8 +28,9 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
-		revHash           = path.Dir(shorterUrl)
-		hyphaName         = CanonicalName(strings.TrimPrefix(shorterUrl, revHash+"/"))
+		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
+		revHash           = shorterUrl[:firstSlashIndex]
+		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
 		textPath          = hyphaName + "&.gmi"
 		textContents, err = history.FileAtRevision(textPath, revHash)
@@ -55,15 +55,15 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "history")
 	var tbody string
-	if _, ok := HyphaStorage[hyphaName]; ok {
-		revs, err := history.Revisions(hyphaName)
-		if err == nil {
-			for _, rev := range revs {
-				tbody += rev.AsHtmlTableRow(hyphaName)
-			}
+
+	// History can be found for files that do not exist anymore.
+	revs, err := history.Revisions(hyphaName)
+	if err == nil {
+		for _, rev := range revs {
+			tbody += rev.AsHtmlTableRow(hyphaName)
 		}
-		log.Println(revs)
 	}
+	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
 		base(hyphaName, templates.HistoryHTML(hyphaName, tbody)))
