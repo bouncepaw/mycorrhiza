@@ -19,6 +19,49 @@ func init() {
 	http.HandleFunc("/edit/", handlerEdit)
 	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
 	http.HandleFunc("/delete-confirm/", handlerDeleteConfirm)
+	http.HandleFunc("/rename-ask/", handlerRenameAsk)
+	http.HandleFunc("/rename-confirm/", handlerRenameConfirm)
+}
+
+func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "rename-ask")
+		_, isOld  = HyphaStorage[hyphaName]
+	)
+	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(hyphaName, isOld)))
+}
+
+func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName        = HyphaNameFromRq(rq, "rename-confirm")
+		hyphaData, isOld = HyphaStorage[hyphaName]
+		newName          = CanonicalName(rq.PostFormValue("new-name"))
+		_, newNameIsUsed = HyphaStorage[newName]
+	)
+	switch {
+	case newNameIsUsed:
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: hypha exists",
+			fmt.Sprintf("Hypha named <a href='/page/%s'>%s</a> already exists.", hyphaName, hyphaName))
+	case newName == "":
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: no name",
+			"No new name is given.")
+	case !isOld:
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: no such hypha",
+			"Cannot rename a hypha that does not exist yet.")
+	case !HyphaPattern.MatchString(newName):
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: invalid name",
+			"Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>")
+	default:
+		if hop := hyphaData.RenameHypha(hyphaName, newName); len(hop.Errs) == 0 {
+			http.Redirect(w, rq, "/page/"+newName, http.StatusSeeOther)
+		} else {
+			HttpErr(w, http.StatusInternalServerError, hyphaName,
+				"Error: could not rename hypha",
+				fmt.Sprintf("Could not rename this hypha due to an internal error. Server errors: <code>%v</code>", hop.Errs))
+		}
+	}
 }
 
 // handlerDeleteAsk shows a delete dialog.

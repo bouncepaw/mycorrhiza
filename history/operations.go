@@ -64,6 +64,16 @@ func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
 	return hop.gitop(args...)
 }
 
+// WithFilesRenamed git-mv-s all passed keys of `pairs` to values of `pairs`. Paths can be rooted ot not. Empty keys are ignored.
+func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
+	for from, to := range pairs {
+		if from != "" {
+			hop.gitop(append([]string{"mv"}, from, to)...)
+		}
+	}
+	return hop
+}
+
 // WithFiles stages all passed `paths`. Paths can be rooted or not.
 func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
 	for i, path := range paths {

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -45,6 +46,29 @@ func (hd *HyphaData) DeleteHypha(hyphaName string) *history.HistoryOp {
 		WithMsg(fmt.Sprintf("Delete ‘%s’", hyphaName)).
 		WithSignature("anon").
 		Apply()
+}
+
+// RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that.
+func (hd *HyphaData) RenameHypha(hyphaName, newName string) *history.HistoryOp {
+	var (
+		newTextPath   = strings.Replace(hd.textPath, hyphaName, newName, 1)
+		newBinaryPath = strings.Replace(hd.binaryPath, hyphaName, newName, 1)
+		hop           = history.Operation(history.TypeRenameHypha).
+				WithFilesRenamed(map[string]string{
+				hd.textPath:   newTextPath,
+				hd.binaryPath: newBinaryPath,
+			}).
+			WithMsg(fmt.Sprintf("Rename ‘%s’ to ‘%s’", hyphaName, newName)).
+			WithSignature("anon").
+			Apply()
+	)
+	if len(hop.Errs) == 0 {
+		hd.textPath = newTextPath
+		hd.binaryPath = newBinaryPath
+		HyphaStorage[newName] = hd
+		delete(HyphaStorage, hyphaName)
+	}
+	return hop
 }
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.

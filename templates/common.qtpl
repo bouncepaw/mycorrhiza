@@ -1,0 +1,32 @@
+This is the <nav> seen on top of many pages.
+{% code
+type navEntry struct {
+	path string
+	title string
+}
+var navEntries = []navEntry{
+	{"page", "Hypha"},
+	{"edit", "Edit"},
+	{"text", "Raw text"},
+	{"history", "History"},
+	{"revision", "NOT REACHED"},
+	{"delete-ask", "Delete"},
+	{"rename-ask", "Rename"},
+}
+%}
+
+{% func navHTML(hyphaName, navType string, revisionHash ...string) %}
+	<nav>
+		<ul>
+		{%- for _, entry := range navEntries -%}
+		{%- if navType == "revision" && entry.path == "revision" -%}
+			<li><b>{%s revisionHash[0] %}</b></li>
+		{%- elseif navType == entry.path -%}
+			<li><b>{%s entry.title %}</b></li>
+		{%- elseif entry.path != "revision"-%}
+			<li><a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a></li>
+		{%- endif -%}
+		{%- endfor -%}
+		</ul>
+	</nav>
+{% endfunc %}

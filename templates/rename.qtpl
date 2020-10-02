@@ -1,0 +1,27 @@
+This dialog is to be shown to a user when they try to rename a hypha.
+{% func RenameAskHTML(hyphaName string, isOld bool) %}
+<main>
+{%= navHTML(hyphaName, "rename-ask") %}
+{%- if isOld -%}
+	<section>
+		<h1>Rename {%s hyphaName %}</h1>
+		<form action="/rename-confirm/{%s hyphaName %}" method="post" enctype="multipart/form-data">
+			<label for="new-name">New name:</label>
+			<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
+			<input type="submit"/>
+		</form>
+		<p>If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.</p>
+	</section>
+{%- else -%}
+	{%= cannotRenameDueToNonExistence(hyphaName) %}
+{%- endif -%}
+</main>
+{% endfunc %}
+
+{% func cannotRenameDueToNonExistence(hyphaName string) %}
+	<section>
+		<h1>Cannot rename {%s hyphaName %}</h1>
+		<p>This hypha does not exist.</p>
+		<p><a href="/page/{%s hyphaName %}">Go back</a></p>
+	</section>
+{% endfunc %}

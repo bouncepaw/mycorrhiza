@@ -21,7 +21,7 @@ import (
 // WikiDir is a rooted path to the wiki storage directory.
 var WikiDir string
 
-// HyphaPattern is a pattern which all hyphae must match. Not used currently.
+// HyphaPattern is a pattern which all hyphae must match.
 var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%]+`)
 
 // HyphaStorage is a mapping between canonical hypha names and their meta information.
@@ -120,7 +120,7 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	// See http_readers.go for /page/, /text/, /binary/, /history/.
-	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/.
+	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/.
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)

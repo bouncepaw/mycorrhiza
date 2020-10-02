@@ -1,15 +1,7 @@
 This dialog is to be shown to a user when they try to delete a hypha.
 {% func DeleteAskHTML(hyphaName string, isOld bool) %}
 <main>
-	<nav>
-		<ul>
-			<li><a href="/page/{%s hyphaName %}">Hypha</a></li>
-			<li><a href="/edit/{%s hyphaName %}">Edit</a></li>
-			<li><a href="/text/{%s hyphaName %}">Raw text</a></li>
-			<li><a href="/history/{%s hyphaName %}">History</a></li>
-			<li><b>Delete</b></li>
-		</ul>
-	</nav>
+{%= navHTML(hyphaName, "delete-ask") %}
 {% if isOld %}
 	<section>
 		<h1>Delete {%s hyphaName %}?</h1>
