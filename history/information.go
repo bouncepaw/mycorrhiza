@@ -5,9 +5,32 @@ package history
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
-	"time"
+
+	"github.com/bouncepaw/mycorrhiza/templates"
 )
+
+func RecentChanges(n int) string {
+	var (
+		out, err = gitsh(
+			"log", "--oneline", "--no-merges",
+			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
+			"--max-count="+strconv.Itoa(n),
+		)
+		revs []Revision
+	)
+	if err == nil {
+		for _, line := range strings.Split(out.String(), "\n") {
+			revs = append(revs, parseRevisionLine(line))
+		}
+	}
+	entries := make([]string, len(revs))
+	for i, rev := range revs {
+		entries[i] = rev.RecentChangesEntry()
+	}
+	return templates.RecentChangesHTML(entries, n)
+}
 
 // Revisions returns slice of revisions for the given hypha name.
 func Revisions(hyphaName string) ([]Revision, error) {
@@ -22,7 +45,9 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	)
 	if err == nil {
 		for _, line := range strings.Split(out.String(), "\n") {
-			revs = append(revs, parseRevisionLine(line))
+			if line != "" {
+				revs = append(revs, parseRevisionLine(line))
+			}
 		}
 	}
 	return revs, err
@@ -48,7 +73,7 @@ func (rev *Revision) AsHtmlTableRow(hyphaName string) string {
 	<td><time>%s</time></td>
 	<td><a href="/rev/%s/%s">%s</a></td>
 	<td>%s</td>
-</tr>`, rev.Time.Format(time.RFC822), rev.Hash, hyphaName, rev.Hash, rev.Message)
+</tr>`, rev.TimeString(), rev.Hash, hyphaName, rev.Hash, rev.Message)
 }
 
 // See how the file with `filepath` looked at commit with `hash`.

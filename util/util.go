@@ -25,3 +25,14 @@ func HTTP200Page(w http.ResponseWriter, page string) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(page))
 }
+
+// FindSubhyphae finds names of existing hyphae given the `hyphaIterator`.
+func FindSubhyphae(hyphaName string, hyphaIterator func(func(string))) []string {
+	subhyphae := make([]string, 0)
+	hyphaIterator(func(otherHyphaName string) {
+		if strings.HasPrefix(otherHyphaName, hyphaName+"/") {
+			subhyphae = append(subhyphae, otherHyphaName)
+		}
+	})
+	return subhyphae
+}

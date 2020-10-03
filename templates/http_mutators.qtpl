@@ -1,4 +1,3 @@
-
 {% func EditHTML(hyphaName, textAreaFill, warning string) %}
 		<main>
 			<h1>Edit {%s hyphaName %}</h1>
