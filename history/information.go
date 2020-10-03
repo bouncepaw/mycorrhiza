@@ -5,6 +5,7 @@ package history
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/templates"
@@ -15,6 +16,7 @@ func RecentChanges(n int) string {
 		out, err = gitsh(
 			"log", "--oneline", "--no-merges",
 			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
+			"--max-count="+strconv.Itoa(n),
 		)
 		revs []Revision
 	)
