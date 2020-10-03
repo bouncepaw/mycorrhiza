@@ -4,6 +4,8 @@ package history
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -68,6 +70,7 @@ func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
 func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
 	for from, to := range pairs {
 		if from != "" {
+			os.MkdirAll(filepath.Dir(to), 0777)
 			hop.gitop(append([]string{"mv"}, from, to)...)
 		}
 	}
