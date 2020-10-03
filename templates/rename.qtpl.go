@@ -44,103 +44,112 @@ func StreamRenameAskHTML(qw422016 *qt422016.Writer, hyphaName string, isOld bool
 		qw422016.E().S(hyphaName)
 //line templates/rename.qtpl:8
 		qw422016.N().S(`" method="post" enctype="multipart/form-data">
-			<label for="new-name">New name:</label>
-			<input type="text" value="`)
-//line templates/rename.qtpl:10
+			<fieldset>
+				<legend>New name</legend>
+				<input type="text" value="`)
+//line templates/rename.qtpl:11
 		qw422016.E().S(hyphaName)
-//line templates/rename.qtpl:10
+//line templates/rename.qtpl:11
 		qw422016.N().S(`" required autofocus id="new-name" name="new-name"/>
+			</fieldset>
+
+			<fieldset>
+				<legend>Settings</legend>
+				<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
+				<label for="recursive">Keep subhyphae</label>
+			</fieldset>
+
+			<p>If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.</p>
 			<input type="submit"/>
 		</form>
-		<p>If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.</p>
 	</section>
 `)
-//line templates/rename.qtpl:15
+//line templates/rename.qtpl:24
 	} else {
-//line templates/rename.qtpl:15
+//line templates/rename.qtpl:24
 		qw422016.N().S(`	`)
-//line templates/rename.qtpl:16
+//line templates/rename.qtpl:25
 		streamcannotRenameDueToNonExistence(qw422016, hyphaName)
-//line templates/rename.qtpl:16
+//line templates/rename.qtpl:25
 		qw422016.N().S(`
 `)
-//line templates/rename.qtpl:17
+//line templates/rename.qtpl:26
 	}
-//line templates/rename.qtpl:17
+//line templates/rename.qtpl:26
 	qw422016.N().S(`</main>
 `)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 }
 
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 func WriteRenameAskHTML(qq422016 qtio422016.Writer, hyphaName string, isOld bool) {
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	StreamRenameAskHTML(qw422016, hyphaName, isOld)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	qt422016.ReleaseWriter(qw422016)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 }
 
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 func RenameAskHTML(hyphaName string, isOld bool) string {
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	WriteRenameAskHTML(qb422016, hyphaName, isOld)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	qs422016 := string(qb422016.B)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 	return qs422016
-//line templates/rename.qtpl:19
+//line templates/rename.qtpl:28
 }
 
-//line templates/rename.qtpl:21
+//line templates/rename.qtpl:30
 func streamcannotRenameDueToNonExistence(qw422016 *qt422016.Writer, hyphaName string) {
-//line templates/rename.qtpl:21
+//line templates/rename.qtpl:30
 	qw422016.N().S(`
 	<section>
 		<h1>Cannot rename `)
-//line templates/rename.qtpl:23
+//line templates/rename.qtpl:32
 	qw422016.E().S(hyphaName)
-//line templates/rename.qtpl:23
+//line templates/rename.qtpl:32
 	qw422016.N().S(`</h1>
 		<p>This hypha does not exist.</p>
 		<p><a href="/page/`)
-//line templates/rename.qtpl:25
+//line templates/rename.qtpl:34
 	qw422016.E().S(hyphaName)
-//line templates/rename.qtpl:25
+//line templates/rename.qtpl:34
 	qw422016.N().S(`">Go back</a></p>
 	</section>
 `)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 }
 
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 func writecannotRenameDueToNonExistence(qq422016 qtio422016.Writer, hyphaName string) {
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	streamcannotRenameDueToNonExistence(qw422016, hyphaName)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	qt422016.ReleaseWriter(qw422016)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 }
 
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 func cannotRenameDueToNonExistence(hyphaName string) string {
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	writecannotRenameDueToNonExistence(qb422016, hyphaName)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	qs422016 := string(qb422016.B)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 	return qs422016
-//line templates/rename.qtpl:27
+//line templates/rename.qtpl:36
 }

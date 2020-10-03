@@ -11,6 +11,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
@@ -52,25 +53,61 @@ func (hd *HyphaData) DeleteHypha(hyphaName string) *history.HistoryOp {
 	return hop
 }
 
-// RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that.
-func (hd *HyphaData) RenameHypha(hyphaName, newName string) *history.HistoryOp {
+func findHyphaeToRename(hyphaName string, recursive bool) []string {
+	hyphae := []string{hyphaName}
+	if recursive {
+		hyphae = append(hyphae, util.FindSubhyphae(hyphaName, IterateHyphaNamesWith)...)
+	}
+	return hyphae
+}
+
+func renamingPairs(hyphaNames []string, replaceName func(string) string) map[string]string {
+	renameMap := make(map[string]string)
+	for _, hn := range hyphaNames {
+		if hd, ok := HyphaStorage[hn]; ok {
+			if hd.textPath != "" {
+				renameMap[hd.textPath] = replaceName(hd.textPath)
+			}
+			if hd.binaryPath != "" {
+				renameMap[hd.binaryPath] = replaceName(hd.binaryPath)
+			}
+		}
+	}
+	return renameMap
+}
+
+// word Data is plural here
+func relocateHyphaData(hyphaNames []string, replaceName func(string) string) {
+	for _, hyphaName := range hyphaNames {
+		if hd, ok := HyphaStorage[hyphaName]; ok {
+			hd.textPath = replaceName(hd.textPath)
+			hd.binaryPath = replaceName(hd.binaryPath)
+			HyphaStorage[replaceName(hyphaName)] = hd
+			delete(HyphaStorage, hyphaName)
+		}
+	}
+}
+
+// RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
+func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *history.HistoryOp {
 	var (
-		newTextPath   = strings.Replace(hd.textPath, hyphaName, newName, 1)
-		newBinaryPath = strings.Replace(hd.binaryPath, hyphaName, newName, 1)
-		hop           = history.Operation(history.TypeRenameHypha).
-				WithFilesRenamed(map[string]string{
-				hd.textPath:   newTextPath,
-				hd.binaryPath: newBinaryPath,
-			}).
-			WithMsg(fmt.Sprintf("Rename ‘%s’ to ‘%s’", hyphaName, newName)).
-			WithSignature("anon").
-			Apply()
+		replaceName = func(str string) string {
+			return strings.Replace(str, hyphaName, newName, 1)
+		}
+		hyphaNames = findHyphaeToRename(hyphaName, recursive)
+		renameMap  = renamingPairs(hyphaNames, replaceName)
+		renameMsg  = "Rename ‘%s’ to ‘%s’"
+		hop        = history.Operation(history.TypeRenameHypha)
 	)
+	if recursive {
+		renameMsg += " recursively"
+	}
+	hop.WithFilesRenamed(renameMap).
+		WithMsg(fmt.Sprintf(renameMsg, hyphaName, newName)).
+		WithSignature("anon").
+		Apply()
 	if len(hop.Errs) == 0 {
-		hd.textPath = newTextPath
-		hd.binaryPath = newBinaryPath
-		HyphaStorage[newName] = hd
-		delete(HyphaStorage, hyphaName)
+		relocateHyphaData(hyphaNames, replaceName)
 	}
 	return hop
 }

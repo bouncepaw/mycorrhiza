@@ -6,11 +6,20 @@ This dialog is to be shown to a user when they try to rename a hypha.
 	<section>
 		<h1>Rename {%s hyphaName %}</h1>
 		<form action="/rename-confirm/{%s hyphaName %}" method="post" enctype="multipart/form-data">
-			<label for="new-name">New name:</label>
-			<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
+			<fieldset>
+				<legend>New name</legend>
+				<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
+			</fieldset>
+
+			<fieldset>
+				<legend>Settings</legend>
+				<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
+				<label for="recursive">Keep subhyphae</label>
+			</fieldset>
+
+			<p>If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.</p>
 			<input type="submit"/>
 		</form>
-		<p>If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.</p>
 	</section>
 {%- else -%}
 	{%= cannotRenameDueToNonExistence(hyphaName) %}

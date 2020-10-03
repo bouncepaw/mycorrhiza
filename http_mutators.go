@@ -39,7 +39,11 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		newName          = CanonicalName(rq.PostFormValue("new-name"))
 		_, newNameIsUsed = HyphaStorage[newName]
+		recursive        bool
 	)
+	if rq.PostFormValue("recursive") == "true" {
+		recursive = true
+	}
 	switch {
 	case newNameIsUsed:
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: hypha exists",
@@ -54,7 +58,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Error: invalid name",
 			"Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>")
 	default:
-		if hop := hyphaData.RenameHypha(hyphaName, newName); len(hop.Errs) == 0 {
+		if hop := hyphaData.RenameHypha(hyphaName, newName, recursive); len(hop.Errs) == 0 {
 			http.Redirect(w, rq, "/page/"+newName, http.StatusSeeOther)
 		} else {
 			HttpErr(w, http.StatusInternalServerError, hyphaName,
