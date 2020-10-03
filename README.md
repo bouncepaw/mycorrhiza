@@ -1,14 +1,7 @@
 # 🍄 MycorrhizaWiki 0.9
 A wiki engine.
 
-## 0.9
-This is a development branch for 0.9 version. Features I want to implement in this release:
-* [x] Recent changes page.
-* [x] Hypha deletion.
-* [x] Hypha renaming.
-* [x] Support async git ops.
-
-## Installation
+## Building
 ```sh
 git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
 cd mycorrhiza
@@ -18,7 +11,7 @@ make
 # * create an executable called `mycorrhiza`. Run it with path to your wiki.
 ```
 
-## Current features
+## Features
 * Edit pages through html forms
 * Responsive design
 * Works in text browsers
@@ -29,6 +22,9 @@ make
 * List of hyphae page
 * History page
 * Random page
+* Recent changes page
+* Hyphae can be deleted (while still preserving history)
+* Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/).
 
 ## Contributing
