@@ -41,11 +41,15 @@ type HyphaData struct {
 
 // DeleteHypha deletes hypha and makes a history record about that.
 func (hd *HyphaData) DeleteHypha(hyphaName string) *history.HistoryOp {
-	return history.Operation(history.TypeDeleteHypha).
+	hop := history.Operation(history.TypeDeleteHypha).
 		WithFilesRemoved(hd.textPath, hd.binaryPath).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", hyphaName)).
 		WithSignature("anon").
 		Apply()
+	if len(hop.Errs) == 0 {
+		delete(HyphaStorage, hyphaName)
+	}
+	return hop
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that.
