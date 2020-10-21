@@ -1,5 +1,10 @@
-# 🍄 MycorrhizaWiki 0.9
+# 🍄 MycorrhizaWiki 0.10
 A wiki engine.
+
+This is the development branch for version 0.10. Features planned for this version:
+* [ ] Mycomarkup
+* [ ] CLI options
+* [ ] CSS improvements
 
 ## Building
 ```sh
@@ -34,4 +39,3 @@ Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where som
 * Tagging system
 * Authorization
 * Better history viewing
-* More markups

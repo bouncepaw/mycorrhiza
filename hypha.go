@@ -61,10 +61,13 @@ func findHyphaeToRename(hyphaName string, recursive bool) []string {
 	return hyphae
 }
 
-func renamingPairs(hyphaNames []string, replaceName func(string) string) map[string]string {
+func renamingPairs(hyphaNames []string, replaceName func(string) string) (map[string]string, error) {
 	renameMap := make(map[string]string)
 	for _, hn := range hyphaNames {
 		if hd, ok := HyphaStorage[hn]; ok {
+			if _, nameUsed := HyphaStorage[replaceName(hn)]; nameUsed {
+				return nil, errors.New("Hypha " + replaceName(hn) + " already exists")
+			}
 			if hd.textPath != "" {
 				renameMap[hd.textPath] = replaceName(hd.textPath)
 			}
@@ -73,7 +76,7 @@ func renamingPairs(hyphaNames []string, replaceName func(string) string) map[str
 			}
 		}
 	}
-	return renameMap
+	return renameMap, nil
 }
 
 // word Data is plural here
@@ -94,11 +97,15 @@ func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *his
 		replaceName = func(str string) string {
 			return strings.Replace(str, hyphaName, newName, 1)
 		}
-		hyphaNames = findHyphaeToRename(hyphaName, recursive)
-		renameMap  = renamingPairs(hyphaNames, replaceName)
-		renameMsg  = "Rename ‘%s’ to ‘%s’"
-		hop        = history.Operation(history.TypeRenameHypha)
+		hyphaNames     = findHyphaeToRename(hyphaName, recursive)
+		renameMap, err = renamingPairs(hyphaNames, replaceName)
+		renameMsg      = "Rename ‘%s’ to ‘%s’"
+		hop            = history.Operation(history.TypeRenameHypha)
 	)
+	if err != nil {
+		hop.Errs = append(hop.Errs, err)
+		return hop
+	}
 	if recursive {
 		renameMsg += " recursively"
 	}

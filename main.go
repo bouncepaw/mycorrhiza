@@ -40,7 +40,7 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(status)
 	fmt.Fprint(w, base(title, fmt.Sprintf(
-		`<p>%s. <a href="/page/%s">Go back to the hypha.<a></p>`,
+		`<main><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
 		errMsg, name)))
 }
 
