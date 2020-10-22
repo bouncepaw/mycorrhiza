@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/gemtext"
@@ -75,7 +76,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "text")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.textPath)
-		w.Header().Set("Content-Type", data.textType.Mime())
+		w.Header().Set("Content-Type", "text/plain")
 		http.ServeFile(w, rq, data.textPath)
 	}
 }
@@ -86,7 +87,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "binary")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.binaryPath)
-		w.Header().Set("Content-Type", data.binaryType.Mime())
+		w.Header().Set("Content-Type", ExtensionToMime(filepath.Ext(data.binaryPath)))
 		http.ServeFile(w, rq, data.binaryPath)
 	}
 }

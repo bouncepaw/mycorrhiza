@@ -52,7 +52,7 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 		pageCount = len(HyphaStorage)
 	)
 	for hyphaName, data := range HyphaStorage {
-		tbody += templates.HyphaListRowHTML(hyphaName, data.binaryType.Mime(), data.binaryPath != "")
+		tbody += templates.HyphaListRowHTML(hyphaName, ExtensionToMime(filepath.Ext(data.binaryPath)), data.binaryPath != "")
 	}
 	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount)))
 }

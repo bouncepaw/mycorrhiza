@@ -2,6 +2,7 @@
 A wiki engine.
 
 This is the development branch for version 0.10. Features planned for this version:
+* [ ] New file structure
 * [ ] Mycomarkup
 * [ ] CLI options
 * [ ] CSS improvements

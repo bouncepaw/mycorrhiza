@@ -36,9 +36,7 @@ func init() {
 // HyphaData represents a hypha's meta information: binary and text parts rooted paths and content types.
 type HyphaData struct {
 	textPath   string
-	textType   TextType
 	binaryPath string
-	binaryType BinaryType
 }
 
 // uploadHelp is a helper function for UploadText and UploadBinary
@@ -167,14 +165,14 @@ func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *his
 }
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.
-func binaryHtmlBlock(hyphaName string, d *HyphaData) string {
-	switch d.binaryType {
-	case BinaryJpeg, BinaryGif, BinaryPng, BinaryWebp, BinarySvg, BinaryIco:
+func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
+	switch filepath.Ext(hd.binaryPath) {
+	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
 			<img src="/binary/%s"/>
 		</div>`, hyphaName)
-	case BinaryOgg, BinaryWebm, BinaryMp4:
+	case ".ogg", ".webm", ".mp4":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-video">
 			<video>
@@ -182,7 +180,7 @@ func binaryHtmlBlock(hyphaName string, d *HyphaData) string {
 				<p>Your browser does not support video. See video's <a href="/binary/%[1]s">direct url</a></p>
 			</video>
 		`, hyphaName)
-	case BinaryMp3:
+	case ".mp3":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-audio">
 			<audio>
