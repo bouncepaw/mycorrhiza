@@ -55,6 +55,12 @@ func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
 	return hop
 }
 
+// WithError appends the `err` to the list of errors.
+func (hop *HistoryOp) WithError(err error) *HistoryOp {
+	hop.Errs = append(hop.Errs, err)
+	return hop
+}
+
 // WithFilesRemoved git-rm-s all passed `paths`. Paths can be rooted or not. Paths that are empty strings are ignored.
 func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
 	args := []string{"rm", "--quiet", "--"}

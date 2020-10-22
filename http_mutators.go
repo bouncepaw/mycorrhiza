@@ -2,13 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
-	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -116,8 +112,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		textAreaFill, err = FetchTextPart(hyphaData)
 		if err != nil {
 			log.Println(err)
-			HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-				"Could not fetch text data")
+			HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", "Could not fetch text data")
 			return
 		}
 	} else {
@@ -133,42 +128,16 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaName        = HyphaNameFromRq(rq, "upload-text")
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		textData         = rq.PostFormValue("text")
-		textDataBytes    = []byte(textData)
-		fullPath         = filepath.Join(WikiDir, hyphaName+"&.gmi")
 	)
 	if textData == "" {
-		HttpErr(w, http.StatusBadRequest, hyphaName, "Error",
-			"No text data passed")
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error", "No text data passed")
 		return
 	}
-	// For some reason, only 0777 works. Why?
-	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
-		log.Println(err)
-	}
-	if err := ioutil.WriteFile(fullPath, textDataBytes, 0644); err != nil {
-		log.Println(err)
-		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-			fmt.Sprintf("Failed to write %d bytes to %s",
-				len(textDataBytes), fullPath))
-		return
-	}
-	if !isOld {
-		hd := HyphaData{
-			textType: TextGemini,
-			textPath: fullPath,
-		}
-		HyphaStorage[hyphaName] = &hd
-		hyphaData = &hd
+	if hop := hyphaData.UploadText(hyphaName, textData, isOld); len(hop.Errs) != 0 {
+		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())
 	} else {
-		hyphaData.textType = TextGemini
-		hyphaData.textPath = fullPath
+		http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 	}
-	history.Operation(history.TypeEditText).
-		WithFiles(fullPath).
-		WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName)).
-		WithSignature("anon").
-		Apply()
-	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 
 // handlerUploadBinary uploads a new binary part for the hypha.
@@ -176,62 +145,26 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "upload-binary")
 	rq.ParseMultipartForm(10 << 20)
-	// Read file
+
 	file, handler, err := rq.FormFile("binary")
 	if file != nil {
 		defer file.Close()
 	}
 	// If file is not passed:
 	if err != nil {
-		HttpErr(w, http.StatusBadRequest, hyphaName, "Error",
-			"No binary data passed")
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Error", "No binary data passed")
 		return
 	}
 	// If file is passed:
 	var (
 		hyphaData, isOld = HyphaStorage[hyphaName]
-		mimeType         = MimeToBinaryType(handler.Header.Get("Content-Type"))
-		ext              = mimeType.Extension()
-		fullPath         = filepath.Join(WikiDir, hyphaName+"&"+ext)
+		mime             = handler.Header.Get("Content-Type")
+		hop              = hyphaData.UploadBinary(hyphaName, mime, file, isOld)
 	)
 
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-			"Could not read passed data")
-		return
-	}
-	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
-		log.Println(err)
-	}
-	if !isOld {
-		hd := HyphaData{
-			binaryPath: fullPath,
-			binaryType: mimeType,
-		}
-		HyphaStorage[hyphaName] = &hd
-		hyphaData = &hd
+	if len(hop.Errs) != 0 {
+		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())
 	} else {
-		if hyphaData.binaryPath != fullPath {
-			if err := history.Rename(hyphaData.binaryPath, fullPath); err != nil {
-				log.Println(err)
-			} else {
-				log.Println("Moved", hyphaData.binaryPath, "to", fullPath)
-			}
-		}
-		hyphaData.binaryPath = fullPath
-		hyphaData.binaryType = mimeType
+		http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 	}
-	if err = ioutil.WriteFile(fullPath, data, 0644); err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error",
-			"Could not save passed data")
-		return
-	}
-	log.Println("Written", len(data), "of binary data for", hyphaName, "to path", fullPath)
-	history.Operation(history.TypeEditText).
-		WithFiles(fullPath, hyphaData.binaryPath).
-		WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mimeType.Mime())).
-		WithSignature("anon").
-		Apply()
-	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }

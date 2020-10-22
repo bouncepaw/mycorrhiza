@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
@@ -38,6 +39,52 @@ type HyphaData struct {
 	textType   TextType
 	binaryPath string
 	binaryType BinaryType
+}
+
+// uploadHelp is a helper function for UploadText and UploadBinary
+func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext, originalFullPath string, isOld bool, data []byte) *history.HistoryOp {
+	var (
+		fullPath = filepath.Join(WikiDir, hyphaName+ext)
+	)
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
+		return hop.WithError(err)
+	}
+
+	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
+		return hop.WithError(err)
+	}
+
+	if isOld && originalFullPath != fullPath {
+		if err := history.Rename(originalFullPath, fullPath); err != nil {
+			return hop.WithError(err)
+		}
+		log.Println("Move", originalFullPath, "to", fullPath)
+	}
+	if !isOld {
+		HyphaStorage[hyphaName] = hd
+	}
+	return hop.WithFiles(fullPath).
+		WithSignature("anon").
+		Apply()
+}
+
+// UploadText loads a new text part from `textData` for hypha `hyphaName` with `hd`.  It must be marked if the hypha `isOld`.
+func (hd *HyphaData) UploadText(hyphaName, textData string, isOld bool) *history.HistoryOp {
+	hop := history.Operation(history.TypeEditText).WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName))
+	return hd.uploadHelp(hop, hyphaName, ".myco", hd.textPath, isOld, []byte(textData))
+}
+
+// UploadBinary loads a new binary part from `file` for hypha `hyphaName` with `hd`. The contents have the specified `mime` type. It must be marked if the hypha `isOld`.
+func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, isOld bool) *history.HistoryOp {
+	var (
+		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mime))
+		data, err = ioutil.ReadAll(file)
+	)
+	if err != nil {
+		return hop.WithError(err)
+	}
+
+	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), hd.binaryPath, isOld, data)
 }
 
 // DeleteHypha deletes hypha and makes a history record about that.
@@ -160,30 +207,35 @@ func Index(path string) {
 	}
 
 	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper
-		if node.IsDir() && isCanonicalName(node.Name()) {
+		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
+		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
 			Index(filepath.Join(path, node.Name()))
 		}
 
-		hyphaPartFilename := filepath.Join(path, node.Name())
-		skip, hyphaName, isText, mimeId := DataFromFilename(hyphaPartFilename)
+		var (
+			hyphaPartPath           = filepath.Join(path, node.Name())
+			hyphaName, isText, skip = DataFromFilename(hyphaPartPath)
+			hyphaData               *HyphaData
+		)
 		if !skip {
-			var (
-				hyphaData *HyphaData
-				ok        bool
-			)
-			if hyphaData, ok = HyphaStorage[hyphaName]; !ok {
+			// Reuse the entry for existing hyphae, create a new one for those that do not exist yet.
+			if hd, ok := HyphaStorage[hyphaName]; ok {
+				hyphaData = hd
+			} else {
 				hyphaData = &HyphaData{}
 				HyphaStorage[hyphaName] = hyphaData
 			}
 			if isText {
-				hyphaData.textPath = hyphaPartFilename
-				hyphaData.textType = TextType(mimeId)
+				hyphaData.textPath = hyphaPartPath
 			} else {
-				hyphaData.binaryPath = hyphaPartFilename
-				hyphaData.binaryType = BinaryType(mimeId)
+				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
+				if hyphaData.binaryPath != "" {
+					log.Println("There is a file collision for binary part of a hypha:", hyphaData.binaryPath, "and", hyphaPartPath, "-- going on with the latter")
+				}
+				hyphaData.binaryPath = hyphaPartPath
 			}
 		}
+
 	}
 }
 

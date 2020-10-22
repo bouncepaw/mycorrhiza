@@ -44,12 +44,7 @@ const (
 	BinaryMp4
 )
 
-var binaryMimes = [...]string{
-	"application/octet-stream",
-	"image/jpeg", "image/gif", "image/png", "image/webp",
-	"image/svg+xml", "image/x-icon",
-	"application/ogg", "video/webm", "audio/mp3", "video/mp4",
-}
+var binaryMimes = [...]string{}
 
 // Mime returns mime type representation of `t`.
 func (t BinaryType) Mime() string {
@@ -66,6 +61,26 @@ func (t BinaryType) Extension() string {
 	return binaryExtensions[t]
 }
 
+func MimeToExtension(mime string) string {
+	mm := map[string]string{
+		"application/octet-stream": "bin",
+		"image/jpeg":               "jpg",
+		"image/gif":                "gif",
+		"image/png":                "png",
+		"image/webp":               "webp",
+		"image/svg+xml":            "svg",
+		"image/x-icon":             "ico",
+		"application/ogg":          "ogg",
+		"video/webm":               "webm",
+		"audio/mp3":                "mp3",
+		"video/mp4":                "mp4",
+	}
+	if ext, ok := mm[mime]; ok {
+		return "." + ext
+	}
+	return ".bin"
+}
+
 // MimeToBinaryType converts mime type to BinaryType. If the mime type is not supported, BinaryOctet is returned as a fallback type.
 func MimeToBinaryType(mime string) BinaryType {
 	for i, binaryMime := range binaryMimes {
@@ -77,17 +92,17 @@ func MimeToBinaryType(mime string) BinaryType {
 }
 
 // DataFromFilename fetches all meta information from hypha content file with path `fullPath`. If it is not a content file, `skip` is true, and you are expected to ignore this file when indexing hyphae. `name` is name of the hypha to which this file relates. `isText` is true when the content file is text, false when is binary. `mimeId` is an integer representation of content type. Cast it to TextType if `isText == true`, cast it to BinaryType if `isText == false`.
-func DataFromFilename(fullPath string) (skip bool, name string, isText bool, mimeId int) {
+func DataFromFilename(fullPath string) (name string, isText bool, skip bool) {
 	shortPath := strings.TrimPrefix(fullPath, WikiDir)[1:]
-	// Special files start with &
-	// &. is used in normal hypha part names
-	if shortPath[0] == '&' || strings.LastIndex(shortPath, "&.") < 0 {
-		skip = true
-		return
-	}
 	ext := filepath.Ext(shortPath)
-	name = strings.TrimSuffix(shortPath, "&"+ext)
-	isText, mimeId = mimeData(ext)
+	name = CanonicalName(strings.TrimSuffix(shortPath, ext))
+	switch ext {
+	case ".myco":
+		isText = true
+	case "", shortPath:
+		skip = true
+	}
+
 	return
 }
 
