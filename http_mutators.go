@@ -129,6 +129,9 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		textData         = rq.PostFormValue("text")
 	)
+	if !isOld {
+		hyphaData = &HyphaData{}
+	}
 	if textData == "" {
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Error", "No text data passed")
 		return
@@ -159,8 +162,11 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		mime             = handler.Header.Get("Content-Type")
-		hop              = hyphaData.UploadBinary(hyphaName, mime, file, isOld)
 	)
+	if !isOld {
+		hyphaData = &HyphaData{}
+	}
+	hop := hyphaData.UploadBinary(hyphaName, mime, file, isOld)
 
 	if len(hop.Errs) != 0 {
 		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())

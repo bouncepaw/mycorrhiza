@@ -40,7 +40,7 @@ type HyphaData struct {
 }
 
 // uploadHelp is a helper function for UploadText and UploadBinary
-func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext, originalFullPath string, isOld bool, data []byte) *history.HistoryOp {
+func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext string, originalFullPath *string, isOld bool, data []byte) *history.HistoryOp {
 	var (
 		fullPath = filepath.Join(WikiDir, hyphaName+ext)
 	)
@@ -51,16 +51,17 @@ func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext, original
 	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
 		return hop.WithError(err)
 	}
-
-	if isOld && originalFullPath != fullPath {
-		if err := history.Rename(originalFullPath, fullPath); err != nil {
+	if isOld && *originalFullPath != fullPath && *originalFullPath != "" {
+		if err := history.Rename(*originalFullPath, fullPath); err != nil {
 			return hop.WithError(err)
 		}
-		log.Println("Move", originalFullPath, "to", fullPath)
+		log.Println("Move", *originalFullPath, "to", fullPath)
 	}
 	if !isOld {
 		HyphaStorage[hyphaName] = hd
 	}
+	*originalFullPath = fullPath
+	log.Printf("%v\n", *hd)
 	return hop.WithFiles(fullPath).
 		WithSignature("anon").
 		Apply()
@@ -69,7 +70,7 @@ func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext, original
 // UploadText loads a new text part from `textData` for hypha `hyphaName` with `hd`.  It must be marked if the hypha `isOld`.
 func (hd *HyphaData) UploadText(hyphaName, textData string, isOld bool) *history.HistoryOp {
 	hop := history.Operation(history.TypeEditText).WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName))
-	return hd.uploadHelp(hop, hyphaName, ".myco", hd.textPath, isOld, []byte(textData))
+	return hd.uploadHelp(hop, hyphaName, ".myco", &hd.textPath, isOld, []byte(textData))
 }
 
 // UploadBinary loads a new binary part from `file` for hypha `hyphaName` with `hd`. The contents have the specified `mime` type. It must be marked if the hypha `isOld`.
@@ -82,7 +83,7 @@ func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, i
 		return hop.WithError(err)
 	}
 
-	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), hd.binaryPath, isOld, data)
+	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), &hd.binaryPath, isOld, data)
 }
 
 // DeleteHypha deletes hypha and makes a history record about that.

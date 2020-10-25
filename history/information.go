@@ -39,7 +39,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 			"log", "--oneline", "--no-merges",
 			// Hash, Commiter email, Commiter time, Commit msg separated by tab
 			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
-			"--", hyphaName+"&.*",
+			"--", hyphaName+".*",
 		)
 		revs []Revision
 	)

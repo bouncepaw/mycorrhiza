@@ -33,7 +33,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		revHash           = shorterUrl[:firstSlashIndex]
 		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		textPath          = hyphaName + "&.gmi"
+		textPath          = hyphaName + ".myco"
 		textContents, err = history.FileAtRevision(textPath, revHash)
 	)
 	if err == nil {

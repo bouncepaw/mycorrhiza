@@ -29,7 +29,7 @@ var HyphaStorage = make(map[string]*HyphaData)
 
 // IterateHyphaNamesWith is a closure to be passed to subpackages to let them iterate all hypha names read-only.
 func IterateHyphaNamesWith(f func(string)) {
-	for hyphaName, _ := range HyphaStorage {
+	for hyphaName := range HyphaStorage {
 		f(hyphaName)
 	}
 }

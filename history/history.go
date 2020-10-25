@@ -59,9 +59,9 @@ func (rev Revision) HyphaeLinks() (html string) {
 	}
 	for _, filename := range strings.Split(out.String(), "\n") {
 		// If filename has an ampersand:
-		if strings.IndexRune(filename, '&') >= 0 {
+		if strings.IndexRune(filename, '.') >= 0 {
 			// Remove ampersanded suffix from filename:
-			ampersandPos := strings.LastIndexByte(filename, '&')
+			ampersandPos := strings.LastIndexByte(filename, '.')
 			hyphaName := string([]byte(filename)[0:ampersandPos]) // is it safe?
 			if isNewName(hyphaName) {
 				// Entries are separated by commas
