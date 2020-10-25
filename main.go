@@ -99,6 +99,16 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerStyle(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if _, err := os.Stat(WikiDir + "/static/common.css"); err == nil {
+		http.ServeFile(w, rq, WikiDir+"/static/common.css")
+	} else {
+		w.Header().Set("Content-Type", "text/css;charset=utf-8")
+		w.Write([]byte(templates.DefaultCSS()))
+	}
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 	parseCliArgs()
@@ -122,6 +132,7 @@ func main() {
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
+	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})
