@@ -101,13 +101,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 
 func main() {
 	log.Println("Running MycorrhizaWiki β")
-
-	var err error
-	WikiDir, err = filepath.Abs(os.Args[1])
-	util.WikiDir = WikiDir
-	if err != nil {
-		log.Fatal(err)
-	}
+	parseCliArgs()
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
 	}
@@ -129,7 +123,7 @@ func main() {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/page/home", http.StatusSeeOther)
+		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})
-	log.Fatal(http.ListenAndServe("0.0.0.0:1737", nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }

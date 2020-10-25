@@ -2,9 +2,9 @@
 A wiki engine.
 
 This is the development branch for version 0.10. Features planned for this version:
-* [ ] New file structure
+* [x] New file structure
 * [ ] Mycomarkup
-* [ ] CLI options
+* [x] CLI options
 * [ ] CSS improvements
 
 ## Building
@@ -15,6 +15,19 @@ make
 # That make will:
 # * run the default wiki. You can edit it right away.
 # * create an executable called `mycorrhiza`. Run it with path to your wiki.
+```
+
+## Usage
+```
+mycorrhiza [OPTIONS...] WIKI_PATH
+
+Options:
+  -home string
+        The home page (default "home")
+  -port string
+        Port to serve the wiki at (default "1737")
+  -title string
+        How to call your wiki in the navititle (default "🍄")
 ```
 
 ## Features
