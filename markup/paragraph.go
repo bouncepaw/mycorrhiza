@@ -104,5 +104,24 @@ func ParagraphToHtml(input string) string {
 		}
 	}
 
+	for stt, open := range tagState {
+		if open {
+			switch stt {
+			case spanItalic:
+				ret.WriteString(tagFromState(spanItalic, tagState, "em", "//"))
+			case spanBold:
+				ret.WriteString(tagFromState(spanBold, tagState, "strong", "**"))
+			case spanMono:
+				ret.WriteString(tagFromState(spanMono, tagState, "code", "`"))
+			case spanSuper:
+				ret.WriteString(tagFromState(spanSuper, tagState, "sup", "^"))
+			case spanSub:
+				ret.WriteString(tagFromState(spanSub, tagState, "sub", ",,"))
+			case spanMark:
+				ret.WriteString(tagFromState(spanMark, tagState, "mark", "!!"))
+			}
+		}
+	}
+
 	return ret.String()
 }
