@@ -12,7 +12,7 @@ more text
 * li\n"+
 ```alt text goes here
 => preformatted text
-where gemtext is not lexed
+where markup is not lexed
 ```it ends here"
 =>linking
 

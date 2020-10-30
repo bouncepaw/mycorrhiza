@@ -1,4 +1,4 @@
-package gemtext
+package markup
 
 import ()
 

@@ -118,7 +118,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	util.HTTP200Page(w, base("Edit"+hyphaName, templates.EditHTML(hyphaName, textAreaFill, warning)))
+	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(hyphaName, textAreaFill, warning)))
 }
 
 // handlerUploadText uploads a new text part for the hypha.

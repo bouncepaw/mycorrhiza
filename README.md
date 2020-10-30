@@ -4,8 +4,13 @@ A wiki engine.
 This is the development branch for version 0.10. Features planned for this version:
 * [x] New file structure
 * [ ] Mycomarkup
+  * [x] 6 headings
+  * [x] Paragraph styling
+  * [ ] Inline links
+  * [ ] Better lists
+  * [ ] Better quotes
 * [x] CLI options
-* [ ] CSS improvements
+* [x] CSS improvements
 
 ## Building
 ```sh

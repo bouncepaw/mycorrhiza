@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -37,7 +37,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		textContents, err = history.FileAtRevision(textPath, revHash)
 	)
 	if err == nil {
-		contents = gemtext.ToHtml(hyphaName, textContents)
+		contents = markup.ToHtml(hyphaName, textContents)
 	}
 	page := templates.RevisionHTML(
 		hyphaName,
@@ -104,7 +104,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
 		_, errB := os.Stat(data.binaryPath)
 		if errT == nil {
-			contents = gemtext.ToHtml(hyphaName, string(fileContentsT))
+			contents = markup.ToHtml(hyphaName, string(fileContentsT))
 		}
 		if !os.IsNotExist(errB) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents

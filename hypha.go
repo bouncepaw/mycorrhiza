@@ -10,17 +10,17 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
-	gemtext.HyphaExists = func(hyphaName string) bool {
+	markup.HyphaExists = func(hyphaName string) bool {
 		_, hyphaExists := HyphaStorage[hyphaName]
 		return hyphaExists
 	}
-	gemtext.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
+	markup.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
 		if hyphaData, ok := HyphaStorage[hyphaName]; ok {
 			rawText, err = FetchTextPart(hyphaData)
 			if hyphaData.binaryPath != "" {

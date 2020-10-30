@@ -1,4 +1,4 @@
-package gemtext
+package markup
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// TODO: move test gemtext docs to files, perhaps? These strings sure are ugly
+// TODO: move test markup docs to files, perhaps? These strings sure are ugly
 func TestLex(t *testing.T) {
 	check := func(name, content string, expectedAst []Line) {
 		if ast := lex(name, content); !reflect.DeepEqual(ast, expectedAst) {
@@ -25,9 +25,9 @@ func TestLex(t *testing.T) {
 			}
 		}
 	}
-	contentsB, err := ioutil.ReadFile("testdata/test.gmi")
+	contentsB, err := ioutil.ReadFile("testdata/test.myco")
 	if err != nil {
-		t.Error("Could not read test gemtext file!")
+		t.Error("Could not read test markup file!")
 	}
 	contents := string(contentsB)
 	check("Apple", contents, []Line{
@@ -46,7 +46,7 @@ func TestLex(t *testing.T) {
 	<li>li\n"+</li>
 </ul>`},
 		{10, `<pre id='10' alt='alt text goes here' class='codeblock'><code>=&gt; preformatted text
-where gemtext is not lexed</code></pre>`},
+where markup is not lexed</code></pre>`},
 		{11, `<p><a id='11' class='wikilink_internal' href="/page/linking">linking</a></p>`},
 		{12, "<p id='12'>text</p>"},
 		{13, `<pre id='13' alt='' class='codeblock'><code>()

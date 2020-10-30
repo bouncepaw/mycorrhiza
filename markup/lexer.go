@@ -1,4 +1,4 @@
-package gemtext
+package markup
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ var HyphaExists func(string) bool
 // HyphaAccess holds function that accesses a hypha by its name.
 var HyphaAccess func(string) (rawText, binaryHtml string, err error)
 
-// GemLexerState is used by gemtext parser to remember what is going on.
+// GemLexerState is used by markup parser to remember what is going on.
 type GemLexerState struct {
 	// Name of hypha being parsed
 	name  string
@@ -29,7 +29,7 @@ type Line struct {
 	contents interface{}
 }
 
-// Parse gemtext line starting with "=>" according to wikilink rules.
+// Parse markup line starting with "=>" according to wikilink rules.
 // See http://localhost:1737/page/wikilink
 func wikilink(src string, state *GemLexerState) (href, text, class string) {
 	src = strings.TrimSpace(remover("=>")(src))
@@ -79,7 +79,7 @@ func lex(name, content string) (ast []Line) {
 	return ast
 }
 
-// Lex `line` in gemtext and save it to `ast` using `state`.
+// Lex `line` in markup and save it to `ast` using `state`.
 func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	addLine := func(text interface{}) {
 		*ast = append(*ast, Line{id: state.id, contents: text})
@@ -142,20 +142,29 @@ normalState:
 	case startsWith("```"):
 		state.where = "pre"
 		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
-	case startsWith("*"):
+	case startsWith("* "):
 		state.where = "list"
 		state.buf = fmt.Sprintf("<ul id='%d'>\n", state.id)
 		goto listState
 
-	case startsWith("###"):
+	case startsWith("###### "):
 		addLine(fmt.Sprintf(
-			"<h3 id='%d'>%s</h3>", state.id, removeHeadingOctothorps(line)))
-	case startsWith("##"):
+			"<h6 id='%d'>%s</h6>", state.id, line[7:]))
+	case startsWith("##### "):
 		addLine(fmt.Sprintf(
-			"<h2 id='%d'>%s</h2>", state.id, removeHeadingOctothorps(line)))
-	case startsWith("#"):
+			"<h5 id='%d'>%s</h5>", state.id, line[6:]))
+	case startsWith("#### "):
 		addLine(fmt.Sprintf(
-			"<h1 id='%d'>%s</h1>", state.id, removeHeadingOctothorps(line)))
+			"<h4 id='%d'>%s</h4>", state.id, line[5:]))
+	case startsWith("### "):
+		addLine(fmt.Sprintf(
+			"<h3 id='%d'>%s</h3>", state.id, line[4:]))
+	case startsWith("## "):
+		addLine(fmt.Sprintf(
+			"<h2 id='%d'>%s</h2>", state.id, line[3:]))
+	case startsWith("# "):
+		addLine(fmt.Sprintf(
+			"<h1 id='%d'>%s</h1>", state.id, line[2:]))
 
 	case startsWith(">"):
 		addLine(fmt.Sprintf(
@@ -168,6 +177,6 @@ normalState:
 	case startsWith("<="):
 		addLine(parseTransclusion(line, state.name))
 	default:
-		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, line))
+		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(line)))
 	}
 }

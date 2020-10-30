@@ -21,7 +21,7 @@ var (
 func StreamEditHTML(qw422016 *qt422016.Writer, hyphaName, textAreaFill, warning string) {
 //line templates/http_mutators.qtpl:1
 	qw422016.N().S(`
-		<main>
+		<main class="edit">
 			<h1>Edit `)
 //line templates/http_mutators.qtpl:3
 	qw422016.E().S(hyphaName)
@@ -32,7 +32,7 @@ func StreamEditHTML(qw422016 *qt422016.Writer, hyphaName, textAreaFill, warning 
 	qw422016.N().S(warning)
 //line templates/http_mutators.qtpl:4
 	qw422016.N().S(`
-			<form method="post" class="upload-text-form"
+			<form method="post" class="edit-form"
 			      action="/upload-text/`)
 //line templates/http_mutators.qtpl:6
 	qw422016.E().S(hyphaName)
