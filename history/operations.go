@@ -77,7 +77,9 @@ func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
 	for from, to := range pairs {
 		if from != "" {
 			os.MkdirAll(filepath.Dir(to), 0777)
-			Rename(from, to)
+			if err := Rename(from, to); err != nil {
+				hop.Errs = append(hop.Errs, err)
+			}
 		}
 	}
 	return hop

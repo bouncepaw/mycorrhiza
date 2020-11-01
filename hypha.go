@@ -80,7 +80,7 @@ func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, i
 		data, err = ioutil.ReadAll(file)
 	)
 	if err != nil {
-		return hop.WithError(err)
+		return hop.WithError(err).Apply()
 	}
 
 	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), &hd.binaryPath, isOld, data)

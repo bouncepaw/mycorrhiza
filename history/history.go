@@ -125,6 +125,6 @@ func unixTimestampAsTime(ts string) *time.Time {
 // Rename renames from `from` to `to` using `git mv`.
 func Rename(from, to string) error {
 	log.Println(util.ShorterPath(from), util.ShorterPath(to))
-	_, err := gitsh("mv", from, to)
+	_, err := gitsh("mv", "--force", from, to)
 	return err
 }
