@@ -46,8 +46,10 @@ blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}
 p code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
 .codeblock {background-color:#eee; padding:.5rem; font-size:16px; white-space: pre-wrap;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
-.transclusion {background-color:#eee; padding:0 0 0 1.5rem;}
-.transclusion__link {display: block; position: absolute; transform-origin: 0 0; transform: rotate(90deg); margin-top: 0.5rem; color: black; text-decoration: none;}
+.transclusion {background-color:#eee; }
+.transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
+.transclusion__link {display: block; text-align: right; font-style: italic; margin-top: 0.5rem; color: black; text-decoration: none;}
+.transclusion__link::before {content: "⇐ ";}
 
 .binary-container_with-img img,
 .binary-container_with-video video,
@@ -59,31 +61,31 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 
 #new-name {width:100%;}
 `)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 }
 
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 func WriteDefaultCSS(qq422016 qtio422016.Writer) {
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	StreamDefaultCSS(qw422016)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	qt422016.ReleaseWriter(qw422016)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 }
 
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 func DefaultCSS() string {
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	WriteDefaultCSS(qb422016)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	qs422016 := string(qb422016.B)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 	return qs422016
-//line templates/css.qtpl:39
+//line templates/css.qtpl:41
 }
