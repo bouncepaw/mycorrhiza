@@ -27,17 +27,18 @@ func MimeToExtension(mime string) string {
 
 func ExtensionToMime(ext string) string {
 	mm := map[string]string{
-		"bin":  "application/octet-stream",
-		"jpg":  "image/jpeg",
-		"gif":  "image/gif",
-		"png":  "image/png",
-		"webp": "image/webp",
-		"svg":  "image/svg+xml",
-		"ico":  "image/x-icon",
-		"ogg":  "application/ogg",
-		"webm": "video/webm",
-		"mp3":  "audio/mp3",
-		"mp4":  "video/mp4",
+		".bin":  "application/octet-stream",
+		".jpg":  "image/jpeg",
+		".jpeg": "image/jpeg",
+		".gif":  "image/gif",
+		".png":  "image/png",
+		".webp": "image/webp",
+		".svg":  "image/svg+xml",
+		".ico":  "image/x-icon",
+		".ogg":  "application/ogg",
+		".webm": "video/webm",
+		".mp3":  "audio/mp3",
+		".mp4":  "video/mp4",
 	}
 	if mime, ok := mm[ext]; ok {
 		return mime

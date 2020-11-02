@@ -76,7 +76,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "text")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.textPath)
-		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, data.textPath)
 	}
 }
