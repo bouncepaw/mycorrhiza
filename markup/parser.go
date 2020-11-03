@@ -13,7 +13,7 @@ func Parse(ast []Line, from, to int, state GemParserState) (html string) {
 		return "Transclusion depth limit"
 	}
 	for _, line := range ast {
-		if line.id >= from && (line.id <= to || to == 0) {
+		if line.id >= from && (line.id <= to || to == 0) || line.id == -1 {
 			switch v := line.contents.(type) {
 			case Transclusion:
 				html += Transclude(v, state)

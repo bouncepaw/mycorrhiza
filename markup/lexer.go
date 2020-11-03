@@ -121,8 +121,8 @@ preformattedState:
 
 listState:
 	switch {
-	case startsWith("*"):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", remover("*")(line))
+	case startsWith("* "):
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[2:]))
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ul>")
@@ -176,6 +176,8 @@ normalState:
 
 	case startsWith("<="):
 		addLine(parseTransclusion(line, state.name))
+	case line == "----":
+		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
 	default:
 		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(line)))
 	}
