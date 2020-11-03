@@ -67,10 +67,10 @@ func wikilink(src string, state *GemLexerState) (href, text, class string) {
 	case strings.ContainsRune(href, ':'):
 		class = "wikilink_external"
 	default:
-		href = path.Join("/page", href)
 		if !HyphaExists(href) {
 			class += " wikilink_new"
 		}
+		href = path.Join("/page", href)
 	}
 	return href, strings.TrimSpace(text), class
 }

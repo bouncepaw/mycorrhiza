@@ -209,6 +209,7 @@ func Index(path string) {
 		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
 		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
 			Index(filepath.Join(path, node.Name()))
+			continue
 		}
 
 		var (
