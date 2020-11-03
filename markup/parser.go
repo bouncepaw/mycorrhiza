@@ -17,6 +17,8 @@ func Parse(ast []Line, from, to int, state GemParserState) (html string) {
 			switch v := line.contents.(type) {
 			case Transclusion:
 				html += Transclude(v, state)
+			case Img:
+				html += v.ToHtml()
 			case string:
 				html += v
 			}

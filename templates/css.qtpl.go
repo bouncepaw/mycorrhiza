@@ -55,37 +55,39 @@ p code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 .navi-title a {text-decoration:none;}
+.img-gallery img { max-width: 100%; }
+figure { margin: 0; }
 
 nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}
 
 #new-name {width:100%;}
 `)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 }
 
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 func WriteDefaultCSS(qq422016 qtio422016.Writer) {
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	StreamDefaultCSS(qw422016)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	qt422016.ReleaseWriter(qw422016)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 }
 
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 func DefaultCSS() string {
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	WriteDefaultCSS(qb422016)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	qs422016 := string(qb422016.B)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 	return qs422016
-//line templates/css.qtpl:41
+//line templates/css.qtpl:43
 }

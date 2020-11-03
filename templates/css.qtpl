@@ -33,6 +33,8 @@ p code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 .navi-title a {text-decoration:none;}
+.img-gallery img { max-width: 100%; }
+figure { margin: 0; }
 
 nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}

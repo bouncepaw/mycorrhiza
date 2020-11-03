@@ -19,8 +19,8 @@ func TestLex(t *testing.T) {
 				return
 			}
 			for i, e := range ast {
-				if e != expectedAst[i] {
-					t.Error("Mismatch when lexing", name, "\nExpected:", expectedAst[i], "\nGot:", e)
+				if !reflect.DeepEqual(e, expectedAst[i]) {
+					t.Error(fmt.Sprintf("Expected: %q\nGot:%q", expectedAst[i], e))
 				}
 			}
 		}
@@ -43,7 +43,7 @@ func TestLex(t *testing.T) {
 		{7, "<p id='7'>more text</p>"},
 		{8, `<p><a id='8' class='wikilink_internal' href="/page/Pear">some link</a></p>`},
 		{9, `<ul id='9'>
-	<li>li\n"+</li>
+	<li>lin&#34;+</li>
 </ul>`},
 		{10, `<pre id='10' alt='alt text goes here' class='codeblock'><code>=&gt; preformatted text
 where markup is not lexed</code></pre>`},
@@ -51,7 +51,17 @@ where markup is not lexed</code></pre>`},
 		{12, "<p id='12'>text</p>"},
 		{13, `<pre id='13' alt='' class='codeblock'><code>()
 /\</code></pre>`},
-		// More thorough testing of xclusions is done in xclusion_test.go
 		{14, Transclusion{"apple", 1, 3}},
+		{15, Img{
+			hyphaName: "Apple",
+			inDesc:    false,
+			entries: []imgEntry{
+				{"hypha1", "", "", ""},
+				{"hypha2", "", "", ""},
+				{"hypha3", "60", "", ""},
+				{"hypha4", "", "", " line1\nline2\n"},
+				{"hypha5", "", "", "\nstate of minnesota\n"},
+			},
+		}},
 	})
 }

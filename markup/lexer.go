@@ -21,6 +21,8 @@ type GemLexerState struct {
 	// Line id
 	id  int
 	buf string
+	// Temporaries
+	img Img
 }
 
 type Line struct {
@@ -99,6 +101,8 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 
 	// Beware! Usage of goto. Some may say it is considered evil but in this case it helped to make a better-structured code.
 	switch state.where {
+	case "img":
+		goto imgState
 	case "pre":
 		goto preformattedState
 	case "list":
@@ -106,6 +110,13 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	default:
 		goto normalState
 	}
+
+imgState:
+	if shouldGoBackToNormal := state.img.Process(line); shouldGoBackToNormal {
+		state.where = ""
+		addLine(state.img)
+	}
+	return
 
 preformattedState:
 	switch {
@@ -178,6 +189,9 @@ normalState:
 		addLine(parseTransclusion(line, state.name))
 	case line == "----":
 		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
+	case MatchesImg(line):
+		state.where = "img"
+		state.img = ImgFromFirstLine(line, state.name)
 	default:
 		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(line)))
 	}
