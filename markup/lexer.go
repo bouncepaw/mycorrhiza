@@ -53,14 +53,14 @@ func wikilink(src string, state *GemLexerState) (href, text, class string) {
 		hyphaName := canonicalName(path.Join(
 			state.name, strings.TrimPrefix(href, "./")))
 		if !HyphaExists(hyphaName) {
-			class = "wikilink_new"
+			class += " wikilink_new"
 		}
 		href = path.Join("/page", hyphaName)
 	case strings.HasPrefix(href, "../"):
 		hyphaName := canonicalName(path.Join(
 			path.Dir(state.name), strings.TrimPrefix(href, "../")))
 		if !HyphaExists(hyphaName) {
-			class = "wikilink_new"
+			class += " wikilink_new"
 		}
 		href = path.Join("/page", hyphaName)
 	case strings.HasPrefix(href, "/"):
@@ -68,6 +68,9 @@ func wikilink(src string, state *GemLexerState) (href, text, class string) {
 		class = "wikilink_external"
 	default:
 		href = path.Join("/page", href)
+		if !HyphaExists(href) {
+			class += " wikilink_new"
+		}
 	}
 	return href, strings.TrimSpace(text), class
 }
@@ -88,7 +91,7 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	}
 
 	if "" == strings.TrimSpace(line) {
-		if state.where == "list" {
+		if state.where == "list" || state.where == "number" {
 			state.where = ""
 			addLine(state.buf + "</ul>")
 		}
@@ -151,7 +154,7 @@ listState:
 numberState:
 	switch {
 	case startsWith("*. "):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[2:]))
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[3:]))
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ol>")
