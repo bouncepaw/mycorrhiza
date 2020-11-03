@@ -91,9 +91,12 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	}
 
 	if "" == strings.TrimSpace(line) {
-		if state.where == "list" || state.where == "number" {
+		if state.where == "list" {
 			state.where = ""
 			addLine(state.buf + "</ul>")
+		} else if state.where == "number" {
+			state.where = ""
+			addLine(state.buf + "</ol>")
 		}
 		return
 	}
