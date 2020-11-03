@@ -118,7 +118,7 @@ func binaryHtmlBlock(hyphaName string, d *HyphaData) string {
 	case BinaryJpeg, BinaryGif, BinaryPng, BinaryWebp, BinarySvg, BinaryIco:
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
-			<img src="/binary/%s"/>
+			<a href="/page/%s"><img src="/binary/%s"/></a>
 		</div>`, hyphaName)
 	case BinaryOgg, BinaryWebm, BinaryMp4:
 		return fmt.Sprintf(`
