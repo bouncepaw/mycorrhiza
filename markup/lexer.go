@@ -107,6 +107,8 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 		goto preformattedState
 	case "list":
 		goto listState
+	case "number":
+		goto numberState
 	default:
 		goto normalState
 	}
@@ -146,6 +148,22 @@ listState:
 	}
 	return
 
+numberState:
+	switch {
+	case startsWith("*. "):
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[2:]))
+	case startsWith("```"):
+		state.where = "pre"
+		addLine(state.buf + "</ol>")
+		state.id++
+		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
+	default:
+		state.where = ""
+		addLine(state.buf + "</ol>")
+		goto normalState
+	}
+	return
+
 normalState:
 	state.id++
 	switch {
@@ -157,6 +175,10 @@ normalState:
 		state.where = "list"
 		state.buf = fmt.Sprintf("<ul id='%d'>\n", state.id)
 		goto listState
+	case startsWith("*. "):
+		state.where = "number"
+		state.buf = fmt.Sprintf("<ol id='%d'>\n", state.id)
+		goto numberState
 
 	case startsWith("###### "):
 		addLine(fmt.Sprintf(
