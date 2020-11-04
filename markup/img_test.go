@@ -12,14 +12,14 @@ func TestParseStartOfEntry(t *testing.T) {
 		entry          imgEntry
 		followedByDesc bool
 	}{
-		{"apple", imgEntry{"apple", "", "", ""}, false},
-		{"pear:", imgEntry{"pear", "", "", ""}, false},
-		{"яблоко: 30*60", imgEntry{"яблоко", "30", "60", ""}, false},
-		{"груша   : 65  ", imgEntry{"груша", "65", "", ""}, false},
-		{"жеронимо : 30 { full desc }", imgEntry{"жеронимо", "30", "", " full desc "}, false},
-		{"жорно жованна :   *5555 {partial description", imgEntry{"жорно_жованна", "", "5555", "partial description"}, true},
-		{"иноске : {full}", imgEntry{"иноске", "", "", "full"}, false},
-		{"j:{partial", imgEntry{"j", "", "", "partial"}, true},
+		{"apple", imgEntry{"/binary/apple", "", "", ""}, false},
+		{"pear|", imgEntry{"/binary/pear", "", "", ""}, false},
+		{"яблоко| 30*60", imgEntry{"/binary/яблоко", "30", "60", ""}, false},
+		{"груша   | 65  ", imgEntry{"/binary/груша", "65", "", ""}, false},
+		{"жеронимо | 30 { full desc }", imgEntry{"/binary/жеронимо", "30", "", " full desc "}, false},
+		{"жорно жованна |   *5555 {partial description", imgEntry{"/binary/жорно_жованна", "", "5555", "partial description"}, true},
+		{"иноске | {full}", imgEntry{"/binary/иноске", "", "", "full"}, false},
+		{"j|{partial", imgEntry{"/binary/j", "", "", "partial"}, true},
 	}
 	for _, triplet := range tests {
 		entry, followedByDesc := img.parseStartOfEntry(triplet.line)

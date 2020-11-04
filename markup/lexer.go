@@ -3,7 +3,6 @@ package markup
 import (
 	"fmt"
 	"html"
-	"path"
 	"strings"
 )
 
@@ -29,50 +28,6 @@ type Line struct {
 	id int
 	// interface{} may be bad. What I need is a sum of string and Transclusion
 	contents interface{}
-}
-
-// Parse markup line starting with "=>" according to wikilink rules.
-// See http://localhost:1737/page/wikilink
-func wikilink(src string, state *GemLexerState) (href, text, class string) {
-	src = strings.TrimSpace(remover("=>")(src))
-	if src == "" {
-		return
-	}
-	// Href is text after => till first whitespace
-	href = strings.Fields(src)[0]
-	// Text is everything after whitespace.
-	// If there's no text, make it same as href
-	if text = strings.TrimPrefix(src, href); text == "" {
-		text = href
-	}
-
-	class = "wikilink_internal"
-
-	switch {
-	case strings.HasPrefix(href, "./"):
-		hyphaName := canonicalName(path.Join(
-			state.name, strings.TrimPrefix(href, "./")))
-		if !HyphaExists(hyphaName) {
-			class += " wikilink_new"
-		}
-		href = path.Join("/page", hyphaName)
-	case strings.HasPrefix(href, "../"):
-		hyphaName := canonicalName(path.Join(
-			path.Dir(state.name), strings.TrimPrefix(href, "../")))
-		if !HyphaExists(hyphaName) {
-			class += " wikilink_new"
-		}
-		href = path.Join("/page", hyphaName)
-	case strings.HasPrefix(href, "/"):
-	case strings.ContainsRune(href, ':'):
-		class = "wikilink_external"
-	default:
-		if !HyphaExists(canonicalName(href)) {
-			class += " wikilink_new"
-		}
-		href = path.Join("/page", href)
-	}
-	return href, strings.TrimSpace(text), class
 }
 
 func lex(name, content string) (ast []Line) {
@@ -141,7 +96,7 @@ preformattedState:
 listState:
 	switch {
 	case startsWith("* "):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[2:]))
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[2:]))
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ul>")
@@ -157,7 +112,7 @@ listState:
 numberState:
 	switch {
 	case startsWith("*. "):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(line[3:]))
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[3:]))
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ol>")
@@ -209,9 +164,9 @@ normalState:
 		addLine(fmt.Sprintf(
 			"<blockquote id='%d'>%s</blockquote>", state.id, remover(">")(line)))
 	case startsWith("=>"):
-		source, content, class := wikilink(line, state)
+		href, text, class := Rocketlink(line, state.name)
 		addLine(fmt.Sprintf(
-			`<p><a id='%d' class='%s' href="%s">%s</a></p>`, state.id, class, source, content))
+			`<p><a id='%d' class='rocketlink %s' href="%s">%s</a></p>`, state.id, class, href, text))
 
 	case startsWith("<="):
 		addLine(parseTransclusion(line, state.name))
@@ -221,6 +176,6 @@ normalState:
 		state.where = "img"
 		state.img = ImgFromFirstLine(line, state.name)
 	default:
-		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(line)))
+		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(state.name, line)))
 	}
 }

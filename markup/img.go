@@ -127,7 +127,7 @@ func (img Img) ToHtml() (html string) {
 					if i > 0 {
 						html += `<br>`
 					}
-					html += ParagraphToHtml(line)
+					html += ParagraphToHtml(img.hyphaName, line)
 				}
 			}
 			html += `</figcaption>`

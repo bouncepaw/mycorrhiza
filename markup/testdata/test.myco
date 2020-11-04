@@ -25,13 +25,13 @@ text
 
 img {
 hypha1
-hypha2:
-hypha3: 60
-hypha4: { line1
+hypha2|
+hypha3| 60
+hypha4| { line1
 line2
 } this is ignored
 
-hypha5: {
+hypha5| {
 state of minnesota
 }
 }

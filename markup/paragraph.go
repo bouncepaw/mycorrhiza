@@ -17,6 +17,7 @@ const (
 	spanSuper
 	spanSub
 	spanMark
+	spanLink
 )
 
 func tagFromState(stt spanTokenType, tagState map[spanTokenType]bool, tagName, originalForm string) string {
@@ -32,7 +33,33 @@ func tagFromState(stt spanTokenType, tagState map[spanTokenType]bool, tagName, o
 	}
 }
 
-// getTextNode splits the `p` into two parts `textNode` and `rest` by the first encountered rune that resembles a span tag. If there is none, `textNode = p`, `rest = ""`. It handles escaping with backslash.
+func getLinkNode(input *bytes.Buffer, hyphaName string) string {
+	input.Next(2)
+	var (
+		escaping   = false
+		addrBuf    = bytes.Buffer{}
+		displayBuf = bytes.Buffer{}
+		currBuf    = &addrBuf
+	)
+	for input.Len() != 0 {
+		b, _ := input.ReadByte()
+		if escaping {
+			currBuf.WriteByte(b)
+			escaping = false
+		} else if b == '|' && currBuf == &addrBuf {
+			currBuf = &displayBuf
+		} else if b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
+			input.Next(1)
+			break
+		} else {
+			currBuf.WriteByte(b)
+		}
+	}
+	href, text, class := LinkParts(addrBuf.String(), displayBuf.String(), hyphaName)
+	return fmt.Sprintf(`<a href="%s" class="%s">%s</a>`, href, class, html.EscapeString(text))
+}
+
+// getTextNode splits the `input` into two parts `textNode` and `rest` by the first encountered rune that resembles a span tag. If there is none, `textNode = input`, `rest = ""`. It handles escaping with backslash.
 func getTextNode(input *bytes.Buffer) string {
 	var (
 		textNodeBuffer = bytes.Buffer{}
@@ -51,7 +78,7 @@ func getTextNode(input *bytes.Buffer) string {
 			escaping = false
 		} else if b == '\\' {
 			escaping = true
-		} else if strings.IndexByte("/*`^,!", b) >= 0 {
+		} else if strings.IndexByte("/*`^,![", b) >= 0 {
 			input.UnreadByte()
 			break
 		} else {
@@ -61,7 +88,7 @@ func getTextNode(input *bytes.Buffer) string {
 	return textNodeBuffer.String()
 }
 
-func ParagraphToHtml(input string) string {
+func ParagraphToHtml(hyphaName, input string) string {
 	var (
 		p   = bytes.NewBufferString(input)
 		ret strings.Builder
@@ -73,6 +100,7 @@ func ParagraphToHtml(input string) string {
 			spanSuper:  false,
 			spanSub:    false,
 			spanMark:   false,
+			spanLink:   false,
 		}
 		startsWith = func(t string) bool {
 			return bytes.HasPrefix(p.Bytes(), []byte(t))
@@ -99,6 +127,8 @@ func ParagraphToHtml(input string) string {
 		case startsWith("!!"):
 			ret.WriteString(tagFromState(spanMark, tagState, "mark", "!!"))
 			p.Next(2)
+		case startsWith("[["):
+			ret.WriteString(getLinkNode(p, hyphaName))
 		default:
 			ret.WriteString(html.EscapeString(getTextNode(p)))
 		}
@@ -119,6 +149,8 @@ func ParagraphToHtml(input string) string {
 				ret.WriteString(tagFromState(spanSub, tagState, "sub", ",,"))
 			case spanMark:
 				ret.WriteString(tagFromState(spanMark, tagState, "mark", "!!"))
+			case spanLink:
+				ret.WriteString(tagFromState(spanLink, tagState, "a", "[["))
 			}
 		}
 	}

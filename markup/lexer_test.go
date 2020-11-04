@@ -41,13 +41,13 @@ func TestLex(t *testing.T) {
 </ul>`},
 		{6, "<p id='6'>text</p>"},
 		{7, "<p id='7'>more text</p>"},
-		{8, `<p><a id='8' class='wikilink_internal' href="/page/Pear">some link</a></p>`},
+		{8, `<p><a id='8' class='rocketlink wikilink_internal' href="/page/Pear">some link</a></p>`},
 		{9, `<ul id='9'>
 	<li>lin&#34;+</li>
 </ul>`},
 		{10, `<pre id='10' alt='alt text goes here' class='codeblock'><code>=&gt; preformatted text
 where markup is not lexed</code></pre>`},
-		{11, `<p><a id='11' class='wikilink_internal' href="/page/linking">linking</a></p>`},
+		{11, `<p><a id='11' class='rocketlink wikilink_internal' href="/page/linking">linking</a></p>`},
 		{12, "<p id='12'>text</p>"},
 		{13, `<pre id='13' alt='' class='codeblock'><code>()
 /\</code></pre>`},
@@ -56,11 +56,11 @@ where markup is not lexed</code></pre>`},
 			hyphaName: "Apple",
 			inDesc:    false,
 			entries: []imgEntry{
-				{"hypha1", "", "", ""},
-				{"hypha2", "", "", ""},
-				{"hypha3", "60", "", ""},
-				{"hypha4", "", "", " line1\nline2\n"},
-				{"hypha5", "", "", "\nstate of minnesota\n"},
+				{"/binary/hypha1", "", "", ""},
+				{"/binary/hypha2", "", "", ""},
+				{"/binary/hypha3", "60", "", ""},
+				{"/binary/hypha4", "", "", " line1\nline2\n"},
+				{"/binary/hypha5", "", "", "\nstate of minnesota\n"},
 			},
 		}},
 	})
