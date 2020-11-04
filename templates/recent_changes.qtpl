@@ -1,6 +1,7 @@
 {% func RecentChangesHTML(changes []string, n int) %}
 <main class="recent-changes">
 	<h1>Recent Changes</h1>
+	<p><a href="/">← Back</a></p>
 
 	<nav class="recent-changes__count">
 		See 
@@ -29,7 +30,7 @@
 		<p>Could not find any recent changes.</p>
 	{% else %}
 		{% for i, entry := range changes %}
-		<ul class="recent-changes__entry" role="article"
+		<ul class="recent-changes__entry rc-entry" role="article"
 		    aria-setsize="{%d n %}" aria-posinset="{%d i %}">
 			 {%s= entry %}
 		</ul>

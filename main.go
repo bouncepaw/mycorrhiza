@@ -92,7 +92,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
 	)
-	if err == nil {
+	if err == nil && n < 101 {
 		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)

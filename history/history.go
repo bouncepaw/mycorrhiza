@@ -68,7 +68,7 @@ func (rev Revision) HyphaeLinks() (html string) {
 				if len(set) > 1 {
 					html += `<span aria-hidden="true">, </span>`
 				}
-				html += fmt.Sprintf(`<a href="/rev/%[1]s/%[2]s">%[2]s</a>`, rev.Hash, hyphaName)
+				html += fmt.Sprintf(`<a href="/page/%[1]s">%[1]s</a>`, hyphaName)
 			}
 		}
 	}
@@ -77,10 +77,10 @@ func (rev Revision) HyphaeLinks() (html string) {
 
 func (rev Revision) RecentChangesEntry() (html string) {
 	return fmt.Sprintf(`
-<li><time>%s</time></li>
-<li>%s</li>
-<li>%s</li>
-<li>%s</li>
+<li class="rc-entry__time"><time>%s</time></li>
+<li class="rc-entry__hash">%s</li>
+<li class="rc-entry__links">%s</li>
+<li class="rc-entry__msg">%s</li>
 `, rev.TimeString(), rev.Hash, rev.HyphaeLinks(), rev.Message)
 }
 

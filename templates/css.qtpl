@@ -40,4 +40,9 @@ nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}
 
 #new-name {width:100%;}
+
+.rc-entry { display: grid; list-style-type: none; padding: .25rem; background-color: #eee; grid-template-columns: 1fr 1fr; }
+.rc-entry__time { font-style: italic; }
+.rc-entry__hash { font-style: italic; text-align: right; }
+.rc-entry__links { grid-column: 1 / span 2; }
 {% endfunc %}
