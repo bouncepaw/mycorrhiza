@@ -1,17 +1,6 @@
 # 🍄 MycorrhizaWiki 0.10
 A wiki engine.
 
-This is the development branch for version 0.10. Features planned for this version:
-* [x] New file structure
-* [ ] Mycomarkup
-  * [x] 6 headings
-  * [x] Paragraph styling
-  * [ ] Inline links
-  * [ ] Better lists
-  * [ ] Better quotes
-* [x] CLI options
-* [x] CSS improvements
-
 ## Building
 ```sh
 git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
@@ -39,8 +28,8 @@ Options:
 * Edit pages through html forms
 * Responsive design
 * Works in text browsers
-* Wiki pages (called hyphae) are in gemtext
-* Everything is stored as simple files, no database required
+* Wiki pages (called hyphae) are written in mycomarkup
+* Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with.
 * Page trees
 * Changes are saved to git
 * List of hyphae page
