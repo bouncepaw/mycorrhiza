@@ -29,7 +29,7 @@ var HyphaStorage = make(map[string]*HyphaData)
 
 // IterateHyphaNamesWith is a closure to be passed to subpackages to let them iterate all hypha names read-only.
 func IterateHyphaNamesWith(f func(string)) {
-	for hyphaName, _ := range HyphaStorage {
+	for hyphaName := range HyphaStorage {
 		f(hyphaName)
 	}
 }
@@ -40,7 +40,7 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(status)
 	fmt.Fprint(w, base(title, fmt.Sprintf(
-		`<p>%s. <a href="/page/%s">Go back to the hypha.<a></p>`,
+		`<main><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
 		errMsg, name)))
 }
 
@@ -52,7 +52,7 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 		pageCount = len(HyphaStorage)
 	)
 	for hyphaName, data := range HyphaStorage {
-		tbody += templates.HyphaListRowHTML(hyphaName, data.binaryType.Mime(), data.binaryPath != "")
+		tbody += templates.HyphaListRowHTML(hyphaName, ExtensionToMime(filepath.Ext(data.binaryPath)), data.binaryPath != "")
 	}
 	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount)))
 }
@@ -92,22 +92,26 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
 	)
-	if err == nil {
+	if err == nil && n < 101 {
 		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}
 }
 
+func handlerStyle(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if _, err := os.Stat(WikiDir + "/static/common.css"); err == nil {
+		http.ServeFile(w, rq, WikiDir+"/static/common.css")
+	} else {
+		w.Header().Set("Content-Type", "text/css;charset=utf-8")
+		w.Write([]byte(templates.DefaultCSS()))
+	}
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
-
-	var err error
-	WikiDir, err = filepath.Abs(os.Args[1])
-	util.WikiDir = WikiDir
-	if err != nil {
-		log.Fatal(err)
-	}
+	parseCliArgs()
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
 	}
@@ -128,8 +132,9 @@ func main() {
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
+	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/page/home", http.StatusSeeOther)
+		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})
-	log.Fatal(http.ListenAndServe("0.0.0.0:1737", nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }

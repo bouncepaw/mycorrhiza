@@ -5,7 +5,12 @@ import (
 	"strings"
 )
 
-var WikiDir string
+var (
+	ServerPort string
+	HomePage   string
+	SiteTitle  string
+	WikiDir    string
+)
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
 func ShorterPath(path string) string {

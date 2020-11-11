@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // isCanonicalName checks if the `name` is canonical.
@@ -17,16 +19,17 @@ func CanonicalName(name string) string {
 }
 
 // naviTitle turns `canonicalName` into html string with each hypha path parts higlighted as links.
+// TODO: rework as a template
 func naviTitle(canonicalName string) string {
 	var (
-		html = `<h1 class="navi-title" id="0">
-	<a href="/">🍄</a>`
+		html = fmt.Sprintf(`<h1 class="navi-title" id="navi-title">
+	<a href="/page/%s">%s</a>`, util.HomePage, util.SiteTitle)
 		prevAcc = `/page/`
 		parts   = strings.Split(canonicalName, "/")
 	)
 	for _, part := range parts {
 		html += fmt.Sprintf(`
-	<span>/</span>
+	<span aria-hidden="true">/</span>
 	<a href="%s">%s</a>`,
 			prevAcc+part,
 			strings.Title(part))

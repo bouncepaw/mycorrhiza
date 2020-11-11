@@ -1,9 +1,8 @@
-package gemtext
+package markup
 
 import (
 	"fmt"
 	"html"
-	"path"
 	"strings"
 )
 
@@ -13,7 +12,7 @@ var HyphaExists func(string) bool
 // HyphaAccess holds function that accesses a hypha by its name.
 var HyphaAccess func(string) (rawText, binaryHtml string, err error)
 
-// GemLexerState is used by gemtext parser to remember what is going on.
+// GemLexerState is used by markup parser to remember what is going on.
 type GemLexerState struct {
 	// Name of hypha being parsed
 	name  string
@@ -21,53 +20,14 @@ type GemLexerState struct {
 	// Line id
 	id  int
 	buf string
+	// Temporaries
+	img Img
 }
 
 type Line struct {
 	id int
 	// interface{} may be bad. What I need is a sum of string and Transclusion
 	contents interface{}
-}
-
-// Parse gemtext line starting with "=>" according to wikilink rules.
-// See http://localhost:1737/page/wikilink
-func wikilink(src string, state *GemLexerState) (href, text, class string) {
-	src = strings.TrimSpace(remover("=>")(src))
-	if src == "" {
-		return
-	}
-	// Href is text after => till first whitespace
-	href = strings.Fields(src)[0]
-	// Text is everything after whitespace.
-	// If there's no text, make it same as href
-	if text = strings.TrimPrefix(src, href); text == "" {
-		text = href
-	}
-
-	class = "wikilink_internal"
-
-	switch {
-	case strings.HasPrefix(href, "./"):
-		hyphaName := canonicalName(path.Join(
-			state.name, strings.TrimPrefix(href, "./")))
-		if !HyphaExists(hyphaName) {
-			class = "wikilink_new"
-		}
-		href = path.Join("/page", hyphaName)
-	case strings.HasPrefix(href, "../"):
-		hyphaName := canonicalName(path.Join(
-			path.Dir(state.name), strings.TrimPrefix(href, "../")))
-		if !HyphaExists(hyphaName) {
-			class = "wikilink_new"
-		}
-		href = path.Join("/page", hyphaName)
-	case strings.HasPrefix(href, "/"):
-	case strings.ContainsRune(href, ':'):
-		class = "wikilink_external"
-	default:
-		href = path.Join("/page", href)
-	}
-	return href, strings.TrimSpace(text), class
 }
 
 func lex(name, content string) (ast []Line) {
@@ -79,7 +39,7 @@ func lex(name, content string) (ast []Line) {
 	return ast
 }
 
-// Lex `line` in gemtext and save it to `ast` using `state`.
+// Lex `line` in markup and save it to `ast` using `state`.
 func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	addLine := func(text interface{}) {
 		*ast = append(*ast, Line{id: state.id, contents: text})
@@ -89,6 +49,9 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 		if state.where == "list" {
 			state.where = ""
 			addLine(state.buf + "</ul>")
+		} else if state.where == "number" {
+			state.where = ""
+			addLine(state.buf + "</ol>")
 		}
 		return
 	}
@@ -99,13 +62,24 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 
 	// Beware! Usage of goto. Some may say it is considered evil but in this case it helped to make a better-structured code.
 	switch state.where {
+	case "img":
+		goto imgState
 	case "pre":
 		goto preformattedState
 	case "list":
 		goto listState
+	case "number":
+		goto numberState
 	default:
 		goto normalState
 	}
+
+imgState:
+	if shouldGoBackToNormal := state.img.Process(line); shouldGoBackToNormal {
+		state.where = ""
+		addLine(state.img)
+	}
+	return
 
 preformattedState:
 	switch {
@@ -121,8 +95,8 @@ preformattedState:
 
 listState:
 	switch {
-	case startsWith("*"):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", remover("*")(line))
+	case startsWith("* "):
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[2:]))
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ul>")
@@ -135,6 +109,22 @@ listState:
 	}
 	return
 
+numberState:
+	switch {
+	case startsWith("*. "):
+		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[3:]))
+	case startsWith("```"):
+		state.where = "pre"
+		addLine(state.buf + "</ol>")
+		state.id++
+		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
+	default:
+		state.where = ""
+		addLine(state.buf + "</ol>")
+		goto normalState
+	}
+	return
+
 normalState:
 	state.id++
 	switch {
@@ -142,32 +132,50 @@ normalState:
 	case startsWith("```"):
 		state.where = "pre"
 		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
-	case startsWith("*"):
+	case startsWith("* "):
 		state.where = "list"
 		state.buf = fmt.Sprintf("<ul id='%d'>\n", state.id)
 		goto listState
+	case startsWith("*. "):
+		state.where = "number"
+		state.buf = fmt.Sprintf("<ol id='%d'>\n", state.id)
+		goto numberState
 
-	case startsWith("###"):
+	case startsWith("###### "):
 		addLine(fmt.Sprintf(
-			"<h3 id='%d'>%s</h3>", state.id, removeHeadingOctothorps(line)))
-	case startsWith("##"):
+			"<h6 id='%d'>%s</h6>", state.id, line[7:]))
+	case startsWith("##### "):
 		addLine(fmt.Sprintf(
-			"<h2 id='%d'>%s</h2>", state.id, removeHeadingOctothorps(line)))
-	case startsWith("#"):
+			"<h5 id='%d'>%s</h5>", state.id, line[6:]))
+	case startsWith("#### "):
 		addLine(fmt.Sprintf(
-			"<h1 id='%d'>%s</h1>", state.id, removeHeadingOctothorps(line)))
+			"<h4 id='%d'>%s</h4>", state.id, line[5:]))
+	case startsWith("### "):
+		addLine(fmt.Sprintf(
+			"<h3 id='%d'>%s</h3>", state.id, line[4:]))
+	case startsWith("## "):
+		addLine(fmt.Sprintf(
+			"<h2 id='%d'>%s</h2>", state.id, line[3:]))
+	case startsWith("# "):
+		addLine(fmt.Sprintf(
+			"<h1 id='%d'>%s</h1>", state.id, line[2:]))
 
 	case startsWith(">"):
 		addLine(fmt.Sprintf(
 			"<blockquote id='%d'>%s</blockquote>", state.id, remover(">")(line)))
 	case startsWith("=>"):
-		source, content, class := wikilink(line, state)
+		href, text, class := Rocketlink(line, state.name)
 		addLine(fmt.Sprintf(
-			`<p><a id='%d' class='%s' href="%s">%s</a></p>`, state.id, class, source, content))
+			`<p><a id='%d' class='rocketlink %s' href="%s">%s</a></p>`, state.id, class, href, text))
 
 	case startsWith("<="):
 		addLine(parseTransclusion(line, state.name))
+	case line == "----":
+		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
+	case MatchesImg(line):
+		state.where = "img"
+		state.img = ImgFromFirstLine(line, state.name)
 	default:
-		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, line))
+		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(state.name, line)))
 	}
 }

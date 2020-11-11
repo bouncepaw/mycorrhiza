@@ -1,4 +1,4 @@
-package gemtext
+package markup
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 
 const xclError = -9
 
-// Transclusion is used by gemtext parser to remember what hyphae shall be transcluded.
+// Transclusion is used by markup parser to remember what hyphae shall be transcluded.
 type Transclusion struct {
 	name string
 	from int // inclusive

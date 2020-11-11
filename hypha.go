@@ -5,21 +5,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
-	gemtext.HyphaExists = func(hyphaName string) bool {
+	markup.HyphaExists = func(hyphaName string) bool {
 		_, hyphaExists := HyphaStorage[hyphaName]
 		return hyphaExists
 	}
-	gemtext.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
+	markup.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
 		if hyphaData, ok := HyphaStorage[hyphaName]; ok {
 			rawText, err = FetchTextPart(hyphaData)
 			if hyphaData.binaryPath != "" {
@@ -35,9 +36,54 @@ func init() {
 // HyphaData represents a hypha's meta information: binary and text parts rooted paths and content types.
 type HyphaData struct {
 	textPath   string
-	textType   TextType
 	binaryPath string
-	binaryType BinaryType
+}
+
+// uploadHelp is a helper function for UploadText and UploadBinary
+func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext string, originalFullPath *string, isOld bool, data []byte) *history.HistoryOp {
+	var (
+		fullPath = filepath.Join(WikiDir, hyphaName+ext)
+	)
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
+		return hop.WithError(err)
+	}
+
+	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
+		return hop.WithError(err)
+	}
+	if isOld && *originalFullPath != fullPath && *originalFullPath != "" {
+		if err := history.Rename(*originalFullPath, fullPath); err != nil {
+			return hop.WithError(err)
+		}
+		log.Println("Move", *originalFullPath, "to", fullPath)
+	}
+	if !isOld {
+		HyphaStorage[hyphaName] = hd
+	}
+	*originalFullPath = fullPath
+	log.Printf("%v\n", *hd)
+	return hop.WithFiles(fullPath).
+		WithSignature("anon").
+		Apply()
+}
+
+// UploadText loads a new text part from `textData` for hypha `hyphaName` with `hd`.  It must be marked if the hypha `isOld`.
+func (hd *HyphaData) UploadText(hyphaName, textData string, isOld bool) *history.HistoryOp {
+	hop := history.Operation(history.TypeEditText).WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName))
+	return hd.uploadHelp(hop, hyphaName, ".myco", &hd.textPath, isOld, []byte(textData))
+}
+
+// UploadBinary loads a new binary part from `file` for hypha `hyphaName` with `hd`. The contents have the specified `mime` type. It must be marked if the hypha `isOld`.
+func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, isOld bool) *history.HistoryOp {
+	var (
+		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mime))
+		data, err = ioutil.ReadAll(file)
+	)
+	if err != nil {
+		return hop.WithError(err).Apply()
+	}
+
+	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), &hd.binaryPath, isOld, data)
 }
 
 // DeleteHypha deletes hypha and makes a history record about that.
@@ -61,10 +107,13 @@ func findHyphaeToRename(hyphaName string, recursive bool) []string {
 	return hyphae
 }
 
-func renamingPairs(hyphaNames []string, replaceName func(string) string) map[string]string {
+func renamingPairs(hyphaNames []string, replaceName func(string) string) (map[string]string, error) {
 	renameMap := make(map[string]string)
 	for _, hn := range hyphaNames {
 		if hd, ok := HyphaStorage[hn]; ok {
+			if _, nameUsed := HyphaStorage[replaceName(hn)]; nameUsed {
+				return nil, errors.New("Hypha " + replaceName(hn) + " already exists")
+			}
 			if hd.textPath != "" {
 				renameMap[hd.textPath] = replaceName(hd.textPath)
 			}
@@ -73,7 +122,7 @@ func renamingPairs(hyphaNames []string, replaceName func(string) string) map[str
 			}
 		}
 	}
-	return renameMap
+	return renameMap, nil
 }
 
 // word Data is plural here
@@ -94,11 +143,15 @@ func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *his
 		replaceName = func(str string) string {
 			return strings.Replace(str, hyphaName, newName, 1)
 		}
-		hyphaNames = findHyphaeToRename(hyphaName, recursive)
-		renameMap  = renamingPairs(hyphaNames, replaceName)
-		renameMsg  = "Rename ‘%s’ to ‘%s’"
-		hop        = history.Operation(history.TypeRenameHypha)
+		hyphaNames     = findHyphaeToRename(hyphaName, recursive)
+		renameMap, err = renamingPairs(hyphaNames, replaceName)
+		renameMsg      = "Rename ‘%s’ to ‘%s’"
+		hop            = history.Operation(history.TypeRenameHypha)
 	)
+	if err != nil {
+		hop.Errs = append(hop.Errs, err)
+		return hop
+	}
 	if recursive {
 		renameMsg += " recursively"
 	}
@@ -113,14 +166,14 @@ func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *his
 }
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.
-func binaryHtmlBlock(hyphaName string, d *HyphaData) string {
-	switch d.binaryType {
-	case BinaryJpeg, BinaryGif, BinaryPng, BinaryWebp, BinarySvg, BinaryIco:
+func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
+	switch filepath.Ext(hd.binaryPath) {
+	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
-			<img src="/binary/%s"/>
+			<a href="/page/%[1]s"><img src="/binary/%[1]s"/></a>
 		</div>`, hyphaName)
-	case BinaryOgg, BinaryWebm, BinaryMp4:
+	case ".ogg", ".webm", ".mp4":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-video">
 			<video>
@@ -128,7 +181,7 @@ func binaryHtmlBlock(hyphaName string, d *HyphaData) string {
 				<p>Your browser does not support video. See video's <a href="/binary/%[1]s">direct url</a></p>
 			</video>
 		`, hyphaName)
-	case BinaryMp3:
+	case ".mp3":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-audio">
 			<audio>
@@ -153,30 +206,36 @@ func Index(path string) {
 	}
 
 	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper
-		if node.IsDir() && isCanonicalName(node.Name()) {
+		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
+		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
 			Index(filepath.Join(path, node.Name()))
+			continue
 		}
 
-		hyphaPartFilename := filepath.Join(path, node.Name())
-		skip, hyphaName, isText, mimeId := DataFromFilename(hyphaPartFilename)
+		var (
+			hyphaPartPath           = filepath.Join(path, node.Name())
+			hyphaName, isText, skip = DataFromFilename(hyphaPartPath)
+			hyphaData               *HyphaData
+		)
 		if !skip {
-			var (
-				hyphaData *HyphaData
-				ok        bool
-			)
-			if hyphaData, ok = HyphaStorage[hyphaName]; !ok {
+			// Reuse the entry for existing hyphae, create a new one for those that do not exist yet.
+			if hd, ok := HyphaStorage[hyphaName]; ok {
+				hyphaData = hd
+			} else {
 				hyphaData = &HyphaData{}
 				HyphaStorage[hyphaName] = hyphaData
 			}
 			if isText {
-				hyphaData.textPath = hyphaPartFilename
-				hyphaData.textType = TextType(mimeId)
+				hyphaData.textPath = hyphaPartPath
 			} else {
-				hyphaData.binaryPath = hyphaPartFilename
-				hyphaData.binaryType = BinaryType(mimeId)
+				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
+				if hyphaData.binaryPath != "" {
+					log.Println("There is a file collision for binary part of a hypha:", hyphaData.binaryPath, "and", hyphaPartPath, "-- going on with the latter")
+				}
+				hyphaData.binaryPath = hyphaPartPath
 			}
 		}
+
 	}
 }
 

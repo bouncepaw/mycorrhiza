@@ -6,10 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/gemtext"
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -32,11 +33,11 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		revHash           = shorterUrl[:firstSlashIndex]
 		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		textPath          = hyphaName + "&.gmi"
+		textPath          = hyphaName + ".myco"
 		textContents, err = history.FileAtRevision(textPath, revHash)
 	)
 	if err == nil {
-		contents = gemtext.ToHtml(hyphaName, textContents)
+		contents = markup.ToHtml(hyphaName, textContents)
 	}
 	page := templates.RevisionHTML(
 		hyphaName,
@@ -75,7 +76,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "text")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.textPath)
-		w.Header().Set("Content-Type", data.textType.Mime())
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, data.textPath)
 	}
 }
@@ -86,7 +87,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "binary")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.binaryPath)
-		w.Header().Set("Content-Type", data.binaryType.Mime())
+		w.Header().Set("Content-Type", ExtensionToMime(filepath.Ext(data.binaryPath)))
 		http.ServeFile(w, rq, data.binaryPath)
 	}
 }
@@ -103,7 +104,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
 		_, errB := os.Stat(data.binaryPath)
 		if errT == nil {
-			contents = gemtext.ToHtml(hyphaName, string(fileContentsT))
+			contents = markup.ToHtml(hyphaName, string(fileContentsT))
 		}
 		if !os.IsNotExist(errB) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents

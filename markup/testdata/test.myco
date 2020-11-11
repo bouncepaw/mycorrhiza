@@ -12,7 +12,7 @@ more text
 * li\n"+
 ```alt text goes here
 => preformatted text
-where gemtext is not lexed
+where markup is not lexed
 ```it ends here"
 =>linking
 
@@ -22,3 +22,17 @@ text
 /\
 ```
 <= Apple : 1..3
+
+img {
+hypha1
+hypha2|
+hypha3| 60
+hypha4| { line1
+line2
+} this is ignored
+
+hypha5| {
+state of minnesota
+}
+}
+

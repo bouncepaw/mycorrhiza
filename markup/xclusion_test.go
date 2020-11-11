@@ -1,4 +1,4 @@
-package gemtext
+package markup
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 
 func TestParseTransclusion(t *testing.T) {
 	check := func(line string, expectedXclusion Transclusion) {
-		if xcl := parseTransclusion(line); xcl != expectedXclusion {
+		if xcl := parseTransclusion(line, "t"); xcl != expectedXclusion {
 			t.Error(line, "; got:", xcl, "wanted:", expectedXclusion)
 		}
 	}

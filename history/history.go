@@ -59,16 +59,16 @@ func (rev Revision) HyphaeLinks() (html string) {
 	}
 	for _, filename := range strings.Split(out.String(), "\n") {
 		// If filename has an ampersand:
-		if strings.IndexRune(filename, '&') >= 0 {
+		if strings.IndexRune(filename, '.') >= 0 {
 			// Remove ampersanded suffix from filename:
-			ampersandPos := strings.LastIndexByte(filename, '&')
+			ampersandPos := strings.LastIndexByte(filename, '.')
 			hyphaName := string([]byte(filename)[0:ampersandPos]) // is it safe?
 			if isNewName(hyphaName) {
 				// Entries are separated by commas
 				if len(set) > 1 {
 					html += `<span aria-hidden="true">, </span>`
 				}
-				html += fmt.Sprintf(`<a href="/rev/%[1]s/%[2]s">%[2]s</a>`, rev.Hash, hyphaName)
+				html += fmt.Sprintf(`<a href="/page/%[1]s">%[1]s</a>`, hyphaName)
 			}
 		}
 	}
@@ -77,10 +77,10 @@ func (rev Revision) HyphaeLinks() (html string) {
 
 func (rev Revision) RecentChangesEntry() (html string) {
 	return fmt.Sprintf(`
-<li><time>%s</time></li>
-<li>%s</li>
-<li>%s</li>
-<li>%s</li>
+<li class="rc-entry__time"><time>%s</time></li>
+<li class="rc-entry__hash">%s</li>
+<li class="rc-entry__links">%s</li>
+<li class="rc-entry__msg">%s</li>
 `, rev.TimeString(), rev.Hash, rev.HyphaeLinks(), rev.Message)
 }
 
@@ -125,6 +125,6 @@ func unixTimestampAsTime(ts string) *time.Time {
 // Rename renames from `from` to `to` using `git mv`.
 func Rename(from, to string) error {
 	log.Println(util.ShorterPath(from), util.ShorterPath(to))
-	_, err := gitsh("mv", from, to)
+	_, err := gitsh("mv", "--force", from, to)
 	return err
 }

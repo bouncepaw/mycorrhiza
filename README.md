@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 0.9
+# 🍄 MycorrhizaWiki 0.10
 A wiki engine.
 
 ## Building
@@ -11,12 +11,25 @@ make
 # * create an executable called `mycorrhiza`. Run it with path to your wiki.
 ```
 
+## Usage
+```
+mycorrhiza [OPTIONS...] WIKI_PATH
+
+Options:
+  -home string
+        The home page (default "home")
+  -port string
+        Port to serve the wiki at (default "1737")
+  -title string
+        How to call your wiki in the navititle (default "🍄")
+```
+
 ## Features
 * Edit pages through html forms
 * Responsive design
 * Works in text browsers
-* Wiki pages (called hyphae) are in gemtext
-* Everything is stored as simple files, no database required
+* Wiki pages (called hyphae) are written in mycomarkup
+* Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with.
 * Page trees
 * Changes are saved to git
 * List of hyphae page
@@ -34,4 +47,3 @@ Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where som
 * Tagging system
 * Authorization
 * Better history viewing
-* More markups
