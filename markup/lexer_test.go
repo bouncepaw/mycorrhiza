@@ -41,7 +41,7 @@ func TestLex(t *testing.T) {
 </ul>`},
 		{6, "<p id='6'>text</p>"},
 		{7, "<p id='7'>more text</p>"},
-		{8, `<p><a id='8' class='rocketlink wikilink_internal' href="/page/Pear">some link</a></p>`},
+		{8, `<p><a id='8' class='rocketlink wikilink_internal' href="/page/pear">some link</a></p>`},
 		{9, `<ul id='9'>
 	<li>lin&#34;+</li>
 </ul>`},
