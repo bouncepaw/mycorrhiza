@@ -1,5 +1,14 @@
-# 🍄 MycorrhizaWiki 0.10
+# 🍄 MycorrhizaWiki 0.11
 A wiki engine.
+
+Features planned for this release:
+* [ ] Authorization
+  * [ ] User groups: `anon`, `editor`, `trusted`, `moderator`, `admin`
+* [ ] Mycomarkup improvements
+  * [ ] Strike-through syntax
+  * [ ] Fix empty line codeblock bug #26
+  * [ ] `img{}` improvements
+  * [ ] ...
 
 ## Building
 ```sh
@@ -45,5 +54,4 @@ Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where som
 
 ## Future plans
 * Tagging system
-* Authorization
 * Better history viewing
