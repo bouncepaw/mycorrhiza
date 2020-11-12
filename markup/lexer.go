@@ -59,6 +59,9 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 	startsWith := func(token string) bool {
 		return strings.HasPrefix(line, token)
 	}
+	addHeading := func(i int) {
+		addLine(fmt.Sprintf("<h%d id='%d'>%s</h%d>", i, state.id, ParagraphToHtml(state.name, line[i+1:]), i))
+	}
 
 	// Beware! Usage of goto. Some may say it is considered evil but in this case it helped to make a better-structured code.
 	switch state.where {
@@ -142,23 +145,17 @@ normalState:
 		goto numberState
 
 	case startsWith("###### "):
-		addLine(fmt.Sprintf(
-			"<h6 id='%d'>%s</h6>", state.id, line[7:]))
+		addHeading(6)
 	case startsWith("##### "):
-		addLine(fmt.Sprintf(
-			"<h5 id='%d'>%s</h5>", state.id, line[6:]))
+		addHeading(5)
 	case startsWith("#### "):
-		addLine(fmt.Sprintf(
-			"<h4 id='%d'>%s</h4>", state.id, line[5:]))
+		addHeading(4)
 	case startsWith("### "):
-		addLine(fmt.Sprintf(
-			"<h3 id='%d'>%s</h3>", state.id, line[4:]))
+		addHeading(3)
 	case startsWith("## "):
-		addLine(fmt.Sprintf(
-			"<h2 id='%d'>%s</h2>", state.id, line[3:]))
+		addHeading(2)
 	case startsWith("# "):
-		addLine(fmt.Sprintf(
-			"<h1 id='%d'>%s</h1>", state.id, line[2:]))
+		addHeading(1)
 
 	case startsWith(">"):
 		addLine(fmt.Sprintf(
