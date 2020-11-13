@@ -5,7 +5,8 @@ Features planned for this release:
 * [ ] Authorization
   * [ ] User groups: `anon`, `editor`, `trusted`, `moderator`, `admin`
 * [ ] Mycomarkup improvements
-  * [ ] Strike-through syntax
+  * [x] Strike-through syntax
+  * [x] Formatting in headings
   * [ ] Fix empty line codeblock bug #26
   * [ ] `img{}` improvements
   * [ ] ...
@@ -25,12 +26,18 @@ make
 mycorrhiza [OPTIONS...] WIKI_PATH
 
 Options:
+  -auth-method string
+        What auth method to use. Variants: "none", "fixed" (default "none")
+  -fixed-credentials-path string
+        Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
   -home string
         The home page (default "home")
   -port string
         Port to serve the wiki at (default "1737")
   -title string
         How to call your wiki in the navititle (default "🍄")
+  -user-tree string
+        Hypha which is a superhypha of all user pages (default "u")
 ```
 
 ## Features

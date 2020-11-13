@@ -6,10 +6,13 @@ import (
 )
 
 var (
-	ServerPort string
-	HomePage   string
-	SiteTitle  string
-	WikiDir    string
+	ServerPort           string
+	HomePage             string
+	SiteTitle            string
+	WikiDir              string
+	UserTree             string
+	AuthMethod           string
+	FixedCredentialsPath string
 )
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
