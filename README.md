@@ -3,7 +3,9 @@ A wiki engine.
 
 Features planned for this release:
 * [ ] Authorization
-  * [ ] User groups: `anon`, `editor`, `trusted`, `moderator`, `admin`
+  * [x] User groups: `anon`, `editor`, `trusted`, `moderator`, `admin`
+  * [ ] Login page
+  * [ ] Rights
 * [ ] Mycomarkup improvements
   * [x] Strike-through syntax
   * [x] Formatting in headings

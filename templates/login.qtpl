@@ -1,0 +1,45 @@
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+
+{% func LoginHTML() %}
+<main>
+	<section>
+	{% if user.AuthUsed %}
+		<h1>Login</h1>
+		<form method="post" action="/login-data" id="login-form" enctype="multipart/form-data">
+			<p>Use the data you were given by the administrator.</p>
+			<fieldset>
+				<legend>Username</legend>
+				<input type="text" required autofocus name="username" autocomplete="on">
+			</fieldset>
+			<fieldset>
+				<legend>Password</legend>
+				<input type="password" required name="password" autocomplete="on">
+			</fieldset>
+			<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you.</p>
+			<input type="submit">
+			<a href="/">Cancel</a>
+		</form>
+	{% else %}
+		<p>Administrator of this wiki have not configured any authorization method. You can make edits anonymously.</p>
+		<p><a href="/">← Go home</a></p>
+	{% endif %}
+	</section>
+</main>
+{% endfunc %}
+
+{% func LoginErrorHTML(err string) %}
+<main>
+	<section>
+	{% switch err %}
+	{% case "unknown username" %}
+		<p class="error">Unknown username.</p>
+	{% case "wrong password" %}
+		<p class="error">Wrong password.</p>
+	{% default %}
+		<p class="error">{%s err %}</p>
+	{% endswitch %}
+		<p><a href="/login">← Try again</a></p>
+	</section>
+</main>
+{% endfunc %}
+

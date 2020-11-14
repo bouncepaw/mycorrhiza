@@ -4,15 +4,68 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"time"
 
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-type FixedUserStorage struct {
-	Users []*User
+func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password string) string {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	if !HasUsername(username) {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Unknown username", username, "was entered")
+		return "unknown username"
+	}
+	if !CredentialsOK(username, password) {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("A wrong password was entered for username", username)
+		return "wrong password"
+	}
+	token, err := AddSession(username)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return err.Error()
+	}
+	http.SetCookie(w, cookie("token", token, time.Now().Add(14*24*time.Hour)))
+	return ""
 }
 
-var UserStorage = FixedUserStorage{}
+// AddSession saves a session for `username` and returns a token to use.
+func AddSession(username string) (string, error) {
+	token, err := util.RandomString(16)
+	if err == nil {
+		UserStorage.Tokens[token] = username
+		log.Println("New token for", username, "is", token)
+	}
+	return token, err
+}
+
+func HasUsername(username string) bool {
+	for _, user := range UserStorage.Users {
+		if user.Name == username {
+			return true
+		}
+	}
+	return false
+}
+
+func CredentialsOK(username, password string) bool {
+	for _, user := range UserStorage.Users {
+		if user.Name == username && user.Password == password {
+			return true
+		}
+	}
+	return false
+}
+
+type FixedUserStorage struct {
+	Users  []*User
+	Tokens map[string]string
+}
+
+var UserStorage = FixedUserStorage{Tokens: make(map[string]string)}
 
 func PopulateFixedUserStorage() {
 	contents, err := ioutil.ReadFile(util.FixedCredentialsPath)
@@ -96,4 +149,14 @@ func (ug UserGroup) CanAccessRoute(route string) bool {
 		return false
 	}
 	return true
+}
+
+// A handy cookie constructor
+func cookie(name_suffix, val string, t time.Time) *http.Cookie {
+	return &http.Cookie{
+		Name:    "mycorrhiza_" + name_suffix,
+		Value:   val,
+		Expires: t,
+		Path:    "/",
+	}
 }

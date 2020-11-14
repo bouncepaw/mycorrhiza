@@ -1,6 +1,8 @@
 package util
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
 	"strings"
 )
@@ -43,4 +45,12 @@ func FindSubhyphae(hyphaName string, hyphaIterator func(func(string))) []string 
 		}
 	})
 	return subhyphae
+}
+
+func RandomString(n int) (string, error) {
+	bytes := make([]byte, n)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
