@@ -10,6 +10,29 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
+func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
+	cookieFromUser, err := rq.Cookie("mycorrhiza_token")
+	if err == nil {
+		http.SetCookie(w, cookie("token", "", time.Unix(0, 0)))
+		terminateSession(cookieFromUser.Value)
+	}
+}
+
+func (us *FixedUserStorage) userByToken(token string) *User {
+	if user, ok := us.Tokens[token]; ok {
+		return user
+	}
+	return nil
+}
+
+func FromRequest(rq *http.Request) *User {
+	cookie, err := rq.Cookie("mycorrhiza_token")
+	if err != nil {
+		return nil
+	}
+	return UserStorage.userByToken(cookie.Value)
+}
+
 func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password string) string {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if !HasUsername(username) {
@@ -36,10 +59,18 @@ func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password s
 func AddSession(username string) (string, error) {
 	token, err := util.RandomString(16)
 	if err == nil {
-		UserStorage.Tokens[token] = username
+		for _, user := range UserStorage.Users {
+			if user.Name == username {
+				UserStorage.Tokens[token] = user
+			}
+		}
 		log.Println("New token for", username, "is", token)
 	}
 	return token, err
+}
+
+func terminateSession(token string) {
+	delete(UserStorage.Tokens, token)
 }
 
 func HasUsername(username string) bool {
@@ -62,10 +93,10 @@ func CredentialsOK(username, password string) bool {
 
 type FixedUserStorage struct {
 	Users  []*User
-	Tokens map[string]string
+	Tokens map[string]*User
 }
 
-var UserStorage = FixedUserStorage{Tokens: make(map[string]string)}
+var UserStorage = FixedUserStorage{Tokens: make(map[string]*User)}
 
 func PopulateFixedUserStorage() {
 	contents, err := ioutil.ReadFile(util.FixedCredentialsPath)

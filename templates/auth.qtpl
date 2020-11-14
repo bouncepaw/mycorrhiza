@@ -43,3 +43,18 @@
 </main>
 {% endfunc %}
 
+{% func LogoutHTML(can bool) %}
+<main>
+	<section>
+	{% if can %}
+		<h1>Log out?</h1>
+		<p><a href="/logout-confirm"><strong>Confirm</strong></a></p>
+		<p><a href="/">Cancel</a></p>
+	{% else %}
+		<p>You cannot log out because you are not logged in.</p>
+		<p><a href="/login">Login</a></p>
+		<p><a href="/login">← Home</a></p>
+	{% endif %}
+	</section>
+</main>
+{% endfunc %}

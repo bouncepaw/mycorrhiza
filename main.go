@@ -15,7 +15,6 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -110,31 +109,6 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	var (
-		username = CanonicalName(rq.PostFormValue("username"))
-		password = rq.PostFormValue("password")
-		err      = user.LoginDataHTTP(w, rq, username, password)
-	)
-	if err != "" {
-		w.Write([]byte(base(err, templates.LoginErrorHTML(err))))
-	} else {
-		http.Redirect(w, rq, "/", http.StatusSeeOther)
-	}
-}
-
-func handlerLogin(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	if user.AuthUsed {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		w.WriteHeader(http.StatusForbidden)
-	}
-	w.Write([]byte(base("Login", templates.LoginHTML())))
-}
-
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 	parseCliArgs()
@@ -151,6 +125,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	// See http_readers.go for /page/, /text/, /binary/, /history/.
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/.
+	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)
@@ -159,8 +134,6 @@ func main() {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
-	http.HandleFunc("/login", handlerLogin)
-	http.HandleFunc("/login-data", handlerLoginData)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})
