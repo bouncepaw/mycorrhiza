@@ -15,6 +15,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -63,6 +64,11 @@ var base = templates.BaseHTML
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
+	if ok := user.CanProceed(rq, "reindex"); !ok {
+		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be an admin to reindex hyphae.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	HyphaStorage = make(map[string]*HyphaData)
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")

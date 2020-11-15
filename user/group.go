@@ -2,6 +2,7 @@ package user
 
 import (
 	"log"
+	"net/http"
 )
 
 func groupFromString(s string) UserGroup {
@@ -58,4 +59,12 @@ func (ug UserGroup) CanAccessRoute(route string) bool {
 		return false
 	}
 	return true
+}
+
+func CanProceed(rq *http.Request, route string) bool {
+	ug := UserAnon
+	if u := FromRequest(rq); u != nil {
+		ug = u.Group
+	}
+	return ug.CanAccessRoute(route)
 }

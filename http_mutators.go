@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -25,6 +26,11 @@ func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = HyphaNameFromRq(rq, "rename-ask")
 		_, isOld  = HyphaStorage[hyphaName]
 	)
+	if ok := user.CanProceed(rq, "rename-confirm"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to rename pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(hyphaName, isOld)))
 }
 
@@ -37,6 +43,11 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 		_, newNameIsUsed = HyphaStorage[newName]
 		recursive        bool
 	)
+	if ok := user.CanProceed(rq, "rename-confirm"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to rename pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	if rq.PostFormValue("recursive") == "true" {
 		recursive = true
 	}
@@ -71,6 +82,11 @@ func handlerDeleteAsk(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = HyphaNameFromRq(rq, "delete-ask")
 		_, isOld  = HyphaStorage[hyphaName]
 	)
+	if ok := user.CanProceed(rq, "delete-ask"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(hyphaName, isOld)))
 }
 
@@ -81,6 +97,11 @@ func handlerDeleteConfirm(w http.ResponseWriter, rq *http.Request) {
 		hyphaName        = HyphaNameFromRq(rq, "delete-confirm")
 		hyphaData, isOld = HyphaStorage[hyphaName]
 	)
+	if ok := user.CanProceed(rq, "delete-confirm"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	if isOld {
 		// If deleted successfully
 		if hop := hyphaData.DeleteHypha(hyphaName); len(hop.Errs) == 0 {
@@ -108,6 +129,11 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		textAreaFill     string
 		err              error
 	)
+	if ok := user.CanProceed(rq, "edit"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	if isOld {
 		textAreaFill, err = FetchTextPart(hyphaData)
 		if err != nil {
@@ -129,6 +155,11 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		textData         = rq.PostFormValue("text")
 	)
+	if ok := user.CanProceed(rq, "upload-text"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	if !isOld {
 		hyphaData = &HyphaData{}
 	}
@@ -147,6 +178,11 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "upload-binary")
+	if ok := user.CanProceed(rq, "upload-binary"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to upload attachments.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	rq.ParseMultipartForm(10 << 20)
 
 	file, handler, err := rq.FormFile("binary")
