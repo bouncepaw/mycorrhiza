@@ -8,6 +8,13 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
+func (u *User) OrAnon() *User {
+	if u == nil {
+		return &User{}
+	}
+	return u
+}
+
 func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 	cookieFromUser, err := rq.Cookie("mycorrhiza_token")
 	if err == nil {

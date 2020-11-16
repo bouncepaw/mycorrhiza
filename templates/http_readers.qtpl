@@ -1,6 +1,9 @@
-{% func HistoryHTML(hyphaName, tbody string) %}
+{% import "net/http" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+
+{% func HistoryHTML(rq *http.Request, hyphaName, tbody string) %}
 <main>
-{%= navHTML(hyphaName, "history") %}
+{%= navHTML(rq, hyphaName, "history") %}
 	<table>
 		<thead>
 			<tr>
@@ -16,9 +19,9 @@
 </main>
 {% endfunc %}
 
-{% func RevisionHTML(hyphaName, naviTitle, contents, tree, revHash string) %}
+{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) %}
 <main>
-{%= navHTML(hyphaName, "revision", revHash) %}
+{%= navHTML(rq, hyphaName, "revision", revHash) %}
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		{%s= naviTitle %}
@@ -32,9 +35,9 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(hyphaName, naviTitle, contents, tree string) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree string) %}
 <main>
-{%= navHTML(hyphaName, "page") %}
+{%= navHTML(rq, hyphaName, "page") %}
 	<article>
 		{%s= naviTitle %}
 		{% if contents == "" %}
@@ -44,6 +47,7 @@ If `contents` == "", a helpful message is shown instead.
 		{% endif %}
 	</article>
 	<hr/>
+{% if u := user.FromRequest(rq).OrAnon(); u.Group > user.UserAnon %}
 	<form action="/upload-binary/{%s hyphaName %}"
 			method="post" enctype="multipart/form-data">
 		<label for="upload-binary__input">Upload new binary part</label>
@@ -52,6 +56,7 @@ If `contents` == "", a helpful message is shown instead.
 		<input type="submit"/>
 	</form>
 	<hr/>
+{% endif %}
 	<aside>
 		{%s= tree %}
 	</aside>

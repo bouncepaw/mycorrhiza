@@ -31,7 +31,7 @@ func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(hyphaName, isOld)))
+	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(rq, hyphaName, isOld)))
 }
 
 func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
@@ -87,7 +87,7 @@ func handlerDeleteAsk(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(hyphaName, isOld)))
+	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(rq, hyphaName, isOld)))
 }
 
 // handlerDeleteConfirm deletes a hypha for sure
@@ -144,7 +144,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(hyphaName, textAreaFill, warning)))
+	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(rq, hyphaName, textAreaFill, warning)))
 }
 
 // handlerUploadText uploads a new text part for the hypha.

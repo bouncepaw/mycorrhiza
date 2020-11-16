@@ -1,3 +1,7 @@
+{% import "net/http" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
 This is the <nav> seen on top of many pages.
 {% code
 type navEntry struct {
@@ -10,23 +14,38 @@ var navEntries = []navEntry{
 	{"text", "Raw text"},
 	{"history", "History"},
 	{"revision", "NOT REACHED"},
-	{"delete-ask", "Delete"},
 	{"rename-ask", "Rename"},
+	{"delete-ask", "Delete"},
 }
 %}
 
-{% func navHTML(hyphaName, navType string, revisionHash ...string) %}
-	<nav>
+{% func navHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) %}
+{% code
+	u := user.FromRequest(rq).OrAnon()
+%}
+	<nav class="navlinks">
 		<ul>
 		{%- for _, entry := range navEntries -%}
 		{%- if navType == "revision" && entry.path == "revision" -%}
 			<li><b>{%s revisionHash[0] %}</b></li>
 		{%- elseif navType == entry.path -%}
 			<li><b>{%s entry.title %}</b></li>
-		{%- elseif entry.path != "revision"-%}
+		{%- elseif entry.path != "revision" && u.Group.CanAccessRoute(entry.path) -%}
 			<li><a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a></li>
 		{%- endif -%}
 		{%- endfor -%}
+		{%s= userMenuHTML(u) %}
 		</ul>
 	</nav>
 {% endfunc %}
+
+{% func userMenuHTML(u *user.User) %}
+			<li class="navlinks__user">
+			{% if u.Group == user.UserAnon %}
+				<a href="/login">Login</a>
+			{% else %}
+				<a href="/page/{%s util.UserTree %}/{%s u.Name %}">{%s u.Name %}</a>
+			{% endif %}
+			</li>
+{% endfunc %}
+
