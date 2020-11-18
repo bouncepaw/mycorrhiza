@@ -44,7 +44,7 @@ func FromRequest(rq *http.Request) *User {
 	if err != nil {
 		return nil
 	}
-	return UserStorage.userByToken(cookie.Value)
+	return UserStorage.userByToken(cookie.Value).OrAnon()
 }
 
 func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password string) string {

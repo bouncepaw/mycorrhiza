@@ -62,9 +62,9 @@ func (ug UserGroup) CanAccessRoute(route string) bool {
 }
 
 func CanProceed(rq *http.Request, route string) bool {
-	ug := UserAnon
-	if u := FromRequest(rq); u != nil {
-		ug = u.Group
-	}
-	return ug.CanAccessRoute(route)
+	return FromRequest(rq).OrAnon().CanProceed(route)
+}
+
+func (u *User) CanProceed(route string) bool {
+	return u.Group.CanAccessRoute(route)
 }
