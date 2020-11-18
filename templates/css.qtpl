@@ -46,4 +46,5 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .rc-entry__time { font-style: italic; }
 .rc-entry__hash { font-style: italic; text-align: right; }
 .rc-entry__links { grid-column: 1 / span 2; }
+.rc-entry__author { font-style: italic; }
 {% endfunc %}

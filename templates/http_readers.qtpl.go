@@ -189,7 +189,7 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 	<hr/>
 `)
 //line templates/http_readers.qtpl:50
-	if u := user.FromRequest(rq).OrAnon(); u.Group > user.UserAnon {
+	if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon {
 //line templates/http_readers.qtpl:50
 		qw422016.N().S(`
 	<form action="/upload-binary/`)
@@ -198,7 +198,7 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 //line templates/http_readers.qtpl:51
 		qw422016.N().S(`"
 			method="post" enctype="multipart/form-data">
-		<label for="upload-binary__input">Upload new binary part</label>
+		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>

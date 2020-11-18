@@ -68,32 +68,33 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .rc-entry__time { font-style: italic; }
 .rc-entry__hash { font-style: italic; text-align: right; }
 .rc-entry__links { grid-column: 1 / span 2; }
+.rc-entry__author { font-style: italic; }
 `)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 }
 
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 func WriteDefaultCSS(qq422016 qtio422016.Writer) {
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	StreamDefaultCSS(qw422016)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	qt422016.ReleaseWriter(qw422016)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 }
 
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 func DefaultCSS() string {
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	WriteDefaultCSS(qb422016)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	qs422016 := string(qb422016.B)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 	return qs422016
-//line templates/css.qtpl:49
+//line templates/css.qtpl:50
 }

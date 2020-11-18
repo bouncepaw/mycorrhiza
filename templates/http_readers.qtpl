@@ -47,10 +47,10 @@ If `contents` == "", a helpful message is shown instead.
 		{% endif %}
 	</article>
 	<hr/>
-{% if u := user.FromRequest(rq).OrAnon(); u.Group > user.UserAnon %}
+{% if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon %}
 	<form action="/upload-binary/{%s hyphaName %}"
 			method="post" enctype="multipart/form-data">
-		<label for="upload-binary__input">Upload new binary part</label>
+		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>
