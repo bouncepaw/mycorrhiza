@@ -45,13 +45,17 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 		*ast = append(*ast, Line{id: state.id, contents: text})
 	}
 
+	// Process empty lines depending on the current state
 	if "" == strings.TrimSpace(line) {
-		if state.where == "list" {
+		switch state.where {
+		case "list":
 			state.where = ""
 			addLine(state.buf + "</ul>")
-		} else if state.where == "number" {
+		case "number":
 			state.where = ""
 			addLine(state.buf + "</ol>")
+		case "pre":
+			state.buf += "\n"
 		}
 		return
 	}
