@@ -43,10 +43,11 @@ blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}
 .wikilink_new {color:#a55858;}
 .wikilink_new:visited {color:#a55858;}
 .wikilink_external::after {content:"🌐"; margin-left: .5rem; font-size: small; text-decoration: none; align: bottom;}
-p code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
-.codeblock {background-color:#eee; padding:.5rem; font-size:16px; white-space: pre-wrap;}
+article code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
+article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
+.codeblock code {padding:0; font-size:15px;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
-.transclusion {background-color:#eee; }
+.transclusion {background-color:#eee; border-radius: .25rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
 .transclusion__link {display: block; text-align: right; font-style: italic; margin-top: 0.5rem; color: black; text-decoration: none;}
 .transclusion__link::before {content: "⇐ ";}
@@ -70,31 +71,31 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .rc-entry__links { grid-column: 1 / span 2; }
 .rc-entry__author { font-style: italic; }
 `)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 }
 
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 func WriteDefaultCSS(qq422016 qtio422016.Writer) {
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	StreamDefaultCSS(qw422016)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	qt422016.ReleaseWriter(qw422016)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 }
 
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 func DefaultCSS() string {
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	WriteDefaultCSS(qb422016)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	qs422016 := string(qb422016.B)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 	return qs422016
-//line templates/css.qtpl:50
+//line templates/css.qtpl:51
 }
