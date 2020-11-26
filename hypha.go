@@ -32,6 +32,7 @@ func init() {
 		}
 		return
 	}
+	markup.HyphaIterate = IterateHyphaNamesWith
 }
 
 // GetHyphaData finds a hypha addressed by `hyphaName` and returns its `hyphaData`. `hyphaData` is set to a zero value if this hypha does not exist. `isOld` is false if this hypha does not exist.
@@ -190,7 +191,7 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
-			<a href="/page/%[1]s"><img src="/binary/%[1]s"/></a>
+			<a href="/binary/%[1]s"><img src="/binary/%[1]s"/></a>
 		</div>`, hyphaName)
 	case ".ogg", ".webm", ".mp4":
 		return fmt.Sprintf(`

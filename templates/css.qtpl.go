@@ -56,8 +56,11 @@ article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wr
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 .navi-title a {text-decoration:none;}
-.img-gallery img { max-width: 100%; }
+.img-gallery { text-align: center; margin-top: .25rem; }
+.img-gallery_many-images { background-color: #eee; border-radius: .25rem; padding: .5rem; }
+.img-gallery img { max-width: 100%; max-height: 50vh; }
 figure { margin: 0; }
+figcaption { padding-bottom: .5rem; }
 
 nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}
@@ -71,31 +74,31 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .rc-entry__links { grid-column: 1 / span 2; }
 .rc-entry__author { font-style: italic; }
 `)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 }
 
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 func WriteDefaultCSS(qq422016 qtio422016.Writer) {
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	StreamDefaultCSS(qw422016)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	qt422016.ReleaseWriter(qw422016)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 }
 
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 func DefaultCSS() string {
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	WriteDefaultCSS(qb422016)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	qs422016 := string(qb422016.B)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 	return qs422016
-//line templates/css.qtpl:51
+//line templates/css.qtpl:54
 }

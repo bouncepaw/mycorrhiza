@@ -12,6 +12,9 @@ var HyphaExists func(string) bool
 // HyphaAccess holds function that accesses a hypha by its name.
 var HyphaAccess func(string) (rawText, binaryHtml string, err error)
 
+// HyphaIterate is a function that iterates all hypha names existing.
+var HyphaIterate func(func(string))
+
 // GemLexerState is used by markup parser to remember what is going on.
 type GemLexerState struct {
 	// Name of hypha being parsed
@@ -21,7 +24,7 @@ type GemLexerState struct {
 	id  int
 	buf string
 	// Temporaries
-	img Img
+	img *Img
 }
 
 type Line struct {
@@ -84,7 +87,7 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 imgState:
 	if shouldGoBackToNormal := state.img.Process(line); shouldGoBackToNormal {
 		state.where = ""
-		addLine(state.img)
+		addLine(*state.img)
 	}
 	return
 
@@ -174,8 +177,13 @@ normalState:
 	case line == "----":
 		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
 	case MatchesImg(line):
-		state.where = "img"
-		state.img = ImgFromFirstLine(line, state.name)
+		img, shouldGoBackToNormal := ImgFromFirstLine(line, state.name)
+		if shouldGoBackToNormal {
+			addLine(*img)
+		} else {
+			state.where = "img"
+			state.img = img
+		}
 	default:
 		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(state.name, line)))
 	}

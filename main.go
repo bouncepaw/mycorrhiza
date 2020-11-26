@@ -23,7 +23,7 @@ import (
 var WikiDir string
 
 // HyphaPattern is a pattern which all hyphae must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%]+`)
+var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
 
 // HyphaStorage is a mapping between canonical hypha names and their meta information.
 var HyphaStorage = make(map[string]*HyphaData)

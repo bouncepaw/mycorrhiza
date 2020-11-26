@@ -21,6 +21,8 @@ func Parse(ast []Line, from, to int, state GemParserState) (html string) {
 				html += v.ToHtml()
 			case string:
 				html += v
+			default:
+				html += "Unknown"
 			}
 		}
 	}

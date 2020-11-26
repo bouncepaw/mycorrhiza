@@ -34,8 +34,11 @@ article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wr
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 .navi-title a {text-decoration:none;}
-.img-gallery img { max-width: 100%; }
+.img-gallery { text-align: center; margin-top: .25rem; }
+.img-gallery_many-images { background-color: #eee; border-radius: .25rem; padding: .5rem; }
+.img-gallery img { max-width: 100%; max-height: 50vh; }
 figure { margin: 0; }
+figcaption { padding-bottom: .5rem; }
 
 nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}
