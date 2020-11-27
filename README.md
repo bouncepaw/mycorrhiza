@@ -1,18 +1,6 @@
 # 🍄 MycorrhizaWiki 0.11
 A wiki engine.
 
-Features planned for this release:
-* [ ] Authorization
-  * [x] User groups: `anon`, `editor`, `trusted`, `moderator`, `admin`
-  * [ ] Login page
-  * [ ] Rights
-* [ ] Mycomarkup improvements
-  * [x] Strike-through syntax
-  * [x] Formatting in headings
-  * [ ] Fix empty line codeblock bug #26
-  * [ ] `img{}` improvements
-  * [ ] ...
-
 ## Building
 ```sh
 git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
@@ -26,6 +14,8 @@ make
 ## Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
+
+WIKI_PATH must be a path to git repository which you want to be a wiki.
 
 Options:
   -auth-method string
@@ -57,6 +47,7 @@ Options:
 * Hyphae can be deleted (while still preserving history)
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/).
+* Authorization with pre-set credentials
 
 ## Contributing
 Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. Feel free to open an issue or contact me.
