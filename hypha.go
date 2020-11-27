@@ -12,6 +12,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/markup"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -31,6 +32,16 @@ func init() {
 		}
 		return
 	}
+	markup.HyphaIterate = IterateHyphaNamesWith
+}
+
+// GetHyphaData finds a hypha addressed by `hyphaName` and returns its `hyphaData`. `hyphaData` is set to a zero value if this hypha does not exist. `isOld` is false if this hypha does not exist.
+func GetHyphaData(hyphaName string) (hyphaData *HyphaData, isOld bool) {
+	hyphaData, isOld = HyphaStorage[hyphaName]
+	if hyphaData == nil {
+		hyphaData = &HyphaData{}
+	}
+	return
 }
 
 // HyphaData represents a hypha's meta information: binary and text parts rooted paths and content types.
@@ -40,10 +51,16 @@ type HyphaData struct {
 }
 
 // uploadHelp is a helper function for UploadText and UploadBinary
-func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext string, originalFullPath *string, isOld bool, data []byte) *history.HistoryOp {
+func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *user.User) *history.HistoryOp {
 	var (
-		fullPath = filepath.Join(WikiDir, hyphaName+ext)
+		hyphaData, isOld = GetHyphaData(hyphaName)
+		fullPath         = filepath.Join(WikiDir, hyphaName+ext)
+		originalFullPath = &hyphaData.textPath
 	)
+	if hop.Type == history.TypeEditBinary {
+		originalFullPath = &hyphaData.binaryPath
+	}
+
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
 		return hop.WithError(err)
 	}
@@ -51,30 +68,34 @@ func (hd *HyphaData) uploadHelp(hop *history.HistoryOp, hyphaName, ext string, o
 	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
 		return hop.WithError(err)
 	}
+
 	if isOld && *originalFullPath != fullPath && *originalFullPath != "" {
 		if err := history.Rename(*originalFullPath, fullPath); err != nil {
 			return hop.WithError(err)
 		}
 		log.Println("Move", *originalFullPath, "to", fullPath)
 	}
+	// New hyphae must be added to the hypha storage
 	if !isOld {
-		HyphaStorage[hyphaName] = hd
+		HyphaStorage[hyphaName] = hyphaData
 	}
 	*originalFullPath = fullPath
-	log.Printf("%v\n", *hd)
 	return hop.WithFiles(fullPath).
-		WithSignature("anon").
+		WithUser(u).
 		Apply()
 }
 
-// UploadText loads a new text part from `textData` for hypha `hyphaName` with `hd`.  It must be marked if the hypha `isOld`.
-func (hd *HyphaData) UploadText(hyphaName, textData string, isOld bool) *history.HistoryOp {
-	hop := history.Operation(history.TypeEditText).WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName))
-	return hd.uploadHelp(hop, hyphaName, ".myco", &hd.textPath, isOld, []byte(textData))
+// UploadText loads a new text part from `textData` for hypha `hyphaName`.
+func UploadText(hyphaName, textData string, u *user.User) *history.HistoryOp {
+	return uploadHelp(
+		history.
+			Operation(history.TypeEditText).
+			WithMsg(fmt.Sprintf("Edit ‘%s’", hyphaName)),
+		hyphaName, ".myco", []byte(textData), u)
 }
 
 // UploadBinary loads a new binary part from `file` for hypha `hyphaName` with `hd`. The contents have the specified `mime` type. It must be marked if the hypha `isOld`.
-func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, isOld bool) *history.HistoryOp {
+func UploadBinary(hyphaName, mime string, file multipart.File, u *user.User) *history.HistoryOp {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", hyphaName, mime))
 		data, err = ioutil.ReadAll(file)
@@ -82,16 +103,15 @@ func (hd *HyphaData) UploadBinary(hyphaName, mime string, file multipart.File, i
 	if err != nil {
 		return hop.WithError(err).Apply()
 	}
-
-	return hd.uploadHelp(hop, hyphaName, MimeToExtension(mime), &hd.binaryPath, isOld, data)
+	return uploadHelp(hop, hyphaName, MimeToExtension(mime), data, u)
 }
 
 // DeleteHypha deletes hypha and makes a history record about that.
-func (hd *HyphaData) DeleteHypha(hyphaName string) *history.HistoryOp {
+func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.HistoryOp {
 	hop := history.Operation(history.TypeDeleteHypha).
 		WithFilesRemoved(hd.textPath, hd.binaryPath).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", hyphaName)).
-		WithSignature("anon").
+		WithUser(u).
 		Apply()
 	if len(hop.Errs) == 0 {
 		delete(HyphaStorage, hyphaName)
@@ -138,7 +158,7 @@ func relocateHyphaData(hyphaNames []string, replaceName func(string) string) {
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
-func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *history.HistoryOp {
+func RenameHypha(hyphaName, newName string, recursive bool, u *user.User) *history.HistoryOp {
 	var (
 		replaceName = func(str string) string {
 			return strings.Replace(str, hyphaName, newName, 1)
@@ -157,7 +177,7 @@ func (hd *HyphaData) RenameHypha(hyphaName, newName string, recursive bool) *his
 	}
 	hop.WithFilesRenamed(renameMap).
 		WithMsg(fmt.Sprintf(renameMsg, hyphaName, newName)).
-		WithSignature("anon").
+		WithUser(u).
 		Apply()
 	if len(hop.Errs) == 0 {
 		relocateHyphaData(hyphaNames, replaceName)
@@ -171,7 +191,7 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
-			<a href="/page/%[1]s"><img src="/binary/%[1]s"/></a>
+			<a href="/binary/%[1]s"><img src="/binary/%[1]s"/></a>
 		</div>`, hyphaName)
 	case ".ogg", ".webm", ".mp4":
 		return fmt.Sprintf(`

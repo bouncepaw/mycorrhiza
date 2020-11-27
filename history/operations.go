@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -29,7 +30,7 @@ const (
 type HistoryOp struct {
 	// All errors are appended here.
 	Errs    []error
-	opType  OpType
+	Type    OpType
 	userMsg string
 	name    string
 	email   string
@@ -39,8 +40,10 @@ type HistoryOp struct {
 func Operation(opType OpType) *HistoryOp {
 	gitMutex.Lock()
 	hop := &HistoryOp{
-		Errs:   []error{},
-		opType: opType,
+		Errs:  []error{},
+		name:  "anon",
+		email: "anon@mycorrhiza",
+		Type:  opType,
 	}
 	return hop
 }
@@ -116,9 +119,11 @@ func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 	return hop
 }
 
-// WithSignature sets a signature for the future commit. You need to pass a username only, the rest is upon us (including email and time).
-func (hop *HistoryOp) WithSignature(username string) *HistoryOp {
-	hop.name = username
-	hop.email = username + "@mycorrhiza" // A fake email, why not
+// WithUser sets a user for the commit.
+func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
+	if u.Group != user.UserAnon {
+		hop.name = u.Name
+		hop.email = u.Name + "@mycorrhiza"
+	}
 	return hop
 }

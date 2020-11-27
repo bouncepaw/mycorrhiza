@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 0.10
+# 🍄 MycorrhizaWiki 0.11
 A wiki engine.
 
 ## Building
@@ -15,13 +15,21 @@ make
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
 
+WIKI_PATH must be a path to git repository which you want to be a wiki.
+
 Options:
+  -auth-method string
+        What auth method to use. Variants: "none", "fixed" (default "none")
+  -fixed-credentials-path string
+        Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
   -home string
         The home page (default "home")
   -port string
         Port to serve the wiki at (default "1737")
   -title string
         How to call your wiki in the navititle (default "🍄")
+  -user-tree string
+        Hypha which is a superhypha of all user pages (default "u")
 ```
 
 ## Features
@@ -39,11 +47,11 @@ Options:
 * Hyphae can be deleted (while still preserving history)
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/).
+* Authorization with pre-set credentials
 
 ## Contributing
 Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. Feel free to open an issue or contact me.
 
 ## Future plans
 * Tagging system
-* Authorization
 * Better history viewing

@@ -1,7 +1,8 @@
+{% import "net/http" %}
 This dialog is to be shown to a user when they try to rename a hypha.
-{% func RenameAskHTML(hyphaName string, isOld bool) %}
+{% func RenameAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
 <main>
-{%= navHTML(hyphaName, "rename-ask") %}
+{%= navHTML(rq, hyphaName, "rename-ask") %}
 {%- if isOld -%}
 	<section>
 		<h1>Rename {%s hyphaName %}</h1>

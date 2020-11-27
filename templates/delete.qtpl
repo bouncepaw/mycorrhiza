@@ -1,7 +1,9 @@
+{% import "net/http" %}
+
 This dialog is to be shown to a user when they try to delete a hypha.
-{% func DeleteAskHTML(hyphaName string, isOld bool) %}
+{% func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
 <main>
-{%= navHTML(hyphaName, "delete-ask") %}
+{%= navHTML(rq, hyphaName, "delete-ask") %}
 {% if isOld %}
 	<section>
 		<h1>Delete {%s hyphaName %}?</h1>

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -76,11 +77,19 @@ func (rev Revision) HyphaeLinks() (html string) {
 }
 
 func (rev Revision) RecentChangesEntry() (html string) {
+	if user.AuthUsed && rev.Username != "anon" {
+		return fmt.Sprintf(`
+<li class="rc-entry__time"><time>%[1]s</time></li>
+<li class="rc-entry__hash">%[2]s</li>
+<li class="rc-entry__links">%[5]s</li>
+<li class="rc-entry__msg">%[6]s <span class="rc-entry__author">by <a href="/page/%[3]s/%[4]s" rel="author">%[4]s</a></span></li>
+`, rev.TimeString(), rev.Hash, util.UserTree, rev.Username, rev.HyphaeLinks(), rev.Message)
+	}
 	return fmt.Sprintf(`
-<li class="rc-entry__time"><time>%s</time></li>
-<li class="rc-entry__hash">%s</li>
-<li class="rc-entry__links">%s</li>
-<li class="rc-entry__msg">%s</li>
+<li class="rc-entry__time"><time>%[1]s</time></li>
+<li class="rc-entry__hash">%[2]s</li>
+<li class="rc-entry__links">%[3]s</li>
+<li class="rc-entry__msg">%[4]s</li>
 `, rev.TimeString(), rev.Hash, rev.HyphaeLinks(), rev.Message)
 }
 

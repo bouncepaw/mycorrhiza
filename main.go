@@ -15,6 +15,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -22,7 +23,7 @@ import (
 var WikiDir string
 
 // HyphaPattern is a pattern which all hyphae must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%]+`)
+var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
 
 // HyphaStorage is a mapping between canonical hypha names and their meta information.
 var HyphaStorage = make(map[string]*HyphaData)
@@ -63,6 +64,11 @@ var base = templates.BaseHTML
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
+	if ok := user.CanProceed(rq, "reindex"); !ok {
+		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be an admin to reindex hyphae.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
 	HyphaStorage = make(map[string]*HyphaData)
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")
@@ -125,6 +131,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	// See http_readers.go for /page/, /text/, /binary/, /history/.
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/.
+	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)

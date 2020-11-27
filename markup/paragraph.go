@@ -17,6 +17,7 @@ const (
 	spanSuper
 	spanSub
 	spanMark
+	spanStrike
 	spanLink
 )
 
@@ -78,7 +79,7 @@ func getTextNode(input *bytes.Buffer) string {
 			escaping = false
 		} else if b == '\\' {
 			escaping = true
-		} else if strings.IndexByte("/*`^,![", b) >= 0 {
+		} else if strings.IndexByte("/*`^,![~", b) >= 0 {
 			input.UnreadByte()
 			break
 		} else {
@@ -127,6 +128,9 @@ func ParagraphToHtml(hyphaName, input string) string {
 		case startsWith("!!"):
 			ret.WriteString(tagFromState(spanMark, tagState, "mark", "!!"))
 			p.Next(2)
+		case startsWith("~~"):
+			ret.WriteString(tagFromState(spanMark, tagState, "s", "~~"))
+			p.Next(2)
 		case startsWith("[["):
 			ret.WriteString(getLinkNode(p, hyphaName))
 		default:
@@ -149,6 +153,8 @@ func ParagraphToHtml(hyphaName, input string) string {
 				ret.WriteString(tagFromState(spanSub, tagState, "sub", ",,"))
 			case spanMark:
 				ret.WriteString(tagFromState(spanMark, tagState, "mark", "!!"))
+			case spanStrike:
+				ret.WriteString(tagFromState(spanMark, tagState, "s", "~~"))
 			case spanLink:
 				ret.WriteString(tagFromState(spanLink, tagState, "a", "[["))
 			}

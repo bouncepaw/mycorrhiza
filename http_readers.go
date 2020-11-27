@@ -40,6 +40,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		contents = markup.ToHtml(hyphaName, textContents)
 	}
 	page := templates.RevisionHTML(
+		rq,
 		hyphaName,
 		naviTitle(hyphaName),
 		contents,
@@ -67,7 +68,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
-		base(hyphaName, templates.HistoryHTML(hyphaName, tbody)))
+		base(hyphaName, templates.HistoryHTML(rq, hyphaName, tbody)))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -110,7 +111,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents
 		}
 	}
-	util.HTTP200Page(w, base(hyphaName, templates.PageHTML(hyphaName,
+	util.HTTP200Page(w, base(hyphaName, templates.PageHTML(rq, hyphaName,
 		naviTitle(hyphaName),
 		contents,
 		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))))

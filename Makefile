@@ -1,6 +1,9 @@
 run: build
 	./mycorrhiza metarrhiza
 
+run_with_fixed_auth: build
+	./mycorrhiza -auth-method fixed metarrhiza
+
 build:
 	go generate
 	go build .

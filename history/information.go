@@ -15,7 +15,7 @@ func RecentChanges(n int) string {
 	var (
 		out, err = gitsh(
 			"log", "--oneline", "--no-merges",
-			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
+			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--max-count="+strconv.Itoa(n),
 		)
 		revs []Revision

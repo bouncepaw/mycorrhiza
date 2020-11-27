@@ -1,15 +1,20 @@
 package util
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
 	"strings"
 )
 
 var (
-	ServerPort string
-	HomePage   string
-	SiteTitle  string
-	WikiDir    string
+	ServerPort           string
+	HomePage             string
+	SiteTitle            string
+	WikiDir              string
+	UserTree             string
+	AuthMethod           string
+	FixedCredentialsPath string
 )
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
@@ -40,4 +45,12 @@ func FindSubhyphae(hyphaName string, hyphaIterator func(func(string))) []string 
 		}
 	})
 	return subhyphae
+}
+
+func RandomString(n int) (string, error) {
+	bytes := make([]byte, n)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
