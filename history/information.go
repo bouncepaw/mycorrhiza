@@ -7,8 +7,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func RecentChanges(n int) string {
@@ -37,8 +39,8 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	var (
 		out, err = gitsh(
 			"log", "--oneline", "--no-merges",
-			// Hash, Commiter email, Commiter time, Commit msg separated by tab
-			"--pretty=format:\"%h\t%ce\t%ct\t%s\"",
+			// Hash, author email, author time, commit msg separated by tab
+			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--", hyphaName+".*",
 		)
 		revs []Revision
@@ -53,6 +55,58 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	return revs, err
 }
 
+// HistoryWithRevisions returns an html representation of `revs` that is meant to be inserted in a history page.
+func HistoryWithRevisions(hyphaName string, revs []Revision) (html string) {
+	var (
+		currentYear  int
+		currentMonth time.Month
+	)
+	for i, rev := range revs {
+		if rev.Time.Month() != currentMonth || rev.Time.Year() != currentYear {
+			currentYear = rev.Time.Year()
+			currentMonth = rev.Time.Month()
+			if i != 0 {
+				html += `
+	</ul>
+</section>`
+			}
+			html += fmt.Sprintf(`
+<section class="history__month">
+	<a href="#%[1]d-%[2]d" class="history__month-anchor">
+		<h2 id="%[1]d-%[2]d" class="history__month-title">%[3]s</h2>
+	</a>
+	<ul class="history__entries">`,
+				currentYear, currentMonth,
+				strconv.Itoa(currentYear)+" "+rev.Time.Month().String())
+		}
+		html += rev.asHistoryEntry(hyphaName)
+	}
+	return html
+}
+
+func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
+	author := ""
+	if rev.Username != "anon" {
+		author = fmt.Sprintf(`
+		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, util.UserTree, rev.Username)
+	}
+	return fmt.Sprintf(`
+<li class="history__entry">
+	<a class="history-entry" href="/rev/%[3]s/%[1]s">
+		<time class="history-entry__time">%[2]s</time>
+		<span class="history-entry__hash">%[3]s</span>
+		<span class="history-entry__msg">%[4]s</span>
+	</a>%[5]s
+</li>
+`, hyphaName, rev.timeHourMinute(), rev.Hash, rev.Message, author)
+}
+
+// Return time like 13:42
+func (rev *Revision) timeHourMinute() string {
+	h, m, _ := rev.Time.Clock()
+	return strconv.Itoa(h) + ":" + strconv.Itoa(m)
+}
+
 // This regex is wrapped in "". For some reason, these quotes appear at some time and we have to get rid of them.
 var revisionLinePattern = regexp.MustCompile("\"(.*)\t(.*)@.*\t(.*)\t(.*)\"")
 
@@ -64,16 +118,6 @@ func parseRevisionLine(line string) Revision {
 		Time:     *unixTimestampAsTime(results[3]),
 		Message:  results[4],
 	}
-}
-
-// Represent revision as a table row.
-func (rev *Revision) AsHtmlTableRow(hyphaName string) string {
-	return fmt.Sprintf(`
-<tr>
-	<td><time>%s</time></td>
-	<td><a href="/rev/%s/%s">%s</a></td>
-	<td>%s</td>
-</tr>`, rev.TimeString(), rev.Hash, hyphaName, rev.Hash, rev.Message)
 }
 
 // See how the file with `filepath` looked at commit with `hash`.

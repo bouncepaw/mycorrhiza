@@ -2,21 +2,13 @@
 {% import "path" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
-{% func HistoryHTML(rq *http.Request, hyphaName, tbody string) %}
+{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
 <main>
 {%= navHTML(rq, hyphaName, "history") %}
-	<table>
-		<thead>
-			<tr>
-				<th>Time</th>
-				<th>Hash</th>
-				<th>Message</th>
-			</tr>
-		</thead>
-		<tbody>
-		{%s= tbody %}
-		</tbody>
-	</table>
+	<article class="history">
+		<h1>History of {%s hyphaName %}</h1>
+		{%s= list %}
+	</article>
 </main>
 {% endfunc %}
 

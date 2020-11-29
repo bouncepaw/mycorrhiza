@@ -57,19 +57,17 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "history")
-	var tbody string
+	var list string
 
 	// History can be found for files that do not exist anymore.
 	revs, err := history.Revisions(hyphaName)
 	if err == nil {
-		for _, rev := range revs {
-			tbody += rev.AsHtmlTableRow(hyphaName)
-		}
+		list = history.HistoryWithRevisions(hyphaName, revs)
 	}
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
-		base(hyphaName, templates.HistoryHTML(rq, hyphaName, tbody)))
+		base(hyphaName, templates.HistoryHTML(rq, hyphaName, list)))
 }
 
 // handlerText serves raw source text of the hypha.

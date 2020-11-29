@@ -33,7 +33,7 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 html {height:100%; padding:0; background-color:#ddd;
 background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");} /* heropatterns.com */
 body {height:100%; margin:0; font-size:16px; font-family:sans-serif;}
-main {padding:1rem; background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); }
+main {padding:1rem; background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
 textarea {font-size:15px;}
 .edit {height:100%;}
@@ -81,6 +81,13 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .prevnext__next { float: right; text-align: right; }
 
 .page-separator { clear: both; }
+.history__entries { background-color: #eee; margin: 0; padding: 0; border-radius: .25rem; }
+.history__month-anchor { text-decoration: none; color: black; }
+.history__entry { list-style-type: none; padding: .25rem; }
+.history-entry { padding: .25rem; }
+.history-entry__time { font-weight: bold; }
+.history-entry__author { font-style: italic; }
+
 `)
 //line templates/asset.qtpl:2
 	qw422016.N().S(`
