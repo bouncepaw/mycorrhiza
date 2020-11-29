@@ -140,63 +140,73 @@ func navHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string
 func streamuserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 //line templates/common.qtpl:42
 	qw422016.N().S(`
+	`)
+//line templates/common.qtpl:43
+	if user.AuthUsed {
+//line templates/common.qtpl:43
+		qw422016.N().S(`
 			<li class="navlinks__user">
 			`)
-//line templates/common.qtpl:44
-	if u.Group == user.UserAnon {
-//line templates/common.qtpl:44
-		qw422016.N().S(`
+//line templates/common.qtpl:45
+		if u.Group == user.UserAnon {
+//line templates/common.qtpl:45
+			qw422016.N().S(`
 				<a href="/login">Login</a>
 			`)
-//line templates/common.qtpl:46
-	} else {
-//line templates/common.qtpl:46
-		qw422016.N().S(`
+//line templates/common.qtpl:47
+		} else {
+//line templates/common.qtpl:47
+			qw422016.N().S(`
 				<a href="/page/`)
-//line templates/common.qtpl:47
-		qw422016.E().S(util.UserTree)
-//line templates/common.qtpl:47
-		qw422016.N().S(`/`)
-//line templates/common.qtpl:47
-		qw422016.E().S(u.Name)
-//line templates/common.qtpl:47
-		qw422016.N().S(`">`)
-//line templates/common.qtpl:47
-		qw422016.E().S(u.Name)
-//line templates/common.qtpl:47
-		qw422016.N().S(`</a>
+//line templates/common.qtpl:48
+			qw422016.E().S(util.UserTree)
+//line templates/common.qtpl:48
+			qw422016.N().S(`/`)
+//line templates/common.qtpl:48
+			qw422016.E().S(u.Name)
+//line templates/common.qtpl:48
+			qw422016.N().S(`">`)
+//line templates/common.qtpl:48
+			qw422016.E().S(u.Name)
+//line templates/common.qtpl:48
+			qw422016.N().S(`</a>
 			`)
-//line templates/common.qtpl:48
-	}
-//line templates/common.qtpl:48
-	qw422016.N().S(`
+//line templates/common.qtpl:49
+		}
+//line templates/common.qtpl:49
+		qw422016.N().S(`
 			</li>
+	`)
+//line templates/common.qtpl:51
+	}
+//line templates/common.qtpl:51
+	qw422016.N().S(`
 `)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 }
 
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 func writeuserMenuHTML(qq422016 qtio422016.Writer, u *user.User) {
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	streamuserMenuHTML(qw422016, u)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 }
 
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 func userMenuHTML(u *user.User) string {
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	writeuserMenuHTML(qb422016, u)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 	return qs422016
-//line templates/common.qtpl:50
+//line templates/common.qtpl:52
 }

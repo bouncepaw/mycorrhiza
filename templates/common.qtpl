@@ -40,6 +40,7 @@ var navEntries = []navEntry{
 {% endfunc %}
 
 {% func userMenuHTML(u *user.User) %}
+	{% if user.AuthUsed %}
 			<li class="navlinks__user">
 			{% if u.Group == user.UserAnon %}
 				<a href="/login">Login</a>
@@ -47,5 +48,6 @@ var navEntries = []navEntry{
 				<a href="/page/{%s util.UserTree %}/{%s u.Name %}">{%s u.Name %}</a>
 			{% endif %}
 			</li>
+	{% endif %}
 {% endfunc %}
 
