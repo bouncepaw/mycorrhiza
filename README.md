@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 0.11
+# 🍄 MycorrhizaWiki 0.12
 A wiki engine.
 
 ## Building

@@ -1,0 +1,3 @@
+{% func DefaultCSS() %}
+{% cat "default.css" %}
+{% endfunc %}

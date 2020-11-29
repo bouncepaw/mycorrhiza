@@ -1,4 +1,5 @@
 {% import "net/http" %}
+{% import "path" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, tbody string) %}
@@ -35,7 +36,7 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree string) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) %}
 <main>
 {%= navHTML(rq, hyphaName, "page") %}
 	<article>
@@ -46,7 +47,15 @@ If `contents` == "", a helpful message is shown instead.
 			{%s= contents %}
 		{% endif %}
 	</article>
-	<hr/>
+	<section class="prevnext">
+		{% if prevHyphaName != "" %}
+		<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}">← {%s path.Base(prevHyphaName) %}</a>
+		{% endif %}
+		{% if nextHyphaName != "" %}
+		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}">{%s path.Base(nextHyphaName) %} →</a>
+		{% endif %}
+	</section>
+	<hr class="page-separator"/>
 {% if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon %}
 	<form action="/upload-binary/{%s hyphaName %}"
 			method="post" enctype="multipart/form-data">

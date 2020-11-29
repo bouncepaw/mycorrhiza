@@ -10,17 +10,20 @@ import (
 // If Name == "", the tree is empty.
 type tree struct {
 	name          string
+	exists        bool
+	prevSibling   string
+	nextSibling   string
 	siblings      []string
 	descendants   []*tree
 	root          bool
 	hyphaIterator func(func(string))
 }
 
-// TreeAsHtml generates a tree for `hyphaName`. `hyphaStorage` has this type because package `tree` has no access to `HyphaData` data type. One day it shall have it, I guess.
-func TreeAsHtml(hyphaName string, hyphaIterator func(func(string))) string {
+// Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
+func Tree(hyphaName string, hyphaIterator func(func(string))) (html, prev, next string) {
 	t := &tree{name: hyphaName, root: true, hyphaIterator: hyphaIterator}
 	t.fill()
-	return t.asHtml()
+	return t.asHtml(), t.prevSibling, t.nextSibling
 }
 
 // subtree adds a descendant tree to `t` and returns that tree.
@@ -34,11 +37,22 @@ func (t *tree) fork(descendantName string) *tree {
 	return subt
 }
 
+// Compare current prev next hyphae and decide if any of them should be set to `name2`.
+func (t *tree) prevNextDetermine(name2 string) {
+	if name2 < t.name && (name2 > t.prevSibling || t.prevSibling == "") {
+		t.prevSibling = name2
+	} else if name2 > t.name && (name2 < t.nextSibling || t.nextSibling == "") {
+		t.nextSibling = name2
+	}
+}
+
 // Compares names and does something with them, may generate a subtree.
 func (t *tree) compareNamesAndAppend(name2 string) {
 	switch {
 	case t.name == name2:
+		t.exists = true
 	case t.root && path.Dir(t.name) == path.Dir(name2):
+		t.prevNextDetermine(name2)
 		t.siblings = append(t.siblings, name2)
 	case t.name == path.Dir(name2):
 		t.fork(name2).fill()
