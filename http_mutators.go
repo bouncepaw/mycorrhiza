@@ -174,7 +174,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-binary")
-		u         = user.FromRequest(rq)
+		u         = user.FromRequest(rq).OrAnon()
 	)
 	if !u.CanProceed("upload-binary") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to upload attachments.")
