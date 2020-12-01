@@ -218,7 +218,7 @@ func (img *Img) checkLinks() map[string]bool {
 	}
 	HyphaIterate(func(hyphaName string) {
 		for _, entry := range img.entries {
-			if hyphaName == entry.trimmedPath {
+			if hyphaName == xclCanonicalName(img.hyphaName, entry.trimmedPath) {
 				m[entry.trimmedPath] = true
 			}
 		}

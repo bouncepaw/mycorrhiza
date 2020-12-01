@@ -26,7 +26,7 @@ article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wr
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
 .transclusion {background-color:#eee; border-radius: .25rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
-.transclusion__link {display: block; text-align: right; font-style: italic; margin-top: 0.5rem; color: black; text-decoration: none;}
+.transclusion__link {display: block; text-align: right; font-style: italic; margin-top: .5rem; margin-right: .25rem; color: black; text-decoration: none;}
 .transclusion__link::before {content: "⇐ ";}
 
 .binary-container_with-img img,
