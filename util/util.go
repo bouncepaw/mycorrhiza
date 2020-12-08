@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	URL                  string
 	ServerPort           string
 	HomePage             string
 	SiteTitle            string

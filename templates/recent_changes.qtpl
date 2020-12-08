@@ -18,6 +18,8 @@
 		recent changes
 	</nav>
 
+	<p><img class="icon" width="20" height="20" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
+
 	{% comment %}
 		Here I am, willing to add some accesibility using ARIA. Turns out,
 		role="feed" is not supported in any screen reader as of September

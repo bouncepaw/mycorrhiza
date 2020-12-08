@@ -39,6 +39,7 @@ textarea {font-size:15px;}
 .edit {height:100%;}
 .edit-form {height:90%;}
 .edit-form textarea {width:100%;height:90%;}
+.icon {margin-right: .25rem; vertical-align: bottom; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}

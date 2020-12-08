@@ -77,81 +77,83 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, changes []string, n int)
 		recent changes
 	</nav>
 
+	<p><img class="icon" width="20" height="20" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
+
 	`)
-//line templates/recent_changes.qtpl:26
+//line templates/recent_changes.qtpl:28
 	qw422016.N().S(`
 
 	<section class="recent-changes__list" role="feed">
 	`)
-//line templates/recent_changes.qtpl:29
+//line templates/recent_changes.qtpl:31
 	if len(changes) == 0 {
-//line templates/recent_changes.qtpl:29
+//line templates/recent_changes.qtpl:31
 		qw422016.N().S(`
 		<p>Could not find any recent changes.</p>
 	`)
-//line templates/recent_changes.qtpl:31
+//line templates/recent_changes.qtpl:33
 	} else {
-//line templates/recent_changes.qtpl:31
+//line templates/recent_changes.qtpl:33
 		qw422016.N().S(`
 		`)
-//line templates/recent_changes.qtpl:32
+//line templates/recent_changes.qtpl:34
 		for i, entry := range changes {
-//line templates/recent_changes.qtpl:32
+//line templates/recent_changes.qtpl:34
 			qw422016.N().S(`
 		<ul class="recent-changes__entry rc-entry" role="article"
 		    aria-setsize="`)
-//line templates/recent_changes.qtpl:34
+//line templates/recent_changes.qtpl:36
 			qw422016.N().D(n)
-//line templates/recent_changes.qtpl:34
+//line templates/recent_changes.qtpl:36
 			qw422016.N().S(`" aria-posinset="`)
-//line templates/recent_changes.qtpl:34
+//line templates/recent_changes.qtpl:36
 			qw422016.N().D(i)
-//line templates/recent_changes.qtpl:34
+//line templates/recent_changes.qtpl:36
 			qw422016.N().S(`">
 			 `)
-//line templates/recent_changes.qtpl:35
+//line templates/recent_changes.qtpl:37
 			qw422016.N().S(entry)
-//line templates/recent_changes.qtpl:35
+//line templates/recent_changes.qtpl:37
 			qw422016.N().S(`
 		</ul>
 		`)
-//line templates/recent_changes.qtpl:37
+//line templates/recent_changes.qtpl:39
 		}
-//line templates/recent_changes.qtpl:37
+//line templates/recent_changes.qtpl:39
 		qw422016.N().S(`
 	`)
-//line templates/recent_changes.qtpl:38
+//line templates/recent_changes.qtpl:40
 	}
-//line templates/recent_changes.qtpl:38
+//line templates/recent_changes.qtpl:40
 	qw422016.N().S(`
 	</section>
 </main>
 `)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 }
 
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 func WriteRecentChangesHTML(qq422016 qtio422016.Writer, changes []string, n int) {
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	StreamRecentChangesHTML(qw422016, changes, n)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	qt422016.ReleaseWriter(qw422016)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 }
 
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 func RecentChangesHTML(changes []string, n int) string {
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	WriteRecentChangesHTML(qb422016, changes, n)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	qs422016 := string(qb422016.B)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 	return qs422016
-//line templates/recent_changes.qtpl:41
+//line templates/recent_changes.qtpl:43
 }

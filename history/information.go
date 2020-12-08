@@ -11,7 +11,55 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/gorilla/feeds"
 )
+
+func recentChangesFeed() *feeds.Feed {
+	feed := &feeds.Feed{
+		Title:       "Recent changes",
+		Link:        &feeds.Link{Href: util.URL},
+		Description: "List of 30 recent changes on the wiki",
+		Author:      &feeds.Author{Name: "Wikimind", Email: "wikimind@mycorrhiza"},
+		Updated:     time.Now(),
+	}
+	var (
+		out, err = gitsh(
+			"log", "--oneline", "--no-merges",
+			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
+			"--max-count=30",
+		)
+		revs []Revision
+	)
+	if err == nil {
+		for _, line := range strings.Split(out.String(), "\n") {
+			revs = append(revs, parseRevisionLine(line))
+		}
+	}
+	for _, rev := range revs {
+		feed.Add(&feeds.Item{
+			Title:       rev.Message,
+			Author:      &feeds.Author{Name: rev.Username},
+			Id:          rev.Hash,
+			Description: rev.descriptionForFeed(),
+			Created:     rev.Time,
+			Updated:     rev.Time,
+			Link:        &feeds.Link{Href: util.URL + rev.bestLink()},
+		})
+	}
+	return feed
+}
+
+func RecentChangesRSS() (string, error) {
+	return recentChangesFeed().ToRss()
+}
+
+func RecentChangesAtom() (string, error) {
+	return recentChangesFeed().ToAtom()
+}
+
+func RecentChangesJSON() (string, error) {
+	return recentChangesFeed().ToJSON()
+}
 
 func RecentChanges(n int) string {
 	var (

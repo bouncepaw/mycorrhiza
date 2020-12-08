@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -14,6 +15,9 @@ import (
 func init() {
 	http.HandleFunc("/history/", handlerHistory)
 	http.HandleFunc("/recent-changes/", handlerRecentChanges)
+	http.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
+	http.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
+	http.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 }
 
 // handlerHistory lists all revisions of a hypha
@@ -45,4 +49,29 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}
+}
+
+func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
+	log.Println(rq.URL)
+	if content, err := f(); err != nil {
+		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "An error while generating "+name+": "+err.Error())
+	} else {
+		w.Header().Set("Content-Type", "application/rss+xml")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, content)
+	}
+}
+
+func handlerRecentChangesRSS(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesRSS, "RSS")
+}
+
+func handlerRecentChangesAtom(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesAtom, "Atom")
+}
+
+func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesJSON, "JSON feed")
 }

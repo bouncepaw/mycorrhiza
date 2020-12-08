@@ -10,8 +10,9 @@ import (
 )
 
 func init() {
-	flag.StringVar(&util.ServerPort, "port", "1737", "Port to serve the wiki at")
-	flag.StringVar(&util.HomePage, "home", "home", "The home page")
+	flag.StringVar(&util.URL, "url", "http://0.0.0.0:$port", "URL at which your wiki can be found. Used to generate feeds")
+	flag.StringVar(&util.ServerPort, "port", "1737", "Port to serve the wiki at using HTTP")
+	flag.StringVar(&util.HomePage, "home", "home", "The home page name")
 	flag.StringVar(&util.SiteTitle, "title", "🍄", "How to call your wiki in the navititle")
 	flag.StringVar(&util.UserTree, "user-tree", "u", "Hypha which is a superhypha of all user pages")
 	flag.StringVar(&util.AuthMethod, "auth-method", "none", "What auth method to use. Variants: \"none\", \"fixed\"")
@@ -32,6 +33,10 @@ func parseCliArgs() {
 	util.WikiDir = WikiDir
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if util.URL == "http://0.0.0.0:$port" {
+		util.URL = "http://0.0.0.0:" + util.ServerPort
 	}
 
 	if !isCanonicalName(util.HomePage) {
