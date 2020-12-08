@@ -20,7 +20,6 @@ func init() {
 	http.HandleFunc("/page/", handlerPage)
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
-	http.HandleFunc("/history/", handlerHistory)
 	http.HandleFunc("/rev/", handlerRevision)
 }
 
@@ -51,23 +50,6 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(base(hyphaName, page)))
-}
-
-// handlerHistory lists all revisions of a hypha
-func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	hyphaName := HyphaNameFromRq(rq, "history")
-	var list string
-
-	// History can be found for files that do not exist anymore.
-	revs, err := history.Revisions(hyphaName)
-	if err == nil {
-		list = history.HistoryWithRevisions(hyphaName, revs)
-	}
-	log.Println("Found", len(revs), "revisions for", hyphaName)
-
-	util.HTTP200Page(w,
-		base(hyphaName, templates.HistoryHTML(rq, hyphaName, list)))
 }
 
 // handlerText serves raw source text of the hypha.

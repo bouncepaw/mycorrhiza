@@ -10,8 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
-	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
@@ -91,20 +89,6 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	http.Redirect(w, rq, "/page/"+randomHyphaName, http.StatusSeeOther)
 }
 
-// Recent changes
-func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	var (
-		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
-		n, err   = strconv.Atoi(noPrefix)
-	)
-	if err == nil && n < 101 {
-		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n)))
-	} else {
-		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
-	}
-}
-
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	if _, err := os.Stat(WikiDir + "/static/common.css"); err == nil {
@@ -128,14 +112,14 @@ func main() {
 
 	history.Start(WikiDir)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
-	// See http_readers.go for /page/, /text/, /binary/, /history/.
-	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/.
+	// See http_readers.go for /page/, /text/, /binary/
+	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
+	// See http_history.go for /history/, /recent-changes
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)
-	http.HandleFunc("/recent-changes/", handlerRecentChanges)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
