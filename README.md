@@ -28,6 +28,8 @@ Options:
         Port to serve the wiki at (default "1737")
   -title string
         How to call your wiki in the navititle (default "🍄")
+  -url string
+        URL at which your wiki can be found. Used to generate feeds (default "http://0.0.0.0:$port")
   -user-tree string
         Hypha which is a superhypha of all user pages (default "u")
 ```
@@ -37,16 +39,16 @@ Options:
 * Responsive design
 * Works in text browsers
 * Wiki pages (called hyphae) are written in mycomarkup
-* Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with.
-* Page trees
+* Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with
+* Page trees; links to previous and next pages
 * Changes are saved to git
 * List of hyphae page
 * History page
 * Random page
-* Recent changes page
+* Recent changes page; RSS, Atom and JSON feeds available
 * Hyphae can be deleted (while still preserving history)
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
-* Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/).
+* Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/)
 * Authorization with pre-set credentials
 
 ## Contributing
