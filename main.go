@@ -4,12 +4,14 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/templates"
@@ -99,6 +101,33 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerIcon(w http.ResponseWriter, rq *http.Request) {
+	iconName := strings.TrimPrefix(rq.URL.Path, "/static/icon/")
+	if iconName == "https" {
+		iconName = "http"
+	}
+	files, err := ioutil.ReadDir(WikiDir + "/static/icon")
+	if err == nil {
+		for _, f := range files {
+			if strings.HasPrefix(f.Name(), iconName+"-protocol-icon") {
+				http.ServeFile(w, rq, WikiDir+"/static/icon/"+f.Name())
+				return
+			}
+		}
+	}
+	w.Header().Set("Content-Type", "image/svg+xml")
+	switch iconName {
+	case "gemini":
+		w.Write([]byte(templates.IconGemini()))
+	case "mailto":
+		w.Write([]byte(templates.IconMailto()))
+	case "gopher":
+		w.Write([]byte(templates.IconGopher()))
+	default:
+		w.Write([]byte(templates.IconHTTP()))
+	}
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 	parseCliArgs()
@@ -124,6 +153,7 @@ func main() {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
+	http.HandleFunc("/static/icon/", handlerIcon)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})

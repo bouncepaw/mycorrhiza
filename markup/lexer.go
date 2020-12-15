@@ -59,6 +59,9 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 			addLine(state.buf + "</ol>")
 		case "pre":
 			state.buf += "\n"
+		case "launchpad":
+			state.where = ""
+			addLine(state.buf + "</ul>")
 		}
 		return
 	}
@@ -80,6 +83,8 @@ func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
 		goto listState
 	case "number":
 		goto numberState
+	case "launchpad":
+		goto launchpadState
 	default:
 		goto normalState
 	}
@@ -135,6 +140,23 @@ numberState:
 	}
 	return
 
+launchpadState:
+	switch {
+	case startsWith("=>"):
+		href, text, class := Rocketlink(line, state.name)
+		state.buf += fmt.Sprintf(`	<li class="launchpad__entry"><a class="rocketlink %s" href="%s">%s</a></li>`, class, href, text)
+	case startsWith("```"):
+		state.where = "pre"
+		addLine(state.buf + "</ul>")
+		state.id++
+		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
+	default:
+		state.where = ""
+		addLine(state.buf + "</ul>")
+		goto normalState
+	}
+	return
+
 normalState:
 	state.id++
 	switch {
@@ -168,9 +190,9 @@ normalState:
 		addLine(fmt.Sprintf(
 			"<blockquote id='%d'>%s</blockquote>", state.id, remover(">")(line)))
 	case startsWith("=>"):
-		href, text, class := Rocketlink(line, state.name)
-		addLine(fmt.Sprintf(
-			`<p><a id='%d' class='rocketlink %s' href="%s">%s</a></p>`, state.id, class, href, text))
+		state.where = "launchpad"
+		state.buf = fmt.Sprintf("<ul class='launchpad' id='%d'>\n", state.id)
+		goto launchpadState
 
 	case startsWith("<="):
 		addLine(parseTransclusion(line, state.name))

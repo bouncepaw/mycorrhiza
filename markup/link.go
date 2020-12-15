@@ -1,6 +1,7 @@
 package markup
 
 import (
+	"fmt"
 	"path"
 	"strings"
 )
@@ -19,7 +20,13 @@ func LinkParts(addr, display, hyphaName string) (href, text, class string) {
 
 	switch {
 	case strings.ContainsRune(addr, ':'):
-		return addr, text, "wikilink_external"
+		pos := strings.IndexRune(addr, ':')
+		destination := addr[:pos]
+		text = addr[pos+1:]
+		if strings.HasPrefix(text, "//") && len(text) > 2 {
+			text = text[2:]
+		}
+		return addr, text + fmt.Sprintf(`<img class="wikilink__destination-type" src="/static/icon/%s" width="16" height="16"/>`, destination), "wikilink_external"
 	case strings.HasPrefix(addr, "/"):
 		return addr, text, class
 	case strings.HasPrefix(addr, "./"):

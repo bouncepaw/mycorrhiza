@@ -11,11 +11,6 @@ type MycoDoc struct {
 	// data
 	hyphaName string
 	contents  string
-
-	// state
-	recursionDepth int
-
-	// results
 }
 
 // Constructor
@@ -27,9 +22,16 @@ func Doc(hyphaName, contents string) *MycoDoc {
 }
 
 // AsHtml returns an html representation of the document
-func (md *MycoDoc) AsHtml() string {
+func (md *MycoDoc) AsHTML() string {
 	return ""
 }
+
+// OpenGraphHTML returns an html representation of og: meta tags.
+func (md *MycoDoc) OpenGraphHTML() string {
+	return ""
+}
+
+/* The rest of this file is currently unused. TODO: use it I guess */
 
 type BlockType int
 
