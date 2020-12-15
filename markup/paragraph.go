@@ -56,8 +56,8 @@ func getLinkNode(input *bytes.Buffer, hyphaName string) string {
 			currBuf.WriteByte(b)
 		}
 	}
-	href, text, class := LinkParts(addrBuf.String(), displayBuf.String(), hyphaName)
-	return fmt.Sprintf(`<a href="%s" class="%s">%s</a>`, href, class, html.EscapeString(text))
+	href, text, class, icon := LinkParts(addrBuf.String(), displayBuf.String(), hyphaName)
+	return fmt.Sprintf(`<a href="%s" class="%s">%s%s</a>`, href, class, html.EscapeString(text), icon)
 }
 
 // getTextNode splits the `input` into two parts `textNode` and `rest` by the first encountered rune that resembles a span tag. If there is none, `textNode = input`, `rest = ""`. It handles escaping with backslash.
