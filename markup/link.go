@@ -22,9 +22,11 @@ func LinkParts(addr, display, hyphaName string) (href, text, class, icon string)
 	case strings.ContainsRune(addr, ':'):
 		pos := strings.IndexRune(addr, ':')
 		destination := addr[:pos]
-		text = addr[pos+1:]
-		if strings.HasPrefix(text, "//") && len(text) > 2 {
-			text = text[2:]
+		if display == "" {
+			text = addr[pos+1:]
+			if strings.HasPrefix(text, "//") && len(text) > 2 {
+				text = text[2:]
+			}
 		}
 		return addr, text, "wikilink_external", fmt.Sprintf(`<img class="wikilink__destination-type" src="/static/icon/%s" width="16" height="16"/>`, destination)
 	case strings.HasPrefix(addr, "/"):
