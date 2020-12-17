@@ -33,6 +33,12 @@ func init() {
 		return
 	}
 	markup.HyphaIterate = IterateHyphaNamesWith
+	markup.HyphaImageForOG = func(hyphaName string) string {
+		if hd, isOld := GetHyphaData(hyphaName); isOld && hd.binaryPath != "" {
+			return util.URL + "/binary/" + hyphaName
+		}
+		return util.URL + "/favicon.ico"
+	}
 }
 
 // GetHyphaData finds a hypha addressed by `hyphaName` and returns its `hyphaData`. `hyphaData` is set to a zero value if this hypha does not exist. `isOld` is false if this hypha does not exist.

@@ -17,14 +17,14 @@ type Transclusion struct {
 }
 
 // Transclude transcludes `xcl` and returns html representation.
-func Transclude(xcl Transclusion, state GemParserState) (html string) {
-	state.recursionLevel++
+func Transclude(xcl Transclusion, recursionLevel int) (html string) {
+	recursionLevel++
 	tmptOk := `<section class="transclusion transclusion_ok">
 	<a class="transclusion__link" href="/page/%s">%s</a>
 	<div class="transclusion__content">%s</div>
 </section>`
 	tmptFailed := `<section class="transclusion transclusion_failed">
-	<p>Failed to transclude <a href="/page/%s">%s</a></p>
+	<p class="error">Hypha <a class="wikilink_new" href="/page/%s">%s</a> does not exist</p>
 </section>`
 	if xcl.from == xclError || xcl.to == xclError || xcl.from > xcl.to {
 		return fmt.Sprintf(tmptFailed, xcl.name, xcl.name)
@@ -34,7 +34,8 @@ func Transclude(xcl Transclusion, state GemParserState) (html string) {
 	if err != nil {
 		return fmt.Sprintf(tmptFailed, xcl.name, xcl.name)
 	}
-	xclText := Parse(lex(xcl.name, rawText), xcl.from, xcl.to, state)
+	md := Doc(xcl.name, rawText)
+	xclText := Parse(md.lex(), xcl.from, xcl.to, recursionLevel)
 	return fmt.Sprintf(tmptOk, xcl.name, xcl.name, binaryHtml+xclText)
 }
 

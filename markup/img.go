@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var imgRe = regexp.MustCompile(`^img\s+{`)
@@ -182,6 +184,14 @@ func (img *Img) binaryPathFor(path string) string {
 	} else {
 		return "/binary/" + xclCanonicalName(img.hyphaName, path)
 	}
+}
+
+func (img *Img) ogBinaryPathFor(path string) string {
+	path = img.binaryPathFor(path)
+	if strings.HasPrefix(path, "/binary/") {
+		return util.URL + path
+	}
+	return path
 }
 
 func (img *Img) pagePathFor(path string) string {

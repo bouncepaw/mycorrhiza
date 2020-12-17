@@ -36,7 +36,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		textContents, err = history.FileAtRevision(textPath, revHash)
 	)
 	if err == nil {
-		contents = markup.ToHtml(hyphaName, textContents)
+		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
 	treeHTML, _, _ := tree.Tree(hyphaName, IterateHyphaNamesWith)
 	page := templates.RevisionHTML(
@@ -81,20 +81,27 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 		hyphaName         = HyphaNameFromRq(rq, "page")
 		data, hyphaExists = HyphaStorage[hyphaName]
 		contents          string
+		openGraph         string
 	)
 	if hyphaExists {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
 		_, errB := os.Stat(data.binaryPath)
 		if errT == nil {
-			contents = markup.ToHtml(hyphaName, string(fileContentsT))
+			md := markup.Doc(hyphaName, string(fileContentsT))
+			contents = md.AsHTML()
+			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents
 		}
 	}
 	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName, IterateHyphaNamesWith)
-	util.HTTP200Page(w, base(hyphaName, templates.PageHTML(rq, hyphaName,
-		naviTitle(hyphaName),
-		contents,
-		treeHTML, prevHypha, nextHypha)))
+	util.HTTP200Page(w,
+		templates.BaseHTML(
+			hyphaName,
+			templates.PageHTML(rq, hyphaName,
+				naviTitle(hyphaName),
+				contents,
+				treeHTML, prevHypha, nextHypha),
+			openGraph))
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	flag.StringVar(&util.URL, "url", "http://0.0.0.0:$port", "URL at which your wiki can be found. Used to generate feeds")
+	flag.StringVar(&util.URL, "url", "http://0.0.0.0:$port", "URL at which your wiki can be found. Used to generate feeds and social media previews")
 	flag.StringVar(&util.ServerPort, "port", "1737", "Port to serve the wiki at using HTTP")
 	flag.StringVar(&util.HomePage, "home", "home", "The home page name")
 	flag.StringVar(&util.SiteTitle, "title", "🍄", "How to call your wiki in the navititle")

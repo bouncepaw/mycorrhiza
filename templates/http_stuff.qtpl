@@ -1,10 +1,11 @@
-{% func BaseHTML(title, body string) %}
+{% func BaseHTML(title, body string, headElements ...string) %}
 <!doctype html>
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="/static/common.css">
 		<title>{%s title %}</title>
+		{% for _, el := range headElements %}{%s= el %}{% endfor %}
 	</head>
 	<body>
 		{%s= body %}

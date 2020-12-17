@@ -18,7 +18,7 @@ var (
 )
 
 //line templates/http_stuff.qtpl:1
-func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string) {
+func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, headElements ...string) {
 //line templates/http_stuff.qtpl:1
 	qw422016.N().S(`
 <!doctype html>
@@ -31,55 +31,64 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string) {
 	qw422016.E().S(title)
 //line templates/http_stuff.qtpl:7
 	qw422016.N().S(`</title>
+		`)
+//line templates/http_stuff.qtpl:8
+	for _, el := range headElements {
+//line templates/http_stuff.qtpl:8
+		qw422016.N().S(el)
+//line templates/http_stuff.qtpl:8
+	}
+//line templates/http_stuff.qtpl:8
+	qw422016.N().S(`
 	</head>
 	<body>
 		`)
-//line templates/http_stuff.qtpl:10
+//line templates/http_stuff.qtpl:11
 	qw422016.N().S(body)
-//line templates/http_stuff.qtpl:10
+//line templates/http_stuff.qtpl:11
 	qw422016.N().S(`
 	</body>
 </html>
 `)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
 }
 
-//line templates/http_stuff.qtpl:13
-func WriteBaseHTML(qq422016 qtio422016.Writer, title, body string) {
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
+func WriteBaseHTML(qq422016 qtio422016.Writer, title, body string, headElements ...string) {
+//line templates/http_stuff.qtpl:14
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_stuff.qtpl:13
-	StreamBaseHTML(qw422016, title, body)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
+	StreamBaseHTML(qw422016, title, body, headElements...)
+//line templates/http_stuff.qtpl:14
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
 }
 
-//line templates/http_stuff.qtpl:13
-func BaseHTML(title, body string) string {
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
+func BaseHTML(title, body string, headElements ...string) string {
+//line templates/http_stuff.qtpl:14
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_stuff.qtpl:13
-	WriteBaseHTML(qb422016, title, body)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
+	WriteBaseHTML(qb422016, title, body, headElements...)
+//line templates/http_stuff.qtpl:14
 	qs422016 := string(qb422016.B)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
 	return qs422016
-//line templates/http_stuff.qtpl:13
+//line templates/http_stuff.qtpl:14
 }
 
-//line templates/http_stuff.qtpl:15
+//line templates/http_stuff.qtpl:16
 func StreamHyphaListHTML(qw422016 *qt422016.Writer, tbody string, pageCount int) {
-//line templates/http_stuff.qtpl:15
+//line templates/http_stuff.qtpl:16
 	qw422016.N().S(`
 <main>
 	<h1>List of hyphae</h1>
 	<p>This wiki has `)
-//line templates/http_stuff.qtpl:18
+//line templates/http_stuff.qtpl:19
 	qw422016.N().D(pageCount)
-//line templates/http_stuff.qtpl:18
+//line templates/http_stuff.qtpl:19
 	qw422016.N().S(` hyphae.</p>
 	<table>
 		<thead>
@@ -90,105 +99,105 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, tbody string, pageCount int)
 		</thead>
 		<tbody>
 			`)
-//line templates/http_stuff.qtpl:27
+//line templates/http_stuff.qtpl:28
 	qw422016.N().S(tbody)
-//line templates/http_stuff.qtpl:27
+//line templates/http_stuff.qtpl:28
 	qw422016.N().S(`
 		</tbody>
 	</table>
 </main>
 `)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 }
 
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 func WriteHyphaListHTML(qq422016 qtio422016.Writer, tbody string, pageCount int) {
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	StreamHyphaListHTML(qw422016, tbody, pageCount)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 }
 
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 func HyphaListHTML(tbody string, pageCount int) string {
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	WriteHyphaListHTML(qb422016, tbody, pageCount)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	qs422016 := string(qb422016.B)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 	return qs422016
-//line templates/http_stuff.qtpl:31
+//line templates/http_stuff.qtpl:32
 }
 
-//line templates/http_stuff.qtpl:33
+//line templates/http_stuff.qtpl:34
 func StreamHyphaListRowHTML(qw422016 *qt422016.Writer, hyphaName, binaryMime string, binaryPresent bool) {
-//line templates/http_stuff.qtpl:33
+//line templates/http_stuff.qtpl:34
 	qw422016.N().S(`
 			<tr>
 				<td><a href="/page/`)
-//line templates/http_stuff.qtpl:35
+//line templates/http_stuff.qtpl:36
 	qw422016.E().S(hyphaName)
-//line templates/http_stuff.qtpl:35
+//line templates/http_stuff.qtpl:36
 	qw422016.N().S(`">`)
-//line templates/http_stuff.qtpl:35
+//line templates/http_stuff.qtpl:36
 	qw422016.E().S(hyphaName)
-//line templates/http_stuff.qtpl:35
+//line templates/http_stuff.qtpl:36
 	qw422016.N().S(`</a></td>
 			`)
-//line templates/http_stuff.qtpl:36
+//line templates/http_stuff.qtpl:37
 	if binaryPresent {
-//line templates/http_stuff.qtpl:36
+//line templates/http_stuff.qtpl:37
 		qw422016.N().S(`
 				<td>`)
-//line templates/http_stuff.qtpl:37
+//line templates/http_stuff.qtpl:38
 		qw422016.E().S(binaryMime)
-//line templates/http_stuff.qtpl:37
+//line templates/http_stuff.qtpl:38
 		qw422016.N().S(`</td>
 			`)
-//line templates/http_stuff.qtpl:38
+//line templates/http_stuff.qtpl:39
 	} else {
-//line templates/http_stuff.qtpl:38
+//line templates/http_stuff.qtpl:39
 		qw422016.N().S(`
 				<td></td>
 			`)
-//line templates/http_stuff.qtpl:40
+//line templates/http_stuff.qtpl:41
 	}
-//line templates/http_stuff.qtpl:40
+//line templates/http_stuff.qtpl:41
 	qw422016.N().S(`
 			</tr>
 `)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 }
 
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 func WriteHyphaListRowHTML(qq422016 qtio422016.Writer, hyphaName, binaryMime string, binaryPresent bool) {
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	StreamHyphaListRowHTML(qw422016, hyphaName, binaryMime, binaryPresent)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 }
 
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 func HyphaListRowHTML(hyphaName, binaryMime string, binaryPresent bool) string {
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	WriteHyphaListRowHTML(qb422016, hyphaName, binaryMime, binaryPresent)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	qs422016 := string(qb422016.B)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 	return qs422016
-//line templates/http_stuff.qtpl:42
+//line templates/http_stuff.qtpl:43
 }

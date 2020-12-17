@@ -9,6 +9,9 @@ import (
 // HyphaExists holds function that checks that a hypha is present.
 var HyphaExists func(string) bool
 
+//
+var HyphaImageForOG func(string) string
+
 // HyphaAccess holds function that accesses a hypha by its name.
 var HyphaAccess func(string) (rawText, binaryHtml string, err error)
 
@@ -29,21 +32,21 @@ type GemLexerState struct {
 
 type Line struct {
 	id int
-	// interface{} may be bad. What I need is a sum of string and Transclusion
+	// interface{} may be bad. TODO: a proper type
 	contents interface{}
 }
 
-func lex(name, content string) (ast []Line) {
-	var state = GemLexerState{name: name}
+func (md *MycoDoc) lex() (ast []Line) {
+	var state = GemLexerState{name: md.hyphaName}
 
-	for _, line := range append(strings.Split(content, "\n"), "") {
-		geminiLineToAST(line, &state, &ast)
+	for _, line := range append(strings.Split(md.contents, "\n"), "") {
+		lineToAST(line, &state, &ast)
 	}
 	return ast
 }
 
 // Lex `line` in markup and save it to `ast` using `state`.
-func geminiLineToAST(line string, state *GemLexerState, ast *[]Line) {
+func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 	addLine := func(text interface{}) {
 		*ast = append(*ast, Line{id: state.id, contents: text})
 	}
