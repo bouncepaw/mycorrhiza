@@ -128,6 +128,17 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(
+		`User-agent: *
+Allow: /page/
+Allow: /recent-changes
+Disallow: /
+Crawl-delay: 5`))
+}
+
 func main() {
 	log.Println("Running MycorrhizaWiki β")
 	parseCliArgs()
@@ -157,5 +168,6 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
 	})
+	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }
