@@ -27,7 +27,8 @@ type GemLexerState struct {
 	id  int
 	buf string
 	// Temporaries
-	img *Img
+	img   *Img
+	table *Table
 }
 
 type Line struct {
@@ -80,6 +81,8 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 	switch state.where {
 	case "img":
 		goto imgState
+	case "table":
+		goto tableState
 	case "pre":
 		goto preformattedState
 	case "list":
@@ -96,6 +99,13 @@ imgState:
 	if shouldGoBackToNormal := state.img.Process(line); shouldGoBackToNormal {
 		state.where = ""
 		addLine(*state.img)
+	}
+	return
+
+tableState:
+	if shouldGoBackToNormal := state.table.Process(line); shouldGoBackToNormal {
+		state.where = ""
+		addLine(*state.table)
 	}
 	return
 
@@ -209,6 +219,9 @@ normalState:
 			state.where = "img"
 			state.img = img
 		}
+	case MatchesTable(line):
+		state.where = "table"
+		state.table = TableFromFirstLine(line, state.name)
 	default:
 		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(state.name, line)))
 	}

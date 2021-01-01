@@ -13,6 +13,8 @@ func Parse(ast []Line, from, to int, recursionLevel int) (html string) {
 				html += Transclude(v, recursionLevel)
 			case Img:
 				html += v.ToHtml()
+			case Table:
+				html += v.asHtml()
 			case string:
 				html += v
 			default:

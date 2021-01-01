@@ -93,6 +93,10 @@ nav ul li {list-style-type:none;margin-right:1rem;}
 .history-entry__time { font-weight: bold; }
 .history-entry__author { font-style: italic; }
 
+table { background-color: #eee; border: #ddd 1px solid; border-radius: .25rem;
+min-width: 4rem; }
+td { padding: .25rem; border: #ddd 1px solid; }
+caption { caption-side: top; font-size: small; }
 `)
 //line templates/asset.qtpl:2
 	qw422016.N().S(`
