@@ -121,6 +121,7 @@ func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 
 // WithUser sets a user for the commit.
 func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
+	u = u.OrAnon()
 	if u.Group != user.UserAnon {
 		hop.name = u.Name
 		hop.email = u.Name + "@mycorrhiza"

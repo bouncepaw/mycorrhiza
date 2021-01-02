@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -50,7 +51,7 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
 		tbody     string
-		pageCount = len(HyphaStorage)
+		pageCount = hyphae.Count()
 	)
 	for hyphaName, data := range HyphaStorage {
 		tbody += templates.HyphaListRowHTML(hyphaName, ExtensionToMime(filepath.Ext(data.binaryPath)), data.binaryPath != "")
@@ -73,14 +74,14 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")
 	Index(WikiDir)
-	log.Println("Indexed", len(HyphaStorage), "hyphae")
+	log.Println("Indexed", hyphae.Count(), "hyphae")
 }
 
 // Redirect to a random hypha.
 func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var randomHyphaName string
-	i := rand.Intn(len(HyphaStorage))
+	i := rand.Intn(hyphae.Count())
 	for hyphaName := range HyphaStorage {
 		if i == 0 {
 			randomHyphaName = hyphaName
@@ -148,7 +149,7 @@ func main() {
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")
 	Index(WikiDir)
-	log.Println("Indexed", len(HyphaStorage), "hyphae")
+	log.Println("Indexed", hyphae.Count(), "hyphae")
 
 	history.Start(WikiDir)
 

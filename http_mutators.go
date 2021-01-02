@@ -96,7 +96,7 @@ func handlerDeleteConfirm(w http.ResponseWriter, rq *http.Request) {
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		u                = user.FromRequest(rq)
 	)
-	if !u.CanProceed("delete-confirm") {
+	if !user.CanProceed(rq, "delete-confirm") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
 		log.Println("Rejected", rq.URL)
 		return

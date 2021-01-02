@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -84,6 +85,7 @@ func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *u
 	// New hyphae must be added to the hypha storage
 	if !isOld {
 		HyphaStorage[hyphaName] = hyphaData
+		hyphae.IncrementCount()
 	}
 	*originalFullPath = fullPath
 	return hop.WithFiles(fullPath).
@@ -121,6 +123,7 @@ func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.Histor
 		Apply()
 	if len(hop.Errs) == 0 {
 		delete(HyphaStorage, hyphaName)
+		hyphae.DecrementCount()
 	}
 	return hop
 }
@@ -218,7 +221,7 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 	default:
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-nothing">
-			<p>This hypha's media cannot be rendered. Access it <a href="/binary/%s">directly</a></p>
+			<p>This hypha's media cannot be rendered. <a href="/binary/%s">Download it</a></p>
 		</div>
 		`, hyphaName)
 	}
@@ -250,6 +253,7 @@ func Index(path string) {
 			} else {
 				hyphaData = &HyphaData{}
 				HyphaStorage[hyphaName] = hyphaData
+				hyphae.IncrementCount()
 			}
 			if isText {
 				hyphaData.textPath = hyphaPartPath
