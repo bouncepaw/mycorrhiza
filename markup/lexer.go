@@ -51,6 +51,13 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 	addLine := func(text interface{}) {
 		*ast = append(*ast, Line{id: state.id, contents: text})
 	}
+	addParagraphIfNeeded := func() {
+		if state.where == "p" {
+			state.where = ""
+			addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, strings.ReplaceAll(ParagraphToHtml(state.name, state.buf), "\n", "<br>")))
+			state.buf = ""
+		}
+	}
 
 	// Process empty lines depending on the current state
 	if "" == strings.TrimSpace(line) {
@@ -66,6 +73,8 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 		case "launchpad":
 			state.where = ""
 			addLine(state.buf + "</ul>")
+		case "p":
+			addParagraphIfNeeded()
 		}
 		return
 	}
@@ -91,7 +100,7 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 		goto numberState
 	case "launchpad":
 		goto launchpadState
-	default:
+	default: // "p" or ""
 		goto normalState
 	}
 
@@ -175,43 +184,57 @@ normalState:
 	switch {
 
 	case startsWith("```"):
+		addParagraphIfNeeded()
 		state.where = "pre"
 		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
 	case startsWith("* "):
+		addParagraphIfNeeded()
 		state.where = "list"
 		state.buf = fmt.Sprintf("<ul id='%d'>\n", state.id)
 		goto listState
 	case startsWith("*. "):
+		addParagraphIfNeeded()
 		state.where = "number"
 		state.buf = fmt.Sprintf("<ol id='%d'>\n", state.id)
 		goto numberState
 
 	case startsWith("###### "):
+		addParagraphIfNeeded()
 		addHeading(6)
 	case startsWith("##### "):
+		addParagraphIfNeeded()
 		addHeading(5)
 	case startsWith("#### "):
+		addParagraphIfNeeded()
 		addHeading(4)
 	case startsWith("### "):
+		addParagraphIfNeeded()
 		addHeading(3)
 	case startsWith("## "):
+		addParagraphIfNeeded()
 		addHeading(2)
 	case startsWith("# "):
+		addParagraphIfNeeded()
 		addHeading(1)
 
 	case startsWith(">"):
+		addParagraphIfNeeded()
 		addLine(fmt.Sprintf(
 			"<blockquote id='%d'>%s</blockquote>", state.id, remover(">")(line)))
 	case startsWith("=>"):
+		addParagraphIfNeeded()
 		state.where = "launchpad"
 		state.buf = fmt.Sprintf("<ul class='launchpad' id='%d'>\n", state.id)
 		goto launchpadState
 
 	case startsWith("<="):
+		addParagraphIfNeeded()
 		addLine(parseTransclusion(line, state.name))
 	case line == "----":
+		addParagraphIfNeeded()
 		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
 	case MatchesImg(line):
+		addParagraphIfNeeded()
 		img, shouldGoBackToNormal := ImgFromFirstLine(line, state.name)
 		if shouldGoBackToNormal {
 			addLine(*img)
@@ -220,9 +243,14 @@ normalState:
 			state.img = img
 		}
 	case MatchesTable(line):
+		addParagraphIfNeeded()
 		state.where = "table"
 		state.table = TableFromFirstLine(line, state.name)
+
+	case state.where == "p":
+		state.buf += "\n" + line
 	default:
-		addLine(fmt.Sprintf("<p id='%d'>%s</p>", state.id, ParagraphToHtml(state.name, line)))
+		state.where = "p"
+		state.buf = line
 	}
 }
