@@ -219,8 +219,13 @@ normalState:
 
 	case startsWith(">"):
 		addParagraphIfNeeded()
-		addLine(fmt.Sprintf(
-			"<blockquote id='%d'>%s</blockquote>", state.id, remover(">")(line)))
+		addLine(
+			fmt.Sprintf(
+				"<blockquote id='%d'>%s</blockquote>",
+				state.id,
+				ParagraphToHtml(state.name, remover(">")(line)),
+			),
+		)
 	case startsWith("=>"):
 		addParagraphIfNeeded()
 		state.where = "launchpad"
