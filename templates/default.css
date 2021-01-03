@@ -20,7 +20,7 @@ main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}
 .wikilink_new {color:#a55858;}
 .wikilink_new:visited {color:#a55858;}
-.wikilink__destination-type {display: inline; margin-left: .5rem; vertical-align: sub; }
+.wikilink__destination-type {display: inline; margin: 0 .25rem; vertical-align: sub; }
 
 article code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
 article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
