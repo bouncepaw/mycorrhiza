@@ -48,7 +48,7 @@ If `contents` == "", a helpful message is shown instead.
 		{% endif %}
 	</section>
 	<hr class="page-separator"/>
-{% if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon %}
+{% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
 	<form action="/upload-binary/{%s hyphaName %}"
 			method="post" enctype="multipart/form-data">
 		<label for="upload-binary__input">Upload a new attachment</label>

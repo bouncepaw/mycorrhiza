@@ -33,7 +33,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer) {
 		qw422016.N().S(`
 		<h1>Login</h1>
 		<form method="post" action="/login-data" id="login-form" enctype="multipart/form-data">
-			<p>Use the data you were given by the administrator.</p>
+			<p>Use the data you were given by an administrator.</p>
 			<fieldset>
 				<legend>Username</legend>
 				<input type="text" required autofocus name="username" autocomplete="on">
@@ -42,7 +42,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer) {
 				<legend>Password</legend>
 				<input type="password" required name="password" autocomplete="on">
 			</fieldset>
-			<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you.</p>
+			<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you. You will stay logged in until you log out.</p>
 			<input type="submit">
 			<a href="/">Cancel</a>
 		</form>

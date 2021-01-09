@@ -44,7 +44,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 		newName          = CanonicalName(rq.PostFormValue("new-name"))
 		_, newNameIsUsed = HyphaStorage[newName]
 		recursive        = rq.PostFormValue("recursive") == "true"
-		u                = user.FromRequest(rq).OrAnon()
+		u                = user.FromRequest(rq)
 	)
 	switch {
 	case !u.CanProceed("rename-confirm"):
@@ -151,7 +151,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-text")
 		textData  = rq.PostFormValue("text")
-		u         = user.FromRequest(rq).OrAnon()
+		u         = user.FromRequest(rq)
 	)
 	if ok := user.CanProceed(rq, "upload-text"); !ok {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
@@ -174,7 +174,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-binary")
-		u         = user.FromRequest(rq).OrAnon()
+		u         = user.FromRequest(rq)
 	)
 	if !u.CanProceed("upload-binary") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to upload attachments.")

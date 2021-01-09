@@ -120,6 +120,9 @@ func ParagraphToHtml(hyphaName, input string) string {
 		startsWith = func(t string) bool {
 			return bytes.HasPrefix(p.Bytes(), []byte(t))
 		}
+		noTagsActive = func() bool {
+			return !(tagState[spanItalic] || tagState[spanBold] || tagState[spanMono] || tagState[spanSuper] || tagState[spanSub] || tagState[spanMark] || tagState[spanLink])
+		}
 	)
 
 	for p.Len() != 0 {
@@ -147,7 +150,7 @@ func ParagraphToHtml(hyphaName, input string) string {
 			p.Next(2)
 		case startsWith("[["):
 			ret.WriteString(getLinkNode(p, hyphaName, true))
-		case startsWith("https://"), startsWith("http://"), startsWith("gemini://"), startsWith("gopher://"), startsWith("ftp://"):
+		case (startsWith("https://") || startsWith("http://") || startsWith("gemini://") || startsWith("gopher://") || startsWith("ftp://")) && noTagsActive():
 			ret.WriteString(getLinkNode(p, hyphaName, false))
 		default:
 			ret.WriteString(html.EscapeString(getTextNode(p)))

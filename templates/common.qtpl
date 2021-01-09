@@ -20,9 +20,10 @@ var navEntries = []navEntry{
 %}
 
 {% func navHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) %}
-{% code
-	u := user.FromRequest(rq).OrAnon()
+{% code 
+	u := user.FromRequest(rq)
 %}
+
 	<nav class="navlinks">
 		<ul>
 		{%- for _, entry := range navEntries -%}
@@ -30,7 +31,7 @@ var navEntries = []navEntry{
 			<li><b>{%s revisionHash[0] %}</b></li>
 		{%- elseif navType == entry.path -%}
 			<li><b>{%s entry.title %}</b></li>
-		{%- elseif entry.path != "revision" && u.Group.CanAccessRoute(entry.path) -%}
+		{%- elseif entry.path != "revision" && u.CanProceed(entry.path) -%}
 			<li><a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a></li>
 		{%- endif -%}
 		{%- endfor -%}
@@ -42,7 +43,7 @@ var navEntries = []navEntry{
 {% func userMenuHTML(u *user.User) %}
 	{% if user.AuthUsed %}
 			<li class="navlinks__user">
-			{% if u.Group == user.UserAnon %}
+			{% if u.Group == "anon" %}
 				<a href="/login">Login</a>
 			{% else %}
 				<a href="/page/{%s util.UserTree %}/{%s u.Name %}">{%s u.Name %}</a>

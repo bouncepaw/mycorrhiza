@@ -51,7 +51,7 @@ func parseCliArgs() {
 	case "none":
 	case "fixed":
 		user.AuthUsed = true
-		user.PopulateFixedUserStorage()
+		user.ReadUsersFromFilesystem()
 	default:
 		log.Fatal("Error: unknown auth method:", util.AuthMethod)
 	}

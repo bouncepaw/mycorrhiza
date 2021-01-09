@@ -228,7 +228,7 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 	<hr class="page-separator"/>
 `)
 //line templates/http_readers.qtpl:51
-	if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon {
+	if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" {
 //line templates/http_readers.qtpl:51
 		qw422016.N().S(`
 	<form action="/upload-binary/`)
