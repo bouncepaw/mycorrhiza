@@ -30,12 +30,18 @@ func (t *Table) Process(line string) (shouldGoBackToNormal bool) {
 		t.pushRow()
 	}
 	var (
+		inLink             bool
+		skipNext           bool
 		escaping           bool
 		lookingForNonSpace = !t.inMultiline
 		countingColspan    bool
 	)
 	for i, r := range line {
 		switch {
+		case skipNext:
+			skipNext = false
+			continue
+
 		case lookingForNonSpace && unicode.IsSpace(r):
 		case lookingForNonSpace && (r == '!' || r == '|'):
 			t.currCellMarker = r
@@ -49,6 +55,12 @@ func (t *Table) Process(line string) (shouldGoBackToNormal bool) {
 			t.currCellBuilder.WriteRune(r)
 
 		case escaping:
+			t.currCellBuilder.WriteRune(r)
+		case inLink && r == ']' && len(line)-1 > i && line[i+1] == ']':
+			t.currCellBuilder.WriteString("]]")
+			inLink = false
+			skipNext = true
+		case inLink:
 			t.currCellBuilder.WriteRune(r)
 
 		case t.inMultiline && r == '}':
@@ -69,6 +81,10 @@ func (t *Table) Process(line string) (shouldGoBackToNormal bool) {
 		case r == '{':
 			t.inMultiline = true
 			countingColspan = false
+		case r == '[' && len(line)-1 > i && line[i+1] == '[':
+			t.currCellBuilder.WriteString("[[")
+			inLink = true
+			skipNext = true
 		case i == len(line)-1:
 			t.pushCell()
 		default:
