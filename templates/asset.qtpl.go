@@ -47,6 +47,7 @@ blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}
 .wikilink_new:visited {color:#a55858;}
 .wikilink__destination-type {display: inline; margin: 0 .25rem; vertical-align: sub; }
 
+article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
 article code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
 article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
