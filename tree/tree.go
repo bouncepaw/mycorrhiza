@@ -5,6 +5,8 @@ import (
 	"path"
 	"sort"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // If Name == "", the tree is empty.
@@ -23,7 +25,7 @@ type tree struct {
 func Tree(hyphaName string, hyphaIterator func(func(string))) (html, prev, next string) {
 	t := &tree{name: hyphaName, root: true, hyphaIterator: hyphaIterator}
 	t.fill()
-	return t.asHtml(), t.prevSibling, t.nextSibling
+	return t.asHtml(), util.BeautifulName(t.prevSibling), util.BeautifulName(t.nextSibling)
 }
 
 // subtree adds a descendant tree to `t` and returns that tree.

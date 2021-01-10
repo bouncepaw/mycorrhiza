@@ -7,7 +7,7 @@
 *, *::before, *::after {box-sizing: border-box;}
 html {height:100%; padding:0; background-color:#ddd;
 background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");} /* heropatterns.com */
-body {height:100%; margin:0; font-size:16px; font-family:sans-serif;}
+body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 main {padding:1rem; background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
 textarea {font-size:15px;}
@@ -22,7 +22,10 @@ blockquote {border-left: 4px black solid; margin-left: 0; padding-left: 1rem;}
 .wikilink_new:visited {color:#a55858;}
 .wikilink__destination-type {display: inline; margin: 0 .25rem; vertical-align: sub; }
 
-article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
+article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
+article h1, article h2, article h3, article h4, article h5, article h6 { margin: 1.5rem 0 0 0; }
+article p { margin: .5rem 0; }
+article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code {background-color:#eee; padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
 article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
