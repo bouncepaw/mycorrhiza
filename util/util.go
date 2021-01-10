@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
+	"path"
 	"strings"
 )
 
@@ -54,4 +55,9 @@ func RandomString(n int) (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(bytes), nil
+}
+
+// Strip hypha name from all ancestor names, replace _ with spaces, title case
+func BeautifulName(uglyName string) string {
+	return strings.Title(strings.ReplaceAll(path.Base(uglyName), "_", " "))
 }

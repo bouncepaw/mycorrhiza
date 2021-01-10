@@ -63,6 +63,7 @@ article pre.codeblock {background-color:#eee; padding:.5rem; white-space: pre-wr
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 .navi-title a {text-decoration:none;}
+.navi-title__separator { margin: 0 .25rem; }
 .img-gallery { text-align: center; margin-top: .25rem; margin-bottom: .25rem; }
 .img-gallery_many-images { background-color: #eee; border-radius: .25rem; padding: .5rem; }
 .img-gallery img { max-width: 100%; max-height: 50vh; }
