@@ -59,5 +59,8 @@ func RandomString(n int) (string, error) {
 
 // Strip hypha name from all ancestor names, replace _ with spaces, title case
 func BeautifulName(uglyName string) string {
+	if uglyName == "" {
+		return uglyName
+	}
 	return strings.Title(strings.ReplaceAll(path.Base(uglyName), "_", " "))
 }
