@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
-	"path"
 	"strings"
 )
 
@@ -62,5 +61,5 @@ func BeautifulName(uglyName string) string {
 	if uglyName == "" {
 		return uglyName
 	}
-	return strings.Title(strings.ReplaceAll(path.Base(uglyName), "_", " "))
+	return strings.Title(strings.ReplaceAll(uglyName, "_", " "))
 }

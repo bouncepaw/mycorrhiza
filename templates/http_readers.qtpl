@@ -41,10 +41,10 @@ If `contents` == "", a helpful message is shown instead.
 	</article>
 	<section class="prevnext">
 		{% if prevHyphaName != "" %}
-		<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}">← {%s path.Base(prevHyphaName) %}</a>
+		<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}" rel="prev">← {%s path.Base(prevHyphaName) %}</a>
 		{% endif %}
 		{% if nextHyphaName != "" %}
-		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}">{%s path.Base(nextHyphaName) %} →</a>
+		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}" rel="next">{%s path.Base(nextHyphaName) %} →</a>
 		{% endif %}
 	</section>
 	<hr class="page-separator"/>

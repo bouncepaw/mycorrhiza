@@ -195,7 +195,7 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 //line templates/http_readers.qtpl:44
 		qw422016.E().S(prevHyphaName)
 //line templates/http_readers.qtpl:44
-		qw422016.N().S(`">← `)
+		qw422016.N().S(`" rel="prev">← `)
 //line templates/http_readers.qtpl:44
 		qw422016.E().S(path.Base(prevHyphaName))
 //line templates/http_readers.qtpl:44
@@ -214,7 +214,7 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 //line templates/http_readers.qtpl:47
 		qw422016.E().S(nextHyphaName)
 //line templates/http_readers.qtpl:47
-		qw422016.N().S(`">`)
+		qw422016.N().S(`" rel="next">`)
 //line templates/http_readers.qtpl:47
 		qw422016.E().S(path.Base(nextHyphaName))
 //line templates/http_readers.qtpl:47
