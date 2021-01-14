@@ -35,7 +35,7 @@ background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox=
 body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 main {padding:1rem; background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
-textarea {font-size:15px;}
+textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 .edit {height:100%;}
 .edit-form {height:90%;}
 .edit-form textarea {width:100%;height:90%;}
