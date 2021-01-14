@@ -47,16 +47,15 @@ If `contents` == "", a helpful message is shown instead.
 		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}" rel="next">{%s path.Base(nextHyphaName) %} →</a>
 		{% endif %}
 	</section>
-	<hr class="page-separator"/>
 {% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
 	<form action="/upload-binary/{%s hyphaName %}"
-			method="post" enctype="multipart/form-data">
+			method="post" enctype="multipart/form-data"
+			class="upload-amnt">
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>
 	</form>
-	<hr/>
 {% endif %}
 	<aside>
 		{%s= tree %}

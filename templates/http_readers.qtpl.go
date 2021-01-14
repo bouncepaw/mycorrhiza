@@ -225,63 +225,62 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 //line templates/http_readers.qtpl:48
 	qw422016.N().S(`
 	</section>
-	<hr class="page-separator"/>
 `)
-//line templates/http_readers.qtpl:51
+//line templates/http_readers.qtpl:50
 	if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" {
-//line templates/http_readers.qtpl:51
+//line templates/http_readers.qtpl:50
 		qw422016.N().S(`
 	<form action="/upload-binary/`)
-//line templates/http_readers.qtpl:52
+//line templates/http_readers.qtpl:51
 		qw422016.E().S(hyphaName)
-//line templates/http_readers.qtpl:52
+//line templates/http_readers.qtpl:51
 		qw422016.N().S(`"
-			method="post" enctype="multipart/form-data">
+			method="post" enctype="multipart/form-data"
+			class="upload-amnt">
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>
 	</form>
-	<hr/>
 `)
-//line templates/http_readers.qtpl:60
+//line templates/http_readers.qtpl:59
 	}
-//line templates/http_readers.qtpl:60
+//line templates/http_readers.qtpl:59
 	qw422016.N().S(`
 	<aside>
 		`)
-//line templates/http_readers.qtpl:62
+//line templates/http_readers.qtpl:61
 	qw422016.N().S(tree)
-//line templates/http_readers.qtpl:62
+//line templates/http_readers.qtpl:61
 	qw422016.N().S(`
 	</aside>
 </main>
 `)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 }
 
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) {
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 }
 
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) string {
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	qs422016 := string(qb422016.B)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 	return qs422016
-//line templates/http_readers.qtpl:65
+//line templates/http_readers.qtpl:64
 }
