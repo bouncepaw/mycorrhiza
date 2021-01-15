@@ -25,16 +25,16 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 //line templates/asset.qtpl:2
 	qw422016.N().S(`/* Layout stuff */
 @media screen and (min-width: 800px) {
-	main {margin: 0 auto; width: 800px;}
+	main {padding:1rem 2rem; margin: 0 auto; width: 800px;}
 }
 @media screen and (max-width: 800px) {
-	main {margin: 0; width: 100%;}
+	main {padding: 1rem; margin: 0; width: 100%;}
 }
 *, *::before, *::after {box-sizing: border-box;}
 html {height:100%; padding:0;
 background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");} /* heropatterns.com */
 body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
-main {padding:1rem 2rem; border-radius: 0 0 .25rem .25rem; }
+main {border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 .edit {height:100%;}
@@ -82,6 +82,7 @@ nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
 nav ul li {list-style-type:none;margin-right:1rem;}
 
 #new-name {width:100%;}
+.navlinks b {text-decoration: underline; }
 .navlinks__user {font-style:italic;}
 
 .rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; }
