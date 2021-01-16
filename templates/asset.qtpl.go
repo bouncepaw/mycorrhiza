@@ -133,11 +133,13 @@ td { border: #ddd 1px solid; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
-html { background-color: black; color: #ddd; }
-main,  article { background-color: #121212; }
+html { background-color: #121212; color: #ddd; }
+main,  article { background-color: #343434; }
 blockquote { border-left: 4px #ddd solid; }
-a, .wikilink_external { color: #22AA22; }
-a:visited, .wikilink_external:visited { color: #228822; }
+a, .wikilink_external { color: #f1fa8c; }
+a:visited, .wikilink_external:visited { color: #ffb86c; }
+.wikilink_new, .wikilink_new:visited { color: #dd4444; }
+.prevnext__el, .prevnext__el:visited { color: #ddd; }
 
 .transclusion .transclusion__link { color: #ddd; }
 article code, 
@@ -149,9 +151,9 @@ article .codeblock,
 .prevnext__el, 
 .upload-amnt, 
 textarea,
-table { border: 0; background-color: #232323; color: #ddd; }
+table { border: 0; background-color: #444444; color: #ddd; }
 .transclusion code,
-.transclusion .codeblock { background-color: #343434; }
+.transclusion .codeblock { background-color: #454545; }
 }
 
 `)
