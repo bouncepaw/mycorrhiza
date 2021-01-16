@@ -31,8 +31,7 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	main {padding: 1rem; margin: 0; width: 100%;}
 }
 *, *::before, *::after {box-sizing: border-box;}
-html {height:100%; padding:0;
-background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");} /* heropatterns.com */
+html { height:100%; padding:0; }
 body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 main {border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
@@ -122,7 +121,9 @@ article .codeblock,
 table { background-color: #eee; }
 
 /* Other stuff */
-html { background-color: #ddd; }
+html { background-color: #ddd; 
+background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+} /* heropatterns.com */
 
 main { background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); }
 blockquote { border-left: 4px black solid; }
@@ -136,7 +137,7 @@ td { border: #ddd 1px solid; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
-html { background-color: #121212; color: #ddd; }
+html { background: #222; color: #ddd; }
 main,  article { background-color: #343434; }
 blockquote { border-left: 4px #ddd solid; }
 a, .wikilink_external { color: #f1fa8c; }
@@ -157,6 +158,7 @@ textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
+mark { background: rgba(130, 80, 30, 5); color: inherit; }
 }
 
 `)
