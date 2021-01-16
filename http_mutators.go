@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -151,6 +152,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-text")
 		textData  = rq.PostFormValue("text")
+		action    = rq.PostFormValue("action")
 		u         = user.FromRequest(rq)
 	)
 	if ok := user.CanProceed(rq, "upload-text"); !ok {
@@ -162,7 +164,9 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Error", "No text data passed")
 		return
 	}
-	if hop := UploadText(hyphaName, textData, u); len(hop.Errs) != 0 {
+	if action == "Preview" {
+		util.HTTP200Page(w, base("Preview "+hyphaName, templates.PreviewHTML(rq, hyphaName, textData, "", markup.Doc(hyphaName, textData).AsHTML())))
+	} else if hop := UploadText(hyphaName, textData, u); len(hop.Errs) != 0 {
 		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())
 	} else {
 		http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)

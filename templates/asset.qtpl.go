@@ -37,9 +37,12 @@ body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation
 main {border-radius: 0 0 .25rem .25rem; }
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
-.edit {height:100%;}
+.edit_no-preview {height:100%;}
+.edit_with-preview .edit-form textarea { min-height: 500px; }
+.edit__preview { border: 2px dashed #ddd; }
 .edit-form {height:90%;}
 .edit-form textarea {width:100%;height:90%;}
+.edit-form__save { font-weight: bold; }
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
