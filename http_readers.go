@@ -80,6 +80,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName         = HyphaNameFromRq(rq, "page")
 		data, hyphaExists = HyphaStorage[hyphaName]
+		hasAmnt           = hyphaExists && data.binaryPath != ""
 		contents          string
 		openGraph         string
 	)
@@ -102,6 +103,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 			templates.PageHTML(rq, hyphaName,
 				naviTitle(hyphaName),
 				contents,
-				treeHTML, prevHypha, nextHypha),
+				treeHTML, prevHypha, nextHypha,
+				hasAmnt),
 			openGraph))
 }

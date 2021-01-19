@@ -154,7 +154,7 @@ func main() {
 	history.Start(WikiDir)
 
 	// See http_readers.go for /page/, /text/, /binary/
-	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/
+	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
 	// See http_history.go for /history/, /recent-changes
 	http.HandleFunc("/list", handlerList)

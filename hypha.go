@@ -128,6 +128,29 @@ func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.Histor
 	return hop
 }
 
+// UnattachHypha unattaches hypha and makes a history record about that.
+func (hd *HyphaData) UnattachHypha(hyphaName string, u *user.User) *history.HistoryOp {
+	hop := history.Operation(history.TypeUnattachHypha).
+		WithFilesRemoved(hd.binaryPath).
+		WithMsg(fmt.Sprintf("Unattach ‘%s’", hyphaName)).
+		WithUser(u).
+		Apply()
+	if len(hop.Errs) == 0 {
+		hd, ok := HyphaStorage[hyphaName]
+		if ok {
+			if hd.binaryPath != "" {
+				hd.binaryPath = ""
+			}
+			// If nothing is left of the hypha
+			if hd.textPath == "" {
+				delete(HyphaStorage, hyphaName)
+				hyphae.DecrementCount()
+			}
+		}
+	}
+	return hop
+}
+
 func findHyphaeToRename(hyphaName string, recursive bool) []string {
 	hyphae := []string{hyphaName}
 	if recursive {

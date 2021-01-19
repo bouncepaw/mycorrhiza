@@ -24,6 +24,7 @@ const (
 	TypeEditBinary
 	TypeDeleteHypha
 	TypeRenameHypha
+	TypeUnattachHypha
 )
 
 // HistoryOp is an object representing a history operation.

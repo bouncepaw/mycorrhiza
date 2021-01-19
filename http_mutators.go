@@ -16,11 +16,65 @@ func init() {
 	http.HandleFunc("/edit/", handlerEdit)
 	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
 	http.HandleFunc("/rename-ask/", handlerRenameAsk)
+	http.HandleFunc("/unattach-ask/", handlerUnattachAsk)
 	// And those that do mutate something:
 	http.HandleFunc("/upload-binary/", handlerUploadBinary)
 	http.HandleFunc("/upload-text/", handlerUploadText)
 	http.HandleFunc("/delete-confirm/", handlerDeleteConfirm)
 	http.HandleFunc("/rename-confirm/", handlerRenameConfirm)
+	http.HandleFunc("/unattach-confirm/", handlerUnattachConfirm)
+}
+
+func handlerUnattachAsk(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "unattach-ask")
+		hd, isOld = HyphaStorage[hyphaName]
+		hasAmnt   = hd != nil && hd.binaryPath != ""
+	)
+	if !hasAmnt {
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Cannot unattach", "No attachment attached yet, therefore you cannot unattach")
+		log.Println("Rejected (no amnt):", rq.URL)
+		return
+	} else if ok := user.CanProceed(rq, "unattach-confirm"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to unattach attachments")
+		log.Println("Rejected (no rights):", rq.URL)
+		return
+	}
+	util.HTTP200Page(w, base("Unattach "+hyphaName+"?", templates.UnattachAskHTML(rq, hyphaName, isOld)))
+}
+
+func handlerUnattachConfirm(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName        = HyphaNameFromRq(rq, "unattach-confirm")
+		hyphaData, isOld = HyphaStorage[hyphaName]
+		hasAmnt          = hyphaData != nil && hyphaData.binaryPath != ""
+		u                = user.FromRequest(rq)
+	)
+	if !u.CanProceed("unattach-confirm") {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to unattach attachments")
+		log.Println("Rejected (no rights):", rq.URL)
+		return
+	}
+	if !hasAmnt {
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Cannot unattach", "No attachment attached yet, therefore you cannot unattach")
+		log.Println("Rejected (no amnt):", rq.URL)
+		return
+	} else if !isOld {
+		// The precondition is to have the hypha in the first place.
+		HttpErr(w, http.StatusPreconditionFailed, hyphaName,
+			"Error: no such hypha",
+			"Could not unattach this hypha because it does not exist")
+		return
+	}
+	if hop := hyphaData.UnattachHypha(hyphaName, u); len(hop.Errs) != 0 {
+		HttpErr(w, http.StatusInternalServerError, hyphaName,
+			"Error: could not unattach hypha",
+			fmt.Sprintf("Could not unattach this hypha due to internal errors. Server errors: <code>%v</code>", hop.Errs))
+		return
+	}
+	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 
 func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {

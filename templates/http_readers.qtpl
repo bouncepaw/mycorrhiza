@@ -28,7 +28,7 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 <main>
 {%= navHTML(rq, hyphaName, "page") %}
 	<article>
@@ -51,6 +51,9 @@ If `contents` == "", a helpful message is shown instead.
 	<form action="/upload-binary/{%s hyphaName %}"
 			method="post" enctype="multipart/form-data"
 			class="upload-amnt">
+		{% if hasAmnt %}
+			<a class="upload-amnt__unattach" href="/unattach-ask/{%s hyphaName %}">Unattach current attachment?</a>
+		{% endif %}
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>

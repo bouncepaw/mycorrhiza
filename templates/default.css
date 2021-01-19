@@ -47,6 +47,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .navi-title__separator { margin: 0 .25rem; }
 .navi-title__colon { margin-right: .5rem; }
 .upload-amnt { clear: both; padding: .5rem; border-radius: .25rem; }
+.upload-amnt__unattach { display: block; }
 aside { clear: both; }
 
 .img-gallery { text-align: center; margin-top: .25rem; margin-bottom: .25rem; }

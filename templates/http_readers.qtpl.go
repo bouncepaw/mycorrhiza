@@ -144,7 +144,7 @@ func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHas
 // If `contents` == "", a helpful message is shown instead.
 
 //line templates/http_readers.qtpl:31
-func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) {
+func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) {
 //line templates/http_readers.qtpl:31
 	qw422016.N().S(`
 <main>
@@ -237,50 +237,65 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 		qw422016.N().S(`"
 			method="post" enctype="multipart/form-data"
 			class="upload-amnt">
+		`)
+//line templates/http_readers.qtpl:54
+		if hasAmnt {
+//line templates/http_readers.qtpl:54
+			qw422016.N().S(`
+			<a class="upload-amnt__unattach" href="/unattach-ask/`)
+//line templates/http_readers.qtpl:55
+			qw422016.E().S(hyphaName)
+//line templates/http_readers.qtpl:55
+			qw422016.N().S(`">Unattach current attachment?</a>
+		`)
+//line templates/http_readers.qtpl:56
+		}
+//line templates/http_readers.qtpl:56
+		qw422016.N().S(`
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>
 	</form>
 `)
-//line templates/http_readers.qtpl:59
+//line templates/http_readers.qtpl:62
 	}
-//line templates/http_readers.qtpl:59
+//line templates/http_readers.qtpl:62
 	qw422016.N().S(`
 	<aside>
 		`)
-//line templates/http_readers.qtpl:61
+//line templates/http_readers.qtpl:64
 	qw422016.N().S(tree)
-//line templates/http_readers.qtpl:61
+//line templates/http_readers.qtpl:64
 	qw422016.N().S(`
 	</aside>
 </main>
 `)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 }
 
-//line templates/http_readers.qtpl:64
-func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) {
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
+func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) {
+//line templates/http_readers.qtpl:67
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/http_readers.qtpl:64
-	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
+	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName, hasAmnt)
+//line templates/http_readers.qtpl:67
 	qt422016.ReleaseWriter(qw422016)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 }
 
-//line templates/http_readers.qtpl:64
-func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string) string {
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
+func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) string {
+//line templates/http_readers.qtpl:67
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/http_readers.qtpl:64
-	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
+	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName, hasAmnt)
+//line templates/http_readers.qtpl:67
 	qs422016 := string(qb422016.B)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 	return qs422016
-//line templates/http_readers.qtpl:64
+//line templates/http_readers.qtpl:67
 }
