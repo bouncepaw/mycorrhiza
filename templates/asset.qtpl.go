@@ -107,7 +107,7 @@ figcaption { padding-bottom: .5rem; }
 
 .page-separator { clear: both; }
 .history__entries { background-color: #eee; margin: 0; padding: 0; border-radius: .25rem; }
-.history__month-anchor { text-decoration: none; color: black; }
+.history__month-anchor { text-decoration: none; color: inherit; }
 .history__entry { list-style-type: none; padding: .25rem; }
 .history-entry { padding: .25rem; }
 .history-entry__time { font-weight: bold; }
