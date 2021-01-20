@@ -15,6 +15,8 @@ func Parse(ast []Line, from, to int, recursionLevel int) (html string) {
 				html += v.ToHtml()
 			case Table:
 				html += v.asHtml()
+			case *List:
+				html += v.RenderAsHtml()
 			case string:
 				html += v
 			default:
