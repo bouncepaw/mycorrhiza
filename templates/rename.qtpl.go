@@ -26,12 +26,12 @@ var (
 func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
 //line templates/rename.qtpl:3
 	qw422016.N().S(`
-<main>
 `)
-//line templates/rename.qtpl:5
+//line templates/rename.qtpl:4
 	streamnavHTML(qw422016, rq, hyphaName, "rename-ask")
-//line templates/rename.qtpl:5
+//line templates/rename.qtpl:4
 	qw422016.N().S(`
+<main>
 `)
 //line templates/rename.qtpl:6
 	if isOld {

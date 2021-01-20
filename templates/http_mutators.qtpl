@@ -1,8 +1,8 @@
 {% import "net/http" %}
 
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
-<main class="edit edit_no-preview">
 {%s= navHTML(rq, hyphaName, "edit") %}
+<main class="edit edit_no-preview">
 	<h1>Edit {%s hyphaName %}</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
@@ -17,8 +17,8 @@
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
-<main class="edit edit_with-preview">
 {%s= navHTML(rq, hyphaName, "edit") %}
+<main class="edit edit_with-preview">
 	<h1>Edit {%s hyphaName %} (preview)</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"

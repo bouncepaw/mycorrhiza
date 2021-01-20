@@ -3,8 +3,8 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
-<main>
 {%= navHTML(rq, hyphaName, "history") %}
+<main>
 	<article class="history">
 		<h1>History of {%s hyphaName %}</h1>
 		{%s= list %}
@@ -13,8 +13,8 @@
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) %}
-<main>
 {%= navHTML(rq, hyphaName, "revision", revHash) %}
+<main>
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		{%s= naviTitle %}
@@ -29,8 +29,8 @@
 
 If `contents` == "", a helpful message is shown instead.
 {% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
-<main>
 {%= navHTML(rq, hyphaName, "page") %}
+<main>
 	<article>
 		{%s= naviTitle %}
 		{% if contents == "" %}

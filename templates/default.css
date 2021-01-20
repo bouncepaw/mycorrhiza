@@ -1,9 +1,14 @@
 /* Layout stuff */
 @media screen and (min-width: 800px) {
-	main {padding:1rem 2rem; margin: 0 auto; width: 800px;}
+	main { padding:1rem 2rem; margin: 0 auto; width: 800px; }
+	.hypha-tabs { padding: 1rem 2rem; margin: 0 auto; width: 800px; }
+	.hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
+	.hypha-tabs__tab { margin-right: 1.5rem; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border-bottom: 2px #ddd solid; padding: 0 .5rem; }
 }
 @media screen and (max-width: 800px) {
-	main {padding: 1rem; margin: 0; width: 100%;}
+	main { padding: 1rem; margin: 0; width: 100%; }
+	.hypha-tabs { padding: 1rem; margin: 0; width: 100%; }
+	.hypha-tabs__tab { box-shadow: none; margin-right: .5rem; padding: .25rem .5rem; }
 }
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
@@ -42,7 +47,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 
-.navi-title { padding-bottom: .5rem; margin-bottom: .25rem; }
+.navi-title { padding-bottom: .5rem; margin: .25rem 0; }
 .navi-title a {text-decoration:none; }
 .navi-title__separator { margin: 0 .25rem; }
 .navi-title__colon { margin-right: .5rem; }
@@ -56,12 +61,14 @@ aside { clear: both; }
 figure { margin: 0; }
 figcaption { padding-bottom: .5rem; }
 
-nav ul {display:flex; padding-left:0; flex-wrap:wrap; margin-top:0;}
-nav ul li {list-style-type:none;margin-right:1rem;}
-
 #new-name {width:100%;}
-.navlinks b {text-decoration: underline; }
-.navlinks__user {font-style:italic;}
+
+.hypha-tabs { padding: 0; }
+.hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
+.hypha-tabs__tab { list-style-type: none; }
+.hypha-tabs__tab a { text-decoration: none; }
+.hypha-tabs__tab_active { font-weight: bold; }
+.hypha-tabs__user { font-style:italic; }
 
 .rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; }
 .rc-entry__time { font-style: italic; }
@@ -96,12 +103,21 @@ article .codeblock,
 .prevnext__el,
 table { background-color: #eee; }
 
+@media screen and (max-width: 800px) {
+	.hypha-tabs { background-color: white; }
+	.hypha-tabs__tab { box-shadow: none; }
+}
+
 /* Other stuff */
 html { background-color: #ddd; 
 background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 } /* heropatterns.com */
 
-main { background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); }
+main, .hypha-tabs__tab { background-color: white; }
+.hypha-tabs__tab { clip-path: inset(-20px -20px 0 -20px); }
+.hypha-tabs__tab a { color: black; }
+.hypha-tabs__tab_active { border-bottom: 2px white solid; }
+
 blockquote { border-left: 4px black solid; }
 .wikilink_new {color:#a55858;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
@@ -114,12 +130,17 @@ td { border: #ddd 1px solid; }
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
 html { background: #222; color: #ddd; }
-main,  article { background-color: #343434; }
-blockquote { border-left: 4px #ddd solid; }
+main,  article, .hypha-tabs__tab { background-color: #343434; }
+
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
+
+.hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
+.hypha-tabs__tab_active { background-color: #343434; }
+
+blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
 article code, 
@@ -135,5 +156,8 @@ table { border: 0; background-color: #444444; color: #ddd; }
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
 mark { background: rgba(130, 80, 30, 5); color: inherit; }
+@media screen and (max-width: 800px) {
+	.hypha-tabs { background-color: #232323; }
+}
 }
 

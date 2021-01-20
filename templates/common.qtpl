@@ -24,15 +24,21 @@ var navEntries = []navEntry{
 	u := user.FromRequest(rq)
 %}
 
-	<nav class="navlinks">
-		<ul>
+	<nav class="hypha-tabs">
+		<ul class="hypha-tabs__flex">
 		{%- for _, entry := range navEntries -%}
 		{%- if navType == "revision" && entry.path == "revision" -%}
-			<li><b>{%s revisionHash[0] %}</b></li>
+			<li class="hypha-tabs__tab hypha-tabs__tab_active">
+				{%s revisionHash[0] %}
+			</li>
 		{%- elseif navType == entry.path -%}
-			<li><b>{%s entry.title %}</b></li>
+			<li class="hypha-tabs__tab hypha-tabs__tab_active">
+				{%s entry.title %}
+			</li>
 		{%- elseif entry.path != "revision" && u.CanProceed(entry.path) -%}
-			<li><a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a></li>
+			<li class="hypha-tabs__tab">
+				<a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a>
+			</li>
 		{%- endif -%}
 		{%- endfor -%}
 		{%s= userMenuHTML(u) %}
@@ -42,7 +48,7 @@ var navEntries = []navEntry{
 
 {% func userMenuHTML(u *user.User) %}
 	{% if user.AuthUsed %}
-			<li class="navlinks__user">
+			<li class="hypha-tabs__tab hypha-tabs__user">
 			{% if u.Group == "anon" %}
 				<a href="/login">Login</a>
 			{% else %}

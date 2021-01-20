@@ -24,12 +24,12 @@ var (
 func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
 //line templates/http_mutators.qtpl:3
 	qw422016.N().S(`
-<main class="edit edit_no-preview">
 `)
-//line templates/http_mutators.qtpl:5
+//line templates/http_mutators.qtpl:4
 	qw422016.N().S(navHTML(rq, hyphaName, "edit"))
-//line templates/http_mutators.qtpl:5
+//line templates/http_mutators.qtpl:4
 	qw422016.N().S(`
+<main class="edit edit_no-preview">
 	<h1>Edit `)
 //line templates/http_mutators.qtpl:6
 	qw422016.E().S(hyphaName)
@@ -95,12 +95,12 @@ func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string 
 func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) {
 //line templates/http_mutators.qtpl:19
 	qw422016.N().S(`
-<main class="edit edit_with-preview">
 `)
-//line templates/http_mutators.qtpl:21
+//line templates/http_mutators.qtpl:20
 	qw422016.N().S(navHTML(rq, hyphaName, "edit"))
-//line templates/http_mutators.qtpl:21
+//line templates/http_mutators.qtpl:20
 	qw422016.N().S(`
+<main class="edit edit_with-preview">
 	<h1>Edit `)
 //line templates/http_mutators.qtpl:22
 	qw422016.E().S(hyphaName)

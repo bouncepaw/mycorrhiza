@@ -30,12 +30,12 @@ var (
 func StreamHistoryHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, list string) {
 //line templates/http_readers.qtpl:5
 	qw422016.N().S(`
-<main>
 `)
-//line templates/http_readers.qtpl:7
+//line templates/http_readers.qtpl:6
 	streamnavHTML(qw422016, rq, hyphaName, "history")
-//line templates/http_readers.qtpl:7
+//line templates/http_readers.qtpl:6
 	qw422016.N().S(`
+<main>
 	<article class="history">
 		<h1>History of `)
 //line templates/http_readers.qtpl:9
@@ -83,12 +83,12 @@ func HistoryHTML(rq *http.Request, hyphaName, list string) string {
 func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) {
 //line templates/http_readers.qtpl:15
 	qw422016.N().S(`
-<main>
 `)
-//line templates/http_readers.qtpl:17
+//line templates/http_readers.qtpl:16
 	streamnavHTML(qw422016, rq, hyphaName, "revision", revHash)
-//line templates/http_readers.qtpl:17
+//line templates/http_readers.qtpl:16
 	qw422016.N().S(`
+<main>
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		`)
@@ -147,12 +147,12 @@ func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHas
 func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) {
 //line templates/http_readers.qtpl:31
 	qw422016.N().S(`
-<main>
 `)
-//line templates/http_readers.qtpl:33
+//line templates/http_readers.qtpl:32
 	streamnavHTML(qw422016, rq, hyphaName, "page")
-//line templates/http_readers.qtpl:33
+//line templates/http_readers.qtpl:32
 	qw422016.N().S(`
+<main>
 	<article>
 		`)
 //line templates/http_readers.qtpl:35
