@@ -146,13 +146,14 @@ func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
 		<span class="history-entry__msg">%[4]s</span>
 	</a>%[5]s
 </li>
-`, hyphaName, rev.timeHourMinute(), rev.Hash, rev.Message, author)
+`, hyphaName, rev.timeToDisplay(), rev.Hash, rev.Message, author)
 }
 
-// Return time like 13:42
-func (rev *Revision) timeHourMinute() string {
+// Return time like mm-dd 13:42
+func (rev *Revision) timeToDisplay() string {
+	D := rev.Time.Day()
 	h, m, _ := rev.Time.Clock()
-	return strconv.Itoa(h) + ":" + strconv.Itoa(m)
+	return fmt.Sprintf("%02d — %02d:%02d", D, h, m)
 }
 
 // This regex is wrapped in "". For some reason, these quotes appear at some time and we have to get rid of them.
