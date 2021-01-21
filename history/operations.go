@@ -109,6 +109,12 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 	return hop
 }
 
+// Abort aborts the history operation.
+func (hop *HistoryOp) Abort() *HistoryOp {
+	gitMutex.Unlock()
+	return hop
+}
+
 // WithMsg sets what message will be used for the future commit. If user message exceeds one line, it is stripped down.
 func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 	for _, ch := range userMsg {

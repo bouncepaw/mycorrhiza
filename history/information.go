@@ -82,6 +82,12 @@ func RecentChanges(n int) string {
 	return templates.RecentChangesHTML(entries, n)
 }
 
+// FileChanged tells you if the file has been changed.
+func FileChanged(path string) bool {
+	_, err := gitsh("diff", "--exit-code", path)
+	return err != nil
+}
+
 // Revisions returns slice of revisions for the given hypha name.
 func Revisions(hyphaName string) ([]Revision, error) {
 	var (

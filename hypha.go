@@ -88,6 +88,9 @@ func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *u
 		hyphae.IncrementCount()
 	}
 	*originalFullPath = fullPath
+	if hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+		return hop.Abort()
+	}
 	return hop.WithFiles(fullPath).
 		WithUser(u).
 		Apply()
