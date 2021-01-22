@@ -8,7 +8,7 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"strings"
+	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -88,7 +88,7 @@ func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *u
 		hyphae.IncrementCount()
 	}
 	*originalFullPath = fullPath
-	if hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+	if isOld && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
 		return hop.Abort()
 	}
 	return hop.WithFiles(fullPath).
@@ -195,8 +195,9 @@ func relocateHyphaData(hyphaNames []string, replaceName func(string) string) {
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
 func RenameHypha(hyphaName, newName string, recursive bool, u *user.User) *history.HistoryOp {
 	var (
+		re          = regexp.MustCompile(`(?i)` + hyphaName)
 		replaceName = func(str string) string {
-			return strings.Replace(str, hyphaName, newName, 1)
+			return re.ReplaceAllString(CanonicalName(str), newName)
 		}
 		hyphaNames     = findHyphaeToRename(hyphaName, recursive)
 		renameMap, err = renamingPairs(hyphaNames, replaceName)
