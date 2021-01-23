@@ -15,16 +15,17 @@ type User struct {
 
 // Route — Right (more is more right)
 var minimalRights = map[string]int{
-	"edit":             1,
-	"upload-binary":    1,
-	"upload-text":      1,
-	"rename-ask":       2,
-	"rename-confirm":   2,
-	"unattach-ask":     2,
-	"unattach-confirm": 2,
-	"delete-ask":       3,
-	"delete-confirm":   3,
-	"reindex":          4,
+	"edit":                1,
+	"upload-binary":       1,
+	"upload-text":         1,
+	"rename-ask":          2,
+	"rename-confirm":      2,
+	"unattach-ask":        2,
+	"unattach-confirm":    2,
+	"update-header-links": 3,
+	"delete-ask":          3,
+	"delete-confirm":      3,
+	"reindex":             4,
 }
 
 // Group — Right

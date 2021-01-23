@@ -313,3 +313,17 @@ func FetchTextPart(d *HyphaData) (string, error) {
 	}
 	return string(text), nil
 }
+
+func setHeaderLinks() {
+	if userLinksHypha, ok := GetHyphaData(util.HeaderLinksHypha); !ok {
+		util.SetDefaultHeaderLinks()
+	} else {
+		contents, err := ioutil.ReadFile(userLinksHypha.textPath)
+		if err != nil || len(contents) == 0 {
+			util.SetDefaultHeaderLinks()
+		} else {
+			text := string(contents)
+			util.ParseHeaderLinks(text, markup.Rocketlink)
+		}
+	}
+}

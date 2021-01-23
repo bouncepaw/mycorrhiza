@@ -15,6 +15,7 @@ var (
 	SiteName             string
 	WikiDir              string
 	UserHypha            string
+	HeaderLinksHypha     string
 	AuthMethod           string
 	FixedCredentialsPath string
 )

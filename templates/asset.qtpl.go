@@ -27,13 +27,18 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 @media screen and (min-width: 800px) {
 	main { padding:1rem 2rem; margin: 0 auto; width: 800px; }
 	.hypha-tabs { padding: 1rem 2rem; margin: 0 auto; width: 800px; }
+	header { margin: 0 auto; width: 800px; }
+	.header-links__entry { margin-right: 1.5rem; }
+	.header-links__entry:nth-of-type(1),
 	.hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
 	.hypha-tabs__tab { margin-right: 1.5rem; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border-bottom: 2px #ddd solid; padding: 0 .5rem; }
 }
 @media screen and (max-width: 800px) {
 	main { padding: 1rem; margin: 0; width: 100%; }
-	.hypha-tabs { padding: 1rem; margin: 0; width: 100%; }
+	.hypha-tabs{ padding: 1rem; margin: 0; width: 100%; }
 	.hypha-tabs__tab { box-shadow: none; margin-right: .5rem; padding: .25rem .5rem; }
+	header { width: 100%; }
+	.header-links__entry { margin-right: .5rem; }
 }
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
@@ -88,9 +93,11 @@ figcaption { padding-bottom: .5rem; }
 
 #new-name {width:100%;}
 
+header { margin-bottom: .5rem; }
+.header-links__link { text-decoration: none; display: block; width: 100%; height: 100%; padding: .25rem; }
 .hypha-tabs { padding: 0; }
-.hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
-.hypha-tabs__tab { list-style-type: none; }
+.header-links__list, .hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
+.header-links__entry, .hypha-tabs__tab { list-style-type: none; }
 .hypha-tabs__tab a { text-decoration: none; }
 .hypha-tabs__tab_active { font-weight: bold; }
 .hypha-tabs__user { font-style:italic; }
@@ -137,6 +144,9 @@ table { background-color: #eee; }
 html { background-color: #ddd; 
 background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 } /* heropatterns.com */
+header { background-color: #bbb; }
+.header-links__link { color: black; }
+.header-links__link:hover { background-color: #eee; }
 
 main, .hypha-tabs__tab { background-color: white; }
 .hypha-tabs__tab { clip-path: inset(-20px -20px 0 -20px); }
@@ -155,12 +165,15 @@ td { border: #ddd 1px solid; }
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
 html { background: #222; color: #ddd; }
-main,  article, .hypha-tabs__tab { background-color: #343434; }
+main,  article, .hypha-tabs__tab, header { background-color: #343434; color: #ddd; }
 
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
+
+.header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
+.header-links__link:hover { background-color: #444; }
 
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
 .hypha-tabs__tab_active { background-color: #343434; }

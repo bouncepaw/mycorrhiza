@@ -75,6 +75,19 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Start indexing hyphae...")
 	Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
+	http.Redirect(w, rq, "/", http.StatusSeeOther)
+}
+
+// Update header links by reading the configured hypha, if there is any, or resorting to default values.
+func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if ok := user.CanProceed(rq, "update-header-links"); !ok {
+		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be a moderator to update header links.")
+		log.Println("Rejected", rq.URL)
+		return
+	}
+	setHeaderLinks()
+	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
 // Redirect to a random hypha.
@@ -153,11 +166,11 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Wiki storage directory is", WikiDir)
-	log.Println("Start indexing hyphae...")
 	Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 
 	history.Start(WikiDir)
+	setHeaderLinks()
 
 	// See http_readers.go for /page/, /text/, /binary/
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
@@ -165,6 +178,7 @@ func main() {
 	// See http_history.go for /history/, /recent-changes
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
+	http.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
 	http.HandleFunc("/random", handlerRandom)
 	http.HandleFunc("/about", handlerAbout)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))

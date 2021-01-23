@@ -18,6 +18,7 @@ func init() {
 	flag.StringVar(&util.UserHypha, "user-hypha", "u", "Hypha which is a superhypha of all user pages")
 	flag.StringVar(&util.AuthMethod, "auth-method", "none", "What auth method to use. Variants: \"none\", \"fixed\"")
 	flag.StringVar(&util.FixedCredentialsPath, "fixed-credentials-path", "mycocredentials.json", "Used when -auth-method=fixed. Path to file with user credentials.")
+	flag.StringVar(&util.HeaderLinksHypha, "header-links-hypha", "", "Optional hypha that overrides the header links")
 }
 
 // Do the things related to cli args and die maybe
@@ -40,13 +41,9 @@ func parseCliArgs() {
 		util.URL = "http://0.0.0.0:" + util.ServerPort
 	}
 
-	if !isCanonicalName(util.HomePage) {
-		log.Fatal("Error: you must use a proper name for the homepage")
-	}
-
-	if !isCanonicalName(util.UserHypha) {
-		log.Fatal("Error: you must use a proper name for user hypha")
-	}
+	util.HomePage = CanonicalName(util.HomePage)
+	util.UserHypha = CanonicalName(util.UserHypha)
+	util.HeaderLinksHypha = CanonicalName(util.HeaderLinksHypha)
 
 	switch util.AuthMethod {
 	case "none":
