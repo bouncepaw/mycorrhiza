@@ -52,7 +52,7 @@ var navEntries = []navEntry{
 			{% if u.Group == "anon" %}
 				<a href="/login">Login</a>
 			{% else %}
-				<a href="/page/{%s util.UserTree %}/{%s u.Name %}">{%s u.Name %}</a>
+				<a href="/page/{%s util.UserHypha %}/{%s u.Name %}">{%s u.Name %}</a>
 			{% endif %}
 			</li>
 	{% endif %}

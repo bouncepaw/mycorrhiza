@@ -32,7 +32,7 @@ Options:
         Port to serve the wiki at (default "1737")
   -url string
         URL at which your wiki can be found. Used to generate feeds (default "http://0.0.0.0:$port")
-  -user-tree string
+  -user-hypha string
         Hypha which is a superhypha of all user pages (default "u")
 ```
 

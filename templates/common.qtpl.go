@@ -166,7 +166,7 @@ func streamuserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 			qw422016.N().S(`
 				<a href="/page/`)
 //line templates/common.qtpl:55
-			qw422016.E().S(util.UserTree)
+			qw422016.E().S(util.UserHypha)
 //line templates/common.qtpl:55
 			qw422016.N().S(`/`)
 //line templates/common.qtpl:55

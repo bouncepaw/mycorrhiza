@@ -15,7 +15,7 @@ func init() {
 	flag.StringVar(&util.HomePage, "home", "home", "The home page name")
 	flag.StringVar(&util.SiteNavIcon, "icon", "🍄", "What to show in the navititle in the beginning, before the colon")
 	flag.StringVar(&util.SiteName, "name", "wiki", "What is the name of your wiki")
-	flag.StringVar(&util.UserTree, "user-tree", "u", "Hypha which is a superhypha of all user pages")
+	flag.StringVar(&util.UserHypha, "user-hypha", "u", "Hypha which is a superhypha of all user pages")
 	flag.StringVar(&util.AuthMethod, "auth-method", "none", "What auth method to use. Variants: \"none\", \"fixed\"")
 	flag.StringVar(&util.FixedCredentialsPath, "fixed-credentials-path", "mycocredentials.json", "Used when -auth-method=fixed. Path to file with user credentials.")
 }
@@ -44,8 +44,8 @@ func parseCliArgs() {
 		log.Fatal("Error: you must use a proper name for the homepage")
 	}
 
-	if !isCanonicalName(util.UserTree) {
-		log.Fatal("Error: you must use a proper name for user tree")
+	if !isCanonicalName(util.UserHypha) {
+		log.Fatal("Error: you must use a proper name for user hypha")
 	}
 
 	switch util.AuthMethod {

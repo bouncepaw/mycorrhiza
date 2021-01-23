@@ -14,7 +14,7 @@ var (
 	SiteNavIcon          string
 	SiteName             string
 	WikiDir              string
-	UserTree             string
+	UserHypha            string
 	AuthMethod           string
 	FixedCredentialsPath string
 )

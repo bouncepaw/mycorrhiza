@@ -118,7 +118,7 @@ func (rev Revision) RecentChangesEntry() (html string) {
 <li class="rc-entry__hash">%[2]s</li>
 <li class="rc-entry__links">%[5]s</li>
 <li class="rc-entry__msg">%[6]s <span class="rc-entry__author">by <a href="/page/%[3]s/%[4]s" rel="author">%[4]s</a></span></li>
-`, rev.TimeString(), rev.Hash, util.UserTree, rev.Username, rev.HyphaeLinks(), rev.Message)
+`, rev.TimeString(), rev.Hash, util.UserHypha, rev.Username, rev.HyphaeLinks(), rev.Message)
 	}
 	return fmt.Sprintf(`
 <li class="rc-entry__time"><time>%[1]s</time></li>
