@@ -129,6 +129,12 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerAbout(w http.ResponseWriter, rq *http.Request) {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML())))
+}
+
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
@@ -160,6 +166,7 @@ func main() {
 	http.HandleFunc("/list", handlerList)
 	http.HandleFunc("/reindex", handlerReindex)
 	http.HandleFunc("/random", handlerRandom)
+	http.HandleFunc("/about", handlerAbout)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")

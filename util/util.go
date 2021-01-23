@@ -11,7 +11,8 @@ var (
 	URL                  string
 	ServerPort           string
 	HomePage             string
-	SiteTitle            string
+	SiteNavIcon          string
+	SiteName             string
 	WikiDir              string
 	UserTree             string
 	AuthMethod           string

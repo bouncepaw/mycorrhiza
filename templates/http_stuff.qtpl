@@ -1,3 +1,6 @@
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+
 {% func BaseHTML(title, body string, headElements ...string) %}
 <!doctype html>
 <html>
@@ -40,4 +43,26 @@
 				<td></td>
 			{% endif %}
 			</tr>
+{% endfunc %}
+
+{% func AboutHTML() %}
+<main>
+	<section>
+		<h1>About {%s util.SiteName %}</h1>
+		<ul>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.12 indev</li>
+		{%- if user.AuthUsed -%}
+			<li><b>User count:</b> {%d user.Count() %}</li>
+			<li><b>Home page:</b> <a href="/">{%s util.HomePage %}</a></li>
+			<li><b>Administrators:</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
+				{%- if i > 0 -%}<span aria-hidden="true">, </span>
+				{%- endif -%}
+				<a href="/page/{%s util.UserTree %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
+		{%- else -%}
+			<li>This wiki does not use authorization</li>
+		{%- endif -%}
+		</ul>
+		<p>See <a href="/list">/list</a> for information about hyphae on this wiki.</p>
+	</section>
+</main>
 {% endfunc %}

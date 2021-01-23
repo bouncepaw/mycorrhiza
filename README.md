@@ -24,10 +24,12 @@ Options:
         Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
   -home string
         The home page (default "home")
+  -icon string
+        What to show in the navititle in the beginning, before the colon (default "🍄")
+  -name string
+        What is the name of your wiki (default "wiki")
   -port string
         Port to serve the wiki at (default "1737")
-  -title string
-        How to call your wiki in the navititle (default "🍄")
   -url string
         URL at which your wiki can be found. Used to generate feeds (default "http://0.0.0.0:$port")
   -user-tree string

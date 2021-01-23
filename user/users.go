@@ -8,6 +8,28 @@ var AuthUsed bool
 var users sync.Map
 var tokens sync.Map
 
+func ListUsersWithGroup(group string) []string {
+	usersWithTheGroup := []string{}
+	users.Range(func(_, v interface{}) bool {
+		userobj := v.(*User)
+
+		if userobj.Group == group {
+			usersWithTheGroup = append(usersWithTheGroup, userobj.Name)
+		}
+		return true
+	})
+	return usersWithTheGroup
+}
+
+func Count() int {
+	i := 0
+	users.Range(func(k, v interface{}) bool {
+		i++
+		return true
+	})
+	return i
+}
+
 func HasUsername(username string) bool {
 	_, has := users.Load(username)
 	return has
