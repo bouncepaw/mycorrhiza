@@ -1,7 +1,10 @@
 # 🍄 MycorrhizaWiki 0.12
 A wiki engine.
 
+[Main wiki](https://mycorrhiza.lesarbr.es)
+
 ## Building
+Also see [detailed instructions](https://mycorrhiza.lesarbr.es/page/deploy) on wiki.
 ```sh
 git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
 cd mycorrhiza
@@ -37,8 +40,8 @@ Options:
 ```
 
 ## Features
-* Edit pages through html forms
-* Responsive design
+* Edit pages through html forms, graphical preview
+* Responsive design, dark theme (synced with system theme)
 * Works in text browsers
 * Wiki pages (called hyphae) are written in mycomarkup
 * Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with
@@ -50,12 +53,10 @@ Options:
 * Recent changes page; RSS, Atom and JSON feeds available
 * Hyphae can be deleted (while still preserving history)
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
-* Light on resources: I run a home wiki on this engine 24/7 at an [Orange π Lite](http://www.orangepi.org/orangepilite/)
+* Light on resources
 * Authorization with pre-set credentials
 
 ## Contributing
-Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. Feel free to open an issue or contact me.
+Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact directly.
 
-## Future plans
-* Tagging system
-* Better history viewing
+You can view list of all planned features on [our kanban board](https://github.com/bouncepaw/mycorrhiza/projects/1).
