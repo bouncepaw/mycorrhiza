@@ -70,6 +70,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected", rq.URL)
 		return
 	}
+	hyphae.ResetCount()
 	HyphaStorage = make(map[string]*HyphaData)
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")

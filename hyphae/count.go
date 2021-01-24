@@ -10,6 +10,13 @@ var count = struct {
 	sync.Mutex
 }{}
 
+// Set the value of hyphae count to zero.
+func ResetCount() {
+  count.Lock()
+  count.value = 0
+  count.Unlock()
+}
+
 // Increment the value of hyphae count.
 func IncrementCount() {
 	count.Lock()
