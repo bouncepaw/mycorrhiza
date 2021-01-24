@@ -24,6 +24,7 @@ const (
 	TypeEditBinary
 	TypeDeleteHypha
 	TypeRenameHypha
+	TypeUnattachHypha
 )
 
 // HistoryOp is an object representing a history operation.
@@ -108,6 +109,12 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 	return hop
 }
 
+// Abort aborts the history operation.
+func (hop *HistoryOp) Abort() *HistoryOp {
+	gitMutex.Unlock()
+	return hop
+}
+
 // WithMsg sets what message will be used for the future commit. If user message exceeds one line, it is stripped down.
 func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 	for _, ch := range userMsg {
@@ -121,7 +128,7 @@ func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 
 // WithUser sets a user for the commit.
 func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
-	if u.Group != user.UserAnon {
+	if u.Group != "anon" {
 		hop.name = u.Name
 		hop.email = u.Name + "@mycorrhiza"
 	}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -15,11 +16,65 @@ func init() {
 	http.HandleFunc("/edit/", handlerEdit)
 	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
 	http.HandleFunc("/rename-ask/", handlerRenameAsk)
+	http.HandleFunc("/unattach-ask/", handlerUnattachAsk)
 	// And those that do mutate something:
 	http.HandleFunc("/upload-binary/", handlerUploadBinary)
 	http.HandleFunc("/upload-text/", handlerUploadText)
 	http.HandleFunc("/delete-confirm/", handlerDeleteConfirm)
 	http.HandleFunc("/rename-confirm/", handlerRenameConfirm)
+	http.HandleFunc("/unattach-confirm/", handlerUnattachConfirm)
+}
+
+func handlerUnattachAsk(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "unattach-ask")
+		hd, isOld = HyphaStorage[hyphaName]
+		hasAmnt   = hd != nil && hd.binaryPath != ""
+	)
+	if !hasAmnt {
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Cannot unattach", "No attachment attached yet, therefore you cannot unattach")
+		log.Println("Rejected (no amnt):", rq.URL)
+		return
+	} else if ok := user.CanProceed(rq, "unattach-confirm"); !ok {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to unattach attachments")
+		log.Println("Rejected (no rights):", rq.URL)
+		return
+	}
+	util.HTTP200Page(w, base("Unattach "+hyphaName+"?", templates.UnattachAskHTML(rq, hyphaName, isOld), user.FromRequest(rq)))
+}
+
+func handlerUnattachConfirm(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName        = HyphaNameFromRq(rq, "unattach-confirm")
+		hyphaData, isOld = HyphaStorage[hyphaName]
+		hasAmnt          = hyphaData != nil && hyphaData.binaryPath != ""
+		u                = user.FromRequest(rq)
+	)
+	if !u.CanProceed("unattach-confirm") {
+		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to unattach attachments")
+		log.Println("Rejected (no rights):", rq.URL)
+		return
+	}
+	if !hasAmnt {
+		HttpErr(w, http.StatusBadRequest, hyphaName, "Cannot unattach", "No attachment attached yet, therefore you cannot unattach")
+		log.Println("Rejected (no amnt):", rq.URL)
+		return
+	} else if !isOld {
+		// The precondition is to have the hypha in the first place.
+		HttpErr(w, http.StatusPreconditionFailed, hyphaName,
+			"Error: no such hypha",
+			"Could not unattach this hypha because it does not exist")
+		return
+	}
+	if hop := hyphaData.UnattachHypha(hyphaName, u); len(hop.Errs) != 0 {
+		HttpErr(w, http.StatusInternalServerError, hyphaName,
+			"Error: could not unattach hypha",
+			fmt.Sprintf("Could not unattach this hypha due to internal errors. Server errors: <code>%v</code>", hop.Errs))
+		return
+	}
+	http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)
 }
 
 func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
@@ -27,13 +82,14 @@ func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "rename-ask")
 		_, isOld  = HyphaStorage[hyphaName]
+		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "rename-confirm"); !ok {
+	if !u.CanProceed("rename-confirm") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to rename pages.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(rq, hyphaName, isOld)))
+	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(rq, hyphaName, isOld), u))
 }
 
 func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
@@ -44,7 +100,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 		newName          = CanonicalName(rq.PostFormValue("new-name"))
 		_, newNameIsUsed = HyphaStorage[newName]
 		recursive        = rq.PostFormValue("recursive") == "true"
-		u                = user.FromRequest(rq).OrAnon()
+		u                = user.FromRequest(rq)
 	)
 	switch {
 	case !u.CanProceed("rename-confirm"):
@@ -79,13 +135,14 @@ func handlerDeleteAsk(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "delete-ask")
 		_, isOld  = HyphaStorage[hyphaName]
+		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "delete-ask"); !ok {
+	if !u.CanProceed("delete-ask") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(rq, hyphaName, isOld)))
+	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(rq, hyphaName, isOld), u))
 }
 
 // handlerDeleteConfirm deletes a hypha for sure
@@ -126,8 +183,9 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		warning          string
 		textAreaFill     string
 		err              error
+		u                = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "edit"); !ok {
+	if !u.CanProceed("edit") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
 		log.Println("Rejected", rq.URL)
 		return
@@ -142,7 +200,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(rq, hyphaName, textAreaFill, warning)))
+	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(rq, hyphaName, textAreaFill, warning), u))
 }
 
 // handlerUploadText uploads a new text part for the hypha.
@@ -151,9 +209,10 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-text")
 		textData  = rq.PostFormValue("text")
-		u         = user.FromRequest(rq).OrAnon()
+		action    = rq.PostFormValue("action")
+		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "upload-text"); !ok {
+	if !u.CanProceed("upload-text") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
 		log.Println("Rejected", rq.URL)
 		return
@@ -162,7 +221,9 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Error", "No text data passed")
 		return
 	}
-	if hop := UploadText(hyphaName, textData, u); len(hop.Errs) != 0 {
+	if action == "Preview" {
+		util.HTTP200Page(w, base("Preview "+hyphaName, templates.PreviewHTML(rq, hyphaName, textData, "", markup.Doc(hyphaName, textData).AsHTML()), u))
+	} else if hop := UploadText(hyphaName, textData, u); len(hop.Errs) != 0 {
 		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())
 	} else {
 		http.Redirect(w, rq, "/page/"+hyphaName, http.StatusSeeOther)

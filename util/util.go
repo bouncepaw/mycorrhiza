@@ -8,11 +8,14 @@ import (
 )
 
 var (
+	URL                  string
 	ServerPort           string
 	HomePage             string
-	SiteTitle            string
+	SiteNavIcon          string
+	SiteName             string
 	WikiDir              string
-	UserTree             string
+	UserHypha            string
+	HeaderLinksHypha     string
 	AuthMethod           string
 	FixedCredentialsPath string
 )
@@ -53,4 +56,12 @@ func RandomString(n int) (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(bytes), nil
+}
+
+// Strip hypha name from all ancestor names, replace _ with spaces, title case
+func BeautifulName(uglyName string) string {
+	if uglyName == "" {
+		return uglyName
+	}
+	return strings.Title(strings.ReplaceAll(uglyName, "_", " "))
 }

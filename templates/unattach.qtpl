@@ -1,0 +1,24 @@
+{% import "net/http" %}
+{% func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
+<main>
+{%= navHTML(rq, hyphaName, "unattach-ask") %}
+{%- if isOld -%}
+	<section>
+		<h1>Unattach {%s hyphaName %}?</h1>
+		<p>Do you really want to unattach hypha <em>{%s hyphaName %}</em>?</p>
+		<p><a href="/unattach-confirm/{%s hyphaName %}"><strong>Confirm</strong></a></p>
+		<p><a href="/page/{%s hyphaName %}">Cancel</a></p>
+	</section>
+{%- else -%}
+	{%= cannotUnattachDueToNonExistence(hyphaName) %}
+{%- endif -%}
+</main>
+{% endfunc %}
+
+{% func cannotUnattachDueToNonExistence(hyphaName string) %}
+	<section>
+		<h1>Cannot unattach {%s hyphaName %}</h1>
+		<p>This hypha does not exist.</p>
+		<p><a href="/page/{%s hyphaName %}">Go back</a></p>
+	</section>
+{% endfunc %}

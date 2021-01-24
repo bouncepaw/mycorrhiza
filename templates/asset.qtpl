@@ -1,0 +1,21 @@
+{% func DefaultCSS() %}
+{% cat "default.css" %}
+{% endfunc %}
+
+Next three are from https://remixicon.com/
+{% func IconHTTP() %}
+{% cat "icon/http-protocol-icon.svg" %}
+{% endfunc %}
+
+{% func IconGemini() %}
+{% cat "icon/gemini-protocol-icon.svg" %}
+{% endfunc %}
+
+{% func IconMailto() %}
+{% cat "icon/mailto-protocol-icon.svg" %}
+{% endfunc %}
+
+This is a modified version of https://www.svgrepo.com/svg/232085/rat
+{% func IconGopher() %}
+{% cat "icon/gopher-protocol-icon.svg" %}
+{% endfunc %}

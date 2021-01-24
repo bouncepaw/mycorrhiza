@@ -8,9 +8,10 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"strings"
+	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -33,6 +34,12 @@ func init() {
 		return
 	}
 	markup.HyphaIterate = IterateHyphaNamesWith
+	markup.HyphaImageForOG = func(hyphaName string) string {
+		if hd, isOld := GetHyphaData(hyphaName); isOld && hd.binaryPath != "" {
+			return util.URL + "/binary/" + hyphaName
+		}
+		return util.URL + "/favicon.ico"
+	}
 }
 
 // GetHyphaData finds a hypha addressed by `hyphaName` and returns its `hyphaData`. `hyphaData` is set to a zero value if this hypha does not exist. `isOld` is false if this hypha does not exist.
@@ -78,8 +85,12 @@ func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *u
 	// New hyphae must be added to the hypha storage
 	if !isOld {
 		HyphaStorage[hyphaName] = hyphaData
+		hyphae.IncrementCount()
 	}
 	*originalFullPath = fullPath
+	if isOld && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+		return hop.Abort()
+	}
 	return hop.WithFiles(fullPath).
 		WithUser(u).
 		Apply()
@@ -115,6 +126,30 @@ func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.Histor
 		Apply()
 	if len(hop.Errs) == 0 {
 		delete(HyphaStorage, hyphaName)
+		hyphae.DecrementCount()
+	}
+	return hop
+}
+
+// UnattachHypha unattaches hypha and makes a history record about that.
+func (hd *HyphaData) UnattachHypha(hyphaName string, u *user.User) *history.HistoryOp {
+	hop := history.Operation(history.TypeUnattachHypha).
+		WithFilesRemoved(hd.binaryPath).
+		WithMsg(fmt.Sprintf("Unattach ‘%s’", hyphaName)).
+		WithUser(u).
+		Apply()
+	if len(hop.Errs) == 0 {
+		hd, ok := HyphaStorage[hyphaName]
+		if ok {
+			if hd.binaryPath != "" {
+				hd.binaryPath = ""
+			}
+			// If nothing is left of the hypha
+			if hd.textPath == "" {
+				delete(HyphaStorage, hyphaName)
+				hyphae.DecrementCount()
+			}
+		}
 	}
 	return hop
 }
@@ -160,8 +195,9 @@ func relocateHyphaData(hyphaNames []string, replaceName func(string) string) {
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
 func RenameHypha(hyphaName, newName string, recursive bool, u *user.User) *history.HistoryOp {
 	var (
+		re          = regexp.MustCompile(`(?i)` + hyphaName)
 		replaceName = func(str string) string {
-			return strings.Replace(str, hyphaName, newName, 1)
+			return re.ReplaceAllString(CanonicalName(str), newName)
 		}
 		hyphaNames     = findHyphaeToRename(hyphaName, recursive)
 		renameMap, err = renamingPairs(hyphaNames, replaceName)
@@ -212,7 +248,7 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 	default:
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-nothing">
-			<p>This hypha's media cannot be rendered. Access it <a href="/binary/%s">directly</a></p>
+			<p>This hypha's media cannot be rendered. <a href="/binary/%s">Download it</a></p>
 		</div>
 		`, hyphaName)
 	}
@@ -244,6 +280,7 @@ func Index(path string) {
 			} else {
 				hyphaData = &HyphaData{}
 				HyphaStorage[hyphaName] = hyphaData
+				hyphae.IncrementCount()
 			}
 			if isText {
 				hyphaData.textPath = hyphaPartPath
@@ -275,4 +312,18 @@ func FetchTextPart(d *HyphaData) (string, error) {
 		return "", err
 	}
 	return string(text), nil
+}
+
+func setHeaderLinks() {
+	if userLinksHypha, ok := GetHyphaData(util.HeaderLinksHypha); !ok {
+		util.SetDefaultHeaderLinks()
+	} else {
+		contents, err := ioutil.ReadFile(userLinksHypha.textPath)
+		if err != nil || len(contents) == 0 {
+			util.SetDefaultHeaderLinks()
+		} else {
+			text := string(contents)
+			util.ParseHeaderLinks(text, markup.Rocketlink)
+		}
+	}
 }

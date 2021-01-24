@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var imgRe = regexp.MustCompile(`^img\s+{`)
@@ -184,6 +186,14 @@ func (img *Img) binaryPathFor(path string) string {
 	}
 }
 
+func (img *Img) ogBinaryPathFor(path string) string {
+	path = img.binaryPathFor(path)
+	if strings.HasPrefix(path, "/binary/") {
+		return util.URL + path
+	}
+	return path
+}
+
 func (img *Img) pagePathFor(path string) string {
 	path = strings.TrimSpace(path)
 	if strings.IndexRune(path, ':') != -1 || strings.IndexRune(path, '/') == 0 {
@@ -218,7 +228,7 @@ func (img *Img) checkLinks() map[string]bool {
 	}
 	HyphaIterate(func(hyphaName string) {
 		for _, entry := range img.entries {
-			if hyphaName == entry.trimmedPath {
+			if hyphaName == xclCanonicalName(img.hyphaName, entry.trimmedPath) {
 				m[entry.trimmedPath] = true
 			}
 		}

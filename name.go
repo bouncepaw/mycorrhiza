@@ -23,16 +23,24 @@ func CanonicalName(name string) string {
 func naviTitle(canonicalName string) string {
 	var (
 		html = fmt.Sprintf(`<h1 class="navi-title" id="navi-title">
-	<a href="/page/%s">%s</a>`, util.HomePage, util.SiteTitle)
+	<a href="/page/%s">%s</a><span aria-hidden="true" class="navi-title__colon">:</span>`, util.HomePage, util.SiteNavIcon)
 		prevAcc = `/page/`
 		parts   = strings.Split(canonicalName, "/")
+		rel     = "up"
 	)
-	for _, part := range parts {
-		html += fmt.Sprintf(`
-	<span aria-hidden="true">/</span>
-	<a href="%s">%s</a>`,
+	for i, part := range parts {
+		if i > 0 {
+			html += `<span aria-hidden="true" class="navi-title__separator">/</span>`
+		}
+		if i == len(parts)-1 {
+			rel = "bookmark"
+		}
+		html += fmt.Sprintf(
+			`<a href="%s" rel="%s">%s</a>`,
 			prevAcc+part,
-			strings.Title(part))
+			rel,
+			util.BeautifulName(part),
+		)
 		prevAcc += part + "/"
 	}
 	return html + "</h1>"

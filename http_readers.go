@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -20,7 +21,6 @@ func init() {
 	http.HandleFunc("/page/", handlerPage)
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
-	http.HandleFunc("/history/", handlerHistory)
 	http.HandleFunc("/rev/", handlerRevision)
 }
 
@@ -35,40 +35,23 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
 		textPath          = hyphaName + ".myco"
 		textContents, err = history.FileAtRevision(textPath, revHash)
+		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
-		contents = markup.ToHtml(hyphaName, textContents)
+		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
+	treeHTML, _, _ := tree.Tree(hyphaName, IterateHyphaNamesWith)
 	page := templates.RevisionHTML(
 		rq,
 		hyphaName,
 		naviTitle(hyphaName),
 		contents,
-		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith),
+		treeHTML,
 		revHash,
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, page)))
-}
-
-// handlerHistory lists all revisions of a hypha
-func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	hyphaName := HyphaNameFromRq(rq, "history")
-	var tbody string
-
-	// History can be found for files that do not exist anymore.
-	revs, err := history.Revisions(hyphaName)
-	if err == nil {
-		for _, rev := range revs {
-			tbody += rev.AsHtmlTableRow(hyphaName)
-		}
-	}
-	log.Println("Found", len(revs), "revisions for", hyphaName)
-
-	util.HTTP200Page(w,
-		base(hyphaName, templates.HistoryHTML(rq, hyphaName, tbody)))
+	w.Write([]byte(base(hyphaName, page, u)))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -99,20 +82,32 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName         = HyphaNameFromRq(rq, "page")
 		data, hyphaExists = HyphaStorage[hyphaName]
+		hasAmnt           = hyphaExists && data.binaryPath != ""
 		contents          string
+		openGraph         string
+		u                 = user.FromRequest(rq)
 	)
 	if hyphaExists {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
 		_, errB := os.Stat(data.binaryPath)
 		if errT == nil {
-			contents = markup.ToHtml(hyphaName, string(fileContentsT))
+			md := markup.Doc(hyphaName, string(fileContentsT))
+			contents = md.AsHTML()
+			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
 			contents = binaryHtmlBlock(hyphaName, data) + contents
 		}
 	}
-	util.HTTP200Page(w, base(hyphaName, templates.PageHTML(rq, hyphaName,
-		naviTitle(hyphaName),
-		contents,
-		tree.TreeAsHtml(hyphaName, IterateHyphaNamesWith))))
+	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName, IterateHyphaNamesWith)
+	util.HTTP200Page(w,
+		templates.BaseHTML(
+			hyphaName,
+			templates.PageHTML(rq, hyphaName,
+				naviTitle(hyphaName),
+				contents,
+				treeHTML, prevHypha, nextHypha,
+				hasAmnt),
+			u,
+			openGraph))
 }

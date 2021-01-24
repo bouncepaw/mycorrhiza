@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html"
 	"strings"
+	"unicode"
 )
 
 type spanTokenType int
@@ -34,8 +35,10 @@ func tagFromState(stt spanTokenType, tagState map[spanTokenType]bool, tagName, o
 	}
 }
 
-func getLinkNode(input *bytes.Buffer, hyphaName string) string {
-	input.Next(2)
+func getLinkNode(input *bytes.Buffer, hyphaName string, isBracketedLink bool) string {
+	if isBracketedLink {
+		input.Next(2) // drop those [[
+	}
 	var (
 		escaping   = false
 		addrBuf    = bytes.Buffer{}
@@ -47,10 +50,12 @@ func getLinkNode(input *bytes.Buffer, hyphaName string) string {
 		if escaping {
 			currBuf.WriteByte(b)
 			escaping = false
-		} else if b == '|' && currBuf == &addrBuf {
+		} else if isBracketedLink && b == '|' && currBuf == &addrBuf {
 			currBuf = &displayBuf
-		} else if b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
+		} else if isBracketedLink && b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
 			input.Next(1)
+			break
+		} else if !isBracketedLink && unicode.IsSpace(rune(b)) {
 			break
 		} else {
 			currBuf.WriteByte(b)
@@ -65,6 +70,12 @@ func getTextNode(input *bytes.Buffer) string {
 	var (
 		textNodeBuffer = bytes.Buffer{}
 		escaping       = false
+		startsWith     = func(t string) bool {
+			return bytes.HasPrefix(input.Bytes(), []byte(t))
+		}
+		couldBeLinkStart = func() bool {
+			return startsWith("https://") || startsWith("http://") || startsWith("gemini://") || startsWith("gopher://") || startsWith("ftp://")
+		}
 	)
 	// Always read the first byte in advance to avoid endless loops that kill computers (sad experience)
 	if input.Len() != 0 {
@@ -81,6 +92,9 @@ func getTextNode(input *bytes.Buffer) string {
 			escaping = true
 		} else if strings.IndexByte("/*`^,![~", b) >= 0 {
 			input.UnreadByte()
+			break
+		} else if couldBeLinkStart() {
+			textNodeBuffer.WriteByte(b)
 			break
 		} else {
 			textNodeBuffer.WriteByte(b)
@@ -105,6 +119,9 @@ func ParagraphToHtml(hyphaName, input string) string {
 		}
 		startsWith = func(t string) bool {
 			return bytes.HasPrefix(p.Bytes(), []byte(t))
+		}
+		noTagsActive = func() bool {
+			return !(tagState[spanItalic] || tagState[spanBold] || tagState[spanMono] || tagState[spanSuper] || tagState[spanSub] || tagState[spanMark] || tagState[spanLink])
 		}
 	)
 
@@ -132,7 +149,9 @@ func ParagraphToHtml(hyphaName, input string) string {
 			ret.WriteString(tagFromState(spanMark, tagState, "s", "~~"))
 			p.Next(2)
 		case startsWith("[["):
-			ret.WriteString(getLinkNode(p, hyphaName))
+			ret.WriteString(getLinkNode(p, hyphaName, true))
+		case (startsWith("https://") || startsWith("http://") || startsWith("gemini://") || startsWith("gopher://") || startsWith("ftp://")) && noTagsActive():
+			ret.WriteString(getLinkNode(p, hyphaName, false))
 		default:
 			ret.WriteString(html.EscapeString(getTextNode(p)))
 		}

@@ -1,27 +1,20 @@
 {% import "net/http" %}
+{% import "path" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
-{% func HistoryHTML(rq *http.Request, hyphaName, tbody string) %}
-<main>
+{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
 {%= navHTML(rq, hyphaName, "history") %}
-	<table>
-		<thead>
-			<tr>
-				<th>Time</th>
-				<th>Hash</th>
-				<th>Message</th>
-			</tr>
-		</thead>
-		<tbody>
-		{%s= tbody %}
-		</tbody>
-	</table>
+<main>
+	<article class="history">
+		<h1>History of {%s hyphaName %}</h1>
+		{%s= list %}
+	</article>
 </main>
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) %}
-<main>
 {%= navHTML(rq, hyphaName, "revision", revHash) %}
+<main>
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		{%s= naviTitle %}
@@ -35,9 +28,9 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree string) %}
-<main>
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 {%= navHTML(rq, hyphaName, "page") %}
+<main>
 	<article>
 		{%s= naviTitle %}
 		{% if contents == "" %}
@@ -46,16 +39,26 @@ If `contents` == "", a helpful message is shown instead.
 			{%s= contents %}
 		{% endif %}
 	</article>
-	<hr/>
-{% if u := user.FromRequest(rq).OrAnon(); !user.AuthUsed || u.Group > user.UserAnon %}
+	<section class="prevnext">
+		{% if prevHyphaName != "" %}
+		<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}" rel="prev">← {%s path.Base(prevHyphaName) %}</a>
+		{% endif %}
+		{% if nextHyphaName != "" %}
+		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}" rel="next">{%s path.Base(nextHyphaName) %} →</a>
+		{% endif %}
+	</section>
+{% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
 	<form action="/upload-binary/{%s hyphaName %}"
-			method="post" enctype="multipart/form-data">
+			method="post" enctype="multipart/form-data"
+			class="upload-amnt">
+		{% if hasAmnt %}
+			<a class="upload-amnt__unattach" href="/unattach-ask/{%s hyphaName %}">Unattach current attachment?</a>
+		{% endif %}
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
 		<input type="file" id="upload-binary__input" name="binary"/>
 		<input type="submit"/>
 	</form>
-	<hr/>
 {% endif %}
 	<aside>
 		{%s= tree %}

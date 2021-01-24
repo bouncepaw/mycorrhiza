@@ -26,12 +26,12 @@ var (
 func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
 //line templates/delete.qtpl:4
 	qw422016.N().S(`
-<main>
 `)
-//line templates/delete.qtpl:6
+//line templates/delete.qtpl:5
 	streamnavHTML(qw422016, rq, hyphaName, "delete-ask")
-//line templates/delete.qtpl:6
+//line templates/delete.qtpl:5
 	qw422016.N().S(`
+<main>
 `)
 //line templates/delete.qtpl:7
 	if isOld {
