@@ -28,8 +28,9 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 {%= navHTML(rq, hyphaName, "page") %}
+<div class="three-col">
 <main>
 	<article>
 		{%s= naviTitle %}
@@ -60,8 +61,10 @@ If `contents` == "", a helpful message is shown instead.
 		<input type="submit"/>
 	</form>
 {% endif %}
-	<aside>
-		{%s= tree %}
-	</aside>
 </main>
+<aside class="relative-hyphae layout-card">
+	<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+	{%s= relatives %}
+</aside>
+</div>
 {% endfunc %}
