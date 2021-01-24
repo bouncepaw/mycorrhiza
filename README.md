@@ -25,6 +25,8 @@ Options:
         What auth method to use. Variants: "none", "fixed" (default "none")
   -fixed-credentials-path string
         Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
+  -header-links-hypha string
+        Optional hypha that overrides the header links
   -home string
         The home page (default "home")
   -icon string
