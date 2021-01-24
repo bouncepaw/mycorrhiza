@@ -57,7 +57,14 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 
 main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote { margin-left: 0; padding-left: 1rem; }
-.wikilink__destination-type {display: inline; margin: 0 .25rem; vertical-align: sub; }
+.wikilink_external::before { display: inline-block; width: 18px; height: 16px; vertical-align: sub; }
+/* .wikilink_external { padding-left: 16px; } */
+.wikilink_gopher::before { content: url("/static/icon/gopher"); }
+.wikilink_http::before { content: url("/static/icon/http"); }
+.wikilink_https::before { content: url("/static/icon/http"); }
+/* .wikilink_https { background: transparent url("/static/icon/http") center left no-repeat; } */
+.wikilink_gemini::before { content: url("/static/icon/gemini"); }
+.wikilink_mailto::before { content: url("/static/icon/mailto"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 article h1, article h2, article h3, article h4, article h5, article h6 { margin: 1.5rem 0 0 0; }
@@ -72,7 +79,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .transclusion__link::before {content: "⇐ ";}
 
 /* Derived from https://commons.wikimedia.org/wiki/File:U%2B21D2.svg */
-.launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
+.launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath fill='%23999' d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
 
 .binary-container_with-img img,
 .binary-container_with-video video,
@@ -126,7 +133,6 @@ td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
 /* Color stuff */
-svg path { fill: currentColor !important; }
 /* Lighter stuff #eee */
 article code,
 article .codeblock,
@@ -241,7 +247,7 @@ func StreamIconHTTP(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:7
-	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" color="currentColor" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2.29-2.333A17.9 17.9 0 0 1 8.027 13H4.062a8.008 8.008 0 0 0 5.648 6.667zM10.03 13c.151 2.439.848 4.73 1.97 6.752A15.905 15.905 0 0 0 13.97 13h-3.94zm9.908 0h-3.965a17.9 17.9 0 0 1-1.683 6.667A8.008 8.008 0 0 0 19.938 13zM4.062 11h3.965A17.9 17.9 0 0 1 9.71 4.333 8.008 8.008 0 0 0 4.062 11zm5.969 0h3.938A15.905 15.905 0 0 0 12 4.248 15.905 15.905 0 0 0 10.03 11zm4.259-6.667A17.9 17.9 0 0 1 15.973 11h3.965a8.008 8.008 0 0 0-5.648-6.667z"/></svg>
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2.29-2.333A17.9 17.9 0 0 1 8.027 13H4.062a8.008 8.008 0 0 0 5.648 6.667zM10.03 13c.151 2.439.848 4.73 1.97 6.752A15.905 15.905 0 0 0 13.97 13h-3.94zm9.908 0h-3.965a17.9 17.9 0 0 1-1.683 6.667A8.008 8.008 0 0 0 19.938 13zM4.062 11h3.965A17.9 17.9 0 0 1 9.71 4.333 8.008 8.008 0 0 0 4.062 11zm5.969 0h3.938A15.905 15.905 0 0 0 12 4.248 15.905 15.905 0 0 0 10.03 11zm4.259-6.667A17.9 17.9 0 0 1 15.973 11h3.965a8.008 8.008 0 0 0-5.648-6.667z"/></svg>
 `)
 //line templates/asset.qtpl:7
 	qw422016.N().S(`
@@ -281,7 +287,7 @@ func StreamIconGemini(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:11
-	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M15.502 20A6.523 6.523 0 0 1 12 23.502 6.523 6.523 0 0 1 8.498 20h2.26c.326.489.747.912 1.242 1.243.495-.33.916-.754 1.243-1.243h2.259zM18 14.805l2 2.268V19H4v-1.927l2-2.268V9c0-3.483 2.504-6.447 6-7.545C15.496 2.553 18 5.517 18 9v5.805zM17.27 17L16 15.56V9c0-2.318-1.57-4.43-4-5.42C9.57 4.57 8 6.681 8 9v6.56L6.73 17h10.54zM12 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M15.502 20A6.523 6.523 0 0 1 12 23.502 6.523 6.523 0 0 1 8.498 20h2.26c.326.489.747.912 1.242 1.243.495-.33.916-.754 1.243-1.243h2.259zM18 14.805l2 2.268V19H4v-1.927l2-2.268V9c0-3.483 2.504-6.447 6-7.545C15.496 2.553 18 5.517 18 9v5.805zM17.27 17L16 15.56V9c0-2.318-1.57-4.43-4-5.42C9.57 4.57 8 6.681 8 9v6.56L6.73 17h10.54zM12 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
 `)
 //line templates/asset.qtpl:11
 	qw422016.N().S(`
@@ -321,7 +327,7 @@ func StreamIconMailto(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:15
-	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/></svg>
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/></svg>
 `)
 //line templates/asset.qtpl:15
 	qw422016.N().S(`
@@ -363,8 +369,8 @@ func StreamIconGopher(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:20
-	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
-<path d="M447.238,204.944v-70.459c0-8.836-7.164-16-16-16c-34.051,0-64.414,21.118-75.079,55.286
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+<path fill="#999" d="M447.238,204.944v-70.459c0-8.836-7.164-16-16-16c-34.051,0-64.414,21.118-75.079,55.286
 C226.094,41.594,0,133.882,0,319.435c0,0.071,0.01,0.14,0.011,0.21c0.116,44.591,36.423,80.833,81.04,80.833h171.203
 c8.836,0,16-7.164,16-16c0-8.836-7.164-16-16-16H81.051c-21.441,0-39.7-13.836-46.351-33.044H496c8.836,0,16-7.164,16-16
 C512,271.82,486.82,228.692,447.238,204.944z M415.238,153.216v37.805c-10.318-2.946-19.556-4.305-29.342-4.937
@@ -372,7 +378,7 @@ C390.355,168.611,402.006,157.881,415.238,153.216z M295.484,303.435L295.484,303.4
 c-8.836,0-16,7.164-16,16c0,8.836,7.164,16,16,16c25.909,0,47.826,17.364,54.76,41.062H32.722
 c14.415-159.15,218.064-217.856,315.136-90.512c3.545,4.649,9.345,6.995,15.124,6.118
 c55.425-8.382,107.014,29.269,115.759,84.394H295.484z"/>
-<circle cx="415.238" cy="260.05" r="21.166"/>
+<circle fill="#999" cx="415.238" cy="260.05" r="21.166"/>
 </svg>
 `)
 //line templates/asset.qtpl:20

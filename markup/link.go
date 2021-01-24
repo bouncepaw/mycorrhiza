@@ -10,13 +10,13 @@ import (
 //
 // => addr display
 // [[addr|display]]
-func LinkParts(addr, display, hyphaName string) (href, text, class, icon string) {
+func LinkParts(addr, display, hyphaName string) (href, text, class string) {
 	if display == "" {
 		text = addr
 	} else {
 		text = strings.TrimSpace(display)
 	}
-	class = "wikilink_internal"
+	class = "wikilink wikilink_internal"
 
 	switch {
 	case strings.ContainsRune(addr, ':'):
@@ -28,9 +28,9 @@ func LinkParts(addr, display, hyphaName string) (href, text, class, icon string)
 				text = text[2:]
 			}
 		}
-		return addr, text, "wikilink_external", fmt.Sprintf(`<img class="wikilink__destination-type" src="/static/icon/%s" width="16" height="16"/>`, destination)
+		return addr, text, fmt.Sprintf("wikilink wikilink_external wikilink_%s", destination)
 	case strings.HasPrefix(addr, "/"):
-		return addr, text, class, ""
+		return addr, text, class
 	case strings.HasPrefix(addr, "./"):
 		hyphaName = canonicalName(path.Join(hyphaName, addr[2:]))
 	case strings.HasPrefix(addr, "../"):
@@ -41,12 +41,12 @@ func LinkParts(addr, display, hyphaName string) (href, text, class, icon string)
 	if !HyphaExists(hyphaName) {
 		class += " wikilink_new"
 	}
-	return "/page/" + hyphaName, text, class, ""
+	return "/page/" + hyphaName, text, class
 }
 
 // Parse markup line starting with "=>" according to wikilink rules.
 // See http://localhost:1737/page/wikilink
-func Rocketlink(src, hyphaName string) (href, text, class, icon string) {
+func Rocketlink(src, hyphaName string) (href, text, class string) {
 	src = strings.TrimSpace(src[2:]) // Drop =>
 	if src == "" {
 		return

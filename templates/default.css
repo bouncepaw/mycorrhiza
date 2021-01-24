@@ -32,7 +32,14 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 
 main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote { margin-left: 0; padding-left: 1rem; }
-.wikilink__destination-type {display: inline; margin: 0 .25rem; vertical-align: sub; }
+.wikilink_external::before { display: inline-block; width: 18px; height: 16px; vertical-align: sub; }
+/* .wikilink_external { padding-left: 16px; } */
+.wikilink_gopher::before { content: url("/static/icon/gopher"); }
+.wikilink_http::before { content: url("/static/icon/http"); }
+.wikilink_https::before { content: url("/static/icon/http"); }
+/* .wikilink_https { background: transparent url("/static/icon/http") center left no-repeat; } */
+.wikilink_gemini::before { content: url("/static/icon/gemini"); }
+.wikilink_mailto::before { content: url("/static/icon/mailto"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 article h1, article h2, article h3, article h4, article h5, article h6 { margin: 1.5rem 0 0 0; }
@@ -47,7 +54,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .transclusion__link::before {content: "⇐ ";}
 
 /* Derived from https://commons.wikimedia.org/wiki/File:U%2B21D2.svg */
-.launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
+.launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath fill='%23999' d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
 
 .binary-container_with-img img,
 .binary-container_with-video video,
@@ -101,7 +108,6 @@ td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
 /* Color stuff */
-svg path { fill: currentColor !important; }
 /* Lighter stuff #eee */
 article code,
 article .codeblock,
