@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 0.12
+# 🍄 MycorrhizaWiki 0.13
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
