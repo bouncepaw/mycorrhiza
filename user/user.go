@@ -37,7 +37,7 @@ var groupRight = map[string]int{
 	"admin":     4,
 }
 
-func emptyUser() *User {
+func EmptyUser() *User {
 	return &User{
 		Name:     "anon",
 		Group:    "anon",

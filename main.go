@@ -41,9 +41,18 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	log.Println(errMsg, "for", name)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(status)
-	fmt.Fprint(w, base(title, fmt.Sprintf(
-		`<main><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
-		errMsg, name)))
+	fmt.Fprint(
+		w,
+		base(
+			title,
+			fmt.Sprintf(
+				`<main><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
+				errMsg,
+				name,
+			),
+			user.EmptyUser(),
+		),
+	)
 }
 
 // Show all hyphae
@@ -52,11 +61,12 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 	var (
 		tbody     string
 		pageCount = hyphae.Count()
+		u         = user.FromRequest(rq)
 	)
 	for hyphaName, data := range HyphaStorage {
 		tbody += templates.HyphaListRowHTML(hyphaName, ExtensionToMime(filepath.Ext(data.binaryPath)), data.binaryPath != "")
 	}
-	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount)))
+	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount), u))
 }
 
 // This part is present in all html documents.
@@ -146,7 +156,7 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML())))
+	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML(), user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {

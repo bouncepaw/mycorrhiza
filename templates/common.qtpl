@@ -41,20 +41,19 @@ var navEntries = []navEntry{
 			</li>
 		{%- endif -%}
 		{%- endfor -%}
-		{%s= userMenuHTML(u) %}
 		</ul>
 	</nav>
 {% endfunc %}
 
 {% func userMenuHTML(u *user.User) %}
-	{% if user.AuthUsed %}
-			<li class="hypha-tabs__tab hypha-tabs__user">
-			{% if u.Group == "anon" %}
-				<a href="/login">Login</a>
-			{% else %}
-				<a href="/page/{%s util.UserHypha %}/{%s u.Name %}">{%s u.Name %}</a>
-			{% endif %}
-			</li>
+{% if user.AuthUsed %}
+<li class="header-links__entry header-links__entry_user">
+	{% if u.Group == "anon" %}
+	<a href="/login" class="header-links__link">Login</a>
+	{% else %}
+	<a href="/page/{%s util.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s u.Name %}</a>
 	{% endif %}
+</li>
+{% endif %}
 {% endfunc %}
 

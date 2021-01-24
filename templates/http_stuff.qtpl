@@ -1,7 +1,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
-{% func BaseHTML(title, body string, headElements ...string) %}
+{% func BaseHTML(title, body string, u *user.User, headElements ...string) %}
 <!doctype html>
 <html>
 	<head>
@@ -17,6 +17,7 @@
 					{%- for _, link := range util.HeaderLinks -%}
 					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
 					{%- endfor -%}
+					{%s= userMenuHTML(u) %}
 				</ul>
 			</nav>
 		</header>

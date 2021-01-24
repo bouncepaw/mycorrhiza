@@ -44,7 +44,7 @@ func userByToken(token string) *User {
 		username := usernameUntyped.(string)
 		return userByName(username)
 	}
-	return emptyUser()
+	return EmptyUser()
 }
 
 func userByName(username string) *User {
@@ -52,7 +52,7 @@ func userByName(username string) *User {
 		user := userUntyped.(*User)
 		return user
 	}
-	return emptyUser()
+	return EmptyUser()
 }
 
 func commenceSession(username, token string) {

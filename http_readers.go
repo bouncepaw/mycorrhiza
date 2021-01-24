@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -34,6 +35,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
 		textPath          = hyphaName + ".myco"
 		textContents, err = history.FileAtRevision(textPath, revHash)
+		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
 		contents = markup.Doc(hyphaName, textContents).AsHTML()
@@ -49,7 +51,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, page)))
+	w.Write([]byte(base(hyphaName, page, u)))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -83,6 +85,7 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 		hasAmnt           = hyphaExists && data.binaryPath != ""
 		contents          string
 		openGraph         string
+		u                 = user.FromRequest(rq)
 	)
 	if hyphaExists {
 		fileContentsT, errT := ioutil.ReadFile(data.textPath)
@@ -105,5 +108,6 @@ func handlerPage(w http.ResponseWriter, rq *http.Request) {
 				contents,
 				treeHTML, prevHypha, nextHypha,
 				hasAmnt),
+			u,
 			openGraph))
 }

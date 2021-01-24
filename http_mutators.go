@@ -41,7 +41,7 @@ func handlerUnattachAsk(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected (no rights):", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Unattach "+hyphaName+"?", templates.UnattachAskHTML(rq, hyphaName, isOld)))
+	util.HTTP200Page(w, base("Unattach "+hyphaName+"?", templates.UnattachAskHTML(rq, hyphaName, isOld), user.FromRequest(rq)))
 }
 
 func handlerUnattachConfirm(w http.ResponseWriter, rq *http.Request) {
@@ -82,13 +82,14 @@ func handlerRenameAsk(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "rename-ask")
 		_, isOld  = HyphaStorage[hyphaName]
+		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "rename-confirm"); !ok {
+	if !u.CanProceed("rename-confirm") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a trusted editor to rename pages.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(rq, hyphaName, isOld)))
+	util.HTTP200Page(w, base("Rename "+hyphaName+"?", templates.RenameAskHTML(rq, hyphaName, isOld), u))
 }
 
 func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
@@ -134,13 +135,14 @@ func handlerDeleteAsk(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "delete-ask")
 		_, isOld  = HyphaStorage[hyphaName]
+		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "delete-ask"); !ok {
+	if !u.CanProceed("delete-ask") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(rq, hyphaName, isOld)))
+	util.HTTP200Page(w, base("Delete "+hyphaName+"?", templates.DeleteAskHTML(rq, hyphaName, isOld), u))
 }
 
 // handlerDeleteConfirm deletes a hypha for sure
@@ -151,7 +153,7 @@ func handlerDeleteConfirm(w http.ResponseWriter, rq *http.Request) {
 		hyphaData, isOld = HyphaStorage[hyphaName]
 		u                = user.FromRequest(rq)
 	)
-	if !user.CanProceed(rq, "delete-confirm") {
+	if !u.CanProceed("delete-confirm") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be a moderator to delete pages.")
 		log.Println("Rejected", rq.URL)
 		return
@@ -181,8 +183,9 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		warning          string
 		textAreaFill     string
 		err              error
+		u                = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "edit"); !ok {
+	if !u.CanProceed("edit") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
 		log.Println("Rejected", rq.URL)
 		return
@@ -197,7 +200,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		warning = `<p>You are creating a new hypha.</p>`
 	}
-	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(rq, hyphaName, textAreaFill, warning)))
+	util.HTTP200Page(w, base("Edit "+hyphaName, templates.EditHTML(rq, hyphaName, textAreaFill, warning), u))
 }
 
 // handlerUploadText uploads a new text part for the hypha.
@@ -209,7 +212,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		action    = rq.PostFormValue("action")
 		u         = user.FromRequest(rq)
 	)
-	if ok := user.CanProceed(rq, "upload-text"); !ok {
+	if !u.CanProceed("upload-text") {
 		HttpErr(w, http.StatusForbidden, hyphaName, "Not enough rights", "You must be an editor to edit pages.")
 		log.Println("Rejected", rq.URL)
 		return
@@ -219,7 +222,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	if action == "Preview" {
-		util.HTTP200Page(w, base("Preview "+hyphaName, templates.PreviewHTML(rq, hyphaName, textData, "", markup.Doc(hyphaName, textData).AsHTML())))
+		util.HTTP200Page(w, base("Preview "+hyphaName, templates.PreviewHTML(rq, hyphaName, textData, "", markup.Doc(hyphaName, textData).AsHTML()), u))
 	} else if hop := UploadText(hyphaName, textData, u); len(hop.Errs) != 0 {
 		HttpErr(w, http.StatusInternalServerError, hyphaName, "Error", hop.Errs[0].Error())
 	} else {

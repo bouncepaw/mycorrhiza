@@ -17,7 +17,7 @@ func CanProceed(rq *http.Request, route string) bool {
 func FromRequest(rq *http.Request) *User {
 	cookie, err := rq.Cookie("mycorrhiza_token")
 	if err != nil {
-		return emptyUser()
+		return EmptyUser()
 	}
 	return userByToken(cookie.Value)
 }
