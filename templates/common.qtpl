@@ -23,21 +23,20 @@ var navEntries = []navEntry{
 {% code 
 	u := user.FromRequest(rq)
 %}
-
-	<nav class="hypha-tabs">
+	<nav class="hypha-tabs main-width">
 		<ul class="hypha-tabs__flex">
 		{%- for _, entry := range navEntries -%}
 		{%- if navType == "revision" && entry.path == "revision" -%}
 			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				{%s revisionHash[0] %}
+				<span class="hypha-tabs__selection">{%s revisionHash[0] %}</span>
 			</li>
 		{%- elseif navType == entry.path -%}
 			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				{%s entry.title %}
+				<span class="hypha-tabs__selection">{%s entry.title %}</span>
 			</li>
 		{%- elseif entry.path != "revision" && u.CanProceed(entry.path) -%}
 			<li class="hypha-tabs__tab">
-				<a href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a>
+				<a class="hypha-tabs__link" href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a>
 			</li>
 		{%- endif -%}
 		{%- endfor -%}

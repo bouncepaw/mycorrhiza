@@ -49,7 +49,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 	</head>
 	<body>
 		<header>
-			<nav class="header-links">
+			<nav class="header-links main-width">
 				<ul class="header-links__list">
 `)
 //line templates/stuff.qtpl:17

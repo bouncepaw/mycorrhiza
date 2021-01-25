@@ -152,47 +152,47 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 	streamnavHTML(qw422016, rq, hyphaName, "page")
 //line templates/readers.qtpl:32
 	qw422016.N().S(`
-<div class="three-col">
-<main>
-	<article>
-		`)
+<div class="layout">
+	<main class="main-width">
+		<article>
+			`)
 //line templates/readers.qtpl:36
 	qw422016.N().S(naviTitle)
 //line templates/readers.qtpl:36
 	qw422016.N().S(`
-		`)
+			`)
 //line templates/readers.qtpl:37
 	if contents == "" {
 //line templates/readers.qtpl:37
 		qw422016.N().S(`
-			<p>This hypha has no text. Why not <a href="/edit/`)
+				<p>This hypha has no text. Why not <a href="/edit/`)
 //line templates/readers.qtpl:38
 		qw422016.E().S(hyphaName)
 //line templates/readers.qtpl:38
 		qw422016.N().S(`">create it</a>?</p>
-		`)
+			`)
 //line templates/readers.qtpl:39
 	} else {
 //line templates/readers.qtpl:39
 		qw422016.N().S(`
-			`)
+				`)
 //line templates/readers.qtpl:40
 		qw422016.N().S(contents)
 //line templates/readers.qtpl:40
 		qw422016.N().S(`
-		`)
+			`)
 //line templates/readers.qtpl:41
 	}
 //line templates/readers.qtpl:41
 	qw422016.N().S(`
-	</article>
-	<section class="prevnext">
-		`)
+		</article>
+		<section class="prevnext">
+			`)
 //line templates/readers.qtpl:44
 	if prevHyphaName != "" {
 //line templates/readers.qtpl:44
 		qw422016.N().S(`
-		<a class="prevnext__el prevnext__prev" href="/page/`)
+			<a class="prevnext__el prevnext__prev" href="/page/`)
 //line templates/readers.qtpl:45
 		qw422016.E().S(prevHyphaName)
 //line templates/readers.qtpl:45
@@ -201,17 +201,17 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 		qw422016.E().S(path.Base(prevHyphaName))
 //line templates/readers.qtpl:45
 		qw422016.N().S(`</a>
-		`)
+			`)
 //line templates/readers.qtpl:46
 	}
 //line templates/readers.qtpl:46
 	qw422016.N().S(`
-		`)
+			`)
 //line templates/readers.qtpl:47
 	if nextHyphaName != "" {
 //line templates/readers.qtpl:47
 		qw422016.N().S(`
-		<a class="prevnext__el prevnext__next" href="/page/`)
+			<a class="prevnext__el prevnext__next" href="/page/`)
 //line templates/readers.qtpl:48
 		qw422016.E().S(nextHyphaName)
 //line templates/readers.qtpl:48
@@ -220,58 +220,58 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 		qw422016.E().S(path.Base(nextHyphaName))
 //line templates/readers.qtpl:48
 		qw422016.N().S(` →</a>
-		`)
+			`)
 //line templates/readers.qtpl:49
 	}
 //line templates/readers.qtpl:49
 	qw422016.N().S(`
-	</section>
-`)
+		</section>
+	`)
 //line templates/readers.qtpl:51
 	if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" {
 //line templates/readers.qtpl:51
 		qw422016.N().S(`
-	<form action="/upload-binary/`)
+		<form action="/upload-binary/`)
 //line templates/readers.qtpl:52
 		qw422016.E().S(hyphaName)
 //line templates/readers.qtpl:52
 		qw422016.N().S(`"
-			method="post" enctype="multipart/form-data"
-			class="upload-amnt">
-		`)
+				method="post" enctype="multipart/form-data"
+				class="upload-amnt">
+			`)
 //line templates/readers.qtpl:55
 		if hasAmnt {
 //line templates/readers.qtpl:55
 			qw422016.N().S(`
-			<a class="upload-amnt__unattach" href="/unattach-ask/`)
+				<a class="upload-amnt__unattach" href="/unattach-ask/`)
 //line templates/readers.qtpl:56
 			qw422016.E().S(hyphaName)
 //line templates/readers.qtpl:56
 			qw422016.N().S(`">Unattach current attachment?</a>
-		`)
+			`)
 //line templates/readers.qtpl:57
 		}
 //line templates/readers.qtpl:57
 		qw422016.N().S(`
-		<label for="upload-binary__input">Upload a new attachment</label>
-		<br>
-		<input type="file" id="upload-binary__input" name="binary"/>
-		<input type="submit"/>
-	</form>
-`)
+			<label for="upload-binary__input">Upload a new attachment</label>
+			<br>
+			<input type="file" id="upload-binary__input" name="binary"/>
+			<input type="submit"/>
+		</form>
+	`)
 //line templates/readers.qtpl:63
 	}
 //line templates/readers.qtpl:63
 	qw422016.N().S(`
-</main>
-<aside class="relative-hyphae layout-card">
-	<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
-	`)
+	</main>
+	<aside class="relative-hyphae layout-card">
+		<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+		`)
 //line templates/readers.qtpl:67
 	qw422016.N().S(relatives)
 //line templates/readers.qtpl:67
 	qw422016.N().S(`
-</aside>
+	</aside>
 </div>
 `)
 //line templates/readers.qtpl:70

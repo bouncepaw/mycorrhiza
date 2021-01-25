@@ -23,27 +23,63 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:2
-	qw422016.N().S(`/* Layout stuff */
-@media screen and (min-width: 800px) {
-	main { padding:1rem 2rem; margin: 0 auto; min-width: 800px; max-width: 800px; border-radius: .25rem; }
-	.hypha-tabs { padding: 1rem 2rem; margin: 0 auto; min-width: 500px; max-width: 800px; }
-	header { width: 100%; }
-	.header-links { margin: 0 auto; min-width: 500px; max-width: 800px; }
+	qw422016.N().S(`/* General element positions, from small to big */
+/* Phones and whatnot */
+header { width: 100%; margin-bottom: 1rem; }
+.header-links__list, .hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
+.header-links__entry, .hypha-tabs__tab { list-style-type: none; }
+
+.header-links__entry { margin-right: .5rem; }
+.header-links__entry_user { font-style:italic; }
+.header-links__link { display: inline-block; padding: .25rem; text-decoration: none; }
+
+.hypha-tabs { padding: 0; margin: 0; }
+.hypha-tabs__tab { margin-right: .5rem; padding: 0; }
+.hypha-tabs__link { display: inline-block; padding: .25rem; text-decoration: none; }
+.hypha-tabs__selection { display: inline-block; padding: .25rem; font-weight: bold; }
+
+.relative-hyphae { margin-top: .5rem; }
+.relative-hyphae > ul { margin: 0; padding: .5rem 1rem; }
+.relative-hyphae li { list-style-type: none; }
+
+@media screen and (max-width: 800px) {
+	.main-width { width: 100%; }
+	main { padding: 1rem; margin: 0; }
+}
+
+/* No longer a phone but still small screen: draw normal tabs, center main */
+@media screen and (min-width: 801px) {
+	.main-width { padding: 1rem 2rem; width: 800px; margin: 0 auto; }
+	main { border-radius: .25rem; }
+	.relative-hyphae { width: 800px; margin: .5rem auto 0 auto; }
+
+	.header-links { padding: 0; }
 	.header-links__entry { margin-right: 1.5rem; }
 	.header-links__entry_user { margin: 0 2rem 0 auto; }
 	.header-links__entry:nth-of-type(1),
-	.hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
-	.hypha-tabs__tab { padding: 0 .5rem; border-radius: .25rem .25rem 0 0; border: 1px #ddd solid; border-bottom: 2px #ddd solid; }
-	.three-col { display: grid; grid-template-columns: 1fr auto 1fr; column-gap: 1rem; }
-	main { grid-column: 2 / span 1; grid-row: 1 / span 2; }
-	.relative-hyphae { grid-column: 3 / span 1; grid-row: 1 / span 1; min-width: 10rem; max-width: 20rem; }
+
+	.hypha-tabs { padding: 0; }
+	.hypha-tabs__tab { border-radius: .25rem .25rem 0 0; margin-right: 0; }
+	.hypha-tabs__selection, .hypha-tabs__link { padding: .25rem .5rem; }
+
+	.header-links__entry:nth-of-type(1), .hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
 }
-@media screen and (max-width: 800px) {
-	main { padding: 1rem; margin: 0; width: 100%; }
-	.hypha-tabs{ padding: 1rem; margin: 0; width: 100%; }
-	.hypha-tabs__tab { box-shadow: none; margin-right: .5rem; padding: .25rem .5rem; }
-	.header-links__entry { margin-right: .5rem; }
+
+/* Wide enough to fit two columns ok */
+@media screen and (min-width: 1200px) {
+	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; }
+	.main-width { margin: 0; }
+	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
+	.relative-hyphae { grid-column: 2 / span 1; grid-row: 1 / span 1; min-width: 10rem; max-width: 20rem; margin: 0 auto 0 0; }
 }
+
+@media screen and (min-width: 1300px) {
+	.layout { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+	.main-width { margin: 0 auto; }
+	main { grid-column: 2 / span 1; }
+	.relative-hyphae { grid-column: 3 / span 1; }
+}
+
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
 body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
@@ -103,14 +139,6 @@ figcaption { padding-bottom: .5rem; }
 
 #new-name {width:100%;}
 
-header { margin-bottom: .5rem; }
-.header-links__entry_user { font-style:italic; }
-.header-links__link { text-decoration: none; display: block; width: 100%; height: 100%; padding: .25rem; }
-.hypha-tabs { padding: 0; }
-.header-links__list, .hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
-.header-links__entry, .hypha-tabs__tab { list-style-type: none; }
-.hypha-tabs__tab a { text-decoration: none; }
-.hypha-tabs__tab_active { font-weight: bold; }
 
 .rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; }
 .rc-entry__time { font-style: italic; }
@@ -145,7 +173,6 @@ article .codeblock,
 table { background-color: #eee; }
 
 .hypha-tabs__tab { background-color: #eee; }
-.hypha-tabs__tab { clip-path: inset(-20px -20px 0 -20px); }
 .hypha-tabs__tab a { color: black; }
 .hypha-tabs__tab_active { border-bottom: 2px white solid; background: white; }
 
@@ -153,6 +180,15 @@ table { background-color: #eee; }
 	.hypha-tabs,
 	.hypha-tabs__tab { background-color: white; }
 }
+
+@media screen and (min-width: 801px) {
+	.hypha-tabs__tab { border: 1px #ddd solid; }
+	.hypha-tabs__tab_active { border-bottom: 1px white solid; }
+}
+
+.layout-card { border-radius: .25rem; background-color: white; }
+.layout-card__title { font-size: 1rem; margin: 0; padding: .25rem .5rem; border-radius: .25rem .25rem 0 0; }
+.layout-card__title { background-color: #eee; }
 
 /* Other stuff */
 html { background-color: #ddd; 
@@ -175,7 +211,7 @@ td { border: #ddd 1px solid; }
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
 html { background: #222; color: #ddd; }
-main,  article, .hypha-tabs__tab, header { background-color: #343434; color: #ddd; }
+main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #343434; color: #ddd; }
 
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
@@ -186,7 +222,7 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 .header-links__link:hover { background-color: #444; }
 
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
-.hypha-tabs__tab_active { background-color: #343434; }
+.layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
 
 blockquote { border-left: 4px #ddd solid; }
 
@@ -207,10 +243,12 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 @media screen and (max-width: 800px) {
 	.hypha-tabs { background-color: #232323; }
 }
+@media screen and (min-width: 801px) {
+	/* .hypha-tabs__tab { border: 1px #ddd solid; } */
+	/* .hypha-tabs__tab_active { border-bottom: 1px white solid; } */
+}
 }
 
-.layout-card { background-color: white; border-radius: .25rem; }
-.layout-card__title { font-size: 1rem; margin: 0; padding: .25rem .5rem; background-color: #eee; border-radius: .25rem .25rem 0 0; }
 
 
 `)

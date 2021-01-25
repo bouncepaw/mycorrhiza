@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<header>
-			<nav class="header-links">
+			<nav class="header-links main-width">
 				<ul class="header-links__list">
 					{%- for _, link := range util.HeaderLinks -%}
 					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
