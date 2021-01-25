@@ -1,6 +1,6 @@
 /* Layout stuff */
 @media screen and (min-width: 800px) {
-	main { padding:1rem 2rem; margin: 0 auto; min-width: 500px; max-width: 800px; border-radius: .25rem; }
+	main { padding:1rem 2rem; margin: 0 auto; min-width: 800px; max-width: 800px; border-radius: .25rem; }
 	.hypha-tabs { padding: 1rem 2rem; margin: 0 auto; min-width: 500px; max-width: 800px; }
 	header { width: 100%; }
 	.header-links { margin: 0 auto; min-width: 500px; max-width: 800px; }
