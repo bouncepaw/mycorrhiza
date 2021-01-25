@@ -51,7 +51,7 @@ header { width: 100%; margin-bottom: 1rem; }
 @media screen and (min-width: 801px) {
 	.main-width { padding: 1rem 2rem; width: 800px; margin: 0 auto; }
 	main { border-radius: .25rem; }
-	.relative-hyphae { width: 800px; margin: .5rem auto 0 auto; }
+	.relative-hyphae { margin: .5rem auto 0 auto; }
 
 	.header-links { padding: 0; }
 	.header-links__entry { margin-right: 1.5rem; }
@@ -70,7 +70,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; }
 	.main-width { margin: 0; }
 	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
-	.relative-hyphae { grid-column: 2 / span 1; grid-row: 1 / span 1; min-width: 10rem; max-width: 20rem; margin: 0 auto 0 0; }
+	.relative-hyphae { grid-column: 2 / span 1; grid-row: 1 / span 1; min-width: 10rem; max-width: 18rem; margin: 0 auto 0 0; }
 }
 
 @media screen and (min-width: 1300px) {
@@ -207,6 +207,10 @@ blockquote { border-left: 4px black solid; }
 .navi-title { border-bottom: #eee 1px solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
+
+.navitree__node { padding-left: 1rem; }
+.navitree__link { text-decoration: none; display: block; }
+.navitree__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
