@@ -35,270 +35,268 @@ func StreamHistoryHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, l
 	streamnavHTML(qw422016, rq, hyphaName, "history")
 //line templates/readers.qtpl:6
 	qw422016.N().S(`
-<main>
+<div class="layout">
+<main class="main-width">
 	<article class="history">
 		<h1>History of `)
-//line templates/readers.qtpl:9
+//line templates/readers.qtpl:10
 	qw422016.E().S(hyphaName)
-//line templates/readers.qtpl:9
+//line templates/readers.qtpl:10
 	qw422016.N().S(`</h1>
 		`)
-//line templates/readers.qtpl:10
+//line templates/readers.qtpl:11
 	qw422016.N().S(list)
-//line templates/readers.qtpl:10
+//line templates/readers.qtpl:11
 	qw422016.N().S(`
 	</article>
 </main>
+</div>
 `)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 }
 
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 func WriteHistoryHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, list string) {
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	StreamHistoryHTML(qw422016, rq, hyphaName, list)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	qt422016.ReleaseWriter(qw422016)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 }
 
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 func HistoryHTML(rq *http.Request, hyphaName, list string) string {
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	WriteHistoryHTML(qb422016, rq, hyphaName, list)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	qs422016 := string(qb422016.B)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 	return qs422016
-//line templates/readers.qtpl:13
+//line templates/readers.qtpl:15
 }
 
-//line templates/readers.qtpl:15
-func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) {
-//line templates/readers.qtpl:15
+//line templates/readers.qtpl:17
+func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, revHash string) {
+//line templates/readers.qtpl:17
 	qw422016.N().S(`
 `)
-//line templates/readers.qtpl:16
+//line templates/readers.qtpl:18
 	streamnavHTML(qw422016, rq, hyphaName, "revision", revHash)
-//line templates/readers.qtpl:16
+//line templates/readers.qtpl:18
 	qw422016.N().S(`
-<main>
+<div class="layout">
+<main class="main-width">
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		`)
-//line templates/readers.qtpl:20
+//line templates/readers.qtpl:23
 	qw422016.N().S(naviTitle)
-//line templates/readers.qtpl:20
+//line templates/readers.qtpl:23
 	qw422016.N().S(`
 		`)
-//line templates/readers.qtpl:21
+//line templates/readers.qtpl:24
 	qw422016.N().S(contents)
-//line templates/readers.qtpl:21
+//line templates/readers.qtpl:24
 	qw422016.N().S(`
 	</article>
-	<hr/>
-	<aside>
-		`)
-//line templates/readers.qtpl:25
-	qw422016.N().S(tree)
-//line templates/readers.qtpl:25
-	qw422016.N().S(`
-	</aside>
 </main>
 `)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:27
+	streamrelativeHyphae(qw422016, relatives)
+//line templates/readers.qtpl:27
+	qw422016.N().S(`
+</div>
+`)
+//line templates/readers.qtpl:29
 }
 
-//line templates/readers.qtpl:28
-func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) {
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
+func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, revHash string) {
+//line templates/readers.qtpl:29
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/readers.qtpl:28
-	StreamRevisionHTML(qw422016, rq, hyphaName, naviTitle, contents, tree, revHash)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
+	StreamRevisionHTML(qw422016, rq, hyphaName, naviTitle, contents, relatives, revHash)
+//line templates/readers.qtpl:29
 	qt422016.ReleaseWriter(qw422016)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
 }
 
-//line templates/readers.qtpl:28
-func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) string {
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
+func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, revHash string) string {
+//line templates/readers.qtpl:29
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/readers.qtpl:28
-	WriteRevisionHTML(qb422016, rq, hyphaName, naviTitle, contents, tree, revHash)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
+	WriteRevisionHTML(qb422016, rq, hyphaName, naviTitle, contents, relatives, revHash)
+//line templates/readers.qtpl:29
 	qs422016 := string(qb422016.B)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
 	return qs422016
-//line templates/readers.qtpl:28
+//line templates/readers.qtpl:29
 }
 
 // If `contents` == "", a helpful message is shown instead.
 
-//line templates/readers.qtpl:31
+//line templates/readers.qtpl:32
 func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) {
-//line templates/readers.qtpl:31
+//line templates/readers.qtpl:32
 	qw422016.N().S(`
 `)
-//line templates/readers.qtpl:32
+//line templates/readers.qtpl:33
 	streamnavHTML(qw422016, rq, hyphaName, "page")
-//line templates/readers.qtpl:32
+//line templates/readers.qtpl:33
 	qw422016.N().S(`
 <div class="layout">
-	<main class="main-width">
-		<article>
-			`)
-//line templates/readers.qtpl:36
-	qw422016.N().S(naviTitle)
-//line templates/readers.qtpl:36
-	qw422016.N().S(`
-			`)
-//line templates/readers.qtpl:37
-	if contents == "" {
-//line templates/readers.qtpl:37
-		qw422016.N().S(`
-				<p>This hypha has no text. Why not <a href="/edit/`)
-//line templates/readers.qtpl:38
-		qw422016.E().S(hyphaName)
-//line templates/readers.qtpl:38
-		qw422016.N().S(`">create it</a>?</p>
-			`)
-//line templates/readers.qtpl:39
-	} else {
-//line templates/readers.qtpl:39
-		qw422016.N().S(`
-				`)
-//line templates/readers.qtpl:40
-		qw422016.N().S(contents)
-//line templates/readers.qtpl:40
-		qw422016.N().S(`
-			`)
-//line templates/readers.qtpl:41
-	}
-//line templates/readers.qtpl:41
-	qw422016.N().S(`
-		</article>
-		<section class="prevnext">
-			`)
-//line templates/readers.qtpl:44
-	if prevHyphaName != "" {
-//line templates/readers.qtpl:44
-		qw422016.N().S(`
-			<a class="prevnext__el prevnext__prev" href="/page/`)
-//line templates/readers.qtpl:45
-		qw422016.E().S(prevHyphaName)
-//line templates/readers.qtpl:45
-		qw422016.N().S(`" rel="prev">← `)
-//line templates/readers.qtpl:45
-		qw422016.E().S(path.Base(prevHyphaName))
-//line templates/readers.qtpl:45
-		qw422016.N().S(`</a>
-			`)
-//line templates/readers.qtpl:46
-	}
-//line templates/readers.qtpl:46
-	qw422016.N().S(`
-			`)
-//line templates/readers.qtpl:47
-	if nextHyphaName != "" {
-//line templates/readers.qtpl:47
-		qw422016.N().S(`
-			<a class="prevnext__el prevnext__next" href="/page/`)
-//line templates/readers.qtpl:48
-		qw422016.E().S(nextHyphaName)
-//line templates/readers.qtpl:48
-		qw422016.N().S(`" rel="next">`)
-//line templates/readers.qtpl:48
-		qw422016.E().S(path.Base(nextHyphaName))
-//line templates/readers.qtpl:48
-		qw422016.N().S(` →</a>
-			`)
-//line templates/readers.qtpl:49
-	}
-//line templates/readers.qtpl:49
-	qw422016.N().S(`
-		</section>
-	`)
-//line templates/readers.qtpl:51
-	if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" {
-//line templates/readers.qtpl:51
-		qw422016.N().S(`
-		<form action="/upload-binary/`)
-//line templates/readers.qtpl:52
-		qw422016.E().S(hyphaName)
-//line templates/readers.qtpl:52
-		qw422016.N().S(`"
-				method="post" enctype="multipart/form-data"
-				class="upload-amnt">
-			`)
-//line templates/readers.qtpl:55
-		if hasAmnt {
-//line templates/readers.qtpl:55
-			qw422016.N().S(`
-				<a class="upload-amnt__unattach" href="/unattach-ask/`)
-//line templates/readers.qtpl:56
-			qw422016.E().S(hyphaName)
-//line templates/readers.qtpl:56
-			qw422016.N().S(`">Unattach current attachment?</a>
-			`)
-//line templates/readers.qtpl:57
-		}
-//line templates/readers.qtpl:57
-		qw422016.N().S(`
-			<label for="upload-binary__input">Upload a new attachment</label>
-			<br>
-			<input type="file" id="upload-binary__input" name="binary"/>
-			<input type="submit"/>
-		</form>
-	`)
-//line templates/readers.qtpl:63
-	}
-//line templates/readers.qtpl:63
-	qw422016.N().S(`
-	</main>
-	<aside class="relative-hyphae layout-card">
-		<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+<main class="main-width">
+	<article>
 		`)
-//line templates/readers.qtpl:67
-	qw422016.N().S(relatives)
-//line templates/readers.qtpl:67
+//line templates/readers.qtpl:37
+	qw422016.N().S(naviTitle)
+//line templates/readers.qtpl:37
 	qw422016.N().S(`
-	</aside>
+		`)
+//line templates/readers.qtpl:38
+	if contents == "" {
+//line templates/readers.qtpl:38
+		qw422016.N().S(`
+			<p>This hypha has no text. Why not <a href="/edit/`)
+//line templates/readers.qtpl:39
+		qw422016.E().S(hyphaName)
+//line templates/readers.qtpl:39
+		qw422016.N().S(`">create it</a>?</p>
+		`)
+//line templates/readers.qtpl:40
+	} else {
+//line templates/readers.qtpl:40
+		qw422016.N().S(`
+			`)
+//line templates/readers.qtpl:41
+		qw422016.N().S(contents)
+//line templates/readers.qtpl:41
+		qw422016.N().S(`
+		`)
+//line templates/readers.qtpl:42
+	}
+//line templates/readers.qtpl:42
+	qw422016.N().S(`
+	</article>
+	<section class="prevnext">
+		`)
+//line templates/readers.qtpl:45
+	if prevHyphaName != "" {
+//line templates/readers.qtpl:45
+		qw422016.N().S(`
+		<a class="prevnext__el prevnext__prev" href="/page/`)
+//line templates/readers.qtpl:46
+		qw422016.E().S(prevHyphaName)
+//line templates/readers.qtpl:46
+		qw422016.N().S(`" rel="prev">← `)
+//line templates/readers.qtpl:46
+		qw422016.E().S(path.Base(prevHyphaName))
+//line templates/readers.qtpl:46
+		qw422016.N().S(`</a>
+		`)
+//line templates/readers.qtpl:47
+	}
+//line templates/readers.qtpl:47
+	qw422016.N().S(`
+		`)
+//line templates/readers.qtpl:48
+	if nextHyphaName != "" {
+//line templates/readers.qtpl:48
+		qw422016.N().S(`
+		<a class="prevnext__el prevnext__next" href="/page/`)
+//line templates/readers.qtpl:49
+		qw422016.E().S(nextHyphaName)
+//line templates/readers.qtpl:49
+		qw422016.N().S(`" rel="next">`)
+//line templates/readers.qtpl:49
+		qw422016.E().S(path.Base(nextHyphaName))
+//line templates/readers.qtpl:49
+		qw422016.N().S(` →</a>
+		`)
+//line templates/readers.qtpl:50
+	}
+//line templates/readers.qtpl:50
+	qw422016.N().S(`
+	</section>
+`)
+//line templates/readers.qtpl:52
+	if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" {
+//line templates/readers.qtpl:52
+		qw422016.N().S(`
+	<form action="/upload-binary/`)
+//line templates/readers.qtpl:53
+		qw422016.E().S(hyphaName)
+//line templates/readers.qtpl:53
+		qw422016.N().S(`"
+			method="post" enctype="multipart/form-data"
+			class="upload-amnt">
+		`)
+//line templates/readers.qtpl:56
+		if hasAmnt {
+//line templates/readers.qtpl:56
+			qw422016.N().S(`
+			<a class="upload-amnt__unattach" href="/unattach-ask/`)
+//line templates/readers.qtpl:57
+			qw422016.E().S(hyphaName)
+//line templates/readers.qtpl:57
+			qw422016.N().S(`">Unattach current attachment?</a>
+		`)
+//line templates/readers.qtpl:58
+		}
+//line templates/readers.qtpl:58
+		qw422016.N().S(`
+		<label for="upload-binary__input">Upload a new attachment</label>
+		<br>
+		<input type="file" id="upload-binary__input" name="binary"/>
+		<input type="submit"/>
+	</form>
+`)
+//line templates/readers.qtpl:64
+	}
+//line templates/readers.qtpl:64
+	qw422016.N().S(`
+</main>
+`)
+//line templates/readers.qtpl:66
+	streamrelativeHyphae(qw422016, relatives)
+//line templates/readers.qtpl:66
+	qw422016.N().S(`
 </div>
 `)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 }
 
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) {
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName, hasAmnt)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	qt422016.ReleaseWriter(qw422016)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 }
 
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) string {
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName, hasAmnt)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	qs422016 := string(qb422016.B)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 	return qs422016
-//line templates/readers.qtpl:70
+//line templates/readers.qtpl:68
 }

@@ -1,7 +1,8 @@
 {% import "net/http" %}
 {% func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
-<main>
 {%= navHTML(rq, hyphaName, "unattach-ask") %}
+<div class="layout">
+<main class="main-width">
 {%- if isOld -%}
 	<section>
 		<h1>Unattach {%s hyphaName %}?</h1>
@@ -13,6 +14,7 @@
 	{%= cannotUnattachDueToNonExistence(hyphaName) %}
 {%- endif -%}
 </main>
+</div>
 {% endfunc %}
 
 {% func cannotUnattachDueToNonExistence(hyphaName string) %}

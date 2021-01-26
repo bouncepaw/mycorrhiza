@@ -4,67 +4,65 @@
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
 {%= navHTML(rq, hyphaName, "history") %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<article class="history">
 		<h1>History of {%s hyphaName %}</h1>
 		{%s= list %}
 	</article>
 </main>
+</div>
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, tree, revHash string) %}
+{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, revHash string) %}
 {%= navHTML(rq, hyphaName, "revision", revHash) %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		{%s= naviTitle %}
 		{%s= contents %}
 	</article>
-	<hr/>
-	<aside>
-		{%s= tree %}
-	</aside>
 </main>
+{%= relativeHyphae(relatives) %}
+</div>
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
 {% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 {%= navHTML(rq, hyphaName, "page") %}
 <div class="layout">
-	<main class="main-width">
-		<article>
-			{%s= naviTitle %}
-			{% if contents == "" %}
-				<p>This hypha has no text. Why not <a href="/edit/{%s hyphaName %}">create it</a>?</p>
-			{% else %}
-				{%s= contents %}
-			{% endif %}
-		</article>
-		<section class="prevnext">
-			{% if prevHyphaName != "" %}
-			<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}" rel="prev">← {%s path.Base(prevHyphaName) %}</a>
-			{% endif %}
-			{% if nextHyphaName != "" %}
-			<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}" rel="next">{%s path.Base(nextHyphaName) %} →</a>
-			{% endif %}
-		</section>
-	{% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
-		<form action="/upload-binary/{%s hyphaName %}"
-				method="post" enctype="multipart/form-data"
-				class="upload-amnt">
-			{% if hasAmnt %}
-				<a class="upload-amnt__unattach" href="/unattach-ask/{%s hyphaName %}">Unattach current attachment?</a>
-			{% endif %}
-			<label for="upload-binary__input">Upload a new attachment</label>
-			<br>
-			<input type="file" id="upload-binary__input" name="binary"/>
-			<input type="submit"/>
-		</form>
-	{% endif %}
-	</main>
-	<aside class="relative-hyphae layout-card">
-		<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
-		{%s= relatives %}
-	</aside>
+<main class="main-width">
+	<article>
+		{%s= naviTitle %}
+		{% if contents == "" %}
+			<p>This hypha has no text. Why not <a href="/edit/{%s hyphaName %}">create it</a>?</p>
+		{% else %}
+			{%s= contents %}
+		{% endif %}
+	</article>
+	<section class="prevnext">
+		{% if prevHyphaName != "" %}
+		<a class="prevnext__el prevnext__prev" href="/page/{%s prevHyphaName %}" rel="prev">← {%s path.Base(prevHyphaName) %}</a>
+		{% endif %}
+		{% if nextHyphaName != "" %}
+		<a class="prevnext__el prevnext__next" href="/page/{%s nextHyphaName %}" rel="next">{%s path.Base(nextHyphaName) %} →</a>
+		{% endif %}
+	</section>
+{% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
+	<form action="/upload-binary/{%s hyphaName %}"
+			method="post" enctype="multipart/form-data"
+			class="upload-amnt">
+		{% if hasAmnt %}
+			<a class="upload-amnt__unattach" href="/unattach-ask/{%s hyphaName %}">Unattach current attachment?</a>
+		{% endif %}
+		<label for="upload-binary__input">Upload a new attachment</label>
+		<br>
+		<input type="file" id="upload-binary__input" name="binary"/>
+		<input type="submit"/>
+	</form>
+{% endif %}
+</main>
+{%= relativeHyphae(relatives) %}
 </div>
 {% endfunc %}

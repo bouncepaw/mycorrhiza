@@ -1,7 +1,8 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
 {% func LoginHTML() %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<section>
 	{% if user.AuthUsed %}
 		<h1>Login</h1>
@@ -25,10 +26,12 @@
 	{% endif %}
 	</section>
 </main>
+</div>
 {% endfunc %}
 
 {% func LoginErrorHTML(err string) %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<section>
 	{% switch err %}
 	{% case "unknown username" %}
@@ -41,10 +44,12 @@
 		<p><a href="/login">← Try again</a></p>
 	</section>
 </main>
+</div>
 {% endfunc %}
 
 {% func LogoutHTML(can bool) %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<section>
 	{% if can %}
 		<h1>Log out?</h1>
@@ -57,4 +62,5 @@
 	{% endif %}
 	</section>
 </main>
+</div>
 {% endfunc %}

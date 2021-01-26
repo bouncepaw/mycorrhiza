@@ -11,11 +11,11 @@ type navEntry struct {
 var navEntries = []navEntry{
 	{"page", "Hypha"},
 	{"edit", "Edit"},
-	{"text", "Raw text"},
 	{"history", "History"},
 	{"revision", "NOT REACHED"},
 	{"rename-ask", "Rename"},
 	{"delete-ask", "Delete"},
+	{"text", "Raw text"},
 }
 %}
 
@@ -56,3 +56,9 @@ var navEntries = []navEntry{
 {% endif %}
 {% endfunc %}
 
+{% func relativeHyphae(relatives string) %}
+<aside class="relative-hyphae layout-card">
+	<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+	{%s= relatives %}
+</aside>
+{% endfunc %}

@@ -37,11 +37,11 @@ type navEntry struct {
 var navEntries = []navEntry{
 	{"page", "Hypha"},
 	{"edit", "Edit"},
-	{"text", "Raw text"},
 	{"history", "History"},
 	{"revision", "NOT REACHED"},
 	{"rename-ask", "Rename"},
 	{"delete-ask", "Delete"},
+	{"text", "Raw text"},
 }
 
 //line templates/common.qtpl:22
@@ -210,4 +210,46 @@ func userMenuHTML(u *user.User) string {
 //line templates/common.qtpl:57
 	return qs422016
 //line templates/common.qtpl:57
+}
+
+//line templates/common.qtpl:59
+func streamrelativeHyphae(qw422016 *qt422016.Writer, relatives string) {
+//line templates/common.qtpl:59
+	qw422016.N().S(`
+<aside class="relative-hyphae layout-card">
+	<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+	`)
+//line templates/common.qtpl:62
+	qw422016.N().S(relatives)
+//line templates/common.qtpl:62
+	qw422016.N().S(`
+</aside>
+`)
+//line templates/common.qtpl:64
+}
+
+//line templates/common.qtpl:64
+func writerelativeHyphae(qq422016 qtio422016.Writer, relatives string) {
+//line templates/common.qtpl:64
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/common.qtpl:64
+	streamrelativeHyphae(qw422016, relatives)
+//line templates/common.qtpl:64
+	qt422016.ReleaseWriter(qw422016)
+//line templates/common.qtpl:64
+}
+
+//line templates/common.qtpl:64
+func relativeHyphae(relatives string) string {
+//line templates/common.qtpl:64
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/common.qtpl:64
+	writerelativeHyphae(qb422016, relatives)
+//line templates/common.qtpl:64
+	qs422016 := string(qb422016.B)
+//line templates/common.qtpl:64
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/common.qtpl:64
+	return qs422016
+//line templates/common.qtpl:64
 }

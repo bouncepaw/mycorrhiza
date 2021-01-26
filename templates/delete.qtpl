@@ -3,7 +3,8 @@
 This dialog is to be shown to a user when they try to delete a hypha.
 {% func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
 {%= navHTML(rq, hyphaName, "delete-ask") %}
-<main>
+<div class="layout">
+<main class="main-width">
 {% if isOld %}
 	<section>
 		<h1>Delete {%s hyphaName %}?</h1>
@@ -16,6 +17,7 @@ This dialog is to be shown to a user when they try to delete a hypha.
 	{%= cannotDeleteDueToNonExistence(hyphaName) %}
 {% endif %}
 </main>
+</div>
 {% endfunc %}
 
 {% func cannotDeleteDueToNonExistence(hyphaName string) %}

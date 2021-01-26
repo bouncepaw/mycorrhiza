@@ -1,9 +1,11 @@
 {% import "net/http" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
 {%s= navHTML(rq, hyphaName, "edit") %}
-<main class="edit edit_no-preview">
-	<h1>Edit {%s hyphaName %}</h1>
+<div class="layout">
+<main class="main-width edit edit_no-preview">
+	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
@@ -14,11 +16,13 @@
 		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
+</div>
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
 {%s= navHTML(rq, hyphaName, "edit") %}
-<main class="edit edit_with-preview">
+<div class="layout">
+<main class="main-width edit edit_with-preview">
 	<h1>Edit {%s hyphaName %} (preview)</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
@@ -32,4 +36,5 @@
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<section class="edit__preview">{%s= renderedPage %}</section>
 </main>
+</div>
 {% endfunc %}

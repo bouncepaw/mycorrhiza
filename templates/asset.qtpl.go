@@ -85,12 +85,14 @@ html { height:100%; padding:0; }
 body {height:100%; margin:0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
-.edit_no-preview {height:100%;}
-.edit_with-preview .edit-form textarea { min-height: 500px; }
+
+.edit { min-height: 80vh; }
+.edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
-.edit-form {height:90%;}
-.edit-form textarea {width:100%;height:90%;}
+.edit-form {height:70vh;}
+.edit-form textarea {width:100%;height:95%;}
 .edit-form__save { font-weight: bold; }
+
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
@@ -220,6 +222,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
+.navitree__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }

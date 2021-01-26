@@ -7,163 +7,170 @@ package templates
 //line templates/mutators.qtpl:1
 import "net/http"
 
-//line templates/mutators.qtpl:3
+//line templates/mutators.qtpl:2
+import "github.com/bouncepaw/mycorrhiza/util"
+
+//line templates/mutators.qtpl:4
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line templates/mutators.qtpl:3
+//line templates/mutators.qtpl:4
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line templates/mutators.qtpl:3
+//line templates/mutators.qtpl:4
 func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line templates/mutators.qtpl:3
+//line templates/mutators.qtpl:4
 	qw422016.N().S(`
 `)
-//line templates/mutators.qtpl:4
+//line templates/mutators.qtpl:5
 	qw422016.N().S(navHTML(rq, hyphaName, "edit"))
-//line templates/mutators.qtpl:4
+//line templates/mutators.qtpl:5
 	qw422016.N().S(`
-<main class="edit edit_no-preview">
-	<h1>Edit `)
-//line templates/mutators.qtpl:6
-	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:6
+<div class="layout">
+<main class="main-width edit edit_no-preview">
+	<h1 class="edit__title">Edit `)
+//line templates/mutators.qtpl:8
+	qw422016.E().S(util.BeautifulName(hyphaName))
+//line templates/mutators.qtpl:8
 	qw422016.N().S(`</h1>
 	`)
-//line templates/mutators.qtpl:7
+//line templates/mutators.qtpl:9
 	qw422016.N().S(warning)
-//line templates/mutators.qtpl:7
+//line templates/mutators.qtpl:9
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line templates/mutators.qtpl:9
+//line templates/mutators.qtpl:11
 	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:9
+//line templates/mutators.qtpl:11
 	qw422016.N().S(`">
 		<textarea name="text">`)
-//line templates/mutators.qtpl:10
+//line templates/mutators.qtpl:12
 	qw422016.E().S(textAreaFill)
-//line templates/mutators.qtpl:10
+//line templates/mutators.qtpl:12
 	qw422016.N().S(`</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/page/`)
-//line templates/mutators.qtpl:14
+//line templates/mutators.qtpl:16
 	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:14
+//line templates/mutators.qtpl:16
 	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
+</div>
 `)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 }
 
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 func WriteEditHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	StreamEditHTML(qw422016, rq, hyphaName, textAreaFill, warning)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	qt422016.ReleaseWriter(qw422016)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 }
 
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string {
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	WriteEditHTML(qb422016, rq, hyphaName, textAreaFill, warning)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	qs422016 := string(qb422016.B)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 	return qs422016
-//line templates/mutators.qtpl:17
+//line templates/mutators.qtpl:20
 }
 
-//line templates/mutators.qtpl:19
+//line templates/mutators.qtpl:22
 func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) {
-//line templates/mutators.qtpl:19
+//line templates/mutators.qtpl:22
 	qw422016.N().S(`
 `)
-//line templates/mutators.qtpl:20
+//line templates/mutators.qtpl:23
 	qw422016.N().S(navHTML(rq, hyphaName, "edit"))
-//line templates/mutators.qtpl:20
+//line templates/mutators.qtpl:23
 	qw422016.N().S(`
-<main class="edit edit_with-preview">
+<div class="layout">
+<main class="main-width edit edit_with-preview">
 	<h1>Edit `)
-//line templates/mutators.qtpl:22
+//line templates/mutators.qtpl:26
 	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:22
+//line templates/mutators.qtpl:26
 	qw422016.N().S(` (preview)</h1>
 	`)
-//line templates/mutators.qtpl:23
+//line templates/mutators.qtpl:27
 	qw422016.N().S(warning)
-//line templates/mutators.qtpl:23
+//line templates/mutators.qtpl:27
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line templates/mutators.qtpl:25
+//line templates/mutators.qtpl:29
 	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:25
+//line templates/mutators.qtpl:29
 	qw422016.N().S(`">
 		<textarea name="text">`)
-//line templates/mutators.qtpl:26
+//line templates/mutators.qtpl:30
 	qw422016.E().S(textAreaFill)
-//line templates/mutators.qtpl:26
+//line templates/mutators.qtpl:30
 	qw422016.N().S(`</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/page/`)
-//line templates/mutators.qtpl:30
+//line templates/mutators.qtpl:34
 	qw422016.E().S(hyphaName)
-//line templates/mutators.qtpl:30
+//line templates/mutators.qtpl:34
 	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<section class="edit__preview">`)
-//line templates/mutators.qtpl:33
+//line templates/mutators.qtpl:37
 	qw422016.N().S(renderedPage)
-//line templates/mutators.qtpl:33
+//line templates/mutators.qtpl:37
 	qw422016.N().S(`</section>
 </main>
+</div>
 `)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 }
 
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 func WritePreviewHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) {
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	StreamPreviewHTML(qw422016, rq, hyphaName, textAreaFill, warning, renderedPage)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	qt422016.ReleaseWriter(qw422016)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 }
 
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) string {
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	WritePreviewHTML(qb422016, rq, hyphaName, textAreaFill, warning, renderedPage)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	qs422016 := string(qb422016.B)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 	return qs422016
-//line templates/mutators.qtpl:35
+//line templates/mutators.qtpl:40
 }

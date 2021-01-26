@@ -1,5 +1,6 @@
 {% func RecentChangesHTML(changes []string, n int) %}
-<main class="recent-changes">
+<div class="layout">
+<main class="main-width recent-changes">
 	<h1>Recent Changes</h1>
 	<p><a href="/">← Back</a></p>
 
@@ -40,4 +41,5 @@
 	{% endif %}
 	</section>
 </main>
+</div>
 {% endfunc %}

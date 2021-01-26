@@ -27,7 +27,8 @@
 {% endfunc %}
 
 {% func HyphaListHTML(tbody string, pageCount int) %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<h1>List of hyphae</h1>
 	<p>This wiki has {%d pageCount %} hyphae.</p>
 	<table>
@@ -42,6 +43,7 @@
 		</tbody>
 	</table>
 </main>
+</div>
 {% endfunc %}
 
 {% func HyphaListRowHTML(hyphaName, binaryMime string, binaryPresent bool) %}
@@ -56,7 +58,8 @@
 {% endfunc %}
 
 {% func AboutHTML() %}
-<main>
+<div class="layout">
+<main class="main-width">
 	<section>
 		<h1>About {%s util.SiteName %}</h1>
 		<ul>
@@ -75,4 +78,5 @@
 		<p>See <a href="/list">/list</a> for information about hyphae on this wiki.</p>
 	</section>
 </main>
+</div>
 {% endfunc %}
