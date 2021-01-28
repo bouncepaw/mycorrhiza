@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
+	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -114,7 +115,7 @@ func UploadBinary(hyphaName, mime string, file multipart.File, u *user.User) *hi
 	if err != nil {
 		return hop.WithError(err).Apply()
 	}
-	return uploadHelp(hop, hyphaName, MimeToExtension(mime), data, u)
+	return uploadHelp(hop, hyphaName, mimetype.ToExtension(mime), data, u)
 }
 
 // DeleteHypha deletes hypha and makes a history record about that.
@@ -254,48 +255,6 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 	}
 }
 
-// Index finds all hypha files in the full `path` and saves them to HyphaStorage. This function is recursive.
-func Index(path string) {
-	nodes, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
-		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
-			Index(filepath.Join(path, node.Name()))
-			continue
-		}
-
-		var (
-			hyphaPartPath           = filepath.Join(path, node.Name())
-			hyphaName, isText, skip = DataFromFilename(hyphaPartPath)
-			hyphaData               *HyphaData
-		)
-		if !skip {
-			// Reuse the entry for existing hyphae, create a new one for those that do not exist yet.
-			if hd, ok := HyphaStorage[hyphaName]; ok {
-				hyphaData = hd
-			} else {
-				hyphaData = &HyphaData{}
-				HyphaStorage[hyphaName] = hyphaData
-				hyphae.IncrementCount()
-			}
-			if isText {
-				hyphaData.textPath = hyphaPartPath
-			} else {
-				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
-				if hyphaData.binaryPath != "" {
-					log.Println("There is a file collision for binary part of a hypha:", hyphaData.binaryPath, "and", hyphaPartPath, "-- going on with the latter")
-				}
-				hyphaData.binaryPath = hyphaPartPath
-			}
-		}
-
-	}
-}
-
 // FetchTextPart tries to read text file in the `d`. If there is no file, empty string is returned.
 func FetchTextPart(d *HyphaData) (string, error) {
 	if d.textPath == "" {
@@ -325,5 +284,47 @@ func setHeaderLinks() {
 			text := string(contents)
 			util.ParseHeaderLinks(text, markup.Rocketlink)
 		}
+	}
+}
+
+// Index finds all hypha files in the full `path` and saves them to HyphaStorage. This function is recursive.
+func Index(path string) {
+	nodes, err := ioutil.ReadDir(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, node := range nodes {
+		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
+		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
+			Index(filepath.Join(path, node.Name()))
+			continue
+		}
+
+		var (
+			hyphaPartPath           = filepath.Join(path, node.Name())
+			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
+			hyphaData               *HyphaData
+		)
+		if !skip {
+			// Reuse the entry for existing hyphae, create a new one for those that do not exist yet.
+			if hd, ok := HyphaStorage[hyphaName]; ok {
+				hyphaData = hd
+			} else {
+				hyphaData = &HyphaData{}
+				HyphaStorage[hyphaName] = hyphaData
+				hyphae.IncrementCount()
+			}
+			if isText {
+				hyphaData.textPath = hyphaPartPath
+			} else {
+				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
+				if hyphaData.binaryPath != "" {
+					log.Println("There is a file collision for binary part of a hypha:", hyphaData.binaryPath, "and", hyphaPartPath, "-- going on with the latter")
+				}
+				hyphaData.binaryPath = hyphaPartPath
+			}
+		}
+
 	}
 }

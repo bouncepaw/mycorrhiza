@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -64,4 +65,17 @@ func BeautifulName(uglyName string) string {
 		return uglyName
 	}
 	return strings.Title(strings.ReplaceAll(uglyName, "_", " "))
+}
+
+// CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
+func CanonicalName(name string) string {
+	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+}
+
+// HyphaPattern is a pattern which all hyphae must match.
+var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
+
+// IsCanonicalName checks if the `name` is canonical.
+func IsCanonicalName(name string) bool {
+	return HyphaPattern.MatchString(name)
 }

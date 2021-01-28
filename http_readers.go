@@ -11,6 +11,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/markup"
+	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -71,7 +72,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := HyphaNameFromRq(rq, "binary")
 	if data, ok := HyphaStorage[hyphaName]; ok {
 		log.Println("Serving", data.binaryPath)
-		w.Header().Set("Content-Type", ExtensionToMime(filepath.Ext(data.binaryPath)))
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(data.binaryPath)))
 		http.ServeFile(w, rq, data.binaryPath)
 	}
 }
