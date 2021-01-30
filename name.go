@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -46,7 +47,14 @@ func naviTitle(canonicalName string) string {
 	return html + "</h1>"
 }
 
-// HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url. For url /page/hypha, the action would be "page".
-func HyphaNameFromRq(rq *http.Request, action string) string {
-	return CanonicalName(strings.TrimPrefix(rq.URL.Path, "/"+action+"/"))
+// HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
+func HyphaNameFromRq(rq *http.Request, actions ...string) string {
+	p := rq.URL.Path
+	for _, action := range actions {
+		if strings.HasPrefix(p, "/"+action+"/") {
+			return util.CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
+		}
+	}
+	log.Fatal("HyphaNameFromRq: no matching action passed")
+	return ""
 }

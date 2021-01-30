@@ -19,7 +19,8 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/page/", handlerPage)
+	http.HandleFunc("/page/", handlerHypha)
+	http.HandleFunc("/hypha/", handlerHypha)
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
 	http.HandleFunc("/rev/", handlerRevision)
@@ -77,11 +78,11 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-// handlerPage is the main hypha action that displays the hypha and the binary upload form along with some navigation.
-func handlerPage(w http.ResponseWriter, rq *http.Request) {
+// handlerHypha is the main hypha action that displays the hypha and the binary upload form along with some navigation.
+func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
-		hyphaName         = HyphaNameFromRq(rq, "page")
+		hyphaName         = HyphaNameFromRq(rq, "page", "hypha")
 		data, hyphaExists = HyphaStorage[hyphaName]
 		hasAmnt           = hyphaExists && data.binaryPath != ""
 		contents          string
