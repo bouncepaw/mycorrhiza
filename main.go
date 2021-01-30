@@ -160,6 +160,12 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML(), user.FromRequest(rq))))
 }
 
+func handlerUserList(w http.ResponseWriter, rq *http.Request) {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(base("User list", templates.UserListHTML(), user.FromRequest(rq))))
+}
+
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
@@ -193,6 +199,7 @@ func main() {
 	http.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
 	http.HandleFunc("/random", handlerRandom)
 	http.HandleFunc("/about", handlerAbout)
+	http.HandleFunc("/user-list", handlerUserList)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")

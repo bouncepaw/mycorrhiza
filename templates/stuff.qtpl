@@ -26,6 +26,49 @@
 </html>
 {% endfunc %}
 
+{% func UserListHTML() %}
+<div class="layout">
+<main class="main-width user-list">
+	<h1>List of users</h1>
+{% code
+var (
+	admins = make([]string, 0)
+	moderators = make([]string, 0)
+	editors = make([]string, 0)
+)
+for u := range user.YieldUsers() {
+	switch u.Group {
+	case "admin":
+		admins = append(admins, u.Name)
+	case "moderator":
+		moderators = append(moderators, u.Name)
+	case "editor", "trusted":
+		editors = append(editors, u.Name)
+	}
+}
+%}
+	<section>
+		<h2>Admins</h2>
+		<ol>{% for _, name := range admins %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+	<section>
+		<h2>Moderators</h2>
+		<ol>{% for _, name := range moderators %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+	<section>
+		<h2>Editors</h2>
+		<ol>{% for _, name := range editors %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+</main>
+</div>
+{% endfunc %}
+
 {% func HyphaListHTML(tbody string, pageCount int) %}
 <div class="layout">
 <main class="main-width">

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html"
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -101,6 +102,17 @@ func getTextNode(input *bytes.Buffer) string {
 		}
 	}
 	return textNodeBuffer.String()
+}
+
+var (
+	dangerousSymbols = "<>{}|\\^[]`,()"
+	reLink           = regexp.MustCompile(fmt.Sprintf(`[^[]{0,2}((https|http|gemini|gopher)://[^%[1]s]+)|(mailto:[^%[1]s]+)[^]]{0,2}`, dangerousSymbols))
+)
+
+// TODO:
+func doRegexpStuff(input string) string {
+	reLink.ReplaceAllString(input, "[[$1]]")
+	return ""
 }
 
 func ParagraphToHtml(hyphaName, input string) string {
