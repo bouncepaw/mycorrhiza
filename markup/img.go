@@ -5,51 +5,13 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/link"
 )
 
 var imgRe = regexp.MustCompile(`^img\s+{`)
 
 func MatchesImg(line string) bool {
 	return imgRe.MatchString(line)
-}
-
-type imgEntry struct {
-	trimmedPath string
-	path        strings.Builder
-	sizeW       strings.Builder
-	sizeH       strings.Builder
-	desc        strings.Builder
-}
-
-func (entry *imgEntry) descriptionAsHtml(hyphaName string) (html string) {
-	if entry.desc.Len() == 0 {
-		return ""
-	}
-	lines := strings.Split(entry.desc.String(), "\n")
-	for _, line := range lines {
-		if line = strings.TrimSpace(line); line != "" {
-			if html != "" {
-				html += `<br>`
-			}
-			html += ParagraphToHtml(hyphaName, line)
-		}
-	}
-	return `<figcaption>` + html + `</figcaption>`
-}
-
-func (entry *imgEntry) sizeWAsAttr() string {
-	if entry.sizeW.Len() == 0 {
-		return ""
-	}
-	return ` width="` + entry.sizeW.String() + `"`
-}
-
-func (entry *imgEntry) sizeHAsAttr() string {
-	if entry.sizeH.Len() == 0 {
-		return ""
-	}
-	return ` height="` + entry.sizeH.String() + `"`
 }
 
 type imgState int
@@ -71,6 +33,8 @@ type Img struct {
 
 func (img *Img) pushEntry() {
 	if strings.TrimSpace(img.currEntry.path.String()) != "" {
+		img.currEntry.srclink = link.From(img.currEntry.path.String(), "", img.hyphaName)
+		img.currEntry.srclink.DoubtExistence()
 		img.entries = append(img.entries, img.currEntry)
 		img.currEntry = imgEntry{}
 		img.currEntry.path.Reset()
@@ -177,23 +141,6 @@ func ImgFromFirstLine(line, hyphaName string) (img *Img, shouldGoBackToNormal bo
 	return img, img.Process(line)
 }
 
-func (img *Img) binaryPathFor(path string) string {
-	path = strings.TrimSpace(path)
-	if strings.IndexRune(path, ':') != -1 || strings.IndexRune(path, '/') == 0 {
-		return path
-	} else {
-		return "/binary/" + xclCanonicalName(img.hyphaName, path)
-	}
-}
-
-func (img *Img) ogBinaryPathFor(path string) string {
-	path = img.binaryPathFor(path)
-	if strings.HasPrefix(path, "/binary/") {
-		return util.URL + path
-	}
-	return path
-}
-
 func (img *Img) pagePathFor(path string) string {
 	path = strings.TrimSpace(path)
 	if strings.IndexRune(path, ':') != -1 || strings.IndexRune(path, '/') == 0 {
@@ -214,30 +161,18 @@ func parseDimensions(dimensions string) (sizeW, sizeH string) {
 	return
 }
 
-func (img *Img) checkLinks() map[string]bool {
-	m := make(map[string]bool)
-	for i, entry := range img.entries {
-		// Also trim them for later use
-		entry.trimmedPath = strings.TrimSpace(entry.path.String())
-		isAbsoluteUrl := strings.ContainsRune(entry.trimmedPath, ':')
-		if !isAbsoluteUrl {
-			entry.trimmedPath = canonicalName(entry.trimmedPath)
-		}
-		img.entries[i] = entry
-		m[entry.trimmedPath] = isAbsoluteUrl
-	}
-	HyphaIterate(func(hyphaName string) {
+func (img *Img) markExistenceOfSrcLinks() {
+	HyphaIterate(func(hn string) {
 		for _, entry := range img.entries {
-			if hyphaName == xclCanonicalName(img.hyphaName, entry.trimmedPath) {
-				m[entry.trimmedPath] = true
+			if hn == entry.srclink.Address {
+				entry.srclink.DestinationUnknown = false
 			}
 		}
 	})
-	return m
 }
 
 func (img *Img) ToHtml() (html string) {
-	linkAvailabilityMap := img.checkLinks()
+	img.markExistenceOfSrcLinks()
 	isOneImageOnly := len(img.entries) == 1 && img.entries[0].desc.Len() == 0
 	if isOneImageOnly {
 		html += `<section class="img-gallery img-gallery_one-image">`
@@ -247,15 +182,19 @@ func (img *Img) ToHtml() (html string) {
 
 	for _, entry := range img.entries {
 		html += `<figure>`
-		// If is existing hypha or an external path
-		if linkAvailabilityMap[entry.trimmedPath] {
+		if entry.srclink.DestinationUnknown {
+			html += fmt.Sprintf(
+				`<a class="%s" href="%s">Hypha <i>%s</i> does not exist</a>`,
+				entry.srclink.Classes(),
+				entry.srclink.Href(),
+				entry.srclink.Address)
+		} else {
 			html += fmt.Sprintf(
 				`<a href="%s"><img src="%s" %s %s></a>`,
-				img.pagePathFor(entry.trimmedPath),
-				img.binaryPathFor(entry.trimmedPath),
-				entry.sizeWAsAttr(), entry.sizeHAsAttr())
-		} else { // If is a non-existent hypha
-			html += fmt.Sprintf(`<a class="wikilink_new" href="%s">Hypha <em>%s</em> does not exist</a>`, img.pagePathFor(entry.trimmedPath), entry.trimmedPath)
+				entry.srclink.Href(),
+				entry.srclink.ImgSrc(),
+				entry.sizeWAsAttr(),
+				entry.sizeHAsAttr())
 		}
 		html += entry.descriptionAsHtml(img.hyphaName)
 		html += `</figure>`

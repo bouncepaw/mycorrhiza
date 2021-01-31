@@ -41,6 +41,13 @@ type Link struct {
 	RelativeTo string
 }
 
+// DoubtExistence sets DestinationUnknown to true if the link is local hypha link.
+func (l *Link) DoubtExistence() {
+	if l.Kind == LinkLocalHypha {
+		l.DestinationUnknown = true
+	}
+}
+
 // Classes returns CSS class string for given link.
 func (l *Link) Classes() string {
 	if l.Kind == LinkExternal {
@@ -53,13 +60,23 @@ func (l *Link) Classes() string {
 	return classes
 }
 
-// Href returns content for the href attrubite. You should always use it.
+// Href returns content for the href attrubite for hyperlink. You should always use it.
 func (l *Link) Href() string {
 	switch l.Kind {
 	case LinkExternal, LinkLocalRoot:
 		return l.Address
 	default:
 		return "/hypha/" + l.Address
+	}
+}
+
+// ImgSrc returns content for src attribute of img tag. Used with `img{}`.
+func (l *Link) ImgSrc() string {
+	switch l.Kind {
+	case LinkExternal, LinkLocalRoot:
+		return l.Address
+	default:
+		return "/binary/" + l.Address
 	}
 }
 
@@ -100,6 +117,7 @@ func From(address, display, hyphaName string) *Link {
 		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(path.Join(path.Dir(hyphaName), address[3:]))
 	default:
+		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(address)
 	}
 

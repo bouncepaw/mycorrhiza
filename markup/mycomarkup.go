@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/link"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -57,15 +58,16 @@ func (md *MycoDoc) OpenGraphHTML() string {
 		ogTag("title", md.hyphaName),
 		ogTag("type", "article"),
 		ogTag("image", md.firstImageURL),
-		ogTag("url", util.URL+"/page/"+md.hyphaName),
+		ogTag("url", util.URL+"/hypha/"+md.hyphaName),
 		ogTag("determiner", ""),
 		ogTag("description", htmlTagRe.ReplaceAllString(md.description, "")),
 	}, "\n")
 }
 
 func (md *MycoDoc) ogFillVars() *MycoDoc {
+	md.firstImageURL = util.URL + "/favicon.ico"
 	foundDesc := false
-	md.firstImageURL = HyphaImageForOG(md.hyphaName)
+	foundImg := false
 	for _, line := range md.ast {
 		switch v := line.contents.(type) {
 		case string:
@@ -74,8 +76,12 @@ func (md *MycoDoc) ogFillVars() *MycoDoc {
 				foundDesc = true
 			}
 		case Img:
-			if len(v.entries) > 0 {
-				md.firstImageURL = v.entries[0].path.String()
+			if !foundImg && len(v.entries) > 0 {
+				md.firstImageURL = v.entries[0].srclink.ImgSrc()
+				if v.entries[0].srclink.Kind != link.LinkExternal {
+					md.firstImageURL = util.URL + md.firstImageURL
+				}
+				foundImg = true
 			}
 		}
 	}
@@ -153,6 +159,7 @@ func crawl(name, content string) []string {
 				preAcc += html.EscapeString(line)
 			}
 		}
+		break
 	}
 
 	return []string{}
