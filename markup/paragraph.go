@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html"
-	"regexp"
 	"strings"
 	"unicode"
 )
@@ -56,7 +55,8 @@ func getLinkNode(input *bytes.Buffer, hyphaName string, isBracketedLink bool) st
 		} else if isBracketedLink && b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
 			input.Next(1)
 			break
-		} else if !isBracketedLink && unicode.IsSpace(rune(b)) {
+		} else if !isBracketedLink && (unicode.IsSpace(rune(b)) || strings.ContainsRune("<>{}|\\^[]`,()", rune(b))) {
+			input.UnreadByte()
 			break
 		} else {
 			currBuf.WriteByte(b)
@@ -102,17 +102,6 @@ func getTextNode(input *bytes.Buffer) string {
 		}
 	}
 	return textNodeBuffer.String()
-}
-
-var (
-	dangerousSymbols = "<>{}|\\^[]`,()"
-	reLink           = regexp.MustCompile(fmt.Sprintf(`[^[]{0,2}((https|http|gemini|gopher)://[^%[1]s]+)|(mailto:[^%[1]s]+)[^]]{0,2}`, dangerousSymbols))
-)
-
-// TODO:
-func doRegexpStuff(input string) string {
-	reLink.ReplaceAllString(input, "[[$1]]")
-	return ""
 }
 
 func ParagraphToHtml(hyphaName, input string) string {
