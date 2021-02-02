@@ -119,11 +119,14 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	if _, err := os.Stat(WikiDir + "/static/common.css"); err == nil {
-		http.ServeFile(w, rq, WikiDir+"/static/common.css")
+	if _, err := os.Stat(util.WikiDir + "/static/common.css"); err == nil {
+		http.ServeFile(w, rq, util.WikiDir+"/static/common.css")
 	} else {
 		w.Header().Set("Content-Type", "text/css;charset=utf-8")
 		w.Write([]byte(templates.DefaultCSS()))
+	}
+	if bytes, err := ioutil.ReadFile(util.WikiDir + "/static/custom.css"); err == nil {
+		w.Write(bytes)
 	}
 }
 
