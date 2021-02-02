@@ -53,7 +53,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, page, u)))
+	w.Write([]byte(base(util.BeautifulName(hyphaName), page, u)))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -104,7 +104,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName, IterateHyphaNamesWith)
 	util.HTTP200Page(w,
 		templates.BaseHTML(
-			hyphaName,
+			util.BeautifulName(hyphaName),
 			templates.PageHTML(rq, hyphaName,
 				naviTitle(hyphaName),
 				contents,
