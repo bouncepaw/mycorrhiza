@@ -35,8 +35,8 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		revHash           = shorterUrl[:firstSlashIndex]
 		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		textPath          = hyphaName + ".myco"
-		textContents, err = history.FileAtRevision(textPath, revHash)
+		TextPath          = hyphaName + ".myco"
+		textContents, err = history.FileAtRevision(TextPath, revHash)
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
@@ -61,9 +61,9 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "text")
 	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.textPath)
+		log.Println("Serving", data.TextPath)
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		http.ServeFile(w, rq, data.textPath)
+		http.ServeFile(w, rq, data.TextPath)
 	}
 }
 
@@ -72,9 +72,9 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "binary")
 	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.binaryPath)
-		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(data.binaryPath)))
-		http.ServeFile(w, rq, data.binaryPath)
+		log.Println("Serving", data.BinaryPath)
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(data.BinaryPath)))
+		http.ServeFile(w, rq, data.BinaryPath)
 	}
 }
 
@@ -84,14 +84,14 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName         = HyphaNameFromRq(rq, "page", "hypha")
 		data, hyphaExists = HyphaStorage[hyphaName]
-		hasAmnt           = hyphaExists && data.binaryPath != ""
+		hasAmnt           = hyphaExists && data.BinaryPath != ""
 		contents          string
 		openGraph         string
 		u                 = user.FromRequest(rq)
 	)
 	if hyphaExists {
-		fileContentsT, errT := ioutil.ReadFile(data.textPath)
-		_, errB := os.Stat(data.binaryPath)
+		fileContentsT, errT := ioutil.ReadFile(data.TextPath)
+		_, errB := os.Stat(data.BinaryPath)
 		if errT == nil {
 			md := markup.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsHTML()

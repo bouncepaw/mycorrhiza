@@ -26,7 +26,7 @@ func init() {
 	markup.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
 		if hyphaData, ok := HyphaStorage[hyphaName]; ok {
 			rawText, err = FetchTextPart(hyphaData)
-			if hyphaData.binaryPath != "" {
+			if hyphaData.BinaryPath != "" {
 				binaryBlock = binaryHtmlBlock(hyphaName, hyphaData)
 			}
 		} else {
@@ -36,7 +36,7 @@ func init() {
 	}
 	markup.HyphaIterate = IterateHyphaNamesWith
 	markup.HyphaImageForOG = func(hyphaName string) string {
-		if hd, isOld := GetHyphaData(hyphaName); isOld && hd.binaryPath != "" {
+		if hd, isOld := GetHyphaData(hyphaName); isOld && hd.BinaryPath != "" {
 			return util.URL + "/binary/" + hyphaName
 		}
 		return util.URL + "/favicon.ico"
@@ -53,20 +53,17 @@ func GetHyphaData(hyphaName string) (hyphaData *HyphaData, isOld bool) {
 }
 
 // HyphaData represents a hypha's meta information: binary and text parts rooted paths and content types.
-type HyphaData struct {
-	textPath   string
-	binaryPath string
-}
+type HyphaData hyphae.Hypha
 
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(hop *history.HistoryOp, hyphaName, ext string, data []byte, u *user.User) *history.HistoryOp {
 	var (
 		hyphaData, isOld = GetHyphaData(hyphaName)
 		fullPath         = filepath.Join(WikiDir, hyphaName+ext)
-		originalFullPath = &hyphaData.textPath
+		originalFullPath = &hyphaData.TextPath
 	)
 	if hop.Type == history.TypeEditBinary {
-		originalFullPath = &hyphaData.binaryPath
+		originalFullPath = &hyphaData.BinaryPath
 	}
 
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
@@ -121,7 +118,7 @@ func UploadBinary(hyphaName, mime string, file multipart.File, u *user.User) *hi
 // DeleteHypha deletes hypha and makes a history record about that.
 func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.HistoryOp {
 	hop := history.Operation(history.TypeDeleteHypha).
-		WithFilesRemoved(hd.textPath, hd.binaryPath).
+		WithFilesRemoved(hd.TextPath, hd.BinaryPath).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", hyphaName)).
 		WithUser(u).
 		Apply()
@@ -135,18 +132,18 @@ func (hd *HyphaData) DeleteHypha(hyphaName string, u *user.User) *history.Histor
 // UnattachHypha unattaches hypha and makes a history record about that.
 func (hd *HyphaData) UnattachHypha(hyphaName string, u *user.User) *history.HistoryOp {
 	hop := history.Operation(history.TypeUnattachHypha).
-		WithFilesRemoved(hd.binaryPath).
+		WithFilesRemoved(hd.BinaryPath).
 		WithMsg(fmt.Sprintf("Unattach ‘%s’", hyphaName)).
 		WithUser(u).
 		Apply()
 	if len(hop.Errs) == 0 {
 		hd, ok := HyphaStorage[hyphaName]
 		if ok {
-			if hd.binaryPath != "" {
-				hd.binaryPath = ""
+			if hd.BinaryPath != "" {
+				hd.BinaryPath = ""
 			}
 			// If nothing is left of the hypha
-			if hd.textPath == "" {
+			if hd.TextPath == "" {
 				delete(HyphaStorage, hyphaName)
 				hyphae.DecrementCount()
 			}
@@ -170,11 +167,11 @@ func renamingPairs(hyphaNames []string, replaceName func(string) string) (map[st
 			if _, nameUsed := HyphaStorage[replaceName(hn)]; nameUsed {
 				return nil, errors.New("Hypha " + replaceName(hn) + " already exists")
 			}
-			if hd.textPath != "" {
-				renameMap[hd.textPath] = replaceName(hd.textPath)
+			if hd.TextPath != "" {
+				renameMap[hd.TextPath] = replaceName(hd.TextPath)
 			}
-			if hd.binaryPath != "" {
-				renameMap[hd.binaryPath] = replaceName(hd.binaryPath)
+			if hd.BinaryPath != "" {
+				renameMap[hd.BinaryPath] = replaceName(hd.BinaryPath)
 			}
 		}
 	}
@@ -185,8 +182,8 @@ func renamingPairs(hyphaNames []string, replaceName func(string) string) (map[st
 func relocateHyphaData(hyphaNames []string, replaceName func(string) string) {
 	for _, hyphaName := range hyphaNames {
 		if hd, ok := HyphaStorage[hyphaName]; ok {
-			hd.textPath = replaceName(hd.textPath)
-			hd.binaryPath = replaceName(hd.binaryPath)
+			hd.TextPath = replaceName(hd.TextPath)
+			hd.BinaryPath = replaceName(hd.BinaryPath)
 			HyphaStorage[replaceName(hyphaName)] = hd
 			delete(HyphaStorage, hyphaName)
 		}
@@ -224,7 +221,7 @@ func RenameHypha(hyphaName, newName string, recursive bool, u *user.User) *histo
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.
 func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
-	switch filepath.Ext(hd.binaryPath) {
+	switch filepath.Ext(hd.BinaryPath) {
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-img">
@@ -257,16 +254,16 @@ func binaryHtmlBlock(hyphaName string, hd *HyphaData) string {
 
 // FetchTextPart tries to read text file in the `d`. If there is no file, empty string is returned.
 func FetchTextPart(d *HyphaData) (string, error) {
-	if d.textPath == "" {
+	if d.TextPath == "" {
 		return "", nil
 	}
-	_, err := os.Stat(d.textPath)
+	_, err := os.Stat(d.TextPath)
 	if os.IsNotExist(err) {
 		return "", nil
 	} else if err != nil {
 		return "", err
 	}
-	text, err := ioutil.ReadFile(d.textPath)
+	text, err := ioutil.ReadFile(d.TextPath)
 	if err != nil {
 		return "", err
 	}
@@ -277,7 +274,7 @@ func setHeaderLinks() {
 	if userLinksHypha, ok := GetHyphaData(util.HeaderLinksHypha); !ok {
 		util.SetDefaultHeaderLinks()
 	} else {
-		contents, err := ioutil.ReadFile(userLinksHypha.textPath)
+		contents, err := ioutil.ReadFile(userLinksHypha.TextPath)
 		if err != nil || len(contents) == 0 {
 			util.SetDefaultHeaderLinks()
 		} else {
@@ -316,13 +313,13 @@ func Index(path string) {
 				hyphae.IncrementCount()
 			}
 			if isText {
-				hyphaData.textPath = hyphaPartPath
+				hyphaData.TextPath = hyphaPartPath
 			} else {
 				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
-				if hyphaData.binaryPath != "" {
-					log.Println("There is a file collision for binary part of a hypha:", hyphaData.binaryPath, "and", hyphaPartPath, "-- going on with the latter")
+				if hyphaData.BinaryPath != "" {
+					log.Println("There is a file collision for binary part of a hypha:", hyphaData.BinaryPath, "and", hyphaPartPath, "-- going on with the latter")
 				}
-				hyphaData.binaryPath = hyphaPartPath
+				hyphaData.BinaryPath = hyphaPartPath
 			}
 		}
 

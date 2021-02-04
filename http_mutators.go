@@ -30,7 +30,7 @@ func handlerUnattachAsk(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "unattach-ask")
 		hd, isOld = HyphaStorage[hyphaName]
-		hasAmnt   = hd != nil && hd.binaryPath != ""
+		hasAmnt   = hd != nil && hd.BinaryPath != ""
 	)
 	if !hasAmnt {
 		HttpErr(w, http.StatusBadRequest, hyphaName, "Cannot unattach", "No attachment attached yet, therefore you cannot unattach")
@@ -49,7 +49,7 @@ func handlerUnattachConfirm(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName        = HyphaNameFromRq(rq, "unattach-confirm")
 		hyphaData, isOld = HyphaStorage[hyphaName]
-		hasAmnt          = hyphaData != nil && hyphaData.binaryPath != ""
+		hasAmnt          = hyphaData != nil && hyphaData.BinaryPath != ""
 		u                = user.FromRequest(rq)
 	)
 	if !u.CanProceed("unattach-confirm") {
