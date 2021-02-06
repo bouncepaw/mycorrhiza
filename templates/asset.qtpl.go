@@ -39,7 +39,6 @@ header { width: 100%; margin-bottom: 1rem; }
 .hypha-tabs__selection { display: inline-block; padding: .25rem; font-weight: bold; }
 
 .relative-hyphae { margin-top: .5rem; }
-.relative-hyphae > ul { margin: 0; padding: .5rem 1rem; }
 .relative-hyphae li { list-style-type: none; }
 
 @media screen and (max-width: 800px) {
@@ -164,6 +163,19 @@ table { border: #ddd 1px solid; border-radius: .25rem; min-width: 4rem; }
 td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
+.navitree { padding: 0; margin: 0; }
+.navitree__trunk ul { padding-left: 1rem; }
+.navitree > .navitree__trunk > ul { padding-left: 2rem; }
+.navitree__entry { }
+.navitree > .navitree__entry > a::before { display: inline-block; width: .5rem; color: #999; margin: 0 .25rem; }
+.navitree > .navitree__entry_infertile > a::before { content: " "} /* nbsp, careful */
+.navitree > .navitree__entry_fertile > a::before { content: "▸"}
+.navitree__trunk { border-left: 1px #999 solid; }
+.navitree > .navitree__trunk { border-left: none; }
+.navitree > .navitree__trunk > a { font-weight: bold; }
+.navitree__link { text-decoration: none; display: block; padding: .25rem; }
+.navitree__link:hover { background-color: #eee; }
+
 /* Color stuff */
 /* Lighter stuff #eee */
 article code,
@@ -209,10 +221,6 @@ blockquote { border-left: 4px black solid; }
 .navi-title { border-bottom: #eee 1px solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
-
-.navitree__node { padding-left: 1rem; }
-.navitree__link { text-decoration: none; display: block; }
-.navitree__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
