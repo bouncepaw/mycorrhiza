@@ -82,6 +82,7 @@ func (l *Link) ImgSrc() string {
 
 // From returns a Link object given these `address` and `display` on relative to given `hyphaName`.
 func From(address, display, hyphaName string) *Link {
+	address = strings.TrimSpace(address)
 	link := Link{
 		SrcAddress: address,
 		SrcDisplay: display,
