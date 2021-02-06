@@ -144,7 +144,8 @@ caption { caption-side: top; font-size: small; }
 .navitree__entry { }
 .navitree > .navitree__entry > a::before { display: inline-block; width: .5rem; color: #999; margin: 0 .25rem; }
 .navitree > .navitree__entry_infertile > a::before { content: " "} /* nbsp, careful */
-.navitree > .navitree__entry_fertile > a::before { content: "▸"}
+.navitree > .navitree__sibling_fertile > a::before { content: "▸"}
+.navitree > .navitree__trunk_fertile > a::before { content: "▾"}
 .navitree__trunk { border-left: 1px #999 solid; }
 .navitree > .navitree__trunk { border-left: none; }
 .navitree > .navitree__trunk > a { font-weight: bold; }
