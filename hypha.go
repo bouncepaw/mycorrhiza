@@ -284,44 +284,43 @@ func setHeaderLinks() {
 	}
 }
 
+func HyphaToTemporaryWorkaround(h *hyphae.Hypha) *HyphaData {
+	return &HyphaData{
+		Name:       h.Name,
+		TextPath:   h.TextPath,
+		BinaryPath: h.BinaryPath,
+	}
+}
+
+// MergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
+func (h *HyphaData) MergeIn(oh *hyphae.Hypha) {
+	if h.TextPath == "" && oh.TextPath != "" {
+		h.TextPath = oh.TextPath
+	}
+	if oh.BinaryPath != "" {
+		if h.BinaryPath != "" {
+			log.Println("There is a file collision for binary part of a hypha:", h.BinaryPath, "and", oh.BinaryPath, "-- going on with the latter")
+		}
+		h.BinaryPath = oh.BinaryPath
+	}
+}
+
 // Index finds all hypha files in the full `path` and saves them to HyphaStorage. This function is recursive.
 func Index(path string) {
-	nodes, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
+	ch := make(chan *hyphae.Hypha, 5)
+
+	go func() {
+		hyphae.Index(path, 0, ch)
+		close(ch)
+	}()
+
+	for h := range ch {
+		if oldHypha, ok := HyphaStorage[h.Name]; ok {
+			oldHypha.MergeIn(h)
+		} else {
+			HyphaStorage[h.Name] = HyphaToTemporaryWorkaround(h)
+			hyphae.IncrementCount()
+		}
 	}
 
-	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
-		if node.IsDir() && isCanonicalName(node.Name()) && node.Name() != ".git" && node.Name() != "static" {
-			Index(filepath.Join(path, node.Name()))
-			continue
-		}
-
-		var (
-			hyphaPartPath           = filepath.Join(path, node.Name())
-			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
-			hyphaData               *HyphaData
-		)
-		if !skip {
-			// Reuse the entry for existing hyphae, create a new one for those that do not exist yet.
-			if hd, ok := HyphaStorage[hyphaName]; ok {
-				hyphaData = hd
-			} else {
-				hyphaData = &HyphaData{}
-				HyphaStorage[hyphaName] = hyphaData
-				hyphae.IncrementCount()
-			}
-			if isText {
-				hyphaData.TextPath = hyphaPartPath
-			} else {
-				// Notify the user about binary part collisions. It's a design decision to just use any of them, it's the user's fault that they have screwed up the folder structure, but the engine should at least let them know, right?
-				if hyphaData.BinaryPath != "" {
-					log.Println("There is a file collision for binary part of a hypha:", hyphaData.BinaryPath, "and", hyphaPartPath, "-- going on with the latter")
-				}
-				hyphaData.BinaryPath = hyphaPartPath
-			}
-		}
-
-	}
 }
