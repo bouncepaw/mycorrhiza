@@ -48,6 +48,11 @@ func (md *MycoDoc) AsHTML() string {
 	return md.html
 }
 
+// AsGemtext returns a gemtext representation of the document. Currently really limited, just returns source text
+func (md *MycoDoc) AsGemtext() string {
+	return md.contents
+}
+
 // Used to clear opengraph description from html tags. This method is usually bad because of dangers of malformed HTML, but I'm going to use it only for Mycorrhiza-generated HTML, so it's okay. The question mark is required; without it the whole string is eaten away.
 var htmlTagRe = regexp.MustCompile(`<.*?>`)
 

@@ -1,3 +1,5 @@
+git.sr.ht/~adnano/go-gemini v0.1.13 h1:vzKkkVrOzMpfJ1AAeE/PChg0Rw5Zf+9HrnwsgVxXUT4=
+git.sr.ht/~adnano/go-gemini v0.1.13/go.mod h1:If1VxEWcZDrRt5FeAFnGTcM2Ud1E3BXs3VJ5rnZWKq0=
 github.com/adrg/xdg v0.2.2 h1:A7ZHKRz5KGOLJX/bg7IPzStryhvCzAE1wX+KWawPiAo=
 github.com/adrg/xdg v0.2.2/go.mod h1:7I2hH/IT30IsupOpKZ5ue7/qNi3CoKzD6tL3HwpaRMQ=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
@@ -33,3 +35,5 @@ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+tildegit.org/solderpunk/gemcert v0.0.0-20200801165357-fc14deb27512 h1:reGEt1vmGompn/6FitHdBatILTsK9CYnQOCw3weoW/s=
+tildegit.org/solderpunk/gemcert v0.0.0-20200801165357-fc14deb27512/go.mod h1:gqBK7AJ5wPR1bpFOuPmlQObYxwXrFdZmNb2vdzquqoA=

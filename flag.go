@@ -19,6 +19,7 @@ func init() {
 	flag.StringVar(&util.AuthMethod, "auth-method", "none", "What auth method to use. Variants: \"none\", \"fixed\"")
 	flag.StringVar(&util.FixedCredentialsPath, "fixed-credentials-path", "mycocredentials.json", "Used when -auth-method=fixed. Path to file with user credentials.")
 	flag.StringVar(&util.HeaderLinksHypha, "header-links-hypha", "", "Optional hypha that overrides the header links")
+	flag.StringVar(&util.GeminiCertPath, "gemini-cert-path", "", "Directory where you store Gemini certificates. Leave empty if you don't want to use Gemini.")
 }
 
 // Do the things related to cli args and die maybe

@@ -19,6 +19,7 @@ var (
 	HeaderLinksHypha     string
 	AuthMethod           string
 	FixedCredentialsPath string
+	GeminiCertPath       string
 )
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
