@@ -42,9 +42,9 @@ func parseCliArgs() {
 		util.URL = "http://0.0.0.0:" + util.ServerPort
 	}
 
-	util.HomePage = CanonicalName(util.HomePage)
-	util.UserHypha = CanonicalName(util.UserHypha)
-	util.HeaderLinksHypha = CanonicalName(util.HeaderLinksHypha)
+	util.HomePage = util.CanonicalName(util.HomePage)
+	util.UserHypha = util.CanonicalName(util.UserHypha)
+	util.HeaderLinksHypha = util.CanonicalName(util.HeaderLinksHypha)
 
 	switch util.AuthMethod {
 	case "none":

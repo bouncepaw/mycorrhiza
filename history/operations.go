@@ -134,3 +134,11 @@ func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
 	}
 	return hop
 }
+
+func (hop *HistoryOp) HasErrors() bool {
+	return len(hop.Errs) > 0
+}
+
+func (hop *HistoryOp) FirstErrorText() string {
+	return hop.Errs[0].Error()
+}

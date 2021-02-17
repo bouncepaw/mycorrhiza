@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/templates"
@@ -33,7 +34,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
 		revHash           = shorterUrl[:firstSlashIndex]
-		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
+		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
 		TextPath          = hyphaName + ".myco"
 		textContents, err = history.FileAtRevision(TextPath, revHash)
@@ -42,7 +43,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	if err == nil {
 		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
-	treeHTML, _, _ := tree.Tree(hyphaName, IterateHyphaNamesWith)
+	treeHTML, _, _ := tree.Tree(hyphaName)
 	page := templates.RevisionHTML(
 		rq,
 		hyphaName,
@@ -60,10 +61,10 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "text")
-	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.TextPath)
+	if h := hyphae.ByName(hyphaName); h.Exists {
+		log.Println("Serving", h.TextPath)
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		http.ServeFile(w, rq, data.TextPath)
+		http.ServeFile(w, rq, h.TextPath)
 	}
 }
 
@@ -71,10 +72,10 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "binary")
-	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.BinaryPath)
-		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(data.BinaryPath)))
-		http.ServeFile(w, rq, data.BinaryPath)
+	if h := hyphae.ByName(hyphaName); h.Exists {
+		log.Println("Serving", h.BinaryPath)
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath)))
+		http.ServeFile(w, rq, h.BinaryPath)
 	}
 }
 
@@ -82,26 +83,26 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
-		hyphaName         = HyphaNameFromRq(rq, "page", "hypha")
-		data, hyphaExists = HyphaStorage[hyphaName]
-		hasAmnt           = hyphaExists && data.BinaryPath != ""
-		contents          string
-		openGraph         string
-		u                 = user.FromRequest(rq)
+		hyphaName = HyphaNameFromRq(rq, "page", "hypha")
+		h         = hyphae.ByName(hyphaName)
+		hasAmnt   = h.Exists && h.BinaryPath != ""
+		contents  string
+		openGraph string
+		u         = user.FromRequest(rq)
 	)
-	if hyphaExists {
-		fileContentsT, errT := ioutil.ReadFile(data.TextPath)
-		_, errB := os.Stat(data.BinaryPath)
+	if h.Exists {
+		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
+		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
 			md := markup.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsHTML()
 			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
-			contents = binaryHtmlBlock(hyphaName, data) + contents
+			contents = h.BinaryHtmlBlock() + contents
 		}
 	}
-	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName, IterateHyphaNamesWith)
+	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
 	util.HTTP200Page(w,
 		templates.BaseHTML(
 			util.BeautifulName(hyphaName),

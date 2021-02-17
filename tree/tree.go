@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -81,21 +82,21 @@ func mainFamilyFromPool(hyphaName string, subhyphaePool map[string]bool) *mainFa
 }
 
 // Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
-func Tree(hyphaName string, hyphaIterator func(func(string))) (html, prev, next string) {
+func Tree(hyphaName string) (html, prev, next string) {
 	var (
 		// One of the siblings is the hypha with name `hyphaName`
-		siblings      = findSiblings(hyphaName, hyphaIterator)
+		siblings      = findSiblings(hyphaName)
 		subhyphaePool = make(map[string]bool)
 		I             int
 	)
-	hyphaIterator(func(otherHyphaName string) {
+	for h := range hyphae.YieldExistingHyphae() {
 		for _, s := range siblings {
-			s.checkThisChild(otherHyphaName)
+			s.checkThisChild(h.Name)
 		}
-		if strings.HasPrefix(otherHyphaName, hyphaName+"/") {
-			subhyphaePool[otherHyphaName] = true
+		if strings.HasPrefix(h.Name, hyphaName+"/") {
+			subhyphaePool[h.Name] = true
 		}
-	})
+	}
 	for i, s := range siblings {
 		if s.name == hyphaName {
 			I = i
@@ -116,13 +117,13 @@ func Tree(hyphaName string, hyphaIterator func(func(string))) (html, prev, next 
 	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, html), prev, next
 }
 
-func findSiblings(hyphaName string, hyphaIterator func(func(string))) []*sibling {
+func findSiblings(hyphaName string) []*sibling {
 	siblings := []*sibling{&sibling{name: hyphaName, hasChildren: true}}
-	hyphaIterator(func(otherHyphaName string) {
-		if path.Dir(hyphaName) == path.Dir(otherHyphaName) && hyphaName != otherHyphaName {
-			siblings = append(siblings, &sibling{name: otherHyphaName, hasChildren: false})
+	for h := range hyphae.YieldExistingHyphae() {
+		if path.Dir(hyphaName) == path.Dir(h.Name) && hyphaName != h.Name {
+			siblings = append(siblings, &sibling{name: h.Name, hasChildren: false})
 		}
-	})
+	}
 	sort.Slice(siblings, func(i, j int) bool {
 		return siblings[i].name < siblings[j].name
 	})

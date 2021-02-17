@@ -11,6 +11,7 @@ import (
 	"git.sr.ht/~adnano/go-gemini"
 	"git.sr.ht/~adnano/go-gemini/certificate"
 
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -28,13 +29,13 @@ Visit home hypha:
 func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 	log.Println(rq.URL)
 	var (
-		hyphaName         = geminiHyphaNameFromRq(rq, "page", "hypha")
-		data, hyphaExists = HyphaStorage[hyphaName]
-		hasAmnt           = hyphaExists && data.BinaryPath != ""
-		contents          string
+		hyphaName = geminiHyphaNameFromRq(rq, "page", "hypha")
+		h         = hyphae.ByName(hyphaName)
+		hasAmnt   = h.Exists && h.BinaryPath != ""
+		contents  string
 	)
-	if hyphaExists {
-		fileContentsT, errT := ioutil.ReadFile(data.TextPath)
+	if h.Exists {
+		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		if errT == nil {
 			md := markup.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsGemtext()

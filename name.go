@@ -11,23 +11,13 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// isCanonicalName checks if the `name` is canonical.
-func isCanonicalName(name string) bool {
-	return HyphaPattern.MatchString(name)
-}
-
-// CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
-func CanonicalName(name string) string {
-	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
-}
-
 // naviTitle turns `canonicalName` into html string with each hypha path parts higlighted as links.
 // TODO: rework as a template
 func naviTitle(canonicalName string) string {
 	var (
 		html = fmt.Sprintf(`<h1 class="navi-title" id="navi-title">
-	<a href="/page/%s">%s</a><span aria-hidden="true" class="navi-title__colon">:</span>`, util.HomePage, util.SiteNavIcon)
-		prevAcc = `/page/`
+	<a href="/hypha/%s">%s</a><span aria-hidden="true" class="navi-title__colon">:</span>`, util.HomePage, util.SiteNavIcon)
+		prevAcc = `/hypha/`
 		parts   = strings.Split(canonicalName, "/")
 		rel     = "up"
 	)

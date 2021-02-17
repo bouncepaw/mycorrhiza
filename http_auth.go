@@ -6,6 +6,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func init() {
@@ -39,7 +40,7 @@ func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
-		username = CanonicalName(rq.PostFormValue("username"))
+		username = util.CanonicalName(rq.PostFormValue("username"))
 		password = rq.PostFormValue("password")
 		err      = user.LoginDataHTTP(w, rq, username, password)
 	)

@@ -9,8 +9,28 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// Index finds all hypha files in the full `path` and sends them to the channel. Handling of duplicate entries and attachment and counting them is up to the caller.
-func Index(path string, nestLevel uint, ch chan *Hypha) {
+// Index finds all hypha files in the full `path` and saves them to the hypha storage.
+func Index(path string) {
+	ch := make(chan *Hypha, 5)
+
+	go func(ch chan *Hypha) {
+		indexHelper(path, 0, ch)
+		close(ch)
+	}(ch)
+
+	for h := range ch {
+		// At this time it is safe to ignore the mutex, because there is only one worker.
+		if oldHypha, ok := byNames[h.Name]; ok {
+			oldHypha.MergeIn(h)
+		} else {
+			byNames[h.Name] = h
+			IncrementCount()
+		}
+	}
+}
+
+// indexHelper finds all hypha files in the full `path` and sends them to the channel. Handling of duplicate entries and attachment and counting them is up to the caller.
+func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
 	nodes, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
@@ -22,14 +42,14 @@ func Index(path string, nestLevel uint, ch chan *Hypha) {
 			util.IsCanonicalName(node.Name()) &&
 			node.Name() != ".git" &&
 			!(nestLevel == 0 && node.Name() == "static") {
-			Index(filepath.Join(path, node.Name()), nestLevel+1, ch)
+			indexHelper(filepath.Join(path, node.Name()), nestLevel+1, ch)
 			continue
 		}
 
 		var (
 			hyphaPartPath           = filepath.Join(path, node.Name())
 			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
-			hypha                   = &Hypha{Name: hyphaName}
+			hypha                   = &Hypha{Name: hyphaName, Exists: true}
 		)
 		if !skip {
 			if isText {
@@ -39,6 +59,5 @@ func Index(path string, nestLevel uint, ch chan *Hypha) {
 			}
 			ch <- hypha
 		}
-
 	}
 }
