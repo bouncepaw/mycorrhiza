@@ -114,9 +114,9 @@ func (h *Hypha) uploadHelp(hop *history.HistoryOp, ext string, data []byte, u *u
 	}
 
 	h.InsertIfNew()
-	*originalFullPath = fullPath
-	if h.Exists && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+	if h.Exists && h.TextPath != "" && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
 		return hop.Abort(), "No changes"
 	}
+	*originalFullPath = fullPath
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }

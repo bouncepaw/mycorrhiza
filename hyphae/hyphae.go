@@ -107,9 +107,6 @@ func EmptyHypha(hyphaName string) *Hypha {
 
 // ByName returns a hypha by name. If h.Exists, the returned hypha pointer is known to be part of the hypha index (byNames map).
 func ByName(hyphaName string) (h *Hypha) {
-	byNamesMutex.Lock()
-	defer byNamesMutex.Unlock()
-
 	h, exists := byNames[hyphaName]
 	if exists {
 		return h
@@ -119,22 +116,23 @@ func ByName(hyphaName string) (h *Hypha) {
 
 // Insert inserts the hypha into the storage. It overwrites the previous record, if there was any, and returns false. If the was no previous record, return true.
 func (h *Hypha) Insert() (justCreated bool) {
-	var hp *Hypha
-	hp = ByName(h.Name)
+	hp := ByName(h.Name)
 
 	byNamesMutex.Lock()
 	defer byNamesMutex.Unlock()
 	if hp.Exists {
 		hp = h
 	} else {
-		byNames[hp.Name] = h
+		h.Exists = true
+		byNames[h.Name] = h
+		IncrementCount()
 	}
 
 	return !hp.Exists
 }
 
 func (h *Hypha) InsertIfNew() (justCreated bool) {
-	if h.Exists {
+	if !h.Exists {
 		return h.Insert()
 	}
 	return false
