@@ -75,6 +75,14 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
+// Stop the wiki
+func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if user.CanProceed(rq, "admin/shutdown") {
+		log.Fatal("An admin commanded the wiki to shutdown")
+	}
+}
+
 // Update header links by reading the configured hypha, if there is any, or resorting to default values.
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
@@ -195,6 +203,9 @@ func main() {
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/static/icon/", handlerIcon)
+	if user.AuthUsed {
+		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
+	}
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/hypha/"+util.HomePage, http.StatusSeeOther)
 	})
