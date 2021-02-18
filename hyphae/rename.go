@@ -50,8 +50,6 @@ func canRenameThisToThat(oh *Hypha, nh *Hypha, u *user.User) (err error, errtitl
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
 func (h *Hypha) RenameHypha(newHypha *Hypha, recursive bool, u *user.User) (hop *history.HistoryOp, errtitle string) {
-	h.Lock()
-	defer h.Unlock()
 	newHypha.Lock()
 	defer newHypha.Unlock()
 	hop = history.Operation(history.TypeRenameHypha)

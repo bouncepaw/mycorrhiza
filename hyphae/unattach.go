@@ -35,8 +35,6 @@ func (h *Hypha) CanUnattach(u *user.User) (err error, errtitle string) {
 
 // UnattachHypha unattaches hypha and makes a history record about that.
 func (h *Hypha) UnattachHypha(u *user.User) (hop *history.HistoryOp, errtitle string) {
-	h.Lock()
-	defer h.Unlock()
 	hop = history.Operation(history.TypeUnattachHypha)
 
 	if err, errtitle := h.CanUnattach(u); errtitle != "" {

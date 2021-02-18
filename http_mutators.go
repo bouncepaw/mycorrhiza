@@ -92,7 +92,7 @@ func factoryHandlerConfirmer(
 	return func(w http.ResponseWriter, rq *http.Request) {
 		log.Println(rq.URL)
 		var (
-			hyphaName = HyphaNameFromRq(rq, "unattach-confirm")
+			hyphaName = HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)

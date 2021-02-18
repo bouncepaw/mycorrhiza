@@ -31,8 +31,6 @@ func (h *Hypha) CanDelete(u *user.User) (err error, errtitle string) {
 
 // DeleteHypha deletes hypha and makes a history record about that.
 func (h *Hypha) DeleteHypha(u *user.User) (hop *history.HistoryOp, errtitle string) {
-	h.Lock()
-	defer h.Unlock()
 	hop = history.Operation(history.TypeDeleteHypha)
 
 	if err, errtitle := h.CanDelete(u); errtitle != "" {
