@@ -11,6 +11,9 @@ import (
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.
 func Index(path string) {
+	byNamesMutex.Lock()
+	defer byNamesMutex.Unlock()
+	byNames = make(map[string]*Hypha)
 	ch := make(chan *Hypha, 5)
 
 	go func(ch chan *Hypha) {

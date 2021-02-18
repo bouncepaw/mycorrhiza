@@ -76,12 +76,6 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 }
 
 // Stop the wiki
-func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	if user.CanProceed(rq, "admin/shutdown") {
-		log.Fatal("An admin commanded the wiki to shutdown")
-	}
-}
 
 // Update header links by reading the configured hypha, if there is any, or resorting to default values.
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
@@ -187,6 +181,8 @@ func main() {
 
 	go handleGemini()
 
+	// See http_admin.go for /admin, /admin/*
+	initAdmin()
 	// See http_readers.go for /page/, /hypha/, /text/, /binary/
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
@@ -203,12 +199,9 @@ func main() {
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/static/icon/", handlerIcon)
-	if user.AuthUsed {
-		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
-	}
+	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/hypha/"+util.HomePage, http.StatusSeeOther)
 	})
-	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }
