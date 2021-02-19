@@ -217,7 +217,7 @@ func streamrelativeHyphae(qw422016 *qt422016.Writer, relatives string) {
 //line templates/common.qtpl:59
 	qw422016.N().S(`
 <aside class="relative-hyphae layout-card">
-	<h1 class="relative-hyphae__title layout-card__title">Relative hyphae</h1>
+	<h2 class="relative-hyphae__title layout-card__title">Relative hyphae</h2>
 	`)
 //line templates/common.qtpl:62
 	qw422016.N().S(relatives)
@@ -252,4 +252,50 @@ func relativeHyphae(relatives string) string {
 //line templates/common.qtpl:64
 	return qs422016
 //line templates/common.qtpl:64
+}
+
+//line templates/common.qtpl:66
+func streambacklinks(qw422016 *qt422016.Writer, backlinkEntries string) {
+//line templates/common.qtpl:66
+	qw422016.N().S(`
+<aside class="backlinks layout-card">
+	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
+	<nav class="backlinks__nav">
+		<ul class="backlinks__list">
+		`)
+//line templates/common.qtpl:71
+	qw422016.N().S(backlinkEntries)
+//line templates/common.qtpl:71
+	qw422016.N().S(`
+		</ul>
+	</nav>
+</aside>
+`)
+//line templates/common.qtpl:75
+}
+
+//line templates/common.qtpl:75
+func writebacklinks(qq422016 qtio422016.Writer, backlinkEntries string) {
+//line templates/common.qtpl:75
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/common.qtpl:75
+	streambacklinks(qw422016, backlinkEntries)
+//line templates/common.qtpl:75
+	qt422016.ReleaseWriter(qw422016)
+//line templates/common.qtpl:75
+}
+
+//line templates/common.qtpl:75
+func backlinks(backlinkEntries string) string {
+//line templates/common.qtpl:75
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/common.qtpl:75
+	writebacklinks(qb422016, backlinkEntries)
+//line templates/common.qtpl:75
+	qs422016 := string(qb422016.B)
+//line templates/common.qtpl:75
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/common.qtpl:75
+	return qs422016
+//line templates/common.qtpl:75
 }

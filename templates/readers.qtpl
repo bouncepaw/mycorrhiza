@@ -30,7 +30,7 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 {%= navHTML(rq, hyphaName, "page") %}
 <div class="layout">
 <main class="main-width">
@@ -65,5 +65,6 @@ If `contents` == "", a helpful message is shown instead.
 {% endif %}
 </main>
 {%= relativeHyphae(relatives) %}
+{%= backlinks(backlinkEntries) %}
 </div>
 {% endfunc %}

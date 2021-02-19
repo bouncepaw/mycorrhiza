@@ -110,6 +110,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				naviTitle(hyphaName),
 				contents,
 				treeHTML,
+				h.BackLinkEntriesHTML(),
 				prevHypha, nextHypha,
 				hasAmnt),
 			u,

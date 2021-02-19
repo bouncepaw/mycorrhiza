@@ -166,7 +166,7 @@ launchpadState:
 	switch {
 	case startsWith("=>"):
 		href, text, class := Rocketlink(line, state.name)
-		state.buf += fmt.Sprintf(`	<li class="launchpad__entry"><a class="rocketlink %s" href="%s">%s</a></li>`, class, href, text)
+		state.buf += fmt.Sprintf(`	<li class="launchpad__entry"><a href="%s" class="rocketlink %s">%s</a></li>`, href, class, text)
 	case startsWith("```"):
 		state.where = "pre"
 		addLine(state.buf + "</ul>")

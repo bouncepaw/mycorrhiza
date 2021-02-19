@@ -148,7 +148,7 @@ func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, r
 // If `contents` == "", a helpful message is shown instead.
 
 //line templates/readers.qtpl:33
-func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) {
+func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) {
 //line templates/readers.qtpl:33
 	qw422016.N().S(`
 `)
@@ -273,33 +273,38 @@ func StreamPageHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navi
 	streamrelativeHyphae(qw422016, relatives)
 //line templates/readers.qtpl:67
 	qw422016.N().S(`
+`)
+//line templates/readers.qtpl:68
+	streambacklinks(qw422016, backlinkEntries)
+//line templates/readers.qtpl:68
+	qw422016.N().S(`
 </div>
 `)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
 }
 
-//line templates/readers.qtpl:69
-func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) {
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
+func WritePageHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) {
+//line templates/readers.qtpl:70
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/readers.qtpl:69
-	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName, hasAmnt)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
+	StreamPageHTML(qw422016, rq, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName, hasAmnt)
+//line templates/readers.qtpl:70
 	qt422016.ReleaseWriter(qw422016)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
 }
 
-//line templates/readers.qtpl:69
-func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName string, hasAmnt bool) string {
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
+func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) string {
+//line templates/readers.qtpl:70
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/readers.qtpl:69
-	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, relatives, prevHyphaName, nextHyphaName, hasAmnt)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
+	WritePageHTML(qb422016, rq, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName, hasAmnt)
+//line templates/readers.qtpl:70
 	qs422016 := string(qb422016.B)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
 	return qs422016
-//line templates/readers.qtpl:69
+//line templates/readers.qtpl:70
 }

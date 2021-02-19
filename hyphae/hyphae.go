@@ -49,8 +49,8 @@ type Hypha struct {
 	Exists     bool
 	TextPath   string
 	BinaryPath string
-	OutLinks   []*Hypha // not used yet
-	BackLinks  []*Hypha // not used yet
+	OutLinks   []*Hypha
+	BackLinks  []*Hypha
 }
 
 var byNames = make(map[string]*Hypha)
@@ -59,15 +59,29 @@ var byNamesMutex = sync.Mutex{}
 // YieldExistingHyphae iterates over all hyphae and yields all existing ones.
 func YieldExistingHyphae() chan *Hypha {
 	ch := make(chan *Hypha)
-	go func(ch chan *Hypha) {
+	go func() {
 		for _, h := range byNames {
 			if h.Exists {
 				ch <- h
 			}
 		}
 		close(ch)
-	}(ch)
+	}()
 	return ch
+}
+
+// FilterTextHyphae filters the source channel and yields only those hyphae than have text parts.
+func FilterTextHyphae(src chan *Hypha) chan *Hypha {
+	sink := make(chan *Hypha)
+	go func() {
+		for h := range src {
+			if h.TextPath != "" {
+				sink <- h
+			}
+		}
+		close(sink)
+	}()
+	return sink
 }
 
 // Subhyphae returns slice of subhyphae.
@@ -136,6 +150,18 @@ func (h *Hypha) InsertIfNew() (justCreated bool) {
 		return h.Insert()
 	}
 	return false
+}
+
+func (h *Hypha) InsertIfNewKeepExistence() {
+	hp := ByName(h.Name)
+
+	byNamesMutex.Lock()
+	defer byNamesMutex.Unlock()
+	if hp.Exists {
+		hp = h
+	} else {
+		byNames[h.Name] = h
+	}
 }
 
 func (h *Hypha) delete() {
