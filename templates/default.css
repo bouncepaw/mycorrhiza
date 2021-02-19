@@ -90,7 +90,7 @@ blockquote { margin-left: 0; padding-left: 1rem; }
 .wikilink_mailto::before { content: url("/static/icon/mailto"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
-article h1, article h2, article h3, article h4, article h5, article h6 { margin: 1.5rem 0 0 0; }
+main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
 article p { margin: .5rem 0; }
 article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
@@ -108,6 +108,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 
+.subhyphae__title { padding-bottom: .5rem; }
 .navi-title { padding-bottom: .5rem; margin: .25rem 0; }
 .navi-title a {text-decoration:none; }
 .navi-title__separator { margin: 0 .25rem; }
@@ -147,18 +148,20 @@ table { border: #ddd 1px solid; border-radius: .25rem; min-width: 4rem; }
 td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
+.subhyphae__list, .subhyphae__list ul { display: flex; padding: 0; margin: 0; flex-wrap: wrap; }
+.subhyphae__entry { list-style-type: none; border: 1px solid #999; padding: 0; margin: .125rem; border-radius: .25rem; }
+.subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
+.subhyphae__link:hover { background: #eee; }
+
 .navitree { padding: 0; margin: 0; }
-.navitree__trunk ul { padding-left: 1rem; }
-.navitree > .navitree__trunk > ul { padding-left: 2rem; }
 .navitree__entry { }
 .navitree > .navitree__entry > a::before { display: inline-block; width: .5rem; color: #999; margin: 0 .25rem; }
 .navitree > .navitree__entry_infertile > a::before { content: " "} /* nbsp, careful */
 .navitree > .navitree__sibling_fertile > a::before { content: "▸"}
-.navitree > .navitree__trunk_fertile > a::before { content: "▾"}
 .navitree__trunk { border-left: 1px #999 solid; }
-.navitree > .navitree__trunk { border-left: none; }
-.navitree > .navitree__trunk > a { font-weight: bold; }
 .navitree__link { text-decoration: none; display: block; padding: .25rem; }
+.navitree__entry_this > span { display: block; padding: .25rem; font-weight: bold; }
+.navitree__entry_this > span::before { content: " "; display: inline-block; width: 1rem; }
 
 
 /* Color stuff */

@@ -15,7 +15,7 @@
 </div>
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, revHash string) %}
+{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, subhyphae, revHash string) %}
 {%= navHTML(rq, hyphaName, "revision", revHash) %}
 <div class="layout">
 <main class="main-width">
@@ -24,13 +24,14 @@
 		{%s= naviTitle %}
 		{%s= contents %}
 	</article>
+{%= subhyphaeMatrix(subhyphae) %}
 </main>
 {%= relativeHyphae(relatives) %}
 </div>
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
+{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, subhyphae, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
 {%= navHTML(rq, hyphaName, "page") %}
 <div class="layout">
 <main class="main-width">
@@ -63,6 +64,7 @@ If `contents` == "", a helpful message is shown instead.
 		<input type="submit"/>
 	</form>
 {% endif %}
+{%= subhyphaeMatrix(subhyphae) %}
 </main>
 {%= relativeHyphae(relatives) %}
 {%= backlinks(backlinkEntries) %}

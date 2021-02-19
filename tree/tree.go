@@ -54,12 +54,12 @@ func (m *mainFamilyMember) checkThisChild(hyphaName string) (adopted bool) {
 
 func (m *mainFamilyMember) asHTML() string {
 	if len(m.children) == 0 {
-		return fmt.Sprintf(`<li class="navitree__entry navitree__entry_infertile navitree__trunk navitree__trunk_infertile"><a class="navitree__link" href="/hypha/%s">%s</a></li>`, m.name, util.BeautifulName(path.Base(m.name)))
+		return fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a></li>`, m.name, util.BeautifulName(path.Base(m.name)))
 	}
 	sort.Slice(m.children, func(i, j int) bool {
 		return m.children[i].name < m.children[j].name
 	})
-	html := fmt.Sprintf(`<li class="navitree__entry navitree__entry_fertile navitree__trunk navitree__trunk_fertile"><a class="navitree__link" href="/hypha/%s">%s</a><ul>`, m.name, util.BeautifulName(path.Base(m.name)))
+	html := fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a><ul>`, m.name, util.BeautifulName(path.Base(m.name)))
 	for _, child := range m.children {
 		html += child.asHTML()
 	}
@@ -81,8 +81,20 @@ func mainFamilyFromPool(hyphaName string, subhyphaePool map[string]bool) *mainFa
 	return &mainFamilyMember{name: hyphaName, children: adopted}
 }
 
+func subhyphaeMatrix(hyphaName string, subhyphaePool map[string]bool) string {
+	var html string
+	children := mainFamilyFromPool(hyphaName, subhyphaePool).children
+	sort.Slice(children, func(i, j int) bool {
+		return children[i].name < children[j].name
+	})
+	for _, child := range children {
+		html += child.asHTML()
+	}
+	return html
+}
+
 // Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
-func Tree(hyphaName string) (html, prev, next string) {
+func Tree(hyphaName string) (relatives, subhyphae, prev, next string) {
 	var (
 		// One of the siblings is the hypha with name `hyphaName`
 		siblings      = findSiblings(hyphaName)
@@ -100,13 +112,10 @@ func Tree(hyphaName string) (html, prev, next string) {
 	for i, s := range siblings {
 		if s.name == hyphaName {
 			I = i
-			break
+			relatives += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(hyphaName))
+		} else {
+			relatives += s.asHTML()
 		}
-		html += s.asHTML()
-	}
-	html += mainFamilyFromPool(hyphaName, subhyphaePool).asHTML()
-	for _, s := range siblings[I+1:] {
-		html += s.asHTML()
 	}
 	if I != 0 {
 		prev = siblings[I-1].name
@@ -114,7 +123,7 @@ func Tree(hyphaName string) (html, prev, next string) {
 	if I != len(siblings)-1 {
 		next = siblings[I+1].name
 	}
-	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, html), prev, next
+	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, relatives), subhyphaeMatrix(hyphaName, subhyphaePool), prev, next
 }
 
 func findSiblings(hyphaName string) []*sibling {

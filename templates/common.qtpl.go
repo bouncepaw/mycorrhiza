@@ -8,27 +8,30 @@ package templates
 import "net/http"
 
 //line templates/common.qtpl:2
-import "github.com/bouncepaw/mycorrhiza/user"
+import "strings"
 
 //line templates/common.qtpl:3
+import "github.com/bouncepaw/mycorrhiza/user"
+
+//line templates/common.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/util"
 
 // This is the <nav> seen on top of many pages.
 
-//line templates/common.qtpl:6
+//line templates/common.qtpl:7
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line templates/common.qtpl:6
+//line templates/common.qtpl:7
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line templates/common.qtpl:7
+//line templates/common.qtpl:8
 type navEntry struct {
 	path  string
 	title string
@@ -44,258 +47,314 @@ var navEntries = []navEntry{
 	{"text", "Raw text"},
 }
 
-//line templates/common.qtpl:22
+//line templates/common.qtpl:23
 func streamnavHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navType string, revisionHash ...string) {
-//line templates/common.qtpl:22
+//line templates/common.qtpl:23
 	qw422016.N().S(`
 `)
-//line templates/common.qtpl:24
+//line templates/common.qtpl:25
 	u := user.FromRequest(rq)
 
-//line templates/common.qtpl:25
+//line templates/common.qtpl:26
 	qw422016.N().S(`
 	<nav class="hypha-tabs main-width">
 		<ul class="hypha-tabs__flex">
 `)
-//line templates/common.qtpl:28
+//line templates/common.qtpl:29
 	for _, entry := range navEntries {
-//line templates/common.qtpl:29
+//line templates/common.qtpl:30
 		if navType == "revision" && entry.path == "revision" {
-//line templates/common.qtpl:29
+//line templates/common.qtpl:30
 			qw422016.N().S(`			<li class="hypha-tabs__tab hypha-tabs__tab_active">
 				<span class="hypha-tabs__selection">`)
-//line templates/common.qtpl:31
+//line templates/common.qtpl:32
 			qw422016.E().S(revisionHash[0])
-//line templates/common.qtpl:31
+//line templates/common.qtpl:32
 			qw422016.N().S(`</span>
 			</li>
 `)
-//line templates/common.qtpl:33
+//line templates/common.qtpl:34
 		} else if navType == entry.path {
-//line templates/common.qtpl:33
+//line templates/common.qtpl:34
 			qw422016.N().S(`			<li class="hypha-tabs__tab hypha-tabs__tab_active">
 				<span class="hypha-tabs__selection">`)
-//line templates/common.qtpl:35
+//line templates/common.qtpl:36
 			qw422016.E().S(entry.title)
-//line templates/common.qtpl:35
+//line templates/common.qtpl:36
 			qw422016.N().S(`</span>
 			</li>
 `)
-//line templates/common.qtpl:37
+//line templates/common.qtpl:38
 		} else if entry.path != "revision" && u.CanProceed(entry.path) {
-//line templates/common.qtpl:37
+//line templates/common.qtpl:38
 			qw422016.N().S(`			<li class="hypha-tabs__tab">
 				<a class="hypha-tabs__link" href="/`)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.E().S(entry.path)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.N().S(`/`)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.E().S(hyphaName)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.N().S(`">`)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.E().S(entry.title)
-//line templates/common.qtpl:39
+//line templates/common.qtpl:40
 			qw422016.N().S(`</a>
 			</li>
 `)
-//line templates/common.qtpl:41
+//line templates/common.qtpl:42
 		}
-//line templates/common.qtpl:42
+//line templates/common.qtpl:43
 	}
-//line templates/common.qtpl:42
+//line templates/common.qtpl:43
 	qw422016.N().S(`		</ul>
 	</nav>
 `)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 }
 
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 func writenavHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, navType string, revisionHash ...string) {
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	streamnavHTML(qw422016, rq, hyphaName, navType, revisionHash...)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 }
 
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 func navHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) string {
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	writenavHTML(qb422016, rq, hyphaName, navType, revisionHash...)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 	return qs422016
-//line templates/common.qtpl:45
+//line templates/common.qtpl:46
 }
 
-//line templates/common.qtpl:47
+//line templates/common.qtpl:48
 func streamuserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
-//line templates/common.qtpl:47
+//line templates/common.qtpl:48
 	qw422016.N().S(`
 `)
-//line templates/common.qtpl:48
+//line templates/common.qtpl:49
 	if user.AuthUsed {
-//line templates/common.qtpl:48
+//line templates/common.qtpl:49
 		qw422016.N().S(`
 <li class="header-links__entry header-links__entry_user">
 	`)
-//line templates/common.qtpl:50
+//line templates/common.qtpl:51
 		if u.Group == "anon" {
-//line templates/common.qtpl:50
+//line templates/common.qtpl:51
 			qw422016.N().S(`
 	<a href="/login" class="header-links__link">Login</a>
 	`)
-//line templates/common.qtpl:52
+//line templates/common.qtpl:53
 		} else {
-//line templates/common.qtpl:52
+//line templates/common.qtpl:53
 			qw422016.N().S(`
 	<a href="/page/`)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.E().S(util.UserHypha)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.N().S(`/`)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.E().S(u.Name)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.N().S(`" class="header-links__link">`)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.E().S(u.Name)
-//line templates/common.qtpl:53
+//line templates/common.qtpl:54
 			qw422016.N().S(`</a>
 	`)
-//line templates/common.qtpl:54
+//line templates/common.qtpl:55
 		}
-//line templates/common.qtpl:54
+//line templates/common.qtpl:55
 		qw422016.N().S(`
 </li>
 `)
-//line templates/common.qtpl:56
+//line templates/common.qtpl:57
 	}
-//line templates/common.qtpl:56
+//line templates/common.qtpl:57
 	qw422016.N().S(`
 `)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 }
 
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 func writeuserMenuHTML(qq422016 qtio422016.Writer, u *user.User) {
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	streamuserMenuHTML(qw422016, u)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 }
 
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 func userMenuHTML(u *user.User) string {
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	writeuserMenuHTML(qb422016, u)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 	return qs422016
-//line templates/common.qtpl:57
+//line templates/common.qtpl:58
 }
 
-//line templates/common.qtpl:59
+//line templates/common.qtpl:60
 func streamrelativeHyphae(qw422016 *qt422016.Writer, relatives string) {
-//line templates/common.qtpl:59
+//line templates/common.qtpl:60
 	qw422016.N().S(`
 <aside class="relative-hyphae layout-card">
 	<h2 class="relative-hyphae__title layout-card__title">Relative hyphae</h2>
 	`)
-//line templates/common.qtpl:62
+//line templates/common.qtpl:63
 	qw422016.N().S(relatives)
-//line templates/common.qtpl:62
+//line templates/common.qtpl:63
 	qw422016.N().S(`
 </aside>
 `)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 }
 
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 func writerelativeHyphae(qq422016 qtio422016.Writer, relatives string) {
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	streamrelativeHyphae(qw422016, relatives)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 }
 
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 func relativeHyphae(relatives string) string {
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	writerelativeHyphae(qb422016, relatives)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 	return qs422016
-//line templates/common.qtpl:64
+//line templates/common.qtpl:65
 }
 
-//line templates/common.qtpl:66
+//line templates/common.qtpl:67
 func streambacklinks(qw422016 *qt422016.Writer, backlinkEntries string) {
-//line templates/common.qtpl:66
+//line templates/common.qtpl:67
 	qw422016.N().S(`
 <aside class="backlinks layout-card">
 	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
 	<nav class="backlinks__nav">
 		<ul class="backlinks__list">
 		`)
-//line templates/common.qtpl:71
+//line templates/common.qtpl:72
 	qw422016.N().S(backlinkEntries)
-//line templates/common.qtpl:71
+//line templates/common.qtpl:72
 	qw422016.N().S(`
 		</ul>
 	</nav>
 </aside>
 `)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 }
 
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 func writebacklinks(qq422016 qtio422016.Writer, backlinkEntries string) {
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	streambacklinks(qw422016, backlinkEntries)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 }
 
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 func backlinks(backlinkEntries string) string {
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	writebacklinks(qb422016, backlinkEntries)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
 	return qs422016
-//line templates/common.qtpl:75
+//line templates/common.qtpl:76
+}
+
+//line templates/common.qtpl:78
+func streamsubhyphaeMatrix(qw422016 *qt422016.Writer, subhyphae string) {
+//line templates/common.qtpl:78
+	qw422016.N().S(`
+`)
+//line templates/common.qtpl:79
+	if strings.TrimSpace(subhyphae) != "" {
+//line templates/common.qtpl:79
+		qw422016.N().S(`
+<section class="subhyphae">
+	<h2 class="subhyphae__title">Subhyphae</h2>
+	<nav class="subhyphae__nav">
+		<ul class="subhyphae__list">
+		`)
+//line templates/common.qtpl:84
+		qw422016.N().S(subhyphae)
+//line templates/common.qtpl:84
+		qw422016.N().S(`
+		</ul>
+	</nav>
+</section>
+`)
+//line templates/common.qtpl:88
+	}
+//line templates/common.qtpl:88
+	qw422016.N().S(`
+`)
+//line templates/common.qtpl:89
+}
+
+//line templates/common.qtpl:89
+func writesubhyphaeMatrix(qq422016 qtio422016.Writer, subhyphae string) {
+//line templates/common.qtpl:89
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/common.qtpl:89
+	streamsubhyphaeMatrix(qw422016, subhyphae)
+//line templates/common.qtpl:89
+	qt422016.ReleaseWriter(qw422016)
+//line templates/common.qtpl:89
+}
+
+//line templates/common.qtpl:89
+func subhyphaeMatrix(subhyphae string) string {
+//line templates/common.qtpl:89
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/common.qtpl:89
+	writesubhyphaeMatrix(qb422016, subhyphae)
+//line templates/common.qtpl:89
+	qs422016 := string(qb422016.B)
+//line templates/common.qtpl:89
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/common.qtpl:89
+	return qs422016
+//line templates/common.qtpl:89
 }

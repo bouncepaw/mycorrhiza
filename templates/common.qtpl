@@ -1,4 +1,5 @@
 {% import "net/http" %}
+{% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
@@ -72,4 +73,17 @@ var navEntries = []navEntry{
 		</ul>
 	</nav>
 </aside>
+{% endfunc %}
+
+{% func subhyphaeMatrix(subhyphae string) %}
+{% if strings.TrimSpace(subhyphae) != "" %}
+<section class="subhyphae">
+	<h2 class="subhyphae__title">Subhyphae</h2>
+	<nav class="subhyphae__nav">
+		<ul class="subhyphae__list">
+		{%s= subhyphae %}
+		</ul>
+	</nav>
+</section>
+{% endif %}
 {% endfunc %}

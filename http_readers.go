@@ -43,13 +43,14 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	if err == nil {
 		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
-	treeHTML, _, _ := tree.Tree(hyphaName)
+	treeHTML, subhyphae, _, _ := tree.Tree(hyphaName)
 	page := templates.RevisionHTML(
 		rq,
 		hyphaName,
 		naviTitle(hyphaName),
 		contents,
 		treeHTML,
+		subhyphae,
 		revHash,
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
@@ -102,7 +103,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = h.BinaryHtmlBlock() + contents
 		}
 	}
-	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
+	treeHTML, subhyphaeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
 	util.HTTP200Page(w,
 		templates.BaseHTML(
 			util.BeautifulName(hyphaName),
@@ -110,6 +111,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				naviTitle(hyphaName),
 				contents,
 				treeHTML,
+				subhyphaeHTML,
 				h.BackLinkEntriesHTML(),
 				prevHypha, nextHypha,
 				hasAmnt),
