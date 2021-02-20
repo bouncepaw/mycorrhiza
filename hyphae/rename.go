@@ -86,6 +86,10 @@ func (h *Hypha) RenameHypha(newHypha *Hypha, recursive bool, u *user.User) (hop 
 	if len(hop.Errs) == 0 {
 		for _, h := range hyphaeToRename {
 			h.renameTo(replaceName(h.Name))
+			h.Lock()
+			h.TextPath = replaceName(h.TextPath)
+			h.BinaryPath = replaceName(h.BinaryPath)
+			h.Unlock()
 		}
 	}
 	return hop, ""
