@@ -67,15 +67,3 @@ If `contents` == "", a helpful message is shown instead.
 {%= RelativeHyphaeHTML(relatives) %}
 </div>
 {% endfunc %}
-
-{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
-{%= NavHTML(rq, hyphaName, "history") %}
-<div class="layout">
-<main class="main-width">
-	<article class="history">
-		<h1>History of {%s hyphaName %}</h1>
-		{%s= list %}
-	</article>
-</main>
-</div>
-{% endfunc %}

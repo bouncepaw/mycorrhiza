@@ -46,7 +46,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 		n, err   = strconv.Atoi(noPrefix)
 	)
 	if err == nil && n < 101 {
-		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n), user.FromRequest(rq)))
+		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}

@@ -1,4 +1,9 @@
-{% func RecentChangesHTML(changes []string, n int) %}
+{% import "net/http" %}
+
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/history" %}
+
+{% func RecentChangesHTML(n int) %}
 <div class="layout">
 <main class="main-width recent-changes">
 	<h1>Recent Changes</h1>
@@ -28,6 +33,9 @@
 		How come? I'll add the role anyway. -- bouncepaw
 	{% endcomment %}
 
+	{% code 
+	changes := history.RecentChanges(n)
+	%}
 	<section class="recent-changes__list" role="feed">
 	{% if len(changes) == 0 %}
 		<p>Could not find any recent changes.</p>
@@ -35,11 +43,30 @@
 		{% for i, entry := range changes %}
 		<ul class="recent-changes__entry rc-entry" role="article"
 		    aria-setsize="{%d n %}" aria-posinset="{%d i %}">
-			 {%s= entry %}
+			 {%s= recentChangesEntry(entry) %}
 		</ul>
 		{% endfor %}
 	{% endif %}
 	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func recentChangesEntry(rev history.Revision) %}
+<li class="rc-entry__time"><time>{%s rev.TimeString() %}</time></li>
+<li class="rc-entry__hash">{%s rev.Hash %}</li>
+<li class="rc-entry__links">{%s= rev.HyphaeLinksHTML() %}</li>
+<li class="rc-entry__msg">{%s rev.Message %} {% if rev.Username != "anon" %}<span class="rc-entry__author">by <a href="/hypha/{%s util.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>{% endif %}</li>
+{% endfunc %}
+
+{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
+{%= NavHTML(rq, hyphaName, "history") %}
+<div class="layout">
+<main class="main-width">
+	<article class="history">
+		<h1>History of {%s util.BeautifulName(hyphaName) %}</h1>
+		{%s= list %}
+	</article>
 </main>
 </div>
 {% endfunc %}

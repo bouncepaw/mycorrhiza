@@ -151,10 +151,10 @@ figcaption { padding-bottom: .5rem; }
 #new-name {width:100%;}
 
 
-.rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; }
+.rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; border-radius: .25rem; }
 .rc-entry__time { font-style: italic; }
 .rc-entry__hash { font-style: italic; text-align: right; }
-.rc-entry__links { grid-column: 1 / span 2; }
+.rc-entry__links, .rc-entry__msg { grid-column: 1 / span 2; }
 .rc-entry__author { font-style: italic; }
 
 .prevnext__el { display: block-inline; min-width: 40%; padding: .5rem; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; }
