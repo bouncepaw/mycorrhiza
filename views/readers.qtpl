@@ -1,44 +1,21 @@
 {% import "net/http" %}
 {% import "path" %}
+
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
-{% import "github.com/bouncepaw/mycorrhiza/views" %}
-
-{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
-{%= navHTML(rq, hyphaName, "history") %}
-<div class="layout">
-<main class="main-width">
-	<article class="history">
-		<h1>History of {%s hyphaName %}</h1>
-		{%s= list %}
-	</article>
-</main>
-</div>
-{% endfunc %}
-
-{% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, relatives, subhyphae, revHash string) %}
-{%= navHTML(rq, h.Name, "revision", revHash) %}
-<div class="layout">
-<main class="main-width">
-	<article>
-		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
-		{%s= views.NaviTitleHTML(h) %}
-		{%s= contents %}
-	</article>
-{%= subhyphaeMatrix(subhyphae) %}
-</main>
-{%= relativeHyphae(relatives) %}
-</div>
-{% endfunc %}
+{% import "github.com/bouncepaw/mycorrhiza/tree" %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, h *hyphae.Hypha, contents, relatives, subhyphae, prevHyphaName, nextHyphaName string) %}
-{%= navHTML(rq, h.Name, "page") %}
+{% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
+{% code
+	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+%}
+{%= NavHTML(rq, h.Name, "page") %}
 <div class="layout">
 <main class="main-width">
 	<article>
-		{%s= views.NaviTitleHTML(h) %}
+		{%s= NaviTitleHTML(h) %}
 		{% if contents == "" %}
 			<p>This hypha has no text. Why not <a href="/edit/{%s h.Name %}">create it</a>?</p>
 		{% else %}
@@ -66,9 +43,39 @@ If `contents` == "", a helpful message is shown instead.
 		<input type="submit"/>
 	</form>
 {% endif %}
-{%= subhyphaeMatrix(subhyphae) %}
+{%= SubhyphaeHTML(subhyphae) %}
 </main>
-{%= relativeHyphae(relatives) %}
-{%= views.BackLinksHTML(h) %}
+{%= RelativeHyphaeHTML(relatives) %}
+{%= BackLinksHTML(h) %}
+</div>
+{% endfunc %}
+
+{% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) %}
+{% code
+	relatives, subhyphae, _, _ := tree.Tree(h.Name)
+%}
+{%= NavHTML(rq, h.Name, "revision", revHash) %}
+<div class="layout">
+<main class="main-width">
+	<article>
+		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
+		{%s= NaviTitleHTML(h) %}
+		{%s= contents %}
+	</article>
+{%= SubhyphaeHTML(subhyphae) %}
+</main>
+{%= RelativeHyphaeHTML(relatives) %}
+</div>
+{% endfunc %}
+
+{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
+{%= NavHTML(rq, hyphaName, "history") %}
+<div class="layout">
+<main class="main-width">
+	<article class="history">
+		<h1>History of {%s hyphaName %}</h1>
+		{%s= list %}
+	</article>
+</main>
 </div>
 {% endfunc %}

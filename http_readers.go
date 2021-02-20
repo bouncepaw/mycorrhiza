@@ -14,7 +14,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/templates"
-	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -44,13 +43,10 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	if err == nil {
 		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
-	treeHTML, subhyphae, _, _ := tree.Tree(hyphaName)
-	page := templates.RevisionHTML(
+	page := views.RevisionHTML(
 		rq,
 		h,
 		contents,
-		treeHTML,
-		subhyphae,
 		revHash,
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
@@ -102,16 +98,10 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = views.AttachmentHTML(h) + contents
 		}
 	}
-	treeHTML, subhyphaeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
 	util.HTTP200Page(w,
 		templates.BaseHTML(
 			util.BeautifulName(hyphaName),
-			templates.PageHTML(rq, h,
-				contents,
-				treeHTML,
-				subhyphaeHTML,
-				prevHypha, nextHypha,
-			),
+			views.HyphaHTML(rq, h, contents),
 			u,
 			openGraph))
 }
