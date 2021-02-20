@@ -179,13 +179,12 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 
 	if action != "Preview" {
 		hop, errtitle = shroom.UploadText(h, []byte(textData), u)
-	}
-
-	if hop.HasErrors() {
-		HttpErr(w, http.StatusForbidden, hyphaName,
-			errtitle,
-			hop.FirstErrorText())
-		return
+		if hop.HasErrors() {
+			HttpErr(w, http.StatusForbidden, hyphaName,
+				errtitle,
+				hop.FirstErrorText())
+			return
+		}
 	}
 
 	if action == "Preview" {
