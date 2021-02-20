@@ -1,7 +1,9 @@
 {% import "net/http" %}
 {% import "path" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/views" %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
 {%= navHTML(rq, hyphaName, "history") %}
@@ -15,13 +17,13 @@
 </div>
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, subhyphae, revHash string) %}
-{%= navHTML(rq, hyphaName, "revision", revHash) %}
+{% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, relatives, subhyphae, revHash string) %}
+{%= navHTML(rq, h.Name, "revision", revHash) %}
 <div class="layout">
 <main class="main-width">
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
-		{%s= naviTitle %}
+		{%s= views.NaviTitleHTML(h) %}
 		{%s= contents %}
 	</article>
 {%= subhyphaeMatrix(subhyphae) %}
@@ -31,14 +33,14 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
-{% func PageHTML(rq *http.Request, hyphaName, naviTitle, contents, relatives, subhyphae, backlinkEntries, prevHyphaName, nextHyphaName string, hasAmnt bool) %}
-{%= navHTML(rq, hyphaName, "page") %}
+{% func PageHTML(rq *http.Request, h *hyphae.Hypha, contents, relatives, subhyphae, prevHyphaName, nextHyphaName string) %}
+{%= navHTML(rq, h.Name, "page") %}
 <div class="layout">
 <main class="main-width">
 	<article>
-		{%s= naviTitle %}
+		{%s= views.NaviTitleHTML(h) %}
 		{% if contents == "" %}
-			<p>This hypha has no text. Why not <a href="/edit/{%s hyphaName %}">create it</a>?</p>
+			<p>This hypha has no text. Why not <a href="/edit/{%s h.Name %}">create it</a>?</p>
 		{% else %}
 			{%s= contents %}
 		{% endif %}
@@ -52,11 +54,11 @@ If `contents` == "", a helpful message is shown instead.
 		{% endif %}
 	</section>
 {% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
-	<form action="/upload-binary/{%s hyphaName %}"
+	<form action="/upload-binary/{%s h.Name %}"
 			method="post" enctype="multipart/form-data"
 			class="upload-amnt">
-		{% if hasAmnt %}
-			<a class="upload-amnt__unattach" href="/unattach-ask/{%s hyphaName %}">Unattach current attachment?</a>
+		{% if h.Exists && h.BinaryPath != "" %}
+			<a class="upload-amnt__unattach" href="/unattach-ask/{%s h.Name %}">Unattach current attachment?</a>
 		{% endif %}
 		<label for="upload-binary__input">Upload a new attachment</label>
 		<br>
@@ -67,6 +69,6 @@ If `contents` == "", a helpful message is shown instead.
 {%= subhyphaeMatrix(subhyphae) %}
 </main>
 {%= relativeHyphae(relatives) %}
-{%= backlinks(backlinkEntries) %}
+{%= views.BackLinksHTML(h) %}
 </div>
 {% endfunc %}

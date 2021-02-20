@@ -13,11 +13,11 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
-	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
@@ -36,9 +36,9 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
 		revHash           = shorterUrl[:firstSlashIndex]
 		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		h                 = hyphae.ByName(hyphaName)
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		TextPath          = hyphaName + ".myco"
-		textContents, err = history.FileAtRevision(TextPath, revHash)
+		textContents, err = history.FileAtRevision(h.TextPath, revHash)
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
@@ -47,8 +47,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	treeHTML, subhyphae, _, _ := tree.Tree(hyphaName)
 	page := templates.RevisionHTML(
 		rq,
-		hyphaName,
-		naviTitle(hyphaName),
+		h,
 		contents,
 		treeHTML,
 		subhyphae,
@@ -87,7 +86,6 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = HyphaNameFromRq(rq, "page", "hypha")
 		h         = hyphae.ByName(hyphaName)
-		hasAmnt   = h.Exists && h.BinaryPath != ""
 		contents  string
 		openGraph string
 		u         = user.FromRequest(rq)
@@ -101,21 +99,19 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
-			contents = shroom.BinaryHtmlBlock(h) + contents
+			contents = views.AttachmentHTML(h) + contents
 		}
 	}
 	treeHTML, subhyphaeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
 	util.HTTP200Page(w,
 		templates.BaseHTML(
 			util.BeautifulName(hyphaName),
-			templates.PageHTML(rq, hyphaName,
-				naviTitle(hyphaName),
+			templates.PageHTML(rq, h,
 				contents,
 				treeHTML,
 				subhyphaeHTML,
-				shroom.BackLinkEntriesHTML(h),
 				prevHypha, nextHypha,
-				hasAmnt),
+			),
 			u,
 			openGraph))
 }

@@ -1,0 +1,81 @@
+{% import "path/filepath" %}
+{% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+{% func NaviTitleHTML(h *hyphae.Hypha) %}
+{% code 
+	var (
+		prevAcc = "/hypha/"
+		parts = strings.Split(h.Name, "/")
+	)
+%}
+<h1 class="navi-title">
+{% stripspace %}
+	<a href="/hypha/{%s util.HomePage %}">
+		{%-s= util.SiteNavIcon -%}
+		<span aria-hidden="true" class="navi-title__colon">:</span>
+	</a>
+
+	{% for i, part := range parts %}
+		{% if i > 0 %}
+			<span aria-hidden="true" class="navi-title__separator">/</span>
+		{% endif %}
+
+			<a href="{%s prevAcc + part %}"
+				rel="{% if i == len(parts) - 1 %}bookmark{% else %}up{% endif %}">
+				{%s= util.BeautifulName(part) %}
+			</a>
+		{% code prevAcc += part + "/" %}
+	{% endfor %}
+{% endstripspace %}
+</h1>
+{% endfunc %}
+
+{% func BackLinksHTML(h *hyphae.Hypha) %}
+<aside class="backlinks layout-card">
+	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
+	<nav class="backlinks__nav">
+		<ul class="backlinks__list">
+			{% for _, backlink := range h.BackLinks %}
+			<li class="backlinks__entry">
+				<a class="backlinks__link" href="/hypha/{%s backlink.Name %}">
+					{%s util.BeautifulName(filepath.Base(backlink.Name)) %}
+				</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</nav>
+</aside>
+{% endfunc %}
+
+{% func AttachmentHTML(h *hyphae.Hypha) %}
+	{% switch filepath.Ext(h.BinaryPath) %}
+
+	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}
+	<div class="binary-container binary-container_with-img">
+		<a href="/binary/{%s= h.Name %}"><img src="/binary/{%s= h.Name %}"/></a>
+	</div>
+
+	{% case ".ogg", ".webm", ".mp4" %}
+	<div class="binary-container binary-container_with-video">
+		<video controls>
+			<source src="/binary/{%s= h.Name %}"/>
+			<p>Your browser does not support video. <a href="/binary/{%s= h.Name %}">Download video</a></p>
+		</video>
+	</div>
+
+	{% case ".mp3" %}
+	<div class="binary-container binary-container_with-audio">
+		<audio controls>
+			<source src="/binary/{%s= h.Name %}"/>
+			<p>Your browser does not support audio. <a href="/binary/{%s= h.Name %}">Download audio</a></p>
+		</audio>
+	</div>
+
+	{% default %}
+	<div class="binary-container binary-container_with-nothing">
+		<p><a href="/binary/{%s= h.Name %}">Download media</a></p>
+	</div>
+{% endswitch %}
+{% endfunc %}

@@ -1,25 +1,13 @@
 package shroom
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/link"
 	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
-
-func BackLinkEntriesHTML(h *hyphae.Hypha) (html string) {
-	for _, backlinkHypha := range h.BackLinks {
-		_ = link.Link{}
-		html += fmt.Sprintf(`<li class="backlinks__entry">
-			<a class="backlinks__link" href="/hypha/%s">%s</a>`, backlinkHypha.Name, util.BeautifulName(backlinkHypha.Name))
-	}
-	return
-}
 
 // FindAllBacklinks iterates over all hyphae that have text parts, sets their outlinks and then sets backlinks.
 func FindAllBacklinks() {

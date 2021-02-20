@@ -6,6 +6,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
@@ -16,7 +17,7 @@ func init() {
 		if h := hyphae.ByName(hyphaName); h.Exists {
 			rawText, err = FetchTextPart(h)
 			if h.BinaryPath != "" {
-				binaryBlock = BinaryHtmlBlock(h)
+				binaryBlock = views.AttachmentHTML(h)
 			}
 		} else {
 			err = errors.New("Hypha " + hyphaName + " does not exist")

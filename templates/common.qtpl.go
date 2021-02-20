@@ -258,103 +258,57 @@ func relativeHyphae(relatives string) string {
 }
 
 //line templates/common.qtpl:67
-func streambacklinks(qw422016 *qt422016.Writer, backlinkEntries string) {
+func streamsubhyphaeMatrix(qw422016 *qt422016.Writer, subhyphae string) {
 //line templates/common.qtpl:67
 	qw422016.N().S(`
-<aside class="backlinks layout-card">
-	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
-	<nav class="backlinks__nav">
-		<ul class="backlinks__list">
-		`)
-//line templates/common.qtpl:72
-	qw422016.N().S(backlinkEntries)
-//line templates/common.qtpl:72
-	qw422016.N().S(`
-		</ul>
-	</nav>
-</aside>
 `)
-//line templates/common.qtpl:76
-}
-
-//line templates/common.qtpl:76
-func writebacklinks(qq422016 qtio422016.Writer, backlinkEntries string) {
-//line templates/common.qtpl:76
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:76
-	streambacklinks(qw422016, backlinkEntries)
-//line templates/common.qtpl:76
-	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:76
-}
-
-//line templates/common.qtpl:76
-func backlinks(backlinkEntries string) string {
-//line templates/common.qtpl:76
-	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:76
-	writebacklinks(qb422016, backlinkEntries)
-//line templates/common.qtpl:76
-	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:76
-	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:76
-	return qs422016
-//line templates/common.qtpl:76
-}
-
-//line templates/common.qtpl:78
-func streamsubhyphaeMatrix(qw422016 *qt422016.Writer, subhyphae string) {
-//line templates/common.qtpl:78
-	qw422016.N().S(`
-`)
-//line templates/common.qtpl:79
+//line templates/common.qtpl:68
 	if strings.TrimSpace(subhyphae) != "" {
-//line templates/common.qtpl:79
+//line templates/common.qtpl:68
 		qw422016.N().S(`
 <section class="subhyphae">
 	<h2 class="subhyphae__title">Subhyphae</h2>
 	<nav class="subhyphae__nav">
 		<ul class="subhyphae__list">
 		`)
-//line templates/common.qtpl:84
+//line templates/common.qtpl:73
 		qw422016.N().S(subhyphae)
-//line templates/common.qtpl:84
+//line templates/common.qtpl:73
 		qw422016.N().S(`
 		</ul>
 	</nav>
 </section>
 `)
-//line templates/common.qtpl:88
+//line templates/common.qtpl:77
 	}
-//line templates/common.qtpl:88
+//line templates/common.qtpl:77
 	qw422016.N().S(`
 `)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 }
 
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 func writesubhyphaeMatrix(qq422016 qtio422016.Writer, subhyphae string) {
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	streamsubhyphaeMatrix(qw422016, subhyphae)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	qt422016.ReleaseWriter(qw422016)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 }
 
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 func subhyphaeMatrix(subhyphae string) string {
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	writesubhyphaeMatrix(qb422016, subhyphae)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	qs422016 := string(qb422016.B)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 	return qs422016
-//line templates/common.qtpl:89
+//line templates/common.qtpl:78
 }

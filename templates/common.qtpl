@@ -64,17 +64,6 @@ var navEntries = []navEntry{
 </aside>
 {% endfunc %}
 
-{% func backlinks(backlinkEntries string) %}
-<aside class="backlinks layout-card">
-	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
-	<nav class="backlinks__nav">
-		<ul class="backlinks__list">
-		{%s= backlinkEntries %}
-		</ul>
-	</nav>
-</aside>
-{% endfunc %}
-
 {% func subhyphaeMatrix(subhyphae string) %}
 {% if strings.TrimSpace(subhyphae) != "" %}
 <section class="subhyphae">
