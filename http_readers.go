@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/tree"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -100,7 +101,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
-			contents = h.BinaryHtmlBlock() + contents
+			contents = shroom.BinaryHtmlBlock(h) + contents
 		}
 	}
 	treeHTML, subhyphaeHTML, prevHypha, nextHypha := tree.Tree(hyphaName)
@@ -112,7 +113,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				contents,
 				treeHTML,
 				subhyphaeHTML,
-				h.BackLinkEntriesHTML(),
+				shroom.BackLinkEntriesHTML(h),
 				prevHypha, nextHypha,
 				hasAmnt),
 			u,

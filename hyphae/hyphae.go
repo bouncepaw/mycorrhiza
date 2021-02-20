@@ -1,43 +1,11 @@
+// The `hyphae` package is for the Hypha type, hypha storage and stuff like that. It shall not depend on mycorrhiza modules other than util.
 package hyphae
 
 import (
-	"errors"
 	"log"
 	"regexp"
-	"strings"
 	"sync"
-
-	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
-
-func init() {
-	markup.HyphaExists = func(hyphaName string) bool {
-		return ByName(hyphaName).Exists
-	}
-	markup.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
-		if h := ByName(hyphaName); h.Exists {
-			rawText, err = h.FetchTextPart()
-			if h.BinaryPath != "" {
-				binaryBlock = h.BinaryHtmlBlock()
-			}
-		} else {
-			err = errors.New("Hypha " + hyphaName + " does not exist")
-		}
-		return
-	}
-	markup.HyphaIterate = func(λ func(string)) {
-		for h := range YieldExistingHyphae() {
-			λ(h.Name)
-		}
-	}
-	markup.HyphaImageForOG = func(hyphaName string) string {
-		if h := ByName(hyphaName); h.Exists && h.BinaryPath != "" {
-			return util.URL + "/binary/" + hyphaName
-		}
-		return util.URL + "/favicon.ico"
-	}
-}
 
 // HyphaPattern is a pattern which all hyphae must match.
 var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
@@ -55,57 +23,6 @@ type Hypha struct {
 
 var byNames = make(map[string]*Hypha)
 var byNamesMutex = sync.Mutex{}
-
-// YieldExistingHyphae iterates over all hyphae and yields all existing ones.
-func YieldExistingHyphae() chan *Hypha {
-	ch := make(chan *Hypha)
-	go func() {
-		for _, h := range byNames {
-			if h.Exists {
-				ch <- h
-			}
-		}
-		close(ch)
-	}()
-	return ch
-}
-
-// FilterTextHyphae filters the source channel and yields only those hyphae than have text parts.
-func FilterTextHyphae(src chan *Hypha) chan *Hypha {
-	sink := make(chan *Hypha)
-	go func() {
-		for h := range src {
-			if h.TextPath != "" {
-				sink <- h
-			}
-		}
-		close(sink)
-	}()
-	return sink
-}
-
-// Subhyphae returns slice of subhyphae.
-func (h *Hypha) Subhyphae() []*Hypha {
-	hyphae := []*Hypha{}
-	for subh := range YieldExistingHyphae() {
-		if strings.HasPrefix(subh.Name, h.Name+"/") {
-			hyphae = append(hyphae, subh)
-		}
-	}
-	return hyphae
-}
-
-// AreFreeNames checks if all given `hyphaNames` are not taken.
-func AreFreeNames(hyphaNames ...string) (firstFailure string, ok bool) {
-	for h := range YieldExistingHyphae() {
-		for _, hn := range hyphaNames {
-			if hn == h.Name {
-				return hn, false
-			}
-		}
-	}
-	return "", true
-}
 
 // EmptyHypha returns an empty hypha struct with given name.
 func EmptyHypha(hyphaName string) *Hypha {
@@ -164,7 +81,7 @@ func (h *Hypha) InsertIfNewKeepExistence() {
 	}
 }
 
-func (h *Hypha) delete() {
+func (h *Hypha) Delete() {
 	byNamesMutex.Lock()
 	h.Lock()
 	delete(byNames, h.Name)
@@ -173,7 +90,7 @@ func (h *Hypha) delete() {
 	h.Unlock()
 }
 
-func (h *Hypha) renameTo(newName string) {
+func (h *Hypha) RenameTo(newName string) {
 	byNamesMutex.Lock()
 	h.Lock()
 	delete(byNames, h.Name)
@@ -194,4 +111,32 @@ func (h *Hypha) MergeIn(oh *Hypha) {
 		}
 		h.BinaryPath = oh.BinaryPath
 	}
+}
+
+// Link related stuff:
+
+func (h *Hypha) AddOutLink(oh *Hypha) (added bool) {
+	h.Lock()
+	defer h.Unlock()
+
+	for _, outlink := range h.OutLinks {
+		if outlink == oh {
+			return false
+		}
+	}
+	h.OutLinks = append(h.OutLinks, oh)
+	return true
+}
+
+func (h *Hypha) AddBackLink(bh *Hypha) (added bool) {
+	h.Lock()
+	defer h.Unlock()
+
+	for _, backlink := range h.BackLinks {
+		if backlink == h {
+			return false
+		}
+	}
+	h.BackLinks = append(h.BackLinks, bh)
+	return true
 }

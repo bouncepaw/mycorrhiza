@@ -8,6 +8,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -29,7 +30,7 @@ func init() {
 
 func factoryHandlerAsker(
 	actionPath string,
-	asker func(*hyphae.Hypha, *user.User) (error, string),
+	asker func(*user.User, *hyphae.Hypha) (error, string),
 	succTitleTemplate string,
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
@@ -40,7 +41,7 @@ func factoryHandlerAsker(
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)
-		if err, errtitle := asker(h, u); err != nil {
+		if err, errtitle := asker(u, h); err != nil {
 			HttpErr(
 				w,
 				http.StatusInternalServerError,
@@ -60,27 +61,21 @@ func factoryHandlerAsker(
 
 var handlerUnattachAsk = factoryHandlerAsker(
 	"unattach-ask",
-	func(h *hyphae.Hypha, u *user.User) (error, string) {
-		return h.CanUnattach(u)
-	},
+	shroom.CanUnattach,
 	"Unattach %s?",
 	templates.UnattachAskHTML,
 )
 
 var handlerDeleteAsk = factoryHandlerAsker(
 	"delete-ask",
-	func(h *hyphae.Hypha, u *user.User) (error, string) {
-		return h.CanDelete(u)
-	},
+	shroom.CanDelete,
 	"Delete %s?",
 	templates.DeleteAskHTML,
 )
 
 var handlerRenameAsk = factoryHandlerAsker(
 	"rename-ask",
-	func(h *hyphae.Hypha, u *user.User) (error, string) {
-		return h.CanRename(u)
-	},
+	shroom.CanRename,
 	"Rename %s?",
 	templates.RenameAskHTML,
 )
@@ -109,14 +104,14 @@ func factoryHandlerConfirmer(
 var handlerUnattachConfirm = factoryHandlerConfirmer(
 	"unattach-confirm",
 	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.HistoryOp, string) {
-		return h.UnattachHypha(u)
+		return shroom.UnattachHypha(u, h)
 	},
 )
 
 var handlerDeleteConfirm = factoryHandlerConfirmer(
 	"delete-confirm",
 	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.HistoryOp, string) {
-		return h.DeleteHypha(u)
+		return shroom.DeleteHypha(u, h)
 	},
 )
 
@@ -128,7 +123,7 @@ var handlerRenameConfirm = factoryHandlerConfirmer(
 			recursive = rq.PostFormValue("recursive") == "true"
 			newHypha  = hyphae.ByName(newName)
 		)
-		return oldHypha.RenameHypha(newHypha, recursive, u)
+		return shroom.RenameHypha(oldHypha, newHypha, recursive, u)
 	},
 )
 
@@ -143,14 +138,14 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		err          error
 		u            = user.FromRequest(rq)
 	)
-	if err, errtitle := h.CanEdit(u); err != nil {
+	if err, errtitle := shroom.CanEdit(u, h); err != nil {
 		HttpErr(w, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
 		return
 	}
 	if h.Exists {
-		textAreaFill, err = h.FetchTextPart()
+		textAreaFill, err = shroom.FetchTextPart(h)
 		if err != nil {
 			log.Println(err)
 			HttpErr(w, http.StatusInternalServerError, hyphaName,
@@ -183,7 +178,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if action != "Preview" {
-		hop, errtitle = h.UploadText([]byte(textData), u)
+		hop, errtitle = shroom.UploadText(h, []byte(textData), u)
 	}
 
 	if hop.HasErrors() {
@@ -220,7 +215,12 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		u                  = user.FromRequest(rq)
 		file, handler, err = rq.FormFile("binary")
 	)
-	if err, errtitle := h.CanAttach(err, u); err != nil {
+	if err != nil {
+		HttpErr(w, http.StatusInternalServerError, hyphaName,
+			"Error",
+			err.Error())
+	}
+	if err, errtitle := shroom.CanAttach(u, h); err != nil {
 		HttpErr(w, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
@@ -237,7 +237,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	}
 	var (
 		mime          = handler.Header.Get("Content-Type")
-		hop, errtitle = h.UploadBinary(mime, file, u)
+		hop, errtitle = shroom.UploadBinary(h, mime, file, u)
 	)
 
 	if hop.HasErrors() {

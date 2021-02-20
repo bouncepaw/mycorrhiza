@@ -15,6 +15,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -85,7 +86,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	hyphae.SetHeaderLinks()
+	shroom.SetHeaderLinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
@@ -175,11 +176,11 @@ func main() {
 	log.Println("Wiki storage directory is", WikiDir)
 	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
-	hyphae.FindAllBacklinks()
+	shroom.FindAllBacklinks()
 	log.Println("Found all backlinks")
 
 	history.Start(WikiDir)
-	hyphae.SetHeaderLinks()
+	shroom.SetHeaderLinks()
 
 	go handleGemini()
 

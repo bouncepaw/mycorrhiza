@@ -1,4 +1,4 @@
-package hyphae
+package shroom
 
 import (
 	"fmt"
@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
-func (h *Hypha) FetchTextPart() (string, error) {
+func FetchTextPart(h *hyphae.Hypha) (string, error) {
 	if h.TextPath == "" {
 		return "", nil
 	}
@@ -25,7 +26,7 @@ func (h *Hypha) FetchTextPart() (string, error) {
 }
 
 // binaryHtmlBlock creates an html block for binary part of the hypha.
-func (h *Hypha) BinaryHtmlBlock() string {
+func BinaryHtmlBlock(h *hyphae.Hypha) string {
 	switch filepath.Ext(h.BinaryPath) {
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 		return fmt.Sprintf(`
@@ -35,7 +36,7 @@ func (h *Hypha) BinaryHtmlBlock() string {
 	case ".ogg", ".webm", ".mp4":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-video">
-			<video>
+			<video controls>
 				<source src="/binary/%[1]s"/>
 				<p>Your browser does not support video. <a href="/binary/%[1]s">Download video</a></p>
 			</video>
@@ -43,7 +44,7 @@ func (h *Hypha) BinaryHtmlBlock() string {
 	case ".mp3":
 		return fmt.Sprintf(`
 		<div class="binary-container binary-container_with-audio">
-			<audio>
+			<audio controls>
 				<source src="/binary/%[1]s"/>
 				<p>Your browser does not support audio. <a href="/binary/%[1]s">Download audio</a></p>
 			</audio>
@@ -58,7 +59,7 @@ func (h *Hypha) BinaryHtmlBlock() string {
 }
 
 func SetHeaderLinks() {
-	if userLinksHypha := ByName(util.HeaderLinksHypha); !userLinksHypha.Exists {
+	if userLinksHypha := hyphae.ByName(util.HeaderLinksHypha); !userLinksHypha.Exists {
 		util.SetDefaultHeaderLinks()
 	} else {
 		contents, err := ioutil.ReadFile(userLinksHypha.TextPath)
