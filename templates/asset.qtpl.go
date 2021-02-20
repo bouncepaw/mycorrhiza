@@ -280,7 +280,7 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 }
 
 
-
+.backlinks { display: none; }
 `)
 //line templates/asset.qtpl:2
 	qw422016.N().S(`

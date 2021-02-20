@@ -3,7 +3,6 @@ package shroom
 import (
 	"io/ioutil"
 	"log"
-	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
@@ -18,25 +17,19 @@ func FindAllBacklinks() {
 
 func findBacklinkWorker(h *hyphae.Hypha) {
 	var (
-		wg                sync.WaitGroup
 		textContents, err = ioutil.ReadFile(h.TextPath)
 	)
 	if err == nil {
 		for outlink := range markup.Doc(h.Name, string(textContents)).OutLinks() {
-			go func() {
-				wg.Add(1)
-				outlinkHypha := hyphae.ByName(outlink)
-				if outlinkHypha == h {
-					return
-				}
+			outlinkHypha := hyphae.ByName(outlink)
+			if outlinkHypha == h {
+				break
+			}
 
-				outlinkHypha.AddBackLink(h)
-				outlinkHypha.InsertIfNewKeepExistence()
-				h.AddOutLink(outlinkHypha)
-				wg.Done()
-			}()
+			outlinkHypha.AddBackLink(h)
+			outlinkHypha.InsertIfNewKeepExistence()
+			h.AddOutLink(outlinkHypha)
 		}
-		wg.Wait()
 	} else {
 		log.Println("Error when reading text contents of ‘%s’: %s", h.Name, err.Error())
 	}
