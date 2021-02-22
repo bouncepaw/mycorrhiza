@@ -20,6 +20,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 // WikiDir is a rooted path to the wiki storage directory.
@@ -53,13 +54,13 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 		u         = user.FromRequest(rq)
 	)
 	for h := range hyphae.YieldExistingHyphae() {
-		tbody += templates.HyphaListRowHTML(h.Name, mimetype.FromExtension(filepath.Ext(h.BinaryPath)), h.BinaryPath != "")
+		tbody += views.HyphaListRowHTML(h.Name, mimetype.FromExtension(filepath.Ext(h.BinaryPath)), h.BinaryPath != "")
 	}
-	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount), u))
+	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(tbody, pageCount), u))
 }
 
 // This part is present in all html documents.
-var base = templates.BaseHTML
+var base = views.BaseHTML
 
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
@@ -148,13 +149,13 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML(), user.FromRequest(rq))))
+	w.Write([]byte(base("About "+util.SiteName, views.AboutHTML(), user.FromRequest(rq))))
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base("User list", templates.UserListHTML(), user.FromRequest(rq))))
+	w.Write([]byte(base("User list", views.UserListHTML(), user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {

@@ -13,7 +13,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -99,7 +98,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 	util.HTTP200Page(w,
-		templates.BaseHTML(
+		views.BaseHTML(
 			util.BeautifulName(hyphaName),
 			views.HyphaHTML(rq, h, contents),
 			u,

@@ -6,6 +6,7 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="/static/common.css">
 		<title>{%s title %}</title>
 		{% for _, el := range headElements %}{%s= el %}{% endfor %}
@@ -17,7 +18,7 @@
 					{%- for _, link := range util.HeaderLinks -%}
 					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
 					{%- endfor -%}
-					{%s= userMenuHTML(u) %}
+					{%s= UserMenuHTML(u) %}
 				</ul>
 			</nav>
 		</header>
@@ -119,6 +120,37 @@ for u := range user.YieldUsers() {
 		{%- endif -%}
 		</ul>
 		<p>See <a href="/list">/list</a> for information about hyphae on this wiki.</p>
+	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func AdminPanelHTML() %}
+<div class="layout">
+<main class="main-width">
+	<h1>Admininstrative functions</h1>
+	<section>
+		<h2>Safe things</h2>
+		<ul>
+			<li><a href="/about">About this wiki<a></li>
+			<li><a href="/user-list">User list</a></li>
+			<li><a href="/update-header-links">Update header links</a></li>
+		</ul>
+	</section>
+	<section>
+		<h2>Dangerous things</h2>
+		<form action="/admin/shutdown" method="POST" style="float:left">
+			<fieldset>
+				<legend>Shutdown wiki</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
+		<form action="/reindex" method="GET" style="float:left">
+			<fieldset>
+				<legend>Reindex hyphae</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
 	</section>
 </main>
 </div>
