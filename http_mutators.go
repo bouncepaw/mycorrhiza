@@ -12,6 +12,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
@@ -63,7 +64,7 @@ var handlerUnattachAsk = factoryHandlerAsker(
 	"unattach-ask",
 	shroom.CanUnattach,
 	"Unattach %s?",
-	templates.UnattachAskHTML,
+	views.UnattachAskHTML,
 )
 
 var handlerDeleteAsk = factoryHandlerAsker(
