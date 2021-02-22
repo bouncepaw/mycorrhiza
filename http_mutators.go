@@ -71,14 +71,14 @@ var handlerDeleteAsk = factoryHandlerAsker(
 	"delete-ask",
 	shroom.CanDelete,
 	"Delete %s?",
-	templates.DeleteAskHTML,
+	views.DeleteAskHTML,
 )
 
 var handlerRenameAsk = factoryHandlerAsker(
 	"rename-ask",
 	shroom.CanRename,
 	"Rename %s?",
-	templates.RenameAskHTML,
+	views.RenameAskHTML,
 )
 
 func factoryHandlerConfirmer(
