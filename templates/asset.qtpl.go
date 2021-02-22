@@ -23,12 +23,19 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line templates/asset.qtpl:2
-	qw422016.N().S(`/* General element positions, from small to big */
-.modal__title { font-size: 2rem; }
+	qw422016.N().S(`.modal__title { font-size: 2rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
 .modal__action { display: inline-block; font-size: 1rem; padding: .25rem; border-radius: .25rem; }
 .modal__submit { border: 1px #999 solid; }
 .modal__cancel { border: 1px #999 dashed; text-decoration: none; }
+
+.hypha-list { padding-left: 0; }
+.hypha-list__entry { list-style-type: none; }
+.hypha-list__link { text-decoration: none; display: inline-block; padding: .25rem; }
+.hypha-list__link:hover { text-decoration: underline; }
+.hypha-list__amnt-type { font-size: smaller; color: #999; }
+
+/* General element positions, from small to big */
 /* Phones and whatnot */
 .layout { display: grid; row-gap: 1rem; }
 header { width: 100%; margin-bottom: 1rem; }

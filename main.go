@@ -10,12 +10,10 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -48,15 +46,7 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	var (
-		tbody     string
-		pageCount = hyphae.Count()
-		u         = user.FromRequest(rq)
-	)
-	for h := range hyphae.YieldExistingHyphae() {
-		tbody += views.HyphaListRowHTML(h.Name, mimetype.FromExtension(filepath.Ext(h.BinaryPath)), h.BinaryPath != "")
-	}
-	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(tbody, pageCount), u))
+	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
 }
 
 // This part is present in all html documents.
