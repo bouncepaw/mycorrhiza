@@ -9,7 +9,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -161,7 +160,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		w,
 		base(
 			"Edit "+hyphaName,
-			templates.EditHTML(rq, hyphaName, textAreaFill, warning),
+			views.EditHTML(rq, hyphaName, textAreaFill, warning),
 			u))
 }
 
@@ -193,7 +192,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 			w,
 			base(
 				"Preview "+hyphaName,
-				templates.PreviewHTML(
+				views.PreviewHTML(
 					rq,
 					hyphaName,
 					textData,

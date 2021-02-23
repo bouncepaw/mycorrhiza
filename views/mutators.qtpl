@@ -2,7 +2,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
-{%s= navHTML(rq, hyphaName, "edit") %}
+{%s= NavHTML(rq, hyphaName, "edit") %}
 <div class="layout">
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
@@ -20,10 +20,10 @@
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
-{%s= navHTML(rq, hyphaName, "edit") %}
+{%s= NavHTML(rq, hyphaName, "edit") %}
 <div class="layout">
 <main class="main-width edit edit_with-preview">
-	<h1>Edit {%s hyphaName %} (preview)</h1>
+	<h1>Edit {%s util.BeautifulName(hyphaName) %} (preview)</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
