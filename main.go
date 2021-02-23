@@ -1,5 +1,5 @@
 //go:generate go get -u github.com/valyala/quicktemplate/qtc
-//go:generate qtc -dir=templates
+//go:generate qtc -dir=assets
 //go:generate qtc -dir=views
 package main
 
@@ -12,10 +12,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/assets"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -102,7 +102,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, util.WikiDir+"/static/common.css")
 	} else {
 		w.Header().Set("Content-Type", "text/css;charset=utf-8")
-		w.Write([]byte(templates.DefaultCSS()))
+		w.Write([]byte(assets.DefaultCSS()))
 	}
 	if bytes, err := ioutil.ReadFile(util.WikiDir + "/static/custom.css"); err == nil {
 		w.Write(bytes)
@@ -126,13 +126,13 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	switch iconName {
 	case "gemini":
-		w.Write([]byte(templates.IconGemini()))
+		w.Write([]byte(assets.IconGemini()))
 	case "mailto":
-		w.Write([]byte(templates.IconMailto()))
+		w.Write([]byte(assets.IconMailto()))
 	case "gopher":
-		w.Write([]byte(templates.IconGopher()))
+		w.Write([]byte(assets.IconGopher()))
 	default:
-		w.Write([]byte(templates.IconHTTP()))
+		w.Write([]byte(assets.IconHTTP()))
 	}
 }
 
