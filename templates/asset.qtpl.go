@@ -146,7 +146,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .binary-container_with-video video,
 .binary-container_with-audio audio {width: 100%}
 
-.subhyphae__title { padding-bottom: .5rem; }
+.subhyphae__title { padding-bottom: .5rem; clear: both; }
 .navi-title { padding-bottom: .5rem; margin: .25rem 0; }
 .navi-title a {text-decoration:none; }
 .navi-title__separator { margin: 0 .25rem; }
