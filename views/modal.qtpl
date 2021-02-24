@@ -16,7 +16,7 @@
 {% func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
 {%= NavHTML(rq, hyphaName, "unattach-ask") %}
 {%= modalBegin(
-	"unattach-confirm",
+	"unattach",
 	hyphaName,
 	"",
 	"Unattach "+util.BeautifulName(hyphaName)+"?") %}

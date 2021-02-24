@@ -23,7 +23,11 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:2
-	qw422016.N().S(`.modal__title { font-size: 2rem; }
+	qw422016.N().S(`.amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.upload-binary__input { display: block; margin: .25rem 0; }
+
+.modal__title { font-size: 2rem; }
+.modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
 .modal__action { display: inline-block; font-size: 1rem; padding: .25rem; border-radius: .25rem; }
 .modal__submit { border: 1px #999 solid; }
@@ -56,6 +60,7 @@ header { width: 100%; margin-bottom: 1rem; }
 .backlinks__link { text-decoration: none; display: block; padding: .25rem; padding-left: 1.25rem; }
 
 @media screen and (max-width: 800px) {
+	.amnt-grid { grid-template-columns: 1fr; }
 	.layout { grid-template-column: auto; grid-template-row: auto auto auto; }
 	.main-width { width: 100%; }
 	main { padding: 1rem; margin: 0; }

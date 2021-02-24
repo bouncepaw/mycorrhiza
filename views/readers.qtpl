@@ -1,10 +1,75 @@
 {% import "net/http" %}
+{% import "strings" %}
 {% import "path" %}
+{% import "os" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
+{% import "github.com/bouncepaw/mycorrhiza/tree" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
-{% import "github.com/bouncepaw/mycorrhiza/tree" %}
+
+{% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
+{%= NavHTML(rq, h.Name, "attachment") %}
+<div class="layout">
+<main class="main-width">
+	<h1>Attachment of {%s util.BeautifulName(h.Name) %}</h1>
+	{% if h.BinaryPath == "" %}
+	<p class="warning">This hypha has no attachment, you can upload it here.</p>
+	{% else %}
+	<p class="warning">You can manage the hypha's attachment on this page.</p>
+	{% endif %}
+
+	<section class="amnt-grid">
+
+	{% if h.BinaryPath != "" %}
+		{% code
+			mime := mimetype.FromExtension(path.Ext(h.BinaryPath))
+			fileinfo, err := os.Stat(h.BinaryPath) %}
+		{% if err == nil %}
+		<fieldset class="amnt-menu-block">
+			<legend class="modal__title modal__title_small">Stat</legend>
+			<p class="modal__confirmation-msg"><b>File size:</b> {%dl fileinfo.Size() %} bytes</p>
+			<p><b>MIME type:</b> {%s mime %}</p>
+		</fieldset>
+		{% endif %}
+
+		{% if strings.HasPrefix(mime, "image/") %}
+		<fieldset class="amnt-menu-block">
+			<legend class="modal__title modal__title_small">Include</legend>
+			<p class="modal__confirmation-msg">This attachment is an image. To include it to a page, use a syntax like this:</p>
+			<pre class="codebleck"><code>img { {%s h.Name %} }</code></pre>
+		</fieldset>
+		{% endif %}
+	{% endif %}
+
+	{% if u.CanProceed("upload-binary") %}
+	<form action="/upload-binary/{%s h.Name %}"
+			method="post" enctype="multipart/form-data"
+			class="modal amnt-menu-block">
+		<fieldset class="modal__fieldset upload-binary">
+			<legend class="modal__title modal__title_small">Attach</legend>
+			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because no server-side compression is done and other readers may not want to wait for big pictures to load.</p>
+			<input type="file" class="upload-binary__input" name="binary">
+			<input type="submit" class="modal__action modal__submit">
+		</fieldset>
+	</form>
+	{% endif %}
+
+	{% if h.BinaryPath != "" && u.CanProceed("unattach-confirm") %}
+	<form action="/unattach-confirm/{%s h.Name %}" method="post" class="modal amnt-menu-block">
+		<fieldset class="modal__fieldset">
+			<legend class="modal__title modal__title_small">Unattach</legend>
+			<p class="modal__confirmation-msg">Please note that you don't have to unattach before uploading a new attachment.</p>
+			<input type="submit" class="modal__action modal__submit">
+		</fieldset>
+	</form>
+	{% endif %}
+
+	</section>
+</main>
+</div>
+{% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
 {% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
@@ -18,6 +83,16 @@ If `contents` == "", a helpful message is shown instead.
 		{%s= NaviTitleHTML(h) %}
 		{% if contents == "" %}
 			<p>This hypha has no text. Why not <a href="/edit/{%s h.Name %}">create it</a>?</p>
+		{% if u := user.FromRequest(rq); (!user.AuthUsed || u.Group != "anon") && !h.Exists %}
+			<form action="/upload-binary/{%s h.Name %}"
+					method="post" enctype="multipart/form-data"
+					class="upload-binary">
+				<label for="upload-binary__input">Upload an attachment:</label>
+				<input type="file" id="upload-binary__input" name="binary">
+				<input type="submit">
+			</form>
+			<br>
+		{% endif %}
 		{% else %}
 			{%s= contents %}
 		{% endif %}
@@ -30,19 +105,6 @@ If `contents` == "", a helpful message is shown instead.
 		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
 		{% endif %}
 	</section>
-{% if u := user.FromRequest(rq); !user.AuthUsed || u.Group != "anon" %}
-	<form action="/upload-binary/{%s h.Name %}"
-			method="post" enctype="multipart/form-data"
-			class="upload-amnt">
-		{% if h.Exists && h.BinaryPath != "" %}
-			<a class="upload-amnt__unattach" href="/unattach-ask/{%s h.Name %}">Unattach current attachment?</a>
-		{% endif %}
-		<label for="upload-binary__input">Upload a new attachment</label>
-		<br>
-		<input type="file" id="upload-binary__input" name="binary"/>
-		<input type="submit"/>
-	</form>
-{% endif %}
 {%= SubhyphaeHTML(subhyphae) %}
 </main>
 {%= RelativeHyphaeHTML(relatives) %}

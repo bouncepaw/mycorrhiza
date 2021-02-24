@@ -94,7 +94,7 @@ func StreamUnattachAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaNam
 `)
 //line views/modal.qtpl:18
 	streammodalBegin(qw422016,
-		"unattach-confirm",
+		"unattach",
 		hyphaName,
 		"",
 		"Unattach "+util.BeautifulName(hyphaName)+"?")

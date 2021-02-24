@@ -24,6 +24,21 @@ func init() {
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
 	http.HandleFunc("/rev/", handlerRevision)
+	http.HandleFunc("/attachment/", handlerAttachment)
+}
+
+func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "attachment")
+		h         = hyphae.ByName(hyphaName)
+		u         = user.FromRequest(rq)
+	)
+	util.HTTP200Page(w,
+		views.BaseHTML(
+			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
+			views.AttachmentMenuHTML(rq, h, u),
+			u))
 }
 
 // handlerRevision displays a specific revision of text part a page
