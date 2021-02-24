@@ -123,7 +123,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 			qw422016.N().S(`
 		<fieldset class="amnt-menu-block">
 			<legend class="modal__title modal__title_small">Include</legend>
-			<p class="modal__confirmation-msg">This attachment is an image. To include it to a page, use a syntax like this:</p>
+			<p class="modal__confirmation-msg">This attachment is an image. To include it n a hypha, use a syntax like this:</p>
 			<pre class="codebleck"><code>img { `)
 //line views/readers.qtpl:41
 			qw422016.E().S(h.Name)
@@ -155,7 +155,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 			class="modal amnt-menu-block">
 		<fieldset class="modal__fieldset upload-binary">
 			<legend class="modal__title modal__title_small">Attach</legend>
-			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because no server-side compression is done and other readers may not want to wait for big pictures to load.</p>
+			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.</p>
 			<input type="file" class="upload-binary__input" name="binary">
 			<input type="submit" class="modal__action modal__submit">
 		</fieldset>
