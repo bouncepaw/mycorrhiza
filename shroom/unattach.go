@@ -14,7 +14,7 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errti
 	hop = history.Operation(history.TypeUnattachHypha)
 
 	if err, errtitle := CanUnattach(u, h); errtitle != "" {
-		hop.WithError(err).Abort()
+		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
 
@@ -26,7 +26,8 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errti
 
 	if len(hop.Errs) > 0 {
 		rejectUnattachLog(h, u, "fail")
-		return hop.WithError(errors.New(fmt.Sprintf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs))), "Error"
+		// FIXME: something may be wrong here
+		return hop.WithErrAbort(errors.New(fmt.Sprintf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs))), "Error"
 	}
 
 	if h.BinaryPath != "" {

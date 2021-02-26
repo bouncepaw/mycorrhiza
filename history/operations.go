@@ -59,10 +59,14 @@ func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
 	return hop
 }
 
-// WithError appends the `err` to the list of errors.
-func (hop *HistoryOp) WithError(err error) *HistoryOp {
+// WithErr appends the `err` to the list of errors.
+func (hop *HistoryOp) WithErr(err error) *HistoryOp {
 	hop.Errs = append(hop.Errs, err)
 	return hop
+}
+
+func (hop *HistoryOp) WithErrAbort(err error) *HistoryOp {
+	return hop.WithErr(err).Abort()
 }
 
 // WithFilesRemoved git-rm-s all passed `paths`. Paths can be rooted or not. Paths that are empty strings are ignored.

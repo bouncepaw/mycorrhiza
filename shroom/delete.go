@@ -13,7 +13,7 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errtitl
 	hop = history.Operation(history.TypeDeleteHypha)
 
 	if err, errtitle := CanDelete(u, h); errtitle != "" {
-		hop.WithError(err).Abort()
+		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
 

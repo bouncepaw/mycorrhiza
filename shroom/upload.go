@@ -25,10 +25,10 @@ func UploadText(h *hyphae.Hypha, data []byte, u *user.User) (hop *history.Histor
 	}
 
 	if err, errtitle := CanEdit(u, h); err != nil {
-		return hop.WithError(err), errtitle
+		return hop.WithErrAbort(err), errtitle
 	}
 	if len(data) == 0 {
-		return hop.WithError(errors.New("No data passed")), "Empty"
+		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
 	return uploadHelp(h, hop, ".myco", data, u)
@@ -41,13 +41,13 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 	)
 
 	if err != nil {
-		return hop.WithError(err), err.Error()
+		return hop.WithErrAbort(err), err.Error()
 	}
 	if err, errtitle := CanAttach(u, h); err != nil {
-		return hop.WithError(err), errtitle
+		return hop.WithErrAbort(err), errtitle
 	}
 	if len(data) == 0 {
-		return hop.WithError(errors.New("No data passed")), "Empty"
+		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
 	return uploadHelp(h, hop, mimetype.ToExtension(mime), data, u)
@@ -64,16 +64,16 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 	}
 
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
-		return hop.WithError(err), err.Error()
+		return hop.WithErrAbort(err), err.Error()
 	}
 
 	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
-		return hop.WithError(err), err.Error()
+		return hop.WithErrAbort(err), err.Error()
 	}
 
 	if h.Exists && *originalFullPath != fullPath && *originalFullPath != "" {
 		if err := history.Rename(*originalFullPath, fullPath); err != nil {
-			return hop.WithError(err), err.Error()
+			return hop.WithErrAbort(err), err.Error()
 		}
 		log.Println("Move", *originalFullPath, "to", fullPath)
 	}

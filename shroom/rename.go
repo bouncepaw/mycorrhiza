@@ -37,11 +37,11 @@ func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *use
 	hop = history.Operation(history.TypeRenameHypha)
 
 	if err, errtitle := CanRename(u, h); errtitle != "" {
-		hop.WithError(err)
+		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
 	if err, errtitle := canRenameThisToThat(h, newHypha, u); errtitle != "" {
-		hop.WithError(err)
+		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
 
