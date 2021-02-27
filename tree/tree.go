@@ -112,7 +112,7 @@ func Tree(hyphaName string) (relatives, subhyphae, prev, next string) {
 	for i, s := range siblings {
 		if s.name == hyphaName {
 			I = i
-			relatives += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(hyphaName))
+			relatives += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
 		} else {
 			relatives += s.asHTML()
 		}
