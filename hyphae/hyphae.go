@@ -88,6 +88,10 @@ func (h *Hypha) Delete() {
 	DecrementCount()
 	byNamesMutex.Unlock()
 	h.Unlock()
+
+	for _, outlinkHypha := range h.OutLinks {
+		outlinkHypha.DropBackLink(h)
+	}
 }
 
 func (h *Hypha) RenameTo(newName string) {
@@ -113,7 +117,16 @@ func (h *Hypha) MergeIn(oh *Hypha) {
 	}
 }
 
-// Link related stuff:
+// ## Link related stuff
+// Notes in pseudocode and whatnot:
+// * (Reader h) does not mutate h => safe
+// * (Rename h) reuses the same hypha object => safe
+// * (Unattach h) and (Attach h) do not change (Backlinks h) => safe
+
+// * (Delete h) does not change (Backlinks h), but changes (Outlinks h), removing h from them => make it safe
+// * (Unattach h) and (Attach h) => h may start or stop existing => may change (Outlinks h) => make it safe
+// * (Edit h) => h may start existing => may change (Backlinks h) => make it safe
+// * (Edit h) may add or remove h to or from (Outlinks h) => make it safe
 
 func (h *Hypha) AddOutLink(oh *Hypha) (added bool) {
 	h.Lock()
@@ -139,4 +152,24 @@ func (h *Hypha) AddBackLink(bh *Hypha) (added bool) {
 	}
 	h.BackLinks = append(h.BackLinks, bh)
 	return true
+}
+
+func (h *Hypha) DropBackLink(bh *Hypha) {
+	h.Lock()
+	defer h.Unlock()
+
+	if len(h.BackLinks) <= 1 {
+		h.BackLinks = make([]*Hypha, 0)
+		return
+	}
+	lastBackLinkIndex := len(h.BackLinks)
+	for i, backlink := range h.BackLinks {
+		if backlink == bh {
+			if i != lastBackLinkIndex {
+				h.BackLinks[i] = h.BackLinks[lastBackLinkIndex]
+			}
+			h.BackLinks = h.BackLinks[:lastBackLinkIndex]
+			return
+		}
+	}
 }

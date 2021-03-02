@@ -134,6 +134,9 @@ blockquote { margin-left: 0; padding-left: 1rem; }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
+.heading__link { text-decoration: none; display: inline-block; }
+.heading__link::after { width: 1rem; content: "§"; color: transparent; }
+.heading__link:hover::after, .heading__link:active::after { color: #999; }
 article p { margin: .5rem 0; }
 article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
@@ -291,12 +294,7 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 @media screen and (max-width: 800px) {
 	.hypha-tabs { background-color: #232323; }
 }
-@media screen and (min-width: 801px) {
-	/* .hypha-tabs__tab { border: 1px #ddd solid; } */
-	/* .hypha-tabs__tab_active { border-bottom: 1px white solid; } */
 }
-}
-
 
 .backlinks { display: none; }
 `)

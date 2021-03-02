@@ -89,7 +89,7 @@ func renamingPairs(hyphaeToRename []*hyphae.Hypha, replaceName func(string) stri
 	renameMap := make(map[string]string)
 	newNames := make([]string, len(hyphaeToRename))
 	for _, h := range hyphaeToRename {
-		h.RLock()
+		h.Lock()
 		newNames = append(newNames, replaceName(h.Name))
 		if h.TextPath != "" {
 			renameMap[h.TextPath] = replaceName(h.TextPath)
@@ -97,7 +97,7 @@ func renamingPairs(hyphaeToRename []*hyphae.Hypha, replaceName func(string) stri
 		if h.BinaryPath != "" {
 			renameMap[h.BinaryPath] = replaceName(h.BinaryPath)
 		}
-		h.RUnlock()
+		h.Unlock()
 	}
 	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
 		return nil, errors.New("Hypha " + firstFailure + " already exists")

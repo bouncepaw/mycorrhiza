@@ -32,6 +32,8 @@ type Link struct {
 	Kind               LinkType
 	DestinationUnknown bool
 
+	// #...
+	Anchor   string
 	Protocol string
 	// How the link address looked originally in source text.
 	SrcAddress string
@@ -66,7 +68,7 @@ func (l *Link) Href() string {
 	case LinkExternal, LinkLocalRoot:
 		return l.Address
 	default:
-		return "/hypha/" + l.Address
+		return "/hypha/" + l.Address + l.Anchor
 	}
 }
 
@@ -117,6 +119,10 @@ func From(address, display, hyphaName string) *Link {
 	case strings.HasPrefix(address, "../"):
 		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(path.Join(path.Dir(hyphaName), address[3:]))
+	case strings.HasPrefix(address, "#"):
+		link.Kind = LinkLocalHypha
+		link.Address = util.CanonicalName(hyphaName)
+		link.Anchor = address
 	default:
 		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(address)

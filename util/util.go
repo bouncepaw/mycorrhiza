@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 var (
@@ -21,6 +22,24 @@ var (
 	FixedCredentialsPath string
 	GeminiCertPath       string
 )
+
+// LettersNumbersOnly keeps letters and numbers only in the given string.
+func LettersNumbersOnly(s string) string {
+	var (
+		ret            strings.Builder
+		usedUnderscore bool
+	)
+	for _, r := range s {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			ret.WriteRune(r)
+			usedUnderscore = false
+		} else if !usedUnderscore {
+			ret.WriteRune('_')
+			usedUnderscore = true
+		}
+	}
+	return strings.Trim(ret.String(), "_")
+}
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
 func ShorterPath(path string) string {
