@@ -4,8 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
@@ -28,7 +29,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Unknown user tries to log out")
 		w.WriteHeader(http.StatusForbidden)
 	}
-	w.Write([]byte(base("Logout?", templates.LogoutHTML(can), u)))
+	w.Write([]byte(base("Logout?", views.LogoutHTML(can), u)))
 }
 
 func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
@@ -39,12 +40,12 @@ func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
-		username = CanonicalName(rq.PostFormValue("username"))
+		username = util.CanonicalName(rq.PostFormValue("username"))
 		password = rq.PostFormValue("password")
 		err      = user.LoginDataHTTP(w, rq, username, password)
 	)
 	if err != "" {
-		w.Write([]byte(base(err, templates.LoginErrorHTML(err), user.EmptyUser())))
+		w.Write([]byte(base(err, views.LoginErrorHTML(err), user.EmptyUser())))
 	} else {
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
 	}
@@ -58,5 +59,5 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusForbidden)
 	}
-	w.Write([]byte(base("Login", templates.LoginHTML(), user.EmptyUser())))
+	w.Write([]byte(base("Login", views.LoginHTML(), user.EmptyUser())))
 }

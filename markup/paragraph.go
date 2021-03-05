@@ -55,7 +55,8 @@ func getLinkNode(input *bytes.Buffer, hyphaName string, isBracketedLink bool) st
 		} else if isBracketedLink && b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
 			input.Next(1)
 			break
-		} else if !isBracketedLink && unicode.IsSpace(rune(b)) {
+		} else if !isBracketedLink && (unicode.IsSpace(rune(b)) || strings.ContainsRune("<>{}|\\^[]`,()", rune(b))) {
+			input.UnreadByte()
 			break
 		} else {
 			currBuf.WriteByte(b)

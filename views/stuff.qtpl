@@ -1,0 +1,147 @@
+{% import "path/filepath" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+{% func BaseHTML(title, body string, u *user.User, headElements ...string) %}
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="/static/common.css">
+		<title>{%s title %}</title>
+		{% for _, el := range headElements %}{%s= el %}{% endfor %}
+	</head>
+	<body>
+		<header>
+			<nav class="header-links main-width">
+				<ul class="header-links__list">
+					{%- for _, link := range util.HeaderLinks -%}
+					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
+					{%- endfor -%}
+					{%s= UserMenuHTML(u) %}
+				</ul>
+			</nav>
+		</header>
+		{%s= body %}
+	</body>
+</html>
+{% endfunc %}
+
+{% func UserListHTML() %}
+<div class="layout">
+<main class="main-width user-list">
+	<h1>List of users</h1>
+{% code
+var (
+	admins = make([]string, 0)
+	moderators = make([]string, 0)
+	editors = make([]string, 0)
+)
+for u := range user.YieldUsers() {
+	switch u.Group {
+	case "admin":
+		admins = append(admins, u.Name)
+	case "moderator":
+		moderators = append(moderators, u.Name)
+	case "editor", "trusted":
+		editors = append(editors, u.Name)
+	}
+}
+%}
+	<section>
+		<h2>Admins</h2>
+		<ol>{% for _, name := range admins %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+	<section>
+		<h2>Moderators</h2>
+		<ol>{% for _, name := range moderators %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+	<section>
+		<h2>Editors</h2>
+		<ol>{% for _, name := range editors %}
+			<li><a href="/page/{%s util.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func HyphaListHTML() %}
+<div class="layout">
+<main class="main-width">
+	<h1>List of hyphae</h1>
+	<p>This wiki has {%d hyphae.Count() %} hyphae.</p>
+	<ul class="hypha-list">
+		{% for h := range hyphae.YieldExistingHyphae() %}
+		<li class="hypha-list__entry">
+			<a class="hypha-list__link" href="/hypha/{%s h.Name %}">{%s util.BeautifulName(h.Name) %}</a>
+			{% if h.BinaryPath != "" %}
+			<span class="hypha-list__amnt-type">{%s filepath.Ext(h.BinaryPath)[1:] %}</span>
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+</main>
+</div>
+{% endfunc %}
+
+{% func AboutHTML() %}
+<div class="layout">
+<main class="main-width">
+	<section>
+		<h1>About {%s util.SiteName %}</h1>
+		<ul>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.13</li>
+		{%- if user.AuthUsed -%}
+			<li><b>User count:</b> {%d user.Count() %}</li>
+			<li><b>Home page:</b> <a href="/">{%s util.HomePage %}</a></li>
+			<li><b>Administrators:</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
+				{%- if i > 0 -%}<span aria-hidden="true">, </span>
+				{%- endif -%}
+				<a href="/page/{%s util.UserHypha %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
+		{%- else -%}
+			<li>This wiki does not use authorization</li>
+		{%- endif -%}
+		</ul>
+		<p>See <a href="/list">/list</a> for information about hyphae on this wiki.</p>
+	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func AdminPanelHTML() %}
+<div class="layout">
+<main class="main-width">
+	<h1>Admininstrative functions</h1>
+	<section>
+		<h2>Safe things</h2>
+		<ul>
+			<li><a href="/about">About this wiki<a></li>
+			<li><a href="/user-list">User list</a></li>
+			<li><a href="/update-header-links">Update header links</a></li>
+		</ul>
+	</section>
+	<section>
+		<h2>Dangerous things</h2>
+		<form action="/admin/shutdown" method="POST" style="float:left">
+			<fieldset>
+				<legend>Shutdown wiki</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
+		<form action="/reindex" method="GET" style="float:left">
+			<fieldset>
+				<legend>Reindex hyphae</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
+	</section>
+</main>
+</div>
+{% endfunc %}

@@ -1,0 +1,79 @@
+{% import "net/http" %}
+{% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+This is the <nav> seen on top of many pages.
+{% code
+type navEntry struct {
+	path string
+	title string
+}
+var navEntries = []navEntry{
+	{"page", "Hypha"},
+	{"edit", "Edit"},
+	{"attachment", "Attachment"},
+	{"history", "History"},
+	{"revision", "NOT REACHED"},
+	{"rename-ask", "Rename"},
+	{"delete-ask", "Delete"},
+	{"text", "Raw text"},
+}
+%}
+
+{% func NavHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) %}
+{% code 
+	u := user.FromRequest(rq)
+%}
+	<nav class="hypha-tabs main-width">
+		<ul class="hypha-tabs__flex">
+		{%- for _, entry := range navEntries -%}
+		{%- if navType == "revision" && entry.path == "revision" -%}
+			<li class="hypha-tabs__tab hypha-tabs__tab_active">
+				<span class="hypha-tabs__selection">{%s revisionHash[0] %}</span>
+			</li>
+		{%- elseif navType == entry.path -%}
+			<li class="hypha-tabs__tab hypha-tabs__tab_active">
+				<span class="hypha-tabs__selection">{%s entry.title %}</span>
+			</li>
+		{%- elseif entry.path != "revision" && u.CanProceed(entry.path) -%}
+			<li class="hypha-tabs__tab">
+				<a class="hypha-tabs__link" href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a>
+			</li>
+		{%- endif -%}
+		{%- endfor -%}
+		</ul>
+	</nav>
+{% endfunc %}
+
+{% func UserMenuHTML(u *user.User) %}
+{% if user.AuthUsed %}
+<li class="header-links__entry header-links__entry_user">
+	{% if u.Group == "anon" %}
+	<a href="/login" class="header-links__link">Login</a>
+	{% else %}
+	<a href="/page/{%s util.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s u.Name %}</a>
+	{% endif %}
+</li>
+{% endif %}
+{% endfunc %}
+
+{% func RelativeHyphaeHTML(relatives string) %}
+<aside class="relative-hyphae layout-card">
+	<h2 class="relative-hyphae__title layout-card__title">Relative hyphae</h2>
+	{%s= relatives %}
+</aside>
+{% endfunc %}
+
+{% func SubhyphaeHTML(subhyphae string) %}
+{% if strings.TrimSpace(subhyphae) != "" %}
+<section class="subhyphae">
+	<h2 class="subhyphae__title">Subhyphae</h2>
+	<nav class="subhyphae__nav">
+		<ul class="subhyphae__list">
+		{%s= subhyphae %}
+		</ul>
+	</nav>
+</section>
+{% endif %}
+{% endfunc %}

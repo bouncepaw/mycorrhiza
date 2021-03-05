@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/gorilla/feeds"
 )
@@ -61,7 +60,7 @@ func RecentChangesJSON() (string, error) {
 	return recentChangesFeed().ToJSON()
 }
 
-func RecentChanges(n int) string {
+func RecentChanges(n int) []Revision {
 	var (
 		out, err = gitsh(
 			"log", "--oneline", "--no-merges",
@@ -75,11 +74,7 @@ func RecentChanges(n int) string {
 			revs = append(revs, parseRevisionLine(line))
 		}
 	}
-	entries := make([]string, len(revs))
-	for i, rev := range revs {
-		entries[i] = rev.RecentChangesEntry()
-	}
-	return templates.RecentChangesHTML(entries, n)
+	return revs
 }
 
 // FileChanged tells you if the file has been changed.
@@ -177,6 +172,6 @@ func parseRevisionLine(line string) Revision {
 
 // See how the file with `filepath` looked at commit with `hash`.
 func FileAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("show", hash+":"+filepath)
+	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, util.WikiDir+"/"))
 	return out.String(), err
 }

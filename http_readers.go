@@ -10,18 +10,35 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/templates"
-	"github.com/bouncepaw/mycorrhiza/tree"
+	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
-	http.HandleFunc("/page/", handlerPage)
+	http.HandleFunc("/page/", handlerHypha)
+	http.HandleFunc("/hypha/", handlerHypha)
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
 	http.HandleFunc("/rev/", handlerRevision)
+	http.HandleFunc("/attachment/", handlerAttachment)
+}
+
+func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		hyphaName = HyphaNameFromRq(rq, "attachment")
+		h         = hyphae.ByName(hyphaName)
+		u         = user.FromRequest(rq)
+	)
+	util.HTTP200Page(w,
+		views.BaseHTML(
+			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
+			views.AttachmentMenuHTML(rq, h, u),
+			u))
 }
 
 // handlerRevision displays a specific revision of text part a page
@@ -31,37 +48,34 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
 		revHash           = shorterUrl[:firstSlashIndex]
-		hyphaName         = CanonicalName(shorterUrl[firstSlashIndex+1:])
+		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		h                 = hyphae.ByName(hyphaName)
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		textPath          = hyphaName + ".myco"
-		textContents, err = history.FileAtRevision(textPath, revHash)
+		textContents, err = history.FileAtRevision(h.TextPath, revHash)
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
 		contents = markup.Doc(hyphaName, textContents).AsHTML()
 	}
-	treeHTML, _, _ := tree.Tree(hyphaName, IterateHyphaNamesWith)
-	page := templates.RevisionHTML(
+	page := views.RevisionHTML(
 		rq,
-		hyphaName,
-		naviTitle(hyphaName),
+		h,
 		contents,
-		treeHTML,
 		revHash,
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(hyphaName, page, u)))
+	w.Write([]byte(base(util.BeautifulName(hyphaName), page, u)))
 }
 
 // handlerText serves raw source text of the hypha.
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "text")
-	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.textPath)
+	if h := hyphae.ByName(hyphaName); h.Exists {
+		log.Println("Serving", h.TextPath)
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		http.ServeFile(w, rq, data.textPath)
+		http.ServeFile(w, rq, h.TextPath)
 	}
 }
 
@@ -69,45 +83,39 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	hyphaName := HyphaNameFromRq(rq, "binary")
-	if data, ok := HyphaStorage[hyphaName]; ok {
-		log.Println("Serving", data.binaryPath)
-		w.Header().Set("Content-Type", ExtensionToMime(filepath.Ext(data.binaryPath)))
-		http.ServeFile(w, rq, data.binaryPath)
+	if h := hyphae.ByName(hyphaName); h.Exists {
+		log.Println("Serving", h.BinaryPath)
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath)))
+		http.ServeFile(w, rq, h.BinaryPath)
 	}
 }
 
-// handlerPage is the main hypha action that displays the hypha and the binary upload form along with some navigation.
-func handlerPage(w http.ResponseWriter, rq *http.Request) {
+// handlerHypha is the main hypha action that displays the hypha and the binary upload form along with some navigation.
+func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var (
-		hyphaName         = HyphaNameFromRq(rq, "page")
-		data, hyphaExists = HyphaStorage[hyphaName]
-		hasAmnt           = hyphaExists && data.binaryPath != ""
-		contents          string
-		openGraph         string
-		u                 = user.FromRequest(rq)
+		hyphaName = HyphaNameFromRq(rq, "page", "hypha")
+		h         = hyphae.ByName(hyphaName)
+		contents  string
+		openGraph string
+		u         = user.FromRequest(rq)
 	)
-	if hyphaExists {
-		fileContentsT, errT := ioutil.ReadFile(data.textPath)
-		_, errB := os.Stat(data.binaryPath)
+	if h.Exists {
+		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
+		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
 			md := markup.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsHTML()
 			openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
-			contents = binaryHtmlBlock(hyphaName, data) + contents
+			contents = views.AttachmentHTML(h) + contents
 		}
 	}
-	treeHTML, prevHypha, nextHypha := tree.Tree(hyphaName, IterateHyphaNamesWith)
 	util.HTTP200Page(w,
-		templates.BaseHTML(
-			hyphaName,
-			templates.PageHTML(rq, hyphaName,
-				naviTitle(hyphaName),
-				contents,
-				treeHTML, prevHypha, nextHypha,
-				hasAmnt),
+		views.BaseHTML(
+			util.BeautifulName(hyphaName),
+			views.HyphaHTML(rq, h, contents),
 			u,
 			openGraph))
 }

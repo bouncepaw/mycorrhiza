@@ -4,7 +4,9 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
+	"regexp"
 	"strings"
+	"unicode"
 )
 
 var (
@@ -18,7 +20,26 @@ var (
 	HeaderLinksHypha     string
 	AuthMethod           string
 	FixedCredentialsPath string
+	GeminiCertPath       string
 )
+
+// LettersNumbersOnly keeps letters and numbers only in the given string.
+func LettersNumbersOnly(s string) string {
+	var (
+		ret            strings.Builder
+		usedUnderscore bool
+	)
+	for _, r := range s {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			ret.WriteRune(r)
+			usedUnderscore = false
+		} else if !usedUnderscore {
+			ret.WriteRune('_')
+			usedUnderscore = true
+		}
+	}
+	return strings.Trim(ret.String(), "_")
+}
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
 func ShorterPath(path string) string {
@@ -39,17 +60,6 @@ func HTTP200Page(w http.ResponseWriter, page string) {
 	w.Write([]byte(page))
 }
 
-// FindSubhyphae finds names of existing hyphae given the `hyphaIterator`.
-func FindSubhyphae(hyphaName string, hyphaIterator func(func(string))) []string {
-	subhyphae := make([]string, 0)
-	hyphaIterator(func(otherHyphaName string) {
-		if strings.HasPrefix(otherHyphaName, hyphaName+"/") {
-			subhyphae = append(subhyphae, otherHyphaName)
-		}
-	})
-	return subhyphae
-}
-
 func RandomString(n int) (string, error) {
 	bytes := make([]byte, n)
 	if _, err := rand.Read(bytes); err != nil {
@@ -64,4 +74,17 @@ func BeautifulName(uglyName string) string {
 		return uglyName
 	}
 	return strings.Title(strings.ReplaceAll(uglyName, "_", " "))
+}
+
+// CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
+func CanonicalName(name string) string {
+	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+}
+
+// HyphaPattern is a pattern which all hyphae must match.
+var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
+
+// IsCanonicalName checks if the `name` is canonical.
+func IsCanonicalName(name string) bool {
+	return HyphaPattern.MatchString(name)
 }

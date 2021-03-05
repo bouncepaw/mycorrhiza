@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/templates"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func init() {
@@ -35,7 +35,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
-		base(hyphaName, templates.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
+		base(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
 }
 
 // Recent changes
@@ -46,7 +46,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 		n, err   = strconv.Atoi(noPrefix)
 	)
 	if err == nil && n < 101 {
-		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", history.RecentChanges(n), user.FromRequest(rq)))
+		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}

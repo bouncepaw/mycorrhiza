@@ -1,47 +1,22 @@
 package markup
 
 import (
-	"fmt"
-	"path"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/link"
 )
 
 // LinkParts determines what href, text and class should resulting <a> have based on mycomarkup's addr, display and hypha name.
 //
 // => addr display
 // [[addr|display]]
+// TODO: deprecate
 func LinkParts(addr, display, hyphaName string) (href, text, class string) {
-	if display == "" {
-		text = addr
-	} else {
-		text = strings.TrimSpace(display)
+	l := link.From(addr, display, hyphaName)
+	if l.Kind == link.LinkLocalHypha && !HyphaExists(l.Address) {
+		l.DestinationUnknown = true
 	}
-	class = "wikilink wikilink_internal"
-
-	switch {
-	case strings.ContainsRune(addr, ':'):
-		pos := strings.IndexRune(addr, ':')
-		destination := addr[:pos]
-		if display == "" {
-			text = addr[pos+1:]
-			if strings.HasPrefix(text, "//") && len(text) > 2 {
-				text = text[2:]
-			}
-		}
-		return addr, text, fmt.Sprintf("wikilink wikilink_external wikilink_%s", destination)
-	case strings.HasPrefix(addr, "/"):
-		return addr, text, class
-	case strings.HasPrefix(addr, "./"):
-		hyphaName = canonicalName(path.Join(hyphaName, addr[2:]))
-	case strings.HasPrefix(addr, "../"):
-		hyphaName = canonicalName(path.Join(path.Dir(hyphaName), addr[3:]))
-	default:
-		hyphaName = canonicalName(addr)
-	}
-	if !HyphaExists(hyphaName) {
-		class += " wikilink_new"
-	}
-	return "/page/" + hyphaName, text, class
+	return l.Href(), l.Display, l.Classes()
 }
 
 // Parse markup line starting with "=>" according to wikilink rules.

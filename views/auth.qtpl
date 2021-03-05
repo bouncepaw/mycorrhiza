@@ -1,0 +1,68 @@
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+{% func LoginHTML() %}
+<div class="layout">
+<main class="main-width">
+	<section>
+	{% if user.AuthUsed %}
+		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+			<fieldset class="modal__fieldset">
+				<legend class="modal__title">Log in to {%s util.SiteName %}</legend>
+				<p>Use the data you were given by an administrator.</p>
+				<label for="login-form__username">Username</label>
+				<br>
+				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+				<br>
+				<label for="login-form__password">Password</label>
+				<br>
+				<input type="password" required name="password" autocomplete="current-password">
+				<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you. You will stay logged in until you log out.</p>
+				<input class="modal__action modal__submit" type="submit">
+				<a class="modal__action modal__cancel" href="/">Cancel</a>
+			</fieldset>
+		</form>
+	{% else %}
+		<p>Administrators of this wiki have not configured any authorization method. You can make edits anonymously.</p>
+		<p><a class="modal__cancel" href="/">← Go home</a></p>
+	{% endif %}
+	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func LoginErrorHTML(err string) %}
+<div class="layout">
+<main class="main-width">
+	<section>
+	{% switch err %}
+	{% case "unknown username" %}
+		<p class="error">Unknown username.</p>
+	{% case "wrong password" %}
+		<p class="error">Wrong password.</p>
+	{% default %}
+		<p class="error">{%s err %}</p>
+	{% endswitch %}
+		<p><a href="/login">← Try again</a></p>
+	</section>
+</main>
+</div>
+{% endfunc %}
+
+{% func LogoutHTML(can bool) %}
+<div class="layout">
+<main class="main-width">
+	<section>
+	{% if can %}
+		<h1>Log out?</h1>
+		<p><a href="/logout-confirm"><strong>Confirm</strong></a></p>
+		<p><a href="/">Cancel</a></p>
+	{% else %}
+		<p>You cannot log out because you are not logged in.</p>
+		<p><a href="/login">Login</a></p>
+		<p><a href="/login">← Home</a></p>
+	{% endif %}
+	</section>
+</main>
+</div>
+{% endfunc %}

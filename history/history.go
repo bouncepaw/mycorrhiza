@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -77,8 +76,8 @@ func (rev Revision) TimeString() string {
 	return rev.Time.Format(time.RFC822)
 }
 
-// HyphaeLinks returns a comma-separated list of hyphae that were affected by this revision as HTML string.
-func (rev Revision) HyphaeLinks() (html string) {
+// HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
+func (rev Revision) HyphaeLinksHTML() (html string) {
 	hyphae := rev.hyphaeAffected()
 	for i, hyphaName := range hyphae {
 		if i > 0 {
@@ -92,7 +91,7 @@ func (rev Revision) HyphaeLinks() (html string) {
 func (rev *Revision) descriptionForFeed() (html string) {
 	return fmt.Sprintf(
 		`<p>%s</p>
-<p><b>Hyphae affected:</b> %s</p>`, rev.Message, rev.HyphaeLinks())
+<p><b>Hyphae affected:</b> %s</p>`, rev.Message, rev.HyphaeLinksHTML())
 }
 
 // Try and guess what link is the most important by looking at the message.
@@ -109,23 +108,6 @@ func (rev *Revision) bestLink() string {
 	default:
 		return "/page/" + revs[0]
 	}
-}
-
-func (rev Revision) RecentChangesEntry() (html string) {
-	if user.AuthUsed && rev.Username != "anon" {
-		return fmt.Sprintf(`
-<li class="rc-entry__time"><time>%[1]s</time></li>
-<li class="rc-entry__hash">%[2]s</li>
-<li class="rc-entry__links">%[5]s</li>
-<li class="rc-entry__msg">%[6]s <span class="rc-entry__author">by <a href="/page/%[3]s/%[4]s" rel="author">%[4]s</a></span></li>
-`, rev.TimeString(), rev.Hash, util.UserHypha, rev.Username, rev.HyphaeLinks(), rev.Message)
-	}
-	return fmt.Sprintf(`
-<li class="rc-entry__time"><time>%[1]s</time></li>
-<li class="rc-entry__hash">%[2]s</li>
-<li class="rc-entry__links">%[3]s</li>
-<li class="rc-entry__msg">%[4]s</li>
-`, rev.TimeString(), rev.Hash, rev.HyphaeLinks(), rev.Message)
 }
 
 // Path to git executable. Set at init()

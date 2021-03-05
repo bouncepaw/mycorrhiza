@@ -1,0 +1,40 @@
+{% import "net/http" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+{% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
+{%s= NavHTML(rq, hyphaName, "edit") %}
+<div class="layout">
+<main class="main-width edit edit_no-preview">
+	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
+	{%s= warning %}
+	<form method="post" class="edit-form"
+			action="/upload-text/{%s hyphaName %}">
+		<textarea name="text">{%s textAreaFill %}</textarea>
+		<br/>
+		<input type="submit" name="action" value="Save" class="edit-form__save"/>
+		<input type="submit" name="action" value="Preview" class="edit-form__preview">
+		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
+	</form>
+</main>
+</div>
+{% endfunc %}
+
+{% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
+{%s= NavHTML(rq, hyphaName, "edit") %}
+<div class="layout">
+<main class="main-width edit edit_with-preview">
+	<h1>Edit {%s util.BeautifulName(hyphaName) %} (preview)</h1>
+	{%s= warning %}
+	<form method="post" class="edit-form"
+			action="/upload-text/{%s hyphaName %}">
+		<textarea name="text">{%s textAreaFill %}</textarea>
+		<br/>
+		<input type="submit" name="action" value="Save" class="edit-form__save"/>
+		<input type="submit" name="action" value="Preview" class="edit-form__preview">
+		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
+	</form>
+	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
+	<section class="edit__preview">{%s= renderedPage %}</section>
+</main>
+</div>
+{% endfunc %}

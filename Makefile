@@ -1,8 +1,11 @@
 run: build
 	./mycorrhiza metarrhiza
 
-run_with_fixed_auth: build
+auth_run: build
 	./mycorrhiza -auth-method fixed metarrhiza
+
+gemini_run: build
+	./mycorrhiza -gemini-cert-path "." metarrhiza
 
 build:
 	go generate

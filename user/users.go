@@ -8,16 +8,25 @@ var AuthUsed bool
 var users sync.Map
 var tokens sync.Map
 
+func YieldUsers() chan *User {
+	ch := make(chan *User)
+	go func(ch chan *User) {
+		users.Range(func(_, v interface{}) bool {
+			ch <- v.(*User)
+			return true
+		})
+		close(ch)
+	}(ch)
+	return ch
+}
+
 func ListUsersWithGroup(group string) []string {
 	usersWithTheGroup := []string{}
-	users.Range(func(_, v interface{}) bool {
-		userobj := v.(*User)
-
-		if userobj.Group == group {
-			usersWithTheGroup = append(usersWithTheGroup, userobj.Name)
+	for u := range YieldUsers() {
+		if u.Group == group {
+			usersWithTheGroup = append(usersWithTheGroup, u.Name)
 		}
-		return true
-	})
+	}
 	return usersWithTheGroup
 }
 

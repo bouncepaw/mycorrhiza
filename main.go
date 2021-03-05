@@ -1,5 +1,6 @@
 //go:generate go get -u github.com/valyala/quicktemplate/qtc
-//go:generate qtc -dir=templates
+//go:generate qtc -dir=assets
+//go:generate qtc -dir=views
 package main
 
 import (
@@ -9,32 +10,19 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
-	"regexp"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/assets"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/templates"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 // WikiDir is a rooted path to the wiki storage directory.
 var WikiDir string
-
-// HyphaPattern is a pattern which all hyphae must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
-
-// HyphaStorage is a mapping between canonical hypha names and their meta information.
-var HyphaStorage = make(map[string]*HyphaData)
-
-// IterateHyphaNamesWith is a closure to be passed to subpackages to let them iterate all hypha names read-only.
-func IterateHyphaNamesWith(f func(string)) {
-	for hyphaName := range HyphaStorage {
-		f(hyphaName)
-	}
-}
 
 // HttpErr is used by many handlers to signal errors in a compact way.
 func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
@@ -46,7 +34,7 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 		base(
 			title,
 			fmt.Sprintf(
-				`<main><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
+				`<main class="main-width"><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
 				errMsg,
 				name,
 			),
@@ -58,19 +46,11 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	var (
-		tbody     string
-		pageCount = hyphae.Count()
-		u         = user.FromRequest(rq)
-	)
-	for hyphaName, data := range HyphaStorage {
-		tbody += templates.HyphaListRowHTML(hyphaName, ExtensionToMime(filepath.Ext(data.binaryPath)), data.binaryPath != "")
-	}
-	util.HTTP200Page(w, base("List of pages", templates.HyphaListHTML(tbody, pageCount), u))
+	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
 }
 
 // This part is present in all html documents.
-var base = templates.BaseHTML
+var base = views.BaseHTML
 
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
@@ -81,13 +61,14 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	hyphae.ResetCount()
-	HyphaStorage = make(map[string]*HyphaData)
 	log.Println("Wiki storage directory is", WikiDir)
 	log.Println("Start indexing hyphae...")
-	Index(WikiDir)
+	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
+
+// Stop the wiki
 
 // Update header links by reading the configured hypha, if there is any, or resorting to default values.
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
@@ -97,7 +78,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	setHeaderLinks()
+	shroom.SetHeaderLinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
@@ -106,23 +87,25 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	var randomHyphaName string
 	i := rand.Intn(hyphae.Count())
-	for hyphaName := range HyphaStorage {
+	for h := range hyphae.YieldExistingHyphae() {
 		if i == 0 {
-			randomHyphaName = hyphaName
-			break
+			randomHyphaName = h.Name
 		}
 		i--
 	}
-	http.Redirect(w, rq, "/page/"+randomHyphaName, http.StatusSeeOther)
+	http.Redirect(w, rq, "/hypha/"+randomHyphaName, http.StatusSeeOther)
 }
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	if _, err := os.Stat(WikiDir + "/static/common.css"); err == nil {
-		http.ServeFile(w, rq, WikiDir+"/static/common.css")
+	if _, err := os.Stat(util.WikiDir + "/static/common.css"); err == nil {
+		http.ServeFile(w, rq, util.WikiDir+"/static/common.css")
 	} else {
 		w.Header().Set("Content-Type", "text/css;charset=utf-8")
-		w.Write([]byte(templates.DefaultCSS()))
+		w.Write([]byte(assets.DefaultCSS()))
+	}
+	if bytes, err := ioutil.ReadFile(util.WikiDir + "/static/custom.css"); err == nil {
+		w.Write(bytes)
 	}
 }
 
@@ -143,20 +126,26 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	switch iconName {
 	case "gemini":
-		w.Write([]byte(templates.IconGemini()))
+		w.Write([]byte(assets.IconGemini()))
 	case "mailto":
-		w.Write([]byte(templates.IconMailto()))
+		w.Write([]byte(assets.IconMailto()))
 	case "gopher":
-		w.Write([]byte(templates.IconGopher()))
+		w.Write([]byte(assets.IconGopher()))
 	default:
-		w.Write([]byte(templates.IconHTTP()))
+		w.Write([]byte(assets.IconHTTP()))
 	}
 }
 
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base("About "+util.SiteName, templates.AboutHTML(), user.FromRequest(rq))))
+	w.Write([]byte(base("About "+util.SiteName, views.AboutHTML(), user.FromRequest(rq))))
+}
+
+func handlerUserList(w http.ResponseWriter, rq *http.Request) {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(base("User list", views.UserListHTML(), user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
@@ -177,13 +166,19 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Wiki storage directory is", WikiDir)
-	Index(WikiDir)
+	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
+	shroom.FindAllBacklinks()
+	log.Println("Found all backlinks")
 
 	history.Start(WikiDir)
-	setHeaderLinks()
+	shroom.SetHeaderLinks()
 
-	// See http_readers.go for /page/, /text/, /binary/
+	go handleGemini()
+
+	// See http_admin.go for /admin, /admin/*
+	initAdmin()
+	// See http_readers.go for /page/, /hypha/, /text/, /binary/, /attachment/
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
 	// See http_history.go for /history/, /recent-changes
@@ -192,15 +187,16 @@ func main() {
 	http.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
 	http.HandleFunc("/random", handlerRandom)
 	http.HandleFunc("/about", handlerAbout)
+	http.HandleFunc("/user-list", handlerUserList)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/static/icon/", handlerIcon)
-	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/page/"+util.HomePage, http.StatusSeeOther)
-	})
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
+	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
+		http.Redirect(w, rq, "/hypha/"+util.HomePage, http.StatusSeeOther)
+	})
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }
