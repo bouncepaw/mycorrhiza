@@ -112,10 +112,19 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = views.AttachmentHTML(h) + contents
 		}
 	}
-	util.HTTP200Page(w,
-		views.BaseHTML(
-			util.BeautifulName(hyphaName),
-			views.HyphaHTML(rq, h, contents),
-			u,
-			openGraph))
+	if contents == "" {
+		util.HTTP404Page(w,
+			views.BaseHTML(
+				util.BeautifulName(hyphaName),
+				views.HyphaHTML(rq, h, contents),
+				u,
+				openGraph))
+	} else {
+		util.HTTP200Page(w,
+			views.BaseHTML(
+				util.BeautifulName(hyphaName),
+				views.HyphaHTML(rq, h, contents),
+				u,
+				openGraph))
+	}
 }
