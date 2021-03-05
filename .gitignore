@@ -1,2 +1,6 @@
 mycorrhiza
 hyphae/*.gog
+
+# go editors and IDEA folders
+.idea/
+.vscode/
