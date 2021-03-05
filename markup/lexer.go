@@ -238,7 +238,7 @@ normalState:
 	case startsWith("<="):
 		addParagraphIfNeeded()
 		addLine(parseTransclusion(line, state.name))
-	case line == "----":
+	case MatchesHorizontalLine(line):
 		addParagraphIfNeeded()
 		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
 	case MatchesImg(line):
