@@ -25,6 +25,8 @@ Options:
         What auth method to use. Variants: "none", "fixed" (default "none")
   -fixed-credentials-path string
         Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
+  -gemini-cert-path string
+        Directory where you store Gemini certificates. Leave empty if you don't want to use Gemini.
   -header-links-hypha string
         Optional hypha that overrides the header links
   -home string
@@ -57,6 +59,7 @@ Options:
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources
 * Authorization with pre-set credentials
+* Basic Gemini protocol support
 
 ## Contributing
 Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact directly.
