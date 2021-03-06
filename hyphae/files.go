@@ -40,7 +40,7 @@ func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
 	}
 
 	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
+		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an administrative importance!
 		if node.IsDir() &&
 			util.IsCanonicalName(node.Name()) &&
 			node.Name() != ".git" &&

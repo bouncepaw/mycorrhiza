@@ -352,7 +352,7 @@ func StreamAboutHTML(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:98
 	qw422016.N().S(`</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.13 indev</li>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.13</li>
 `)
 //line views/stuff.qtpl:101
 	if user.AuthUsed {
@@ -445,7 +445,7 @@ func StreamAdminPanelHTML(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
-	<h1>Admininstrative functions</h1>
+	<h1>Administrative functions</h1>
 	<section>
 		<h2>Safe things</h2>
 		<ul>
