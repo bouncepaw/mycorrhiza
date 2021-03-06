@@ -118,7 +118,7 @@ for u := range user.YieldUsers() {
 {% func AdminPanelHTML() %}
 <div class="layout">
 <main class="main-width">
-	<h1>Admininstrative functions</h1>
+	<h1>Administrative functions</h1>
 	<section>
 		<h2>Safe things</h2>
 		<ul>
