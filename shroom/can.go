@@ -13,7 +13,7 @@ func canFactory(
 	dispatcher func(*hyphae.Hypha, *user.User) (string, string),
 	noRightsMsg string,
 	notExistsMsg string,
-	careAboutExistince bool,
+	careAboutExistence bool,
 ) func(*user.User, *hyphae.Hypha) (error, string) {
 	return func(u *user.User, h *hyphae.Hypha) (error, string) {
 		if !u.CanProceed(action) {
@@ -21,7 +21,7 @@ func canFactory(
 			return errors.New(noRightsMsg), "Not enough rights"
 		}
 
-		if careAboutExistince && !h.Exists {
+		if careAboutExistence && !h.Exists {
 			rejectLogger(h, u, "does not exist")
 			return errors.New(notExistsMsg), "Does not exist"
 		}

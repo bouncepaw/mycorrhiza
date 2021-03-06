@@ -12,7 +12,7 @@ import (
 type LinkType int
 
 const (
-	LinkInavild LinkType = iota
+	LinkInvalid LinkType = iota
 	// LinkLocalRoot is a link like "/list", "/user-list", etc.
 	LinkLocalRoot
 	// LinkLocalHypha is a link like "test", "../test", etc.
