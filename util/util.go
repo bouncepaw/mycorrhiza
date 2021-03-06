@@ -9,18 +9,24 @@ import (
 	"unicode"
 )
 
+// TODO: make names match to fields of config file
 var (
-	URL                  string
-	ServerPort           string
-	HomePage             string
-	SiteNavIcon          string
-	SiteName             string
-	WikiDir              string
-	UserHypha            string
-	HeaderLinksHypha     string
-	AuthMethod           string
+	SiteName    string
+	SiteNavIcon string
+
+	HomePage         string
+	UserHypha        string
+	HeaderLinksHypha string
+
+	ServerPort     string
+	URL            string
+	GeminiCertPath string
+
+	UseFixedAuth         bool
 	FixedCredentialsPath string
-	GeminiCertPath       string
+
+	WikiDir        string
+	ConfigFilePath string
 )
 
 // LettersNumbersOnly keeps letters and numbers only in the given string.

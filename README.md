@@ -1,10 +1,10 @@
-# 🍄 MycorrhizaWiki 0.13
+# 🍄 MycorrhizaWiki 0.14
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
 
 ## Building
-Also see [detailed instructions](https://mycorrhiza.lesarbr.es/page/deploy) on wiki.
+Also see [detailed instructions](https://mycorrhiza.lesarbr.es/hypha/deploy) on wiki.
 ```sh
 git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
 cd mycorrhiza

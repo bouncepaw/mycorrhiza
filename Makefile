@@ -7,6 +7,9 @@ auth_run: build
 gemini_run: build
 	./mycorrhiza -gemini-cert-path "." metarrhiza
 
+config_run: build
+	./mycorrhiza -config-path "assets/config.ini" metarrhiza
+
 build:
 	go generate
 	go build .
