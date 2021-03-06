@@ -50,7 +50,7 @@ func getLinkNode(input *bytes.Buffer, hyphaName string, isBracketedLink bool) st
 		if escaping {
 			currBuf.WriteByte(b)
 			escaping = false
-		} else if isBracketedLink && b == '|' && currBuf == &addrBuf {
+		} else if isBracketedLink && currBuf == &addrBuf && (b == '|' || b == '#') {
 			currBuf = &displayBuf
 		} else if isBracketedLink && b == ']' && bytes.HasPrefix(input.Bytes(), []byte{']'}) {
 			input.Next(1)
