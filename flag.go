@@ -51,4 +51,7 @@ func parseCliArgs() {
 	util.UserHypha = util.CanonicalName(util.UserHypha)
 	util.HeaderLinksHypha = util.CanonicalName(util.HeaderLinksHypha)
 	user.AuthUsed = util.UseFixedAuth
+	if user.AuthUsed && util.FixedCredentialsPath != "" {
+		user.ReadUsersFromFilesystem()
+	}
 }

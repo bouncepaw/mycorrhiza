@@ -66,10 +66,10 @@ func userByName(username string) *User {
 
 func commenceSession(username, token string) {
 	tokens.Store(token, username)
-	go dumpTokens()
+	dumpTokens()
 }
 
 func terminateSession(token string) {
 	tokens.Delete(token)
-	go dumpTokens()
+	dumpTokens()
 }
