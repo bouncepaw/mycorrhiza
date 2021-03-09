@@ -85,8 +85,16 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 // Redirect to a random hypha.
 func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	var randomHyphaName string
-	i := rand.Intn(hyphae.Count())
+	var (
+		randomHyphaName string
+		amountOfHyphae  int = hyphae.Count()
+	)
+	if amountOfHyphae == 0 {
+		HttpErr(w, http.StatusNotFound, util.HomePage, "There are no hyphae",
+			"It is not possible to display a random hypha because the wiki does not contain any hyphae")
+		return
+	}
+	i := rand.Intn(amountOfHyphae)
 	for h := range hyphae.YieldExistingHyphae() {
 		if i == 0 {
 			randomHyphaName = h.Name
