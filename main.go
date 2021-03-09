@@ -168,8 +168,8 @@ Crawl-delay: 5`))
 }
 
 func main() {
-	log.Println("Running MycorrhizaWiki β")
 	parseCliArgs()
+	log.Println("Running MycorrhizaWiki β")
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
 	}

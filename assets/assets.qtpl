@@ -1,3 +1,11 @@
+{%- func HelpMessage() -%}
+Usage of %s:
+{%- endfunc -%}
+
+{%- func ExampleConfig() -%}
+{% cat "config.ini" %}
+{%- endfunc -%}
+
 {% func DefaultCSS() %}
 {% cat "default.css" %}
 {% endfunc %}

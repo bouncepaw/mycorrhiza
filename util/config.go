@@ -33,7 +33,6 @@ type Authorization struct {
 }
 
 func ReadConfigFile(path string) {
-	log.Println("Loading config at", path)
 	cfg := &Config{
 		WikiName:      "MycorrhizaWiki",
 		NaviTitleIcon: "🍄",
@@ -52,9 +51,13 @@ func ReadConfigFile(path string) {
 			FixedAuthCredentialsPath: "",
 		},
 	}
-	err := ini.MapTo(cfg, path)
-	if err != nil {
-		log.Fatal(err)
+
+	if path != "" {
+		log.Println("Loading config at", path)
+		err := ini.MapTo(cfg, path)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	SiteName = cfg.WikiName
