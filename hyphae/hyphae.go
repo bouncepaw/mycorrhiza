@@ -13,12 +13,10 @@ var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
 type Hypha struct {
 	sync.RWMutex
 
-	Name       string
+	Name       string // Canonical name
 	Exists     bool
-	TextPath   string
-	BinaryPath string
-	OutLinks   []*Hypha
-	BackLinks  []*Hypha
+	TextPath   string // == "" => no text part
+	BinaryPath string // == "" => no attachment
 }
 
 var byNames = make(map[string]*Hypha)
@@ -31,54 +29,42 @@ func EmptyHypha(hyphaName string) *Hypha {
 		Exists:     false,
 		TextPath:   "",
 		BinaryPath: "",
-		OutLinks:   make([]*Hypha, 0),
-		BackLinks:  make([]*Hypha, 0),
 	}
 }
 
-// ByName returns a hypha by name. If h.Exists, the returned hypha pointer is known to be part of the hypha index (byNames map).
+// ByName returns a hypha by name. It may have been recorded to the storage.
 func ByName(hyphaName string) (h *Hypha) {
-	h, exists := byNames[hyphaName]
-	if exists {
+	h, recorded := byNames[hyphaName]
+	if recorded {
 		return h
 	}
 	return EmptyHypha(hyphaName)
 }
 
-// Insert inserts the hypha into the storage. It overwrites the previous record, if there was any, and returns false. If the was no previous record, return true.
-func (h *Hypha) Insert() (justCreated bool) {
-	hp := ByName(h.Name)
-
+func storeHypha(h *Hypha) {
 	byNamesMutex.Lock()
-	defer byNamesMutex.Unlock()
-	if hp.Exists {
-		hp = h
+	byNames[h.Name] = h
+	byNamesMutex.Unlock()
+}
+
+// Insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
+func (h *Hypha) Insert() (justRecorded bool) {
+	hp, recorded := byNames[h.Name]
+	if recorded {
+		hp.MergeIn(h)
 	} else {
-		h.Exists = true
-		byNames[h.Name] = h
+		storeHypha(h)
 		IncrementCount()
 	}
 
-	return !hp.Exists
+	return !recorded
 }
 
-func (h *Hypha) InsertIfNew() (justCreated bool) {
+func (h *Hypha) InsertIfNew() (justRecorded bool) {
 	if !h.Exists {
 		return h.Insert()
 	}
 	return false
-}
-
-func (h *Hypha) InsertIfNewKeepExistence() {
-	hp := ByName(h.Name)
-
-	byNamesMutex.Lock()
-	defer byNamesMutex.Unlock()
-	if hp.Exists {
-		hp = h
-	} else {
-		byNames[h.Name] = h
-	}
 }
 
 func (h *Hypha) Delete() {
@@ -88,10 +74,6 @@ func (h *Hypha) Delete() {
 	DecrementCount()
 	byNamesMutex.Unlock()
 	h.Unlock()
-
-	for _, outlinkHypha := range h.OutLinks {
-		outlinkHypha.DropBackLink(h)
-	}
 }
 
 func (h *Hypha) RenameTo(newName string) {
@@ -106,6 +88,10 @@ func (h *Hypha) RenameTo(newName string) {
 
 // MergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
 func (h *Hypha) MergeIn(oh *Hypha) {
+	if h == oh {
+		return
+	}
+	h.Lock()
 	if h.TextPath == "" && oh.TextPath != "" {
 		h.TextPath = oh.TextPath
 	}
@@ -115,61 +101,6 @@ func (h *Hypha) MergeIn(oh *Hypha) {
 		}
 		h.BinaryPath = oh.BinaryPath
 	}
-}
-
-// ## Link related stuff
-// Notes in pseudocode and whatnot:
-// * (Reader h) does not mutate h => safe
-// * (Rename h) reuses the same hypha object => safe
-// * (Unattach h) and (Attach h) do not change (Backlinks h) => safe
-
-// * (Delete h) does not change (Backlinks h), but changes (Outlinks h), removing h from them => make it safe
-// * (Unattach h) and (Attach h) => h may start or stop existing => may change (Outlinks h) => make it safe
-// * (Edit h) => h may start existing => may change (Backlinks h) => make it safe
-// * (Edit h) may add or remove h to or from (Outlinks h) => make it safe
-
-func (h *Hypha) AddOutLink(oh *Hypha) (added bool) {
-	h.Lock()
-	defer h.Unlock()
-
-	for _, outlink := range h.OutLinks {
-		if outlink == oh {
-			return false
-		}
-	}
-	h.OutLinks = append(h.OutLinks, oh)
-	return true
-}
-
-func (h *Hypha) AddBackLink(bh *Hypha) (added bool) {
-	h.Lock()
-	defer h.Unlock()
-
-	for _, backlink := range h.BackLinks {
-		if backlink == h {
-			return false
-		}
-	}
-	h.BackLinks = append(h.BackLinks, bh)
-	return true
-}
-
-func (h *Hypha) DropBackLink(bh *Hypha) {
-	h.Lock()
-	defer h.Unlock()
-
-	if len(h.BackLinks) <= 1 {
-		h.BackLinks = make([]*Hypha, 0)
-		return
-	}
-	lastBackLinkIndex := len(h.BackLinks)
-	for i, backlink := range h.BackLinks {
-		if backlink == bh {
-			if i != lastBackLinkIndex {
-				h.BackLinks[i] = h.BackLinks[lastBackLinkIndex]
-			}
-			h.BackLinks = h.BackLinks[:lastBackLinkIndex]
-			return
-		}
-	}
+	h.Exists = oh.Exists
+	h.Unlock()
 }

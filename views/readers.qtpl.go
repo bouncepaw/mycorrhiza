@@ -345,110 +345,105 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 	StreamRelativeHyphaeHTML(qw422016, relatives)
 //line views/readers.qtpl:110
 	qw422016.N().S(`
-`)
-//line views/readers.qtpl:111
-	StreamBackLinksHTML(qw422016, h)
-//line views/readers.qtpl:111
-	qw422016.N().S(`
 </div>
 `)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 }
 
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 func WriteHyphaHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha, contents string) {
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	StreamHyphaHTML(qw422016, rq, h, contents)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	qt422016.ReleaseWriter(qw422016)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 }
 
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) string {
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	WriteHyphaHTML(qb422016, rq, h, contents)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	qs422016 := string(qb422016.B)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 	return qs422016
-//line views/readers.qtpl:113
+//line views/readers.qtpl:112
 }
 
-//line views/readers.qtpl:115
+//line views/readers.qtpl:114
 func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hypha, contents, revHash string) {
-//line views/readers.qtpl:115
+//line views/readers.qtpl:114
 	qw422016.N().S(`
 `)
-//line views/readers.qtpl:117
+//line views/readers.qtpl:116
 	relatives, subhyphae, _, _ := tree.Tree(h.Name)
 
-//line views/readers.qtpl:118
+//line views/readers.qtpl:117
 	qw422016.N().S(`
 `)
-//line views/readers.qtpl:119
+//line views/readers.qtpl:118
 	StreamNavHTML(qw422016, rq, h.Name, "revision", revHash)
-//line views/readers.qtpl:119
+//line views/readers.qtpl:118
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<article>
 		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
 		`)
-//line views/readers.qtpl:124
+//line views/readers.qtpl:123
 	qw422016.N().S(NaviTitleHTML(h))
-//line views/readers.qtpl:124
+//line views/readers.qtpl:123
 	qw422016.N().S(`
 		`)
-//line views/readers.qtpl:125
+//line views/readers.qtpl:124
 	qw422016.N().S(contents)
-//line views/readers.qtpl:125
+//line views/readers.qtpl:124
 	qw422016.N().S(`
 	</article>
 `)
-//line views/readers.qtpl:127
+//line views/readers.qtpl:126
 	StreamSubhyphaeHTML(qw422016, subhyphae)
-//line views/readers.qtpl:127
+//line views/readers.qtpl:126
 	qw422016.N().S(`
 </main>
 `)
-//line views/readers.qtpl:129
+//line views/readers.qtpl:128
 	StreamRelativeHyphaeHTML(qw422016, relatives)
-//line views/readers.qtpl:129
+//line views/readers.qtpl:128
 	qw422016.N().S(`
 </div>
 `)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 }
 
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha, contents, revHash string) {
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	StreamRevisionHTML(qw422016, rq, h, contents, revHash)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	qt422016.ReleaseWriter(qw422016)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 }
 
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) string {
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	WriteRevisionHTML(qb422016, rq, h, contents, revHash)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	qs422016 := string(qb422016.B)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 	return qs422016
-//line views/readers.qtpl:131
+//line views/readers.qtpl:130
 }

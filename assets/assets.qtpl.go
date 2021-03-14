@@ -381,8 +381,6 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 	.hypha-tabs { background-color: #232323; }
 }
 }
-
-.backlinks { display: none; }
 `)
 //line assets/assets.qtpl:10
 	qw422016.N().S(`

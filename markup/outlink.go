@@ -13,6 +13,7 @@ import (
 // * Rocketlinks
 // * Transclusion
 // * Image galleries
+// Not needed anymore, I guess.
 func (md *MycoDoc) OutLinks() chan string {
 	ch := make(chan string)
 	if !md.parsedAlready {

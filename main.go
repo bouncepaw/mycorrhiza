@@ -176,8 +176,6 @@ func main() {
 	log.Println("Wiki storage directory is", WikiDir)
 	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
-	shroom.FindAllBacklinks()
-	log.Println("Found all backlinks")
 
 	history.Start(WikiDir)
 	shroom.SetHeaderLinks()
