@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
@@ -13,6 +14,7 @@ func initAdmin() {
 	if user.AuthUsed {
 		http.HandleFunc("/admin", handlerAdmin)
 		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
+		http.HandleFunc("/admin/reindex-users", handlerAdminReindexUsers)
 	}
 }
 
@@ -29,5 +31,13 @@ func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
 	if user.CanProceed(rq, "admin/shutdown") && rq.Method == "POST" {
 		log.Fatal("An admin commanded the wiki to shutdown")
+	}
+}
+
+func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
+		user.ReadUsersFromFilesystem()
+		http.Redirect(w, rq, "/hypha/"+util.UserHypha, http.StatusSeeOther)
 	}
 }

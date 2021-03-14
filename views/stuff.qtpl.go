@@ -468,35 +468,41 @@ func StreamAdminPanelHTML(qw422016 *qt422016.Writer) {
 				<input type="submit">
 			</fieldset>
 		</form>
+		<form action="/admin/reindex-users" method="POST" style="float:left">
+			<fieldset>
+				<legend>Reindex users</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
 	</section>
 </main>
 </div>
 `)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 }
 
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 func WriteAdminPanelHTML(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	StreamAdminPanelHTML(qw422016)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 }
 
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 func AdminPanelHTML() string {
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	WriteAdminPanelHTML(qb422016)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 	return qs422016
-//line views/stuff.qtpl:147
+//line views/stuff.qtpl:153
 }

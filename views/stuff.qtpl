@@ -141,6 +141,12 @@ for u := range user.YieldUsers() {
 				<input type="submit">
 			</fieldset>
 		</form>
+		<form action="/admin/reindex-users" method="POST" style="float:left">
+			<fieldset>
+				<legend>Reindex users</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
 	</section>
 </main>
 </div>
