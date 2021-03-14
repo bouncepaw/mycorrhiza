@@ -97,6 +97,11 @@ func From(address, display, hyphaName string) *Link {
 		link.Display = strings.TrimSpace(display)
 	}
 
+	if pos := strings.IndexRune(address, '#'); pos != -1 {
+		link.Anchor = address[pos:]
+		address = address[:pos]
+	}
+
 	switch {
 	case strings.ContainsRune(address, ':'):
 		pos := strings.IndexRune(address, ':')
