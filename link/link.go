@@ -12,7 +12,7 @@ import (
 type LinkType int
 
 const (
-	LinkInavild LinkType = iota
+	LinkInvalid LinkType = iota
 	// LinkLocalRoot is a link like "/list", "/user-list", etc.
 	LinkLocalRoot
 	// LinkLocalHypha is a link like "test", "../test", etc.
@@ -95,6 +95,11 @@ func From(address, display, hyphaName string) *Link {
 		link.Display = address
 	} else {
 		link.Display = strings.TrimSpace(display)
+	}
+
+	if pos := strings.IndexRune(address, '#'); pos != -1 {
+		link.Anchor = address[pos:]
+		address = address[:pos]
 	}
 
 	switch {

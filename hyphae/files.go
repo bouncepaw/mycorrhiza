@@ -11,8 +11,6 @@ import (
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.
 func Index(path string) {
-	byNamesMutex.Lock()
-	defer byNamesMutex.Unlock()
 	byNames = make(map[string]*Hypha)
 	ch := make(chan *Hypha, 5)
 
@@ -23,11 +21,10 @@ func Index(path string) {
 
 	for h := range ch {
 		// At this time it is safe to ignore the mutex, because there is only one worker.
-		if oldHypha, ok := byNames[h.Name]; ok {
-			oldHypha.MergeIn(h)
+		if oh := ByName(h.Name); oh.Exists {
+			oh.MergeIn(h)
 		} else {
-			byNames[h.Name] = h
-			IncrementCount()
+			h.Insert()
 		}
 	}
 }
@@ -40,7 +37,7 @@ func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
 	}
 
 	for _, node := range nodes {
-		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an admnistrative importance!
+		// If this hypha looks like it can be a hypha path, go deeper. Do not touch the .git and static folders for they have an administrative importance!
 		if node.IsDir() &&
 			util.IsCanonicalName(node.Name()) &&
 			node.Name() != ".git" &&

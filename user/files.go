@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"strings"
 	"os"
 
 	"github.com/adrg/xdg"
@@ -62,10 +63,10 @@ func readTokensToUsers() {
 func tokenStoragePath() string {
 	dir, err := xdg.DataFile("mycorrhiza/tokens.json")
 	if err != nil {
-		// Yes, it is unix-only, but function above rarely fails, so this block is probably never reached.
-		path := "/home/" + os.Getenv("HOME") + "/.local/share/mycorrhiza/tokens.json"
-		os.MkdirAll(path, 0777)
-		return path
+		log.Fatal(err)
+	}
+	if strings.HasPrefix(dir, util.WikiDir) {
+		log.Fatal("Error: Wiki storage directory includes private config files")
 	}
 	return dir
 }

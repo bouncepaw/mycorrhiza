@@ -34,7 +34,7 @@
 		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
-	<section class="edit__preview">{%s= renderedPage %}</section>
+	<article class="edit__preview">{%s= renderedPage %}</article>
 </main>
 </div>
 {% endfunc %}

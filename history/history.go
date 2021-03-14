@@ -13,11 +13,22 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
+// Path to git executable. Set at init()
+var gitpath string
+
 var renameMsgPattern = regexp.MustCompile(`^Rename ‘(.*)’ to ‘.*’`)
 
-// Start initializes git credentials.
+// Start finds git and initializes git credentials.
 func Start(wikiDir string) {
-	_, err := gitsh("config", "user.name", "wikimind")
+	path, err := exec.LookPath("git")
+	if err != nil {
+		log.Fatal("Cound not find the git executable. Check your $PATH.")
+	} else {
+		log.Println("Git path is", path)
+	}
+	gitpath = path
+
+	_, err = gitsh("config", "user.name", "wikimind")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,20 +119,6 @@ func (rev *Revision) bestLink() string {
 	default:
 		return "/page/" + revs[0]
 	}
-}
-
-// Path to git executable. Set at init()
-var gitpath string
-
-func init() {
-	path, err := exec.LookPath("git")
-	if err != nil {
-		log.Fatal("Cound not find the git executable. Check your $PATH.")
-	} else {
-		log.Println("Git path is", path)
-	}
-	gitpath = path
-
 }
 
 // I pronounce it as [gɪt͡ʃ].

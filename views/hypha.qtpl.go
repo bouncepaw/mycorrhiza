@@ -123,175 +123,111 @@ func NaviTitleHTML(h *hyphae.Hypha) string {
 }
 
 //line views/hypha.qtpl:35
-func StreamBackLinksHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
+func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
 //line views/hypha.qtpl:35
 	qw422016.N().S(`
-<aside class="backlinks layout-card">
-	<h2 class="backlinks__title layout-card__title">Backlinks</h2>
-	<nav class="backlinks__nav">
-		<ul class="backlinks__list">
-			`)
-//line views/hypha.qtpl:40
-	for _, backlink := range h.BackLinks {
-//line views/hypha.qtpl:40
-		qw422016.N().S(`
-			<li class="backlinks__entry">
-				<a class="backlinks__link" href="/hypha/`)
-//line views/hypha.qtpl:42
-		qw422016.E().S(backlink.Name)
-//line views/hypha.qtpl:42
-		qw422016.N().S(`">
-					`)
-//line views/hypha.qtpl:43
-		qw422016.E().S(util.BeautifulName(filepath.Base(backlink.Name)))
-//line views/hypha.qtpl:43
-		qw422016.N().S(`
-				</a>
-			</li>
-			`)
-//line views/hypha.qtpl:46
-	}
-//line views/hypha.qtpl:46
-	qw422016.N().S(`
-		</ul>
-	</nav>
-</aside>
-`)
-//line views/hypha.qtpl:50
-}
-
-//line views/hypha.qtpl:50
-func WriteBackLinksHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
-//line views/hypha.qtpl:50
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:50
-	StreamBackLinksHTML(qw422016, h)
-//line views/hypha.qtpl:50
-	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:50
-}
-
-//line views/hypha.qtpl:50
-func BackLinksHTML(h *hyphae.Hypha) string {
-//line views/hypha.qtpl:50
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:50
-	WriteBackLinksHTML(qb422016, h)
-//line views/hypha.qtpl:50
-	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:50
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:50
-	return qs422016
-//line views/hypha.qtpl:50
-}
-
-//line views/hypha.qtpl:52
-func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
-//line views/hypha.qtpl:52
-	qw422016.N().S(`
 	`)
-//line views/hypha.qtpl:53
+//line views/hypha.qtpl:36
 	switch filepath.Ext(h.BinaryPath) {
-//line views/hypha.qtpl:55
+//line views/hypha.qtpl:38
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
-//line views/hypha.qtpl:55
+//line views/hypha.qtpl:38
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-img">
 		<a href="/binary/`)
-//line views/hypha.qtpl:57
+//line views/hypha.qtpl:40
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:57
+//line views/hypha.qtpl:40
 		qw422016.N().S(`"><img src="/binary/`)
-//line views/hypha.qtpl:57
+//line views/hypha.qtpl:40
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:57
+//line views/hypha.qtpl:40
 		qw422016.N().S(`"/></a>
 	</div>
 
 	`)
-//line views/hypha.qtpl:60
+//line views/hypha.qtpl:43
 	case ".ogg", ".webm", ".mp4":
-//line views/hypha.qtpl:60
+//line views/hypha.qtpl:43
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-video">
 		<video controls>
 			<source src="/binary/`)
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:46
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:46
 		qw422016.N().S(`"/>
 			<p>Your browser does not support video. <a href="/binary/`)
-//line views/hypha.qtpl:64
+//line views/hypha.qtpl:47
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:64
+//line views/hypha.qtpl:47
 		qw422016.N().S(`">Download video</a></p>
 		</video>
 	</div>
 
 	`)
-//line views/hypha.qtpl:68
+//line views/hypha.qtpl:51
 	case ".mp3":
-//line views/hypha.qtpl:68
+//line views/hypha.qtpl:51
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-audio">
 		<audio controls>
 			<source src="/binary/`)
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:54
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:54
 		qw422016.N().S(`"/>
 			<p>Your browser does not support audio. <a href="/binary/`)
-//line views/hypha.qtpl:72
+//line views/hypha.qtpl:55
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:72
+//line views/hypha.qtpl:55
 		qw422016.N().S(`">Download audio</a></p>
 		</audio>
 	</div>
 
 	`)
-//line views/hypha.qtpl:76
+//line views/hypha.qtpl:59
 	default:
-//line views/hypha.qtpl:76
+//line views/hypha.qtpl:59
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-nothing">
 		<p><a href="/binary/`)
-//line views/hypha.qtpl:78
+//line views/hypha.qtpl:61
 		qw422016.N().S(h.Name)
-//line views/hypha.qtpl:78
+//line views/hypha.qtpl:61
 		qw422016.N().S(`">Download media</a></p>
 	</div>
 `)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:63
 	}
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:63
 	qw422016.N().S(`
 `)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 }
 
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 func WriteAttachmentHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	StreamAttachmentHTML(qw422016, h)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 }
 
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 func AttachmentHTML(h *hyphae.Hypha) string {
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	WriteAttachmentHTML(qb422016, h)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 	return qs422016
-//line views/hypha.qtpl:81
+//line views/hypha.qtpl:64
 }

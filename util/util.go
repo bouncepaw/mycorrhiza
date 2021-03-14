@@ -9,18 +9,24 @@ import (
 	"unicode"
 )
 
+// TODO: make names match to fields of config file
 var (
-	URL                  string
-	ServerPort           string
-	HomePage             string
-	SiteNavIcon          string
-	SiteName             string
-	WikiDir              string
-	UserHypha            string
-	HeaderLinksHypha     string
-	AuthMethod           string
+	SiteName    string
+	SiteNavIcon string
+
+	HomePage         string
+	UserHypha        string
+	HeaderLinksHypha string
+
+	ServerPort     string
+	URL            string
+	GeminiCertPath string
+
+	UseFixedAuth         bool
 	FixedCredentialsPath string
-	GeminiCertPath       string
+
+	WikiDir        string
+	ConfigFilePath string
 )
 
 // LettersNumbersOnly keeps letters and numbers only in the given string.
@@ -51,6 +57,13 @@ func ShorterPath(path string) string {
 		return tmp[1:]
 	}
 	return path
+}
+
+// HTTP404Page writes a 404 error in the status, needed when no content is found on the page.
+func HTTP404Page(w http.ResponseWriter, page string) {
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.WriteHeader(http.StatusNotFound)
+	w.Write([]byte(page))
 }
 
 // HTTP200Page wraps some frequently used things for successful 200 responses.

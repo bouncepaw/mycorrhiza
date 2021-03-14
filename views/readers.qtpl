@@ -108,7 +108,6 @@ If `contents` == "", a helpful message is shown instead.
 {%= SubhyphaeHTML(subhyphae) %}
 </main>
 {%= RelativeHyphaeHTML(relatives) %}
-{%= BackLinksHTML(h) %}
 </div>
 {% endfunc %}
 

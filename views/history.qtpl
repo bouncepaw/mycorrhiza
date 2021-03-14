@@ -1,7 +1,28 @@
 {% import "net/http" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/history" %}
+
+
+{% func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) %}
+{% code
+text, err := history.PrimitiveDiffAtRevision(h.TextPath, hash)
+if err != nil {
+	text = err.Error()
+}
+%}
+{%= NavHTML(rq, h.Name, "history") %}
+<div class="layout">
+<main class="main-width">
+	<article>
+		<h1>Diff {%s util.BeautifulName(h.Name) %} at {%s hash %}</h1>
+		<pre class="codeblock"><code>{%s text %}</code></pre>
+	</article>
+</main>
+</div>
+{% endfunc %}
 
 {% func RecentChangesHTML(n int) %}
 <div class="layout">
@@ -27,7 +48,7 @@
 	<p><img class="icon" width="20" height="20" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
 
 	{% comment %}
-		Here I am, willing to add some accesibility using ARIA. Turns out,
+		Here I am, willing to add some accessibility using ARIA. Turns out,
 		role="feed" is not supported in any screen reader as of September
 		2020. At least web search says so. Even JAWS doesn't support it!
 		How come? I'll add the role anyway. -- bouncepaw

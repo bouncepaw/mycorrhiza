@@ -138,11 +138,11 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
-	<section class="edit__preview">`)
+	<article class="edit__preview">`)
 //line views/mutators.qtpl:37
 	qw422016.N().S(renderedPage)
 //line views/mutators.qtpl:37
-	qw422016.N().S(`</section>
+	qw422016.N().S(`</article>
 </main>
 </div>
 `)

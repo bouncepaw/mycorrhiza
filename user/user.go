@@ -26,6 +26,7 @@ var minimalRights = map[string]int{
 	"delete-ask":          3,
 	"delete-confirm":      3,
 	"reindex":             4,
+	"admin":               4,
 	"admin/shutdown":      4,
 }
 

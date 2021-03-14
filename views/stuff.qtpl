@@ -97,7 +97,7 @@ for u := range user.YieldUsers() {
 	<section>
 		<h1>About {%s util.SiteName %}</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.13</li>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> 1.0.0</li>
 		{%- if user.AuthUsed -%}
 			<li><b>User count:</b> {%d user.Count() %}</li>
 			<li><b>Home page:</b> <a href="/">{%s util.HomePage %}</a></li>
@@ -118,7 +118,7 @@ for u := range user.YieldUsers() {
 {% func AdminPanelHTML() %}
 <div class="layout">
 <main class="main-width">
-	<h1>Admininstrative functions</h1>
+	<h1>Administrative functions</h1>
 	<section>
 		<h2>Safe things</h2>
 		<ul>
@@ -138,6 +138,12 @@ for u := range user.YieldUsers() {
 		<form action="/reindex" method="GET" style="float:left">
 			<fieldset>
 				<legend>Reindex hyphae</legend>
+				<input type="submit">
+			</fieldset>
+		</form>
+		<form action="/admin/reindex-users" method="POST" style="float:left">
+			<fieldset>
+				<legend>Reindex users</legend>
 				<input type="submit">
 			</fieldset>
 		</form>
