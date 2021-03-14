@@ -143,7 +143,7 @@ func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
 <li class="history__entry">
 	<a class="history-entry" href="/rev/%[3]s/%[1]s">
 		<time class="history-entry__time">%[2]s</time>
-		<span class="history-entry__hash">%[3]s</span>
+		<span class="history-entry__hash"><a href="/primitive-diff/%[3]s/%[1]s">%[3]s</a></span>
 		<span class="history-entry__msg">%[4]s</span>
 	</a>%[5]s
 </li>
@@ -173,5 +173,10 @@ func parseRevisionLine(line string) Revision {
 // See how the file with `filepath` looked at commit with `hash`.
 func FileAtRevision(filepath, hash string) (string, error) {
 	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, util.WikiDir+"/"))
+	return out.String(), err
+}
+
+func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
+	out, err := gitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
 	return out.String(), err
 }

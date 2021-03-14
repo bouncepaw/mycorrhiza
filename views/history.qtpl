@@ -1,7 +1,28 @@
 {% import "net/http" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/history" %}
+
+
+{% func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) %}
+{% code
+text, err := history.PrimitiveDiffAtRevision(h.TextPath, hash)
+if err != nil {
+	text = err.Error()
+}
+%}
+{%= NavHTML(rq, h.Name, "history") %}
+<div class="layout">
+<main class="main-width">
+	<article>
+		<h1>Diff {%s util.BeautifulName(h.Name) %} at {%s hash %}</h1>
+		<pre class="codeblock"><code>{%s text %}</code></pre>
+	</article>
+</main>
+</div>
+{% endfunc %}
 
 {% func RecentChangesHTML(n int) %}
 <div class="layout">

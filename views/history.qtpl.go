@@ -11,24 +11,98 @@ import "net/http"
 import "github.com/bouncepaw/mycorrhiza/util"
 
 //line views/history.qtpl:4
-import "github.com/bouncepaw/mycorrhiza/history"
+import "github.com/bouncepaw/mycorrhiza/user"
+
+//line views/history.qtpl:5
+import "github.com/bouncepaw/mycorrhiza/hyphae"
 
 //line views/history.qtpl:6
+import "github.com/bouncepaw/mycorrhiza/history"
+
+//line views/history.qtpl:9
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line views/history.qtpl:6
+//line views/history.qtpl:9
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/history.qtpl:6
+//line views/history.qtpl:9
+func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) {
+//line views/history.qtpl:9
+	qw422016.N().S(`
+`)
+//line views/history.qtpl:11
+	text, err := history.PrimitiveDiffAtRevision(h.TextPath, hash)
+	if err != nil {
+		text = err.Error()
+	}
+
+//line views/history.qtpl:15
+	qw422016.N().S(`
+`)
+//line views/history.qtpl:16
+	StreamNavHTML(qw422016, rq, h.Name, "history")
+//line views/history.qtpl:16
+	qw422016.N().S(`
+<div class="layout">
+<main class="main-width">
+	<article>
+		<h1>Diff `)
+//line views/history.qtpl:20
+	qw422016.E().S(util.BeautifulName(h.Name))
+//line views/history.qtpl:20
+	qw422016.N().S(` at `)
+//line views/history.qtpl:20
+	qw422016.E().S(hash)
+//line views/history.qtpl:20
+	qw422016.N().S(`</h1>
+		<pre class="codeblock"><code>`)
+//line views/history.qtpl:21
+	qw422016.E().S(text)
+//line views/history.qtpl:21
+	qw422016.N().S(`</code></pre>
+	</article>
+</main>
+</div>
+`)
+//line views/history.qtpl:25
+}
+
+//line views/history.qtpl:25
+func WritePrimitiveDiffHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) {
+//line views/history.qtpl:25
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/history.qtpl:25
+	StreamPrimitiveDiffHTML(qw422016, rq, h, u, hash)
+//line views/history.qtpl:25
+	qt422016.ReleaseWriter(qw422016)
+//line views/history.qtpl:25
+}
+
+//line views/history.qtpl:25
+func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) string {
+//line views/history.qtpl:25
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/history.qtpl:25
+	WritePrimitiveDiffHTML(qb422016, rq, h, u, hash)
+//line views/history.qtpl:25
+	qs422016 := string(qb422016.B)
+//line views/history.qtpl:25
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/history.qtpl:25
+	return qs422016
+//line views/history.qtpl:25
+}
+
+//line views/history.qtpl:27
 func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int) {
-//line views/history.qtpl:6
+//line views/history.qtpl:27
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width recent-changes">
@@ -38,51 +112,51 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int) {
 	<nav class="recent-changes__count">
 		See 
 	`)
-//line views/history.qtpl:14
+//line views/history.qtpl:35
 	for _, m := range []int{20, 0, 50, 0, 100} {
-//line views/history.qtpl:14
+//line views/history.qtpl:35
 		qw422016.N().S(`
 	`)
-//line views/history.qtpl:15
+//line views/history.qtpl:36
 		switch m {
-//line views/history.qtpl:16
+//line views/history.qtpl:37
 		case 0:
-//line views/history.qtpl:16
+//line views/history.qtpl:37
 			qw422016.N().S(`
 		<span aria-hidden="true">|</span>
 		`)
-//line views/history.qtpl:18
+//line views/history.qtpl:39
 		case n:
-//line views/history.qtpl:18
+//line views/history.qtpl:39
 			qw422016.N().S(`
 		<b>`)
-//line views/history.qtpl:19
+//line views/history.qtpl:40
 			qw422016.N().D(n)
-//line views/history.qtpl:19
+//line views/history.qtpl:40
 			qw422016.N().S(`</b>
 		`)
-//line views/history.qtpl:20
+//line views/history.qtpl:41
 		default:
-//line views/history.qtpl:20
+//line views/history.qtpl:41
 			qw422016.N().S(`
 		<a href="/recent-changes/`)
-//line views/history.qtpl:21
+//line views/history.qtpl:42
 			qw422016.N().D(m)
-//line views/history.qtpl:21
+//line views/history.qtpl:42
 			qw422016.N().S(`">`)
-//line views/history.qtpl:21
+//line views/history.qtpl:42
 			qw422016.N().D(m)
-//line views/history.qtpl:21
+//line views/history.qtpl:42
 			qw422016.N().S(`</a>
 	`)
-//line views/history.qtpl:22
+//line views/history.qtpl:43
 		}
-//line views/history.qtpl:22
+//line views/history.qtpl:43
 		qw422016.N().S(`
 	`)
-//line views/history.qtpl:23
+//line views/history.qtpl:44
 	}
-//line views/history.qtpl:23
+//line views/history.qtpl:44
 	qw422016.N().S(`
 		recent changes
 	</nav>
@@ -90,216 +164,216 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int) {
 	<p><img class="icon" width="20" height="20" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
 
 	`)
-//line views/history.qtpl:34
+//line views/history.qtpl:55
 	qw422016.N().S(`
 
 	`)
-//line views/history.qtpl:37
+//line views/history.qtpl:58
 	changes := history.RecentChanges(n)
 
-//line views/history.qtpl:38
+//line views/history.qtpl:59
 	qw422016.N().S(`
 	<section class="recent-changes__list" role="feed">
 	`)
-//line views/history.qtpl:40
+//line views/history.qtpl:61
 	if len(changes) == 0 {
-//line views/history.qtpl:40
+//line views/history.qtpl:61
 		qw422016.N().S(`
 		<p>Could not find any recent changes.</p>
 	`)
-//line views/history.qtpl:42
+//line views/history.qtpl:63
 	} else {
-//line views/history.qtpl:42
+//line views/history.qtpl:63
 		qw422016.N().S(`
 		`)
-//line views/history.qtpl:43
+//line views/history.qtpl:64
 		for i, entry := range changes {
-//line views/history.qtpl:43
+//line views/history.qtpl:64
 			qw422016.N().S(`
 		<ul class="recent-changes__entry rc-entry" role="article"
 		    aria-setsize="`)
-//line views/history.qtpl:45
+//line views/history.qtpl:66
 			qw422016.N().D(n)
-//line views/history.qtpl:45
+//line views/history.qtpl:66
 			qw422016.N().S(`" aria-posinset="`)
-//line views/history.qtpl:45
+//line views/history.qtpl:66
 			qw422016.N().D(i)
-//line views/history.qtpl:45
+//line views/history.qtpl:66
 			qw422016.N().S(`">
 			 `)
-//line views/history.qtpl:46
+//line views/history.qtpl:67
 			qw422016.N().S(recentChangesEntry(entry))
-//line views/history.qtpl:46
+//line views/history.qtpl:67
 			qw422016.N().S(`
 		</ul>
 		`)
-//line views/history.qtpl:48
+//line views/history.qtpl:69
 		}
-//line views/history.qtpl:48
+//line views/history.qtpl:69
 		qw422016.N().S(`
 	`)
-//line views/history.qtpl:49
+//line views/history.qtpl:70
 	}
-//line views/history.qtpl:49
+//line views/history.qtpl:70
 	qw422016.N().S(`
 	</section>
 </main>
 </div>
 `)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 }
 
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 func WriteRecentChangesHTML(qq422016 qtio422016.Writer, n int) {
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	StreamRecentChangesHTML(qw422016, n)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	qt422016.ReleaseWriter(qw422016)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 }
 
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 func RecentChangesHTML(n int) string {
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	WriteRecentChangesHTML(qb422016, n)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	qs422016 := string(qb422016.B)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 	return qs422016
-//line views/history.qtpl:53
+//line views/history.qtpl:74
 }
 
-//line views/history.qtpl:55
+//line views/history.qtpl:76
 func streamrecentChangesEntry(qw422016 *qt422016.Writer, rev history.Revision) {
-//line views/history.qtpl:55
+//line views/history.qtpl:76
 	qw422016.N().S(`
 <li class="rc-entry__time"><time>`)
-//line views/history.qtpl:56
+//line views/history.qtpl:77
 	qw422016.E().S(rev.TimeString())
-//line views/history.qtpl:56
+//line views/history.qtpl:77
 	qw422016.N().S(`</time></li>
 <li class="rc-entry__hash">`)
-//line views/history.qtpl:57
+//line views/history.qtpl:78
 	qw422016.E().S(rev.Hash)
-//line views/history.qtpl:57
+//line views/history.qtpl:78
 	qw422016.N().S(`</li>
 <li class="rc-entry__links">`)
-//line views/history.qtpl:58
+//line views/history.qtpl:79
 	qw422016.N().S(rev.HyphaeLinksHTML())
-//line views/history.qtpl:58
+//line views/history.qtpl:79
 	qw422016.N().S(`</li>
 <li class="rc-entry__msg">`)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 	qw422016.E().S(rev.Message)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 	qw422016.N().S(` `)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 	if rev.Username != "anon" {
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.N().S(`<span class="rc-entry__author">by <a href="/hypha/`)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.E().S(util.UserHypha)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.N().S(`/`)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.E().S(rev.Username)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.N().S(`" rel="author">`)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.E().S(rev.Username)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 		qw422016.N().S(`</a></span>`)
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 	}
-//line views/history.qtpl:59
+//line views/history.qtpl:80
 	qw422016.N().S(`</li>
 `)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 }
 
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 func writerecentChangesEntry(qq422016 qtio422016.Writer, rev history.Revision) {
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	streamrecentChangesEntry(qw422016, rev)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	qt422016.ReleaseWriter(qw422016)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 }
 
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 func recentChangesEntry(rev history.Revision) string {
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	writerecentChangesEntry(qb422016, rev)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	qs422016 := string(qb422016.B)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 	return qs422016
-//line views/history.qtpl:60
+//line views/history.qtpl:81
 }
 
-//line views/history.qtpl:62
+//line views/history.qtpl:83
 func StreamHistoryHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, list string) {
-//line views/history.qtpl:62
+//line views/history.qtpl:83
 	qw422016.N().S(`
 `)
-//line views/history.qtpl:63
+//line views/history.qtpl:84
 	StreamNavHTML(qw422016, rq, hyphaName, "history")
-//line views/history.qtpl:63
+//line views/history.qtpl:84
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<article class="history">
 		<h1>History of `)
-//line views/history.qtpl:67
+//line views/history.qtpl:88
 	qw422016.E().S(util.BeautifulName(hyphaName))
-//line views/history.qtpl:67
+//line views/history.qtpl:88
 	qw422016.N().S(`</h1>
 		`)
-//line views/history.qtpl:68
+//line views/history.qtpl:89
 	qw422016.N().S(list)
-//line views/history.qtpl:68
+//line views/history.qtpl:89
 	qw422016.N().S(`
 	</article>
 </main>
 </div>
 `)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 }
 
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 func WriteHistoryHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, list string) {
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	StreamHistoryHTML(qw422016, rq, hyphaName, list)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	qt422016.ReleaseWriter(qw422016)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 }
 
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 func HistoryHTML(rq *http.Request, hyphaName, list string) string {
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	WriteHistoryHTML(qb422016, rq, hyphaName, list)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	qs422016 := string(qb422016.B)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 	return qs422016
-//line views/history.qtpl:72
+//line views/history.qtpl:93
 }

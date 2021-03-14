@@ -24,6 +24,7 @@ func init() {
 	http.HandleFunc("/text/", handlerText)
 	http.HandleFunc("/binary/", handlerBinary)
 	http.HandleFunc("/rev/", handlerRevision)
+	http.HandleFunc("/primitive-diff/", handlerPrimitiveDiff)
 	http.HandleFunc("/attachment/", handlerAttachment)
 }
 
@@ -38,6 +39,23 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 		views.BaseHTML(
 			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
 			views.AttachmentMenuHTML(rq, h, u),
+			u))
+}
+
+func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	var (
+		shorterUrl      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
+		firstSlashIndex = strings.IndexRune(shorterUrl, '/')
+		revHash         = shorterUrl[:firstSlashIndex]
+		hyphaName       = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		h               = hyphae.ByName(hyphaName)
+		u               = user.FromRequest(rq)
+	)
+	util.HTTP200Page(w,
+		views.BaseHTML(
+			fmt.Sprintf("Diff of %s at %s", hyphaName, revHash),
+			views.PrimitiveDiffHTML(rq, h, u, revHash),
 			u))
 }
 
