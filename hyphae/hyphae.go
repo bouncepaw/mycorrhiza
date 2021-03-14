@@ -45,6 +45,10 @@ func storeHypha(h *Hypha) {
 	byNamesMutex.Lock()
 	byNames[h.Name] = h
 	byNamesMutex.Unlock()
+
+	h.Lock()
+	h.Exists = true
+	h.Unlock()
 }
 
 // Insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
@@ -101,6 +105,5 @@ func (h *Hypha) MergeIn(oh *Hypha) {
 		}
 		h.BinaryPath = oh.BinaryPath
 	}
-	h.Exists = oh.Exists
 	h.Unlock()
 }
