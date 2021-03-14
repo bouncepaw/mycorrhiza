@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 0.14
+# 🍄 MycorrhizaWiki
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
@@ -21,26 +21,10 @@ mycorrhiza [OPTIONS...] WIKI_PATH
 WIKI_PATH must be a path to git repository which you want to be a wiki.
 
 Options:
-  -auth-method string
-        What auth method to use. Variants: "none", "fixed" (default "none")
-  -fixed-credentials-path string
-        Used when -auth-method=fixed. Path to file with user credentials. (default "mycocredentials.json")
-  -gemini-cert-path string
-        Directory where you store Gemini certificates. Leave empty if you don't want to use Gemini.
-  -header-links-hypha string
-        Optional hypha that overrides the header links
-  -home string
-        The home page (default "home")
-  -icon string
-        What to show in the navititle in the beginning, before the colon (default "🍄")
-  -name string
-        What is the name of your wiki (default "wiki")
-  -port string
-        Port to serve the wiki at (default "1737")
-  -url string
-        URL at which your wiki can be found. Used to generate feeds (default "http://0.0.0.0:$port")
-  -user-hypha string
-        Hypha which is a superhypha of all user pages (default "u")
+  -config-path string
+        Path to a configuration file. Leave empty if you don't want to use it.
+  -print-example-config
+        If true, print an example configuration file contents and exit. You can save the output to a file and base your own configuration on it.
 ```
 
 ## Features

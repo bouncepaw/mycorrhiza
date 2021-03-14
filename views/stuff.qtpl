@@ -97,7 +97,7 @@ for u := range user.YieldUsers() {
 	<section>
 		<h1>About {%s util.SiteName %}</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> β 0.13</li>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> 1.0.0</li>
 		{%- if user.AuthUsed -%}
 			<li><b>User count:</b> {%d user.Count() %}</li>
 			<li><b>Home page:</b> <a href="/">{%s util.HomePage %}</a></li>
