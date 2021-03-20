@@ -7,9 +7,12 @@
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
 	{%s= warning %}
+	<div class="toolbar">
+		<button onclick="insertDate()">Insert Date</button>
+	</div>
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
-		<textarea name="text">{%s textAreaFill %}</textarea>
+		<textarea id="edit-textarea" name="text">{%s textAreaFill %}</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
@@ -17,6 +20,7 @@
 	</form>
 </main>
 </div>
+<script src="/static/toolbar.js"></script>
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}

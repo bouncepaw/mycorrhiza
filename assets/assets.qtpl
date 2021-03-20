@@ -10,6 +10,10 @@ Usage of %s:
 {% cat "default.css" %}
 {% endfunc %}
 
+{% func ToolbarJS() %}
+{% cat "toolbar.js" %}
+{% endfunc %}
+
 Next three are from https://remixicon.com/
 {% func IconHTTP() %}
 {% cat "icon/http-protocol-icon.svg" %}

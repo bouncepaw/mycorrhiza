@@ -414,136 +414,186 @@ func DefaultCSS() string {
 //line assets/assets.qtpl:11
 }
 
+//line assets/assets.qtpl:13
+func StreamToolbarJS(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:13
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:14
+	qw422016.N().S(`const editTextarea = document.getElementById('edit-textarea')
+
+function insertTextAtCursor(text, el = editTextarea) {
+    const [start, end] = [el.selectionStart, el.selectionEnd];
+    el.setRangeText(text, start, end, 'select');
+}
+
+function insertDate() {
+    let date = new Date().toISOString().split('T')[0]
+    insertTextAtCursor(date)
+}
+`)
+//line assets/assets.qtpl:14
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:15
+}
+
+//line assets/assets.qtpl:15
+func WriteToolbarJS(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:15
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:15
+	StreamToolbarJS(qw422016)
+//line assets/assets.qtpl:15
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:15
+}
+
+//line assets/assets.qtpl:15
+func ToolbarJS() string {
+//line assets/assets.qtpl:15
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:15
+	WriteToolbarJS(qb422016)
+//line assets/assets.qtpl:15
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:15
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:15
+	return qs422016
+//line assets/assets.qtpl:15
+}
+
 // Next three are from https://remixicon.com/
 
-//line assets/assets.qtpl:14
+//line assets/assets.qtpl:18
 func StreamIconHTTP(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:14
+//line assets/assets.qtpl:18
 	qw422016.N().S(`
 `)
-//line assets/assets.qtpl:15
+//line assets/assets.qtpl:19
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2.29-2.333A17.9 17.9 0 0 1 8.027 13H4.062a8.008 8.008 0 0 0 5.648 6.667zM10.03 13c.151 2.439.848 4.73 1.97 6.752A15.905 15.905 0 0 0 13.97 13h-3.94zm9.908 0h-3.965a17.9 17.9 0 0 1-1.683 6.667A8.008 8.008 0 0 0 19.938 13zM4.062 11h3.965A17.9 17.9 0 0 1 9.71 4.333 8.008 8.008 0 0 0 4.062 11zm5.969 0h3.938A15.905 15.905 0 0 0 12 4.248 15.905 15.905 0 0 0 10.03 11zm4.259-6.667A17.9 17.9 0 0 1 15.973 11h3.965a8.008 8.008 0 0 0-5.648-6.667z"/></svg>
 `)
-//line assets/assets.qtpl:15
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:16
-func WriteIconHTTP(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:16
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:16
-	StreamIconHTTP(qw422016)
-//line assets/assets.qtpl:16
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:16
-func IconHTTP() string {
-//line assets/assets.qtpl:16
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:16
-	WriteIconHTTP(qb422016)
-//line assets/assets.qtpl:16
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:16
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:16
-	return qs422016
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:18
-func StreamIconGemini(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:18
-	qw422016.N().S(`
-`)
 //line assets/assets.qtpl:19
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:20
+func WriteIconHTTP(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:20
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:20
+	StreamIconHTTP(qw422016)
+//line assets/assets.qtpl:20
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:20
+func IconHTTP() string {
+//line assets/assets.qtpl:20
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:20
+	WriteIconHTTP(qb422016)
+//line assets/assets.qtpl:20
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:20
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:20
+	return qs422016
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:22
+func StreamIconGemini(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:22
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:23
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M15.502 20A6.523 6.523 0 0 1 12 23.502 6.523 6.523 0 0 1 8.498 20h2.26c.326.489.747.912 1.242 1.243.495-.33.916-.754 1.243-1.243h2.259zM18 14.805l2 2.268V19H4v-1.927l2-2.268V9c0-3.483 2.504-6.447 6-7.545C15.496 2.553 18 5.517 18 9v5.805zM17.27 17L16 15.56V9c0-2.318-1.57-4.43-4-5.42C9.57 4.57 8 6.681 8 9v6.56L6.73 17h10.54zM12 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
 `)
-//line assets/assets.qtpl:19
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:20
-func WriteIconGemini(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:20
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:20
-	StreamIconGemini(qw422016)
-//line assets/assets.qtpl:20
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:20
-func IconGemini() string {
-//line assets/assets.qtpl:20
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:20
-	WriteIconGemini(qb422016)
-//line assets/assets.qtpl:20
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:20
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:20
-	return qs422016
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:22
-func StreamIconMailto(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:22
-	qw422016.N().S(`
-`)
 //line assets/assets.qtpl:23
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:24
+func WriteIconGemini(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:24
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:24
+	StreamIconGemini(qw422016)
+//line assets/assets.qtpl:24
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:24
+func IconGemini() string {
+//line assets/assets.qtpl:24
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:24
+	WriteIconGemini(qb422016)
+//line assets/assets.qtpl:24
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:24
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:24
+	return qs422016
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:26
+func StreamIconMailto(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:26
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:27
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/></svg>
 `)
-//line assets/assets.qtpl:23
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:24
-}
-
-//line assets/assets.qtpl:24
-func WriteIconMailto(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:24
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:24
-	StreamIconMailto(qw422016)
-//line assets/assets.qtpl:24
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:24
-}
-
-//line assets/assets.qtpl:24
-func IconMailto() string {
-//line assets/assets.qtpl:24
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:24
-	WriteIconMailto(qb422016)
-//line assets/assets.qtpl:24
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:24
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:24
-	return qs422016
-//line assets/assets.qtpl:24
-}
-
-// This is a modified version of https://www.svgrepo.com/svg/232085/rat
-
-//line assets/assets.qtpl:27
-func StreamIconGopher(qw422016 *qt422016.Writer) {
 //line assets/assets.qtpl:27
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:28
+}
+
+//line assets/assets.qtpl:28
+func WriteIconMailto(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:28
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:28
+	StreamIconMailto(qw422016)
+//line assets/assets.qtpl:28
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:28
+}
+
+//line assets/assets.qtpl:28
+func IconMailto() string {
+//line assets/assets.qtpl:28
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:28
+	WriteIconMailto(qb422016)
+//line assets/assets.qtpl:28
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:28
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:28
+	return qs422016
+//line assets/assets.qtpl:28
+}
+
+// This is a modified version of https://www.svgrepo.com/svg/232085/rat
+
+//line assets/assets.qtpl:31
+func StreamIconGopher(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:31
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:32
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
 <path fill="#999" d="M447.238,204.944v-70.459c0-8.836-7.164-16-16-16c-34.051,0-64.414,21.118-75.079,55.286
 C226.094,41.594,0,133.882,0,319.435c0,0.071,0.01,0.14,0.011,0.21c0.116,44.591,36.423,80.833,81.04,80.833h171.203
@@ -556,34 +606,34 @@ c55.425-8.382,107.014,29.269,115.759,84.394H295.484z"/>
 <circle fill="#999" cx="415.238" cy="260.05" r="21.166"/>
 </svg>
 `)
-//line assets/assets.qtpl:28
+//line assets/assets.qtpl:32
 	qw422016.N().S(`
 `)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 }
 
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 func WriteIconGopher(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	StreamIconGopher(qw422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 }
 
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 func IconGopher() string {
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	WriteIconGopher(qb422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	return qs422016
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 }
