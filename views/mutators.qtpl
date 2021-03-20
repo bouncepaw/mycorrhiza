@@ -1,15 +1,29 @@
 {% import "net/http" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
+{% func Toolbar() %}
+<aside class="edit-toolbar layout-card">
+	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
+	<button class="edit-toolbar__bold" onclick="wrapBold()"><b>Bold</b></button>
+	<button class="edit-toolbar__italic" onclick="wrapItalic()"><i>Italic</i></button>
+	<button class="edit-toolbar__highlight" onclick="wrapHighlighted()"><mark>Highlight</mark></button>
+	<button class="edit-toolbar__monospace" onclick="wrapMonospace()"><code>Monospace</code></button>
+	<button class="edit-toolbar__lifted" onclick="wrapLifted()"><sup>Lifted</sup></button>
+	<button class="edit-toolbar__lowered" onclick="wrapLowered()"><sub>Lowered</sub></button>
+	<button class="edit-toolbar__stroked" onclick="wrapStroked()"><s>Stroked</s></button>
+	<button class="edit-toolbar__date" onclick="insertDate()">Current Date</button>
+	<button class="edit-toolbar__bar" onclick="insertHorizontalBar()">Horizontal Bar</button>
+	<button class="edit-toolbar__img" onclick="insertImgBlock()">Image</button>
+</aside>
+<script src="/static/toolbar.js"></script>
+{% endfunc %}
+
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
 {%s= NavHTML(rq, hyphaName, "edit") %}
 <div class="layout">
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
 	{%s= warning %}
-	<div class="edit__toolbar">
-		<button onclick="insertDate()">Insert Date</button>
-	</div>
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
 		<textarea name="text" class="edit-form__textarea">{%s textAreaFill %}</textarea>
@@ -19,8 +33,8 @@
 		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
+{%s= Toolbar() %}
 </div>
-<script src="/static/toolbar.js"></script>
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
@@ -31,7 +45,7 @@
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
-		<textarea name="text">{%s textAreaFill %}</textarea>
+		<textarea class="edit-form__textarea" name="text">{%s textAreaFill %}</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
@@ -40,5 +54,6 @@
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">{%s= renderedPage %}</article>
 </main>
+{%s= Toolbar() %}
 </div>
 {% endfunc %}
