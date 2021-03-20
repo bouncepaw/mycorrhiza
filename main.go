@@ -117,6 +117,12 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	w.Header().Set("Content-Type", "text/javascript;charset=utf-8")
+	w.Write([]byte(assets.ToolbarJS()))
+}
+
 func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	iconName := strings.TrimPrefix(rq.URL.Path, "/static/icon/")
 	if iconName == "https" {
@@ -199,6 +205,7 @@ func main() {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
+	http.HandleFunc("/static/toolbar.js", handlerToolbar)
 	http.HandleFunc("/static/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
