@@ -44,7 +44,7 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 	qw422016.N().S(warning)
 //line views/mutators.qtpl:9
 	qw422016.N().S(`
-	<div class="toolbar">
+	<div class="edit__toolbar">
 		<button onclick="insertDate()">Insert Date</button>
 	</div>
 	<form method="post" class="edit-form"
@@ -53,7 +53,7 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:14
 	qw422016.N().S(`">
-		<textarea id="edit-textarea" name="text">`)
+		<textarea name="text" class="edit-form__textarea">`)
 //line views/mutators.qtpl:15
 	qw422016.E().S(textAreaFill)
 //line views/mutators.qtpl:15

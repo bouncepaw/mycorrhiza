@@ -420,7 +420,7 @@ func StreamToolbarJS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:14
-	qw422016.N().S(`const editTextarea = document.getElementById('edit-textarea')
+	qw422016.N().S(`const editTextarea = document.getElementsByClassName('edit-form__textarea')[0]
 
 function insertTextAtCursor(text, el = editTextarea) {
     const [start, end] = [el.selectionStart, el.selectionEnd];

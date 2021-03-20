@@ -119,7 +119,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 
 func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	w.Header().Set("Content-Type", "text/js;charset=utf-8")
+	w.Header().Set("Content-Type", "text/javascript;charset=utf-8")
 	w.Write([]byte(assets.ToolbarJS()))
 }
 
