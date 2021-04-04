@@ -162,7 +162,7 @@ func StreamUserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 		} else {
 //line views/nav.qtpl:54
 			qw422016.N().S(`
-	<a href="/page/`)
+	<a href="/hypha/`)
 //line views/nav.qtpl:55
 			qw422016.E().S(util.UserHypha)
 //line views/nav.qtpl:55

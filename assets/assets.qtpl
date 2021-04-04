@@ -31,3 +31,8 @@ This is a modified version of https://www.svgrepo.com/svg/232085/rat
 {% func IconGopher() %}
 {% cat "icon/gopher-protocol-icon.svg" %}
 {% endfunc %}
+
+https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg
+{% func IconFeed() %}
+{% cat "icon/feed-icon.svg" %}
+{% endfunc %}

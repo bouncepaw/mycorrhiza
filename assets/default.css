@@ -241,7 +241,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.navitree__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .navitree__link:hover, .backlinks__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }

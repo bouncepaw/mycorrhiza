@@ -22,8 +22,7 @@
 			<span aria-hidden="true" class="navi-title__separator">/</span>
 		{% endif %}
 
-			<a href="{%s prevAcc + part %}"
-				rel="{% if i == len(parts) - 1 %}bookmark{% else %}up{% endif %}">
+			<a href="{%s prevAcc + part %}" rel="{% if i == len(parts) - 1 %}bookmark{% else %}up{% endif %}">
 				{%s= util.BeautifulName(part) %}
 			</a>
 		{% code prevAcc += part + "/" %}

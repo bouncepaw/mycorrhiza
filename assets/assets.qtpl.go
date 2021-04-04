@@ -352,7 +352,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.navitree__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .navitree__link:hover, .backlinks__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
@@ -705,4 +705,62 @@ func IconGopher() string {
 //line assets/assets.qtpl:33
 	return qs422016
 //line assets/assets.qtpl:33
+}
+
+// https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg
+
+//line assets/assets.qtpl:36
+func StreamIconFeed(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:36
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:37
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg"
+     id="RSSicon"
+     viewBox="0 0 8 8" width="256" height="256">
+
+  <title>RSS feed icon</title>
+
+  <style type="text/css">
+    .button {stroke: none; fill: orange;}
+    .symbol {stroke: none; fill: white;}
+  </style>
+
+  <rect   class="button" width="8" height="8" rx="1.5" />
+  <circle class="symbol" cx="2" cy="6" r="1" />
+  <path   class="symbol" d="m 1,4 a 3,3 0 0 1 3,3 h 1 a 4,4 0 0 0 -4,-4 z" />
+  <path   class="symbol" d="m 1,2 a 5,5 0 0 1 5,5 h 1 a 6,6 0 0 0 -6,-6 z" />
+
+</svg>
+`)
+//line assets/assets.qtpl:37
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:38
+}
+
+//line assets/assets.qtpl:38
+func WriteIconFeed(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:38
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:38
+	StreamIconFeed(qw422016)
+//line assets/assets.qtpl:38
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:38
+}
+
+//line assets/assets.qtpl:38
+func IconFeed() string {
+//line assets/assets.qtpl:38
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:38
+	WriteIconFeed(qb422016)
+//line assets/assets.qtpl:38
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:38
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:38
+	return qs422016
+//line assets/assets.qtpl:38
 }

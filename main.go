@@ -145,6 +145,8 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 		w.Write([]byte(assets.IconMailto()))
 	case "gopher":
 		w.Write([]byte(assets.IconGopher()))
+	case "feed":
+		w.Write([]byte(assets.IconFeed()))
 	default:
 		w.Write([]byte(assets.IconHTTP()))
 	}
