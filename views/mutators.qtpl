@@ -4,16 +4,28 @@
 {% func Toolbar() %}
 <aside class="edit-toolbar layout-card">
 	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
-	<button class="edit-toolbar__bold" onclick="wrapBold()"><b>Bold</b></button>
-	<button class="edit-toolbar__italic" onclick="wrapItalic()"><i>Italic</i></button>
-	<button class="edit-toolbar__highlight" onclick="wrapHighlighted()"><mark>Highlight</mark></button>
-	<button class="edit-toolbar__monospace" onclick="wrapMonospace()"><code>Monospace</code></button>
-	<button class="edit-toolbar__lifted" onclick="wrapLifted()"><sup>Lifted</sup></button>
-	<button class="edit-toolbar__lowered" onclick="wrapLowered()"><sub>Lowered</sub></button>
-	<button class="edit-toolbar__stroked" onclick="wrapStroked()"><s>Stroked</s></button>
-	<button class="edit-toolbar__date" onclick="insertDate()">Current Date</button>
-	<button class="edit-toolbar__bar" onclick="insertHorizontalBar()">Horizontal Bar</button>
-	<button class="edit-toolbar__img" onclick="insertImgBlock()">Image</button>
+	{% for _, el := range []struct{
+			class string
+			onclick string
+			display string
+		}{
+			{"bold", "wrapBold()", "<b>**Bold**</b>"},
+			{"italic", "wrapItalic()", "<i>//Italic//</i>"},
+			{"highlighted", "wrapHighlighted()", "<mark>!!Highlight!!</mark>"},
+			{"monospace", "wrapMonospace()", "<code>`Monospace`</code>"},
+			{"lifted", "wrapLifted()", "<sup>^Lifted^</sup>"},
+			{"lowered", "wrapLowered()", "<sub>,,Lowered,,</sub>"},
+			{"strikethrough", "wrapStrikethrough()", "<strike>~~Strikethrough~~</strike>"},
+			{"img", "insertImgBlock()", "Image block <code>img {}</code>"},
+			{"hr", "insertHorizontalBar()", "Horizontal bar"},
+			{"date", "insertDate()", "Insert current date"},
+		} %}
+		<button
+			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"
+			onclick="{%s el.onclick %}">
+			{%s= el.display %}
+		</button>
+	{% endfor %}
 </aside>
 <script src="/static/toolbar.js"></script>
 {% endfunc %}

@@ -39,33 +39,27 @@ function insertDate() {
     insertTextAtCursor(date)
 }
 
-function wrapBold() {
-    wrapSelection('**')
+function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTextarea) {
+    return function() {
+        const [start, end] = [el.selectionStart, el.selectionEnd]
+        if (postfix == null) {
+            postfix = prefix
+        }
+        text = getSelectedText(el)
+        result = prefix + text + postfix
+        el.setRangeText(result, start, end, 'select')
+        el.focus()
+        placeCursor(end + cursorPosition)
+    }
 }
 
-function wrapItalic() {
-    wrapSelection('//')
-}
-
-function wrapMonospace() {
-    wrapSelection('`')
-}
-
-function wrapHighlighted() {
-    wrapSelection('!!')
-}
-
-function wrapLifted() {
-    wrapSelection('^')
-}
-
-function wrapLowered() {
-    wrapSelection(',,')
-}
-
-function wrapStroked() {
-    wrapSelection('~~')
-}
+const wrapBold = selectionWrapper(2, '**'), 
+    wrapItalic = selectionWrapper(2, '//'), 
+    wrapMonospace = selectionWrapper(1, '`'), 
+    wrapHighlighted = selectionWrapper(2, '!!'), 
+    wrapLifted = selectionWrapper(1, '^'), 
+    wrapLowered = selectionWrapper(2, ',,'), 
+    wrapStrikethrough = selectionWrapper(2, '~~')
 
 function insertHorizontalBar() {
     insertTextAtCursor('----\n')
