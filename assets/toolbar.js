@@ -11,32 +11,17 @@ function getSelectedText(el = editTextarea) {
     return text.substring(start, end)
 }
 
-function insertTextAtCursor(text, cursorPosition = null, el = editTextarea) {
-    const [start, end] = [el.selectionStart, el.selectionEnd]
-    el.setRangeText(text, start, end, 'select')
-    el.focus()
-    if (cursorPosition == null) {
-        placeCursor(end + text.length)
-    } else {
-        placeCursor(end + cursorPosition)
+function textInserter(text, cursorPosition = null, el = editTextarea) {
+    return function() {
+        const [start, end] = [el.selectionStart, el.selectionEnd]
+        el.setRangeText(text, start, end, 'select')
+        el.focus()
+        if (cursorPosition == null) {
+            placeCursor(end + text.length)
+        } else {
+            placeCursor(end + cursorPosition)
+        }
     }
-}
-
-function wrapSelection(prefix, postfix = null, el = editTextarea) {
-    const [start, end] = [el.selectionStart, el.selectionEnd]
-    if (postfix == null) {
-        postfix = prefix
-    }
-    text = getSelectedText(el)
-    result = prefix + text + postfix
-    el.setRangeText(result, start, end, 'select')
-    el.focus()
-    placeCursor(end + (prefix + postfix).length)
-}
-
-function insertDate() {
-    let date = new Date().toISOString().split('T')[0]
-    insertTextAtCursor(date)
 }
 
 function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTextarea) {
@@ -59,12 +44,22 @@ const wrapBold = selectionWrapper(2, '**'),
     wrapHighlighted = selectionWrapper(2, '!!'), 
     wrapLifted = selectionWrapper(1, '^'), 
     wrapLowered = selectionWrapper(2, ',,'), 
-    wrapStrikethrough = selectionWrapper(2, '~~')
+    wrapStrikethrough = selectionWrapper(2, '~~'), 
+    wrapLink = selectionWrapper(2, '[[', ']]')
 
-function insertHorizontalBar() {
-    insertTextAtCursor('----\n')
+const insertHorizontalBar = textInserter('----\n'),
+    insertImgBlock = textInserter('img {\n\t\n}\n', 7), 
+    insertTableBlock = textInserter('table {\n\t\n}\n', 9),
+    insertRocket = textInserter('=> '),
+    insertXcl = textInserter('<= ')
+
+function insertDate() {
+    let date = new Date().toISOString().split('T')[0]
+    textInserter(date)()
 }
 
-function insertImgBlock() {
-    insertTextAtCursor('img {\n\t\n}\n', 7)
+function insertUserlink() {
+    const userlink = document.querySelector('.header-links__entry_user a')
+    const userHypha = userlink.getAttribute('href').substring(7) // no /hypha/
+    textInserter('[[' + userHypha + ']]')()
 }

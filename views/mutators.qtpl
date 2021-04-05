@@ -1,14 +1,17 @@
 {% import "net/http" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
 
-{% func Toolbar() %}
+{% func Toolbar(u *user.User) %}
 <aside class="edit-toolbar layout-card">
-	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
+	<h2 class="edit-toolbar__title layout-card__title">Markup</h2>
+	<section class="edit-toolbar__buttons">
 	{% for _, el := range []struct{
 			class string
 			onclick string
 			display string
 		}{
+			{"link", "wrapLink()", "[[link]]"},
 			{"bold", "wrapBold()", "<b>**Bold**</b>"},
 			{"italic", "wrapItalic()", "<i>//Italic//</i>"},
 			{"highlighted", "wrapHighlighted()", "<mark>!!Highlight!!</mark>"},
@@ -16,8 +19,27 @@
 			{"lifted", "wrapLifted()", "<sup>^Lifted^</sup>"},
 			{"lowered", "wrapLowered()", "<sub>,,Lowered,,</sub>"},
 			{"strikethrough", "wrapStrikethrough()", "<strike>~~Strikethrough~~</strike>"},
-			{"img", "insertImgBlock()", "Image block <code>img {}</code>"},
+			{"rocket", "insertRocket()", "=> rocketlink"},
+			{"xcl", "insertXcl()", "<= transclusion"}, 
+			{"img", "insertImgBlock()", "<code>img {}</code>"},
+			{"table", "insertTableBlock()", "<code>table {}</code>"},
 			{"hr", "insertHorizontalBar()", "Horizontal bar"},
+		} %}
+		<button
+			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"
+			onclick="{%s el.onclick %}">
+			{%s= el.display %}
+		</button>
+	{% endfor %}
+	</section>
+	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup">Learn more</a> about mycomarkup</p>
+	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
+	<section class="edit-toolbar__buttons">
+	{% for _, el := range []struct{
+			class string
+			onclick string
+			display string
+		}{
 			{"date", "insertDate()", "Insert current date"},
 		} %}
 		<button
@@ -26,6 +48,14 @@
 			{%s= el.display %}
 		</button>
 	{% endfor %}
+	{% if u.Group != "anon" %}
+		<button
+			class="edit-toolbar__btn edit-toolbar__user-link"
+			onclick="insertUserlink()">
+			Link yourself
+		</button>
+	{% endif %}
+	</section>
 </aside>
 <script src="/static/toolbar.js"></script>
 {% endfunc %}
@@ -45,7 +75,7 @@
 		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
-{%s= Toolbar() %}
+{%s= Toolbar(user.FromRequest(rq)) %}
 </div>
 {% endfunc %}
 
@@ -66,6 +96,6 @@
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">{%s= renderedPage %}</article>
 </main>
-{%s= Toolbar() %}
+{%s= Toolbar(user.FromRequest(rq)) %}
 </div>
 {% endfunc %}
