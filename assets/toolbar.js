@@ -38,20 +38,23 @@ function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTexta
     }
 }
 
-const wrapBold = selectionWrapper(2, '**'), 
-    wrapItalic = selectionWrapper(2, '//'), 
-    wrapMonospace = selectionWrapper(1, '`'), 
-    wrapHighlighted = selectionWrapper(2, '!!'), 
-    wrapLifted = selectionWrapper(1, '^'), 
-    wrapLowered = selectionWrapper(2, ',,'), 
-    wrapStrikethrough = selectionWrapper(2, '~~'), 
+const wrapBold = selectionWrapper(2, '**'),
+    wrapItalic = selectionWrapper(2, '//'),
+    wrapMonospace = selectionWrapper(1, '`'),
+    wrapHighlighted = selectionWrapper(2, '!!'),
+    wrapLifted = selectionWrapper(1, '^'),
+    wrapLowered = selectionWrapper(2, ',,'),
+    wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapLink = selectionWrapper(2, '[[', ']]')
 
 const insertHorizontalBar = textInserter('----\n'),
-    insertImgBlock = textInserter('img {\n\t\n}\n', 7), 
+    insertImgBlock = textInserter('img {\n\t\n}\n', 7),
     insertTableBlock = textInserter('table {\n\t\n}\n', 9),
     insertRocket = textInserter('=> '),
-    insertXcl = textInserter('<= ')
+    insertXcl = textInserter('<= '),
+    insertHeading2 = textInserter('## '),
+    insertHeading3 = textInserter('### '),
+    insertCodeblock = textInserter('```\n\n```\n', 4)
 
 function insertDate() {
     let date = new Date().toISOString().split('T')[0]

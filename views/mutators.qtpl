@@ -12,6 +12,8 @@
 			display string
 		}{
 			{"link", "wrapLink()", "[[link]]"},
+			{"heading2", "insertHeading2()", "## heading"},
+			{"heading3", "insertHeading3()", "### heading"},
 			{"bold", "wrapBold()", "<b>**Bold**</b>"},
 			{"italic", "wrapItalic()", "<i>//Italic//</i>"},
 			{"highlighted", "wrapHighlighted()", "<mark>!!Highlight!!</mark>"},
@@ -24,6 +26,7 @@
 			{"img", "insertImgBlock()", "<code>img {}</code>"},
 			{"table", "insertTableBlock()", "<code>table {}</code>"},
 			{"hr", "insertHorizontalBar()", "Horizontal bar"},
+			{"codeblock", "insertCodeblock()", "Code block"},
 		} %}
 		<button
 			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"
