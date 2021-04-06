@@ -5,25 +5,131 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-type sibling struct {
-	name        string
-	hasChildren bool
+func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) {
+	var (
+		siblings     = make([]*sibling, 0)
+		siblingCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
+			if path.Dir(hyphaName) == path.Dir(h.Name) {
+				siblings = append(siblings, &sibling{h.Name, 0, 0})
+			}
+			return hyphae.CheckContinue
+		}
+
+		descendantsPool = make(map[string]bool, 0)
+		descendantCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
+			if strings.HasPrefix(h.Name, hyphaName+"/") {
+				descendantsPool[h.Name] = true
+			}
+			return hyphae.CheckContinue
+		}
+
+		i7n = hyphae.NewIteration()
+	)
+	i7n.AddCheck(siblingCheck)
+	i7n.AddCheck(descendantCheck)
+	i7n.Ignite()
+	sort.Slice(siblings, func(i, j int) bool {
+		return siblings[i].name < siblings[j].name
+	})
+	return siblings, descendantsPool
 }
 
-func (s *sibling) checkThisChild(hyphaName string) {
-	if !s.hasChildren && path.Dir(hyphaName) == s.name {
-		s.hasChildren = true
+func countSubhyphae(siblings []*sibling) {
+	var (
+		subhyphaCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
+			for _, s := range siblings {
+				if path.Dir(h.Name) == s.name {
+					s.directSubhyphaeCount++
+					return hyphae.CheckContinue
+				} else if strings.HasPrefix(h.Name, s.name+"/") {
+					s.indirectSubhyphaeCount++
+					return hyphae.CheckContinue
+				}
+			}
+			return hyphae.CheckContinue
+		}
+		i7n = hyphae.NewIteration()
+	)
+	i7n.AddCheck(subhyphaCheck)
+	i7n.Ignite()
+}
+
+// Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
+func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
+	children := make([]child, 0)
+	I := 0
+	// The tree is generated in two iterations of hyphae storage:
+	// 1. Find all siblings (sorted) and descendants' names
+	// 2. Count how many subhyphae siblings have
+	//
+	// We also have to figure out what is going on with the descendants: who is a child of whom. We do that in parallel with (2) because we can.
+	// One of the siblings is the hypha with name `hyphaName`
+	siblings, descendantsPool := findSiblingsAndDescendants(hyphaName)
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		countSubhyphae(siblings)
+		wg.Done()
+	}()
+	go func() {
+		children = figureOutChildren(hyphaName, descendantsPool).children
+		wg.Done()
+	}()
+	wg.Wait()
+
+	for i, s := range siblings {
+		if s.name == hyphaName {
+			I = i
+			siblingsHTML += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
+		} else {
+			siblingsHTML += s.asHTML(hyphaName)
+		}
 	}
+	if I != 0 {
+		prev = siblings[I-1].name
+	}
+	if I != len(siblings)-1 {
+		next = siblings[I+1].name
+	}
+	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
 }
 
-func (s *sibling) asHTML() string {
+type child struct {
+	name     string
+	children []child
+}
+
+func figureOutChildren(hyphaName string, subhyphaePool map[string]bool) child {
+	var (
+		nestLevel = strings.Count(hyphaName, "/")
+		adopted   = make([]child, 0)
+	)
+	for subhyphaName, _ := range subhyphaePool {
+		subnestLevel := strings.Count(subhyphaName, "/")
+		if subnestLevel-1 == nestLevel && path.Dir(subhyphaName) == hyphaName {
+			delete(subhyphaePool, subhyphaName)
+			adopted = append(adopted, figureOutChildren(subhyphaName, subhyphaePool))
+		}
+	}
+	return child{hyphaName, adopted}
+}
+
+type sibling struct {
+	name                   string
+	directSubhyphaeCount   int
+	indirectSubhyphaeCount int
+}
+
+func (s *sibling) asHTML(hyphaName string) string {
 	class := "navitree__entry navitree__sibling"
-	if s.hasChildren {
+	if s.directSubhyphaeCount > 0 {
 		class += " navitree__sibling_fertile navitree__entry_fertile"
 	} else {
 		class += " navitree__sibling_infertile navitree__entry_infertile"
@@ -36,54 +142,21 @@ func (s *sibling) asHTML() string {
 	)
 }
 
-type mainFamilyMember struct {
-	name     string
-	children []*mainFamilyMember
-}
-
-func (m *mainFamilyMember) checkThisChild(hyphaName string) (adopted bool) {
-	if path.Dir(hyphaName) == m.name {
-		m.children = append(m.children, &mainFamilyMember{
-			name:     hyphaName,
-			children: make([]*mainFamilyMember, 0),
-		})
-		return true
+func (c *child) asHTML() string {
+	if len(c.children) == 0 {
+		return fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a></li>`, c.name, util.BeautifulName(path.Base(c.name)))
 	}
-	return false
-}
-
-func (m *mainFamilyMember) asHTML() string {
-	if len(m.children) == 0 {
-		return fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a></li>`, m.name, util.BeautifulName(path.Base(m.name)))
-	}
-	sort.Slice(m.children, func(i, j int) bool {
-		return m.children[i].name < m.children[j].name
+	sort.Slice(c.children, func(i, j int) bool {
+		return c.children[i].name < c.children[j].name
 	})
-	html := fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a><ul>`, m.name, util.BeautifulName(path.Base(m.name)))
-	for _, child := range m.children {
+	html := fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a><ul>`, c.name, util.BeautifulName(path.Base(c.name)))
+	for _, child := range c.children {
 		html += child.asHTML()
 	}
 	return html + `</li></ul></li>`
 }
 
-func mainFamilyFromPool(hyphaName string, subhyphaePool map[string]bool) *mainFamilyMember {
-	var (
-		nestLevel = strings.Count(hyphaName, "/")
-		adopted   = make([]*mainFamilyMember, 0)
-	)
-	for subhyphaName, _ := range subhyphaePool {
-		subnestLevel := strings.Count(subhyphaName, "/")
-		if subnestLevel-1 == nestLevel && path.Dir(subhyphaName) == hyphaName {
-			delete(subhyphaePool, subhyphaName)
-			adopted = append(adopted, mainFamilyFromPool(subhyphaName, subhyphaePool))
-		}
-	}
-	return &mainFamilyMember{name: hyphaName, children: adopted}
-}
-
-func subhyphaeMatrix(hyphaName string, subhyphaePool map[string]bool) string {
-	var html string
-	children := mainFamilyFromPool(hyphaName, subhyphaePool).children
+func subhyphaeMatrix(children []child) (html string) {
 	sort.Slice(children, func(i, j int) bool {
 		return children[i].name < children[j].name
 	})
@@ -91,50 +164,4 @@ func subhyphaeMatrix(hyphaName string, subhyphaePool map[string]bool) string {
 		html += child.asHTML()
 	}
 	return html
-}
-
-// Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
-func Tree(hyphaName string) (relatives, subhyphae, prev, next string) {
-	var (
-		// One of the siblings is the hypha with name `hyphaName`
-		siblings      = findSiblings(hyphaName)
-		subhyphaePool = make(map[string]bool)
-		I             int
-	)
-	for h := range hyphae.YieldExistingHyphae() {
-		for _, s := range siblings {
-			s.checkThisChild(h.Name)
-		}
-		if strings.HasPrefix(h.Name, hyphaName+"/") {
-			subhyphaePool[h.Name] = true
-		}
-	}
-	for i, s := range siblings {
-		if s.name == hyphaName {
-			I = i
-			relatives += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
-		} else {
-			relatives += s.asHTML()
-		}
-	}
-	if I != 0 {
-		prev = siblings[I-1].name
-	}
-	if I != len(siblings)-1 {
-		next = siblings[I+1].name
-	}
-	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, relatives), subhyphaeMatrix(hyphaName, subhyphaePool), prev, next
-}
-
-func findSiblings(hyphaName string) []*sibling {
-	siblings := []*sibling{&sibling{name: hyphaName, hasChildren: true}}
-	for h := range hyphae.YieldExistingHyphae() {
-		if path.Dir(hyphaName) == path.Dir(h.Name) && hyphaName != h.Name {
-			siblings = append(siblings, &sibling{name: h.Name, hasChildren: false})
-		}
-	}
-	sort.Slice(siblings, func(i, j int) bool {
-		return siblings[i].name < siblings[j].name
-	})
-	return siblings
 }
