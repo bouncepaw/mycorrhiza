@@ -288,15 +288,11 @@ caption { caption-side: top; font-size: small; }
 .subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
 .subhyphae__link:hover { background: #eee; }
 
-.navitree { padding: 0; margin: 0; }
-.navitree__entry { }
-.navitree > .navitree__entry > a::before { display: inline-block; width: .5rem; color: #999; margin: 0 .25rem; }
-.navitree > .navitree__entry_infertile > a::before { content: " "} /* nbsp, careful */
-.navitree > .navitree__sibling_fertile > a::before { content: "▸"}
-.navitree__trunk { border-left: 1px #999 solid; }
-.navitree__link { text-decoration: none; display: block; padding: .25rem; }
-.navitree__entry_this > span { display: block; padding: .25rem; font-weight: bold; }
-.navitree__entry_this > span::before { content: " "; display: inline-block; width: 1rem; }
+.relative-hyphae__list { padding: 0; margin: 0; }
+.relative-hyphae__entry { clear: both; }
+.relative-hyphae__count { display: inline-block; float: right; }
+.relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
+.relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
 
 /* Color stuff */
@@ -345,7 +341,7 @@ blockquote { border-left: 4px black solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
-.navitree__link:hover, .backlinks__link:hover { background-color: #eee; }
+.relative-hyphae__link:hover, .backlinks__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
@@ -355,7 +351,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.subhyphae__link:hover, .navitree__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .relative-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }

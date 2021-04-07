@@ -1,6 +1,7 @@
 //go:generate go get -u github.com/valyala/quicktemplate/qtc
 //go:generate qtc -dir=assets
 //go:generate qtc -dir=views
+//go:generate qtc -dir=tree
 package main
 
 import (
@@ -177,7 +178,7 @@ Crawl-delay: 5`))
 
 func main() {
 	parseCliArgs()
-	log.Println("Running MycorrhizaWiki β")
+	log.Println("Running MycorrhizaWiki")
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
 	}

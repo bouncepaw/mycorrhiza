@@ -87,9 +87,9 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 	for i, s := range siblings {
 		if s.name == hyphaName {
 			I = i
-			siblingsHTML += fmt.Sprintf(`<li class="navitree__entry navitree__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
+			siblingsHTML += fmt.Sprintf(`<li class="relative-hyphae__entry relative-hyphae__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
 		} else {
-			siblingsHTML += s.asHTML(hyphaName)
+			siblingsHTML += siblingHTML(s)
 		}
 	}
 	if I != 0 && len(siblings) > 1 {
@@ -98,7 +98,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 	if I != len(siblings)-1 && len(siblings) > 1 {
 		next = siblings[I+1].name
 	}
-	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
+	return fmt.Sprintf(`<ul class="relative-hyphae__list">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
 }
 
 type child struct {
@@ -127,41 +127,12 @@ type sibling struct {
 	indirectSubhyphaeCount int
 }
 
-func (s *sibling) asHTML(hyphaName string) string {
-	class := "navitree__entry navitree__sibling"
-	if s.directSubhyphaeCount > 0 {
-		class += " navitree__sibling_fertile navitree__entry_fertile"
-	} else {
-		class += " navitree__sibling_infertile navitree__entry_infertile"
-	}
-	return fmt.Sprintf(
-		`<li class="%s"><a class="navitree__link" href="/hypha/%s">%s</a></li>`,
-		class,
-		s.name,
-		util.BeautifulName(path.Base(s.name)),
-	)
-}
-
-func (c *child) asHTML() string {
-	if len(c.children) == 0 {
-		return fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a></li>`, c.name, util.BeautifulName(path.Base(c.name)))
-	}
-	sort.Slice(c.children, func(i, j int) bool {
-		return c.children[i].name < c.children[j].name
-	})
-	html := fmt.Sprintf(`<li class="subhyphae__entry"><a class="subhyphae__link" href="/hypha/%s">%s</a><ul>`, c.name, util.BeautifulName(path.Base(c.name)))
-	for _, child := range c.children {
-		html += child.asHTML()
-	}
-	return html + `</li></ul></li>`
-}
-
 func subhyphaeMatrix(children []child) (html string) {
 	sort.Slice(children, func(i, j int) bool {
 		return children[i].name < children[j].name
 	})
 	for _, child := range children {
-		html += child.asHTML()
+		html += childHTML(&child)
 	}
 	return html
 }
