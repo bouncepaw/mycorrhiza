@@ -13,9 +13,9 @@ import (
 
 func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) {
 	var (
-		siblings     = make([]*sibling, 0)
+		siblings     = []*sibling{&sibling{hyphaName, 0, 0}}
 		siblingCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
-			if path.Dir(hyphaName) == path.Dir(h.Name) {
+			if path.Dir(hyphaName) == path.Dir(h.Name) && h.Name != hyphaName {
 				siblings = append(siblings, &sibling{h.Name, 0, 0})
 			}
 			return hyphae.CheckContinue
@@ -92,10 +92,10 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 			siblingsHTML += s.asHTML(hyphaName)
 		}
 	}
-	if I != 0 {
+	if I != 0 && len(siblings) > 1 {
 		prev = siblings[I-1].name
 	}
-	if I != len(siblings)-1 {
+	if I != len(siblings)-1 && len(siblings) > 1 {
 		next = siblings[I+1].name
 	}
 	return fmt.Sprintf(`<ul class="navitree">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
