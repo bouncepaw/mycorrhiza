@@ -113,7 +113,8 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:10
-	qw422016.N().S(`.amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
+	qw422016.N().S(`
+.amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
 .upload-binary__input { display: block; margin: .25rem 0; }
 
 .modal__title { font-size: 2rem; }
@@ -174,27 +175,36 @@ header { width: 100%; margin-bottom: 1rem; }
 	.header-links__entry:nth-of-type(1), .hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
 }
 
+
 /* Wide enough to fit two columns ok */
 @media screen and (min-width: 1100px) {
 	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; row-gap: 1rem; }
 	.main-width { margin: 0; }
 	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
-	.relative-hyphae { grid-column: 2 / span 1; grid-row: 1 / span 1; }
+	.relative-hyphae, .edit-toolbar { grid-column: 2 / span 1; grid-row: 1 / span 1; }
 	.layout-card { width: 100%; }
-	.edit-toolbar { margin: 0 0 0 auto; }
-	.edit-toolbar__buttons { display: grid; grid-template-columns: 1fr 1fr; }
+	.edit-toolbar__buttons {display: grid; }
+}
+
+@media screen and (min-width: 1150px) {
+	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; }
 }
 
 @media screen and (min-width: 1250px) {
 	.layout { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-	.layout-card { max-width: 18rem; }
+	.layout-card {max-width: 18rem;}
 	.main-width { margin: 0 auto; }
 	.backlinks { grid-column: 1 / span 1; margin-right: 0; }
 	main { grid-column: 2 / span 1; }
-	.relative-hyphae { grid-column: 3 / span 1; margin-left: 0; }
+	.relative-hyphae, .edit-toolbar { grid-column: 3 / span 1; margin-left: 0; }
+	.edit-toolbar__buttons { grid-template-columns: 1fr; }
 
 	.backlinks__title { text-align: right; }
 	.backlinks__link { text-align: right; padding-right: 1.25rem; padding-left: .25rem; }
+}
+
+@media screen and (min-width: 1400px) {
+	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; }
 }
 
 *, *::before, *::after {box-sizing: border-box;}
@@ -384,6 +394,8 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 	.hypha-tabs { background-color: #232323; }
 }
 }
+
+
 `)
 //line assets/assets.qtpl:10
 	qw422016.N().S(`
