@@ -70,6 +70,10 @@ GeminiCertificatePath = /home/wiki/gemcerts
 [Authorization]
 UseFixedAuth = true
 FixedAuthCredentialsPath = /home/wiki/mycocredentials.json
+
+UseRegistration = true
+RegistrationCredentialsPath = /home/wiki/mycoregistration.json
+LimitRegistration = 10
 `)
 //line assets/assets.qtpl:6
 	qw422016.N().S(`

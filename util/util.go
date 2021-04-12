@@ -22,11 +22,14 @@ var (
 	URL            string
 	GeminiCertPath string
 
-	UseFixedAuth         bool
-	FixedCredentialsPath string
-
 	WikiDir        string
 	ConfigFilePath string
+
+	UseFixedAuth                bool
+	FixedCredentialsPath        string
+	UseRegistration             bool
+	RegistrationCredentialsPath string
+	LimitRegistration           uint64
 )
 
 // LettersNumbersOnly keeps letters and numbers only in the given string.
