@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"strings"
 	"os"
+	"strings"
 
 	"github.com/adrg/xdg"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -26,6 +26,9 @@ func usersFromFixedCredentials() []*User {
 	err = json.Unmarshal(contents, &users)
 	if err != nil {
 		log.Fatal(err)
+	}
+	for _, u := range users {
+		u.Source = SourceFixed
 	}
 	log.Println("Found", len(users), "fixed users")
 	return users

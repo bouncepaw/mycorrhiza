@@ -1,15 +1,29 @@
 package user
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"sync"
+)
+
+// UserSource shows where is the user data gotten from.
+type UserSource int
+
+const (
+	SourceUnknown UserSource = iota
+	// SourceFixed is used with users that are predefined using fixed auth
+	SourceFixed
+	// SourceRegistration is used with users that are registered through the register form
+	SourceRegistration
 )
 
 // User is a user.
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
-	Name     string `json:"name"`
-	Group    string `json:"group"`
-	Password string `json:"password"`
+	Name           string     `json:"name"`
+	Group          string     `json:"group"`
+	Password       string     `json:"password"`        // for fixed
+	HashedPassword string     `json:"hashed_password"` // for registered
+	Source         UserSource `json:"-"`
 	sync.RWMutex
 }
 
@@ -67,5 +81,12 @@ func (user *User) isCorrectPassword(password string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	return password == user.Password
+	switch user.Source {
+	case SourceFixed:
+		return password == user.Password
+	case SourceRegistration:
+		err := bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password))
+		return err == nil
+	}
+	return false
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net/http"
 
@@ -10,10 +11,32 @@ import (
 )
 
 func init() {
+	http.HandleFunc("/register", handlerRegister)
 	http.HandleFunc("/login", handlerLogin)
 	http.HandleFunc("/login-data", handlerLoginData)
 	http.HandleFunc("/logout", handlerLogout)
 	http.HandleFunc("/logout-confirm", handlerLogoutConfirm)
+}
+
+func handlerRegister(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if util.UseRegistration {
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+	}
+	if rq.Method == http.MethodGet {
+		io.WriteString(
+			w,
+			base(
+				"Register",
+				views.RegisterHTML(rq),
+				user.FromRequest(rq),
+			),
+		)
+	} else if rq.Method == http.MethodPost {
+		io.WriteString(w, "Not implemented")
+	}
 }
 
 func handlerLogout(w http.ResponseWriter, rq *http.Request) {
