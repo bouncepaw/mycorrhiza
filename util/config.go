@@ -82,5 +82,5 @@ func ReadConfigFile(path string) {
 	FixedCredentialsPath = cfg.FixedAuthCredentialsPath
 	UseRegistration = cfg.UseRegistration
 	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
-	LimitRegistration = cfg.LimitRegistration
+	LimitRegistration = int(cfg.LimitRegistration)
 }

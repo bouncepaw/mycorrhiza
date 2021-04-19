@@ -20,9 +20,7 @@ func init() {
 
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	log.Println(rq.URL)
-	if util.UseRegistration {
-		w.WriteHeader(http.StatusOK)
-	} else {
+	if !util.UseRegistration {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	if rq.Method == http.MethodGet {
@@ -35,7 +33,17 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			),
 		)
 	} else if rq.Method == http.MethodPost {
-		io.WriteString(w, "Not implemented")
+		var (
+			username = rq.PostFormValue("username")
+			password = rq.PostFormValue("password")
+			err      = user.Register(username, password)
+		)
+		if err != nil {
+			io.WriteString(w, err.Error())
+		} else {
+			user.LoginDataHTTP(w, rq, username, password)
+			http.Redirect(w, rq, "/"+rq.URL.RawQuery, http.StatusSeeOther)
+		}
 	}
 }
 

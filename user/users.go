@@ -30,6 +30,17 @@ func ListUsersWithGroup(group string) []string {
 	return usersWithTheGroup
 }
 
+func CountRegistered() int {
+	i := 0
+	users.Range(func(k, v interface{}) bool {
+		if v.(*User).Source == SourceRegistration {
+			i++
+		}
+		return true
+	})
+	return i
+}
+
 func Count() int {
 	i := 0
 	users.Range(func(k, v interface{}) bool {

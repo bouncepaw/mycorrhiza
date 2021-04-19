@@ -1,8 +1,9 @@
 package user
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"sync"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserSource shows where is the user data gotten from.
@@ -25,6 +26,10 @@ type User struct {
 	HashedPassword string     `json:"hashed_password"` // for registered
 	Source         UserSource `json:"-"`
 	sync.RWMutex
+
+	// A note about why HashedPassword is string and not []byte. The reason is
+	// simple: golang's json marshals []byte as slice of numbers, which is not
+	// acceptable.
 }
 
 // Route — Right (more is more right)
