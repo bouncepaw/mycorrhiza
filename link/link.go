@@ -113,8 +113,8 @@ func From(address, display, hyphaName string) *Link {
 			if strings.HasPrefix(link.Display, "//") && len(link.Display) > 2 {
 				link.Display = link.Display[2:]
 			}
+			link.Display += link.Anchor
 		}
-		link.Display += link.Anchor
 		link.Address = address
 	case strings.HasPrefix(address, "#"):
 		link.Kind = LinkLocalHypha
