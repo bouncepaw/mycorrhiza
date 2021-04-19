@@ -35,7 +35,7 @@
 		</button>
 	{% endfor %}
 	</section>
-	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup">Learn more</a> about mycomarkup</p>
+	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" target="_blank">Learn more</a> about mycomarkup</p>
 	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
 	<section class="edit-toolbar__buttons">
 	{% for _, el := range []struct{
