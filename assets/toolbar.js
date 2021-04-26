@@ -30,8 +30,8 @@ function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTexta
         if (postfix == null) {
             postfix = prefix
         }
-        text = getSelectedText(el)
-        result = prefix + text + postfix
+        let text = getSelectedText(el)
+        let result = prefix + text + postfix
         el.setRangeText(result, start, end, 'select')
         el.focus()
         placeCursor(end + cursorPosition)

@@ -59,7 +59,4 @@ func parseCliArgs() {
 	util.UserHypha = util.CanonicalName(util.UserHypha)
 	util.HeaderLinksHypha = util.CanonicalName(util.HeaderLinksHypha)
 	user.AuthUsed = util.UseFixedAuth || util.UseRegistration
-	if user.AuthUsed && (util.FixedCredentialsPath != "" || util.RegistrationCredentialsPath != "") {
-		user.ReadUsersFromFilesystem()
-	}
 }

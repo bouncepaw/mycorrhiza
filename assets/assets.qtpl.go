@@ -339,7 +339,6 @@ table { background-color: #eee; }
 
 /* Other stuff */
 html { background-color: #ddd; 
-background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='199' viewBox='0 0 100 199'%3E%3Cg fill='%23bbbbbb' %3E%3Cpath d='M0 199V0h1v1.99L100 199h-1.12L1 4.22V199H0zM100 2h-.12l-1-2H100v2z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
 } /* heropatterns.com */
 header { background-color: #bbb; }
@@ -468,8 +467,8 @@ function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTexta
         if (postfix == null) {
             postfix = prefix
         }
-        text = getSelectedText(el)
-        result = prefix + text + postfix
+        let text = getSelectedText(el)
+        let result = prefix + text + postfix
         el.setRangeText(result, start, end, 'select')
         el.focus()
         placeCursor(end + cursorPosition)

@@ -4,6 +4,9 @@ run: build
 config_run: build
 	./mycorrhiza -config-path "assets/config.ini" metarrhiza
 
+devconfig_run: build
+	./mycorrhiza -config-path "assets/devconfig.ini" metarrhiza
+
 build:
 	go generate
 	go build .

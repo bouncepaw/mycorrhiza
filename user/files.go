@@ -13,13 +13,20 @@ import (
 
 // ReadUsersFromFilesystem reads all user information from filesystem and stores it internally. Call it during initialization.
 func ReadUsersFromFilesystem() {
-	rememberUsers(usersFromFixedCredentials())
+	if util.UseFixedAuth {
+		rememberUsers(usersFromFixedCredentials())
+	}
+	if util.UseRegistration {
+		rememberUsers(usersFromRegistrationCredentials())
+	}
 	readTokensToUsers()
 }
 
-func usersFromFixedCredentials() []*User {
-	var users []*User
-	contents, err := ioutil.ReadFile(util.FixedCredentialsPath)
+func usersFromFile(path string, source UserSource) (users []*User) {
+	contents, err := ioutil.ReadFile(path)
+	if os.IsNotExist(err) {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,9 +35,20 @@ func usersFromFixedCredentials() []*User {
 		log.Fatal(err)
 	}
 	for _, u := range users {
-		u.Source = SourceFixed
+		u.Source = source
 	}
+	return users
+}
+
+func usersFromFixedCredentials() (users []*User) {
+	users = usersFromFile(util.FixedCredentialsPath, SourceFixed)
 	log.Println("Found", len(users), "fixed users")
+	return users
+}
+
+func usersFromRegistrationCredentials() (users []*User) {
+	users = usersFromFile(registrationCredentialsPath(), SourceRegistration)
+	log.Println("Found", len(users), "registered users")
 	return users
 }
 
@@ -71,7 +89,47 @@ func tokenStoragePath() string {
 	if strings.HasPrefix(dir, util.WikiDir) {
 		log.Fatal("Error: Wiki storage directory includes private config files")
 	}
+	log.Println("Path for saving tokens:", dir)
 	return dir
+}
+
+func registrationCredentialsPath() string {
+	path := util.RegistrationCredentialsPath
+	if path == "" {
+		dir, err := xdg.DataFile("mycorrhiza/registration.json")
+		if err != nil {
+			// No error handling, because the program will fail later anyway when trying to read file ""
+			log.Println("Error: cannot get a file to registration credentials, so no registered users will be saved.")
+		} else {
+			path = dir
+		}
+	}
+	return path
+}
+
+func dumpRegistrationCredentials() error {
+	tmp := []*User{}
+
+	for u := range YieldUsers() {
+		if u.Source != SourceRegistration {
+			continue
+		}
+		copiedUser := u
+		copiedUser.Password = ""
+		tmp = append(tmp, copiedUser)
+	}
+
+	blob, err := json.Marshal(tmp)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	err = ioutil.WriteFile(registrationCredentialsPath(), blob, 0644)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
 
 func dumpTokens() {

@@ -60,6 +60,10 @@ func Register(username, password string) error {
 		Source:         SourceRegistration,
 	}
 	users.Store(username, &u)
+	err = dumpRegistrationCredentials()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

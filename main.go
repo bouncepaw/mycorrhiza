@@ -186,6 +186,9 @@ func main() {
 	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 
+	if user.AuthUsed && (util.FixedCredentialsPath != "" || util.RegistrationCredentialsPath != "") {
+		user.ReadUsersFromFilesystem()
+	}
 	history.Start(WikiDir)
 	shroom.SetHeaderLinks()
 
