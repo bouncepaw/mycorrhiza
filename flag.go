@@ -41,9 +41,6 @@ func parseCliArgs() {
 		log.Fatal("Error: pass a wiki directory")
 	}
 
-	// It is ok if the path is ""
-	util.ReadConfigFile(util.ConfigFilePath)
-
 	var err error
 	WikiDir, err = filepath.Abs(args[0])
 	util.WikiDir = WikiDir

@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -178,6 +179,12 @@ Crawl-delay: 5`))
 
 func main() {
 	parseCliArgs()
+	if err := files.CalculatePaths(); err != nil {
+		log.Fatal(err)
+	}
+	// It is ok if the path is ""
+	util.ReadConfigFile(files.ConfigINI())
+
 	log.Println("Running MycorrhizaWiki")
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
