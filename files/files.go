@@ -2,12 +2,13 @@ package files
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"path/filepath"
 	"strings"
 
 	"github.com/adrg/xdg"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/mitchellh/go-homedir"
 )
 
 var paths struct {
@@ -55,28 +56,43 @@ func tokenStoragePath() (string, error) {
 }
 
 func registrationCredentialsPath() (string, error) {
-	path, err := filepath.Abs(util.RegistrationCredentialsPath)
-	if err != nil {
-		return "", nil
+	var err error
+	path := util.RegistrationCredentialsPath
+
+	if len(path) == 0 {
+		path, err = xdg.DataFile("mycorrhiza/registration.json")
+		if err != nil {
+			return "", fmt.Errorf("cannot get a file to registration credentials, so no registered users will be saved: %w", err)
+		}
+	} else {
+		path, err = homedir.Expand(path)
+		if err != nil {
+			return "", fmt.Errorf("cannot expand RegistrationCredentialsPath: %w", err)
+		}
+
+		path, err = filepath.Abs(path)
+		if err != nil {
+			return "", fmt.Errorf("cannot expand RegistrationCredentialsPath: %w", err)
+		}
 	}
 
-	if path == "" {
-		dir, err := xdg.DataFile("mycorrhiza/registration.json")
-		if err != nil {
-			log.Println("Error: cannot get a file to registration credentials, so no registered users will be saved:", err)
-			return "", err
-		}
-		path = dir
-	}
 	return path, nil
 }
 
 func fixedCredentialsPath() (string, error) {
 	var err error
-	var path = ""
+	path := util.FixedCredentialsPath
 
-	if len(util.FixedCredentialsPath) > 0 {
-		path, err = filepath.Abs(util.FixedCredentialsPath)
+	if len(path) > 0 {
+		path, err = homedir.Expand(path)
+		if err != nil {
+			return "", fmt.Errorf("cannot expand FixedAuthCredentialsPath: %w", err)
+		}
+
+		path, err = filepath.Abs(path)
+		if err != nil {
+			return "", fmt.Errorf("cannot expand FixedAuthCredentialsPath: %w", err)
+		}
 	}
-	return path, err
+	return path, nil
 }
