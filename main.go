@@ -179,11 +179,13 @@ Crawl-delay: 5`))
 
 func main() {
 	parseCliArgs()
+
+	// It is ok if the path is ""
+	util.ReadConfigFile(util.ConfigFilePath)
+
 	if err := files.CalculatePaths(); err != nil {
 		log.Fatal(err)
 	}
-	// It is ok if the path is ""
-	util.ReadConfigFile(files.ConfigINI())
 
 	log.Println("Running MycorrhizaWiki")
 	if err := os.Chdir(WikiDir); err != nil {

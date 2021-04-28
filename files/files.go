@@ -2,24 +2,23 @@ package files
 
 import (
 	"errors"
-	"github.com/adrg/xdg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/adrg/xdg"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var paths struct {
 	tokensJSON                  string
 	registrationCredentialsJSON string
 	fixedCredentialsJSON        string
-	configINI                   string
 }
 
 func TokensJSON() string                  { return paths.tokensJSON }
 func RegistrationCredentialsJSON() string { return paths.registrationCredentialsJSON }
 func FixedCredentialsJSON() string        { return paths.fixedCredentialsJSON }
-func ConfigINI() string                   { return paths.configINI }
 
 // CalculatePaths looks for all external paths and stores them. Tries its best to find any errors. It is safe it to call it multiple times in order to save new paths.
 func CalculatePaths() error {
@@ -38,13 +37,7 @@ func CalculatePaths() error {
 	if dir, err := fixedCredentialsPath(); err != nil {
 		return err
 	} else {
-		paths.tokensJSON = dir
-	}
-
-	if dir, err := configPath(); err != nil {
-		return err
-	} else {
-		paths.configINI = dir
+		paths.fixedCredentialsJSON = dir
 	}
 
 	return nil
@@ -79,11 +72,11 @@ func registrationCredentialsPath() (string, error) {
 }
 
 func fixedCredentialsPath() (string, error) {
-	path, err := filepath.Abs(util.FixedCredentialsPath)
-	return path, err
-}
+	var err error
+	var path = ""
 
-func configPath() (string, error) {
-	path, err := filepath.Abs(util.ConfigFilePath)
+	if len(util.FixedCredentialsPath) > 0 {
+		path, err = filepath.Abs(util.FixedCredentialsPath)
+	}
 	return path, err
 }
