@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/assets"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -55,5 +54,4 @@ func parseCliArgs() {
 	util.HomePage = util.CanonicalName(util.HomePage)
 	util.UserHypha = util.CanonicalName(util.UserHypha)
 	util.HeaderLinksHypha = util.CanonicalName(util.HeaderLinksHypha)
-	user.AuthUsed = util.UseFixedAuth || util.UseRegistration
 }

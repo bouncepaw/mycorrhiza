@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/files"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -15,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/assets"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -193,9 +193,9 @@ func main() {
 	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 
-	if user.AuthUsed && (util.FixedCredentialsPath != "" || util.RegistrationCredentialsPath != "") {
-		user.ReadUsersFromFilesystem()
-	}
+	// Initialize user database
+	user.InitUserDatabase()
+
 	history.Start(WikiDir)
 	shroom.SetHeaderLinks()
 

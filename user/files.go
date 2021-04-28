@@ -2,14 +2,25 @@ package user
 
 import (
 	"encoding/json"
-	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// ReadUsersFromFilesystem reads all user information from filesystem and stores it internally. Call it during initialization.
+// InitUserDatabase checks the configuration for auth methods and loads users
+// if necessary. Call it during initialization.
+func InitUserDatabase() {
+	AuthUsed = util.UseFixedAuth || util.UseRegistration
+
+	if AuthUsed && (util.FixedCredentialsPath != "" || util.RegistrationCredentialsPath != "") {
+		ReadUsersFromFilesystem()
+	}
+}
+
+// ReadUsersFromFilesystem reads all user information from filesystem and stores it internally.
 func ReadUsersFromFilesystem() {
 	if util.UseFixedAuth {
 		rememberUsers(usersFromFixedCredentials())
