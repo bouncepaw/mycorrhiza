@@ -2,6 +2,7 @@ package util
 
 import (
 	"log"
+	"path/filepath"
 	"strconv"
 
 	"github.com/go-ini/ini"
@@ -62,8 +63,13 @@ func ReadConfigFile(path string) {
 	}
 
 	if path != "" {
+		path, err := filepath.Abs(path)
+		if err != nil {
+			log.Fatalf("cannot expand config file path: %s", err)
+		}
+
 		log.Println("Loading config at", path)
-		err := ini.MapTo(cfg, path)
+		err = ini.MapTo(cfg, path)
 		if err != nil {
 			log.Fatal(err)
 		}
