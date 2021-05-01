@@ -488,14 +488,14 @@ const wrapBold = selectionWrapper(2, '**'),
     wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapLink = selectionWrapper(2, '[[', ']]')
 
-const insertHorizontalBar = textInserter('----\n'),
-    insertImgBlock = textInserter('img {\n\t\n}\n', 7),
-    insertTableBlock = textInserter('table {\n\t\n}\n', 9),
-    insertRocket = textInserter('=> '),
-    insertXcl = textInserter('<= '),
-    insertHeading2 = textInserter('## '),
-    insertHeading3 = textInserter('### '),
-    insertCodeblock = textInserter('`)
+const insertHorizontalBar = textInserter('\n----\n'),
+    insertImgBlock = textInserter('\nimg {\n   \n}\n', 10),
+    insertTableBlock = textInserter('\ntable {\n   \n}\n', 12),
+    insertRocket = textInserter('\n=> '),
+    insertXcl = textInserter('\n<= '),
+    insertHeading2 = textInserter('\n## '),
+    insertHeading3 = textInserter('\n### '),
+    insertCodeblock = textInserter('\n`)
 //line assets/assets.qtpl:14
 	qw422016.N().S("`")
 //line assets/assets.qtpl:14
@@ -519,7 +519,9 @@ const insertHorizontalBar = textInserter('----\n'),
 //line assets/assets.qtpl:14
 	qw422016.N().S("`")
 //line assets/assets.qtpl:14
-	qw422016.N().S(`\n', 4)
+	qw422016.N().S(`\n', 5),
+    insertBulletedList = textInserter('\n* '),
+    insertNumberedList = textInserter('\n*. ')
 
 function insertDate() {
     let date = new Date().toISOString().split('T')[0]

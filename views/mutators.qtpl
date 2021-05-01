@@ -27,6 +27,8 @@
 			{"table", "insertTableBlock()", "<code>table {}</code>"},
 			{"hr", "insertHorizontalBar()", "Horizontal bar"},
 			{"codeblock", "insertCodeblock()", "Code block"},
+			{"bulletedlist", "insertBulletedList()", "* bullet list"},
+			{"numberedlist", "insertNumberedList()", "*. number list"},
 		} %}
 		<button
 			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"
