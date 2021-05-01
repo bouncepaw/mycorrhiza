@@ -183,6 +183,7 @@ td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
 .subhyphae__list, .subhyphae__list ul { display: flex; padding: 0; margin: 0; flex-wrap: wrap; }
+.subhyphae__list ul { font-size: 90%; }
 .subhyphae__entry { list-style-type: none; border: 1px solid #999; padding: 0; margin: .125rem; border-radius: .25rem; }
 .subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
 .subhyphae__link:hover { background: #eee; }
