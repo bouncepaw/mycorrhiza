@@ -31,6 +31,7 @@ type GemLexerState struct {
 	// Temporaries
 	img   *Img
 	table *Table
+	list  *List
 }
 
 type Line struct {
@@ -64,12 +65,6 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 	// Process empty lines depending on the current state
 	if "" == strings.TrimSpace(line) {
 		switch state.where {
-		case "list":
-			state.where = ""
-			addLine(state.buf + "</ul>")
-		case "number":
-			state.where = ""
-			addLine(state.buf + "</ol>")
 		case "pre":
 			state.buf += "\n"
 		case "launchpad":
@@ -95,12 +90,10 @@ func lineToAST(line string, state *GemLexerState, ast *[]Line) {
 		goto imgState
 	case "table":
 		goto tableState
-	case "pre":
-		goto preformattedState
 	case "list":
 		goto listState
-	case "number":
-		goto numberState
+	case "pre":
+		goto preformattedState
 	case "launchpad":
 		goto launchpadState
 	default: // "p" or ""
@@ -121,6 +114,14 @@ tableState:
 	}
 	return
 
+listState:
+	if done := state.list.Parse(line); done {
+		state.list.Finalize()
+		state.where = ""
+		goto normalState
+	}
+	return
+
 preformattedState:
 	switch {
 	case startsWith("```"):
@@ -130,38 +131,6 @@ preformattedState:
 		state.buf = ""
 	default:
 		state.buf += html.EscapeString(line) + "\n"
-	}
-	return
-
-listState:
-	switch {
-	case startsWith("* "):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[2:]))
-	case startsWith("```"):
-		state.where = "pre"
-		addLine(state.buf + "</ul>")
-		state.id++
-		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
-	default:
-		state.where = ""
-		addLine(state.buf + "</ul>")
-		goto normalState
-	}
-	return
-
-numberState:
-	switch {
-	case startsWith("*. "):
-		state.buf += fmt.Sprintf("\t<li>%s</li>\n", ParagraphToHtml(state.name, line[3:]))
-	case startsWith("```"):
-		state.where = "pre"
-		addLine(state.buf + "</ol>")
-		state.id++
-		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
-	default:
-		state.where = ""
-		addLine(state.buf + "</ol>")
-		goto normalState
 	}
 	return
 
@@ -190,16 +159,6 @@ normalState:
 		addParagraphIfNeeded()
 		state.where = "pre"
 		state.buf = fmt.Sprintf("<pre id='%d' alt='%s' class='codeblock'><code>", state.id, strings.TrimPrefix(line, "```"))
-	case startsWith("* "):
-		addParagraphIfNeeded()
-		state.where = "list"
-		state.buf = fmt.Sprintf("<ul id='%d'>\n", state.id)
-		goto listState
-	case startsWith("*. "):
-		addParagraphIfNeeded()
-		state.where = "number"
-		state.buf = fmt.Sprintf("<ol id='%d'>\n", state.id)
-		goto numberState
 
 	case startsWith("###### "):
 		addParagraphIfNeeded()
@@ -241,6 +200,12 @@ normalState:
 	case MatchesHorizontalLine(line):
 		addParagraphIfNeeded()
 		*ast = append(*ast, Line{id: -1, contents: "<hr/>"})
+	case MatchesList(line):
+		addParagraphIfNeeded()
+		list, _ := NewList(line, state.name)
+		state.where = "list"
+		state.list = list
+		addLine(state.list)
 	case MatchesImg(line):
 		addParagraphIfNeeded()
 		img, shouldGoBackToNormal := ImgFromFirstLine(line, state.name)

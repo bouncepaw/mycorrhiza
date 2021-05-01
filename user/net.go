@@ -1,11 +1,14 @@
 package user
 
 import (
+	"errors"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // CanProceed returns `true` if the user in `rq` has enough rights to access `route`.
@@ -29,6 +32,39 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 		http.SetCookie(w, cookie("token", "", time.Unix(0, 0)))
 		terminateSession(cookieFromUser.Value)
 	}
+}
+
+// Register registers the given user. If it fails, a non-nil error is returned.
+func Register(username, password string) error {
+	username = util.CanonicalName(username)
+	log.Println("Attempt to register user", username)
+	switch {
+	case CountRegistered() >= util.LimitRegistration && util.LimitRegistration > 0:
+		i := strconv.Itoa(util.LimitRegistration)
+		log.Println("Limit reached: " + i)
+		return errors.New("Reached the limit of registered users: " + i)
+	case HasUsername(username):
+		log.Println("Username taken")
+		return errors.New("Username " + username + " is taken already.")
+	case !util.IsPossibleUsername(username):
+		log.Println("Illegal username:", username)
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u := User{
+		Name:           username,
+		Group:          "editor",
+		HashedPassword: string(hash),
+		Source:         SourceRegistration,
+	}
+	users.Store(username, &u)
+	err = dumpRegistrationCredentials()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.

@@ -2,11 +2,13 @@ package util
 
 import (
 	"log"
+	"path/filepath"
 	"strconv"
 
 	"github.com/go-ini/ini"
 )
 
+// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields
 type Config struct {
 	WikiName      string
 	NaviTitleIcon string
@@ -30,6 +32,10 @@ type Network struct {
 type Authorization struct {
 	UseFixedAuth             bool
 	FixedAuthCredentialsPath string
+
+	UseRegistration             bool
+	RegistrationCredentialsPath string
+	LimitRegistration           uint64
 }
 
 func ReadConfigFile(path string) {
@@ -49,17 +55,27 @@ func ReadConfigFile(path string) {
 		Authorization: Authorization{
 			UseFixedAuth:             false,
 			FixedAuthCredentialsPath: "",
+
+			UseRegistration:             false,
+			RegistrationCredentialsPath: "",
+			LimitRegistration:           0,
 		},
 	}
 
 	if path != "" {
+		path, err := filepath.Abs(path)
+		if err != nil {
+			log.Fatalf("cannot expand config file path: %s", err)
+		}
+
 		log.Println("Loading config at", path)
-		err := ini.MapTo(cfg, path)
+		err = ini.MapTo(cfg, path)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
+	// Map the struct to the global variables
 	SiteName = cfg.WikiName
 	SiteNavIcon = cfg.NaviTitleIcon
 	HomePage = cfg.HomeHypha
@@ -70,4 +86,7 @@ func ReadConfigFile(path string) {
 	GeminiCertPath = cfg.GeminiCertificatePath
 	UseFixedAuth = cfg.UseFixedAuth
 	FixedCredentialsPath = cfg.FixedAuthCredentialsPath
+	UseRegistration = cfg.UseRegistration
+	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
+	LimitRegistration = int(cfg.LimitRegistration)
 }

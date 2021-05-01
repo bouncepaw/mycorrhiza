@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki
+# 🍄 MycorrhizaWiki 1.1
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
@@ -28,10 +28,10 @@ Options:
 ```
 
 ## Features
-* Edit pages through html forms, graphical preview
+* Wiki pages (called hyphae) are written in mycomarkup
+* Edit pages through html forms, graphical preview, toolbar that helps you use the markup
 * Responsive design, dark theme (synced with system theme)
 * Works in text browsers
-* Wiki pages (called hyphae) are written in mycomarkup
 * Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with
 * Page trees; links to previous and next pages
 * Changes are saved to git
@@ -42,7 +42,7 @@ Options:
 * Hyphae can be deleted (while still preserving history)
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources
-* Authorization with pre-set credentials
+* Authorization with pre-set credentials, registration
 * Basic Gemini protocol support
 
 ## Contributing

@@ -4,22 +4,38 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"strings"
 	"os"
 
-	"github.com/adrg/xdg"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// ReadUsersFromFilesystem reads all user information from filesystem and stores it internally. Call it during initialization.
+// InitUserDatabase checks the configuration for auth methods and loads users
+// if necessary. Call it during initialization.
+func InitUserDatabase() {
+	AuthUsed = util.UseFixedAuth || util.UseRegistration
+
+	if AuthUsed && (util.FixedCredentialsPath != "" || util.RegistrationCredentialsPath != "") {
+		ReadUsersFromFilesystem()
+	}
+}
+
+// ReadUsersFromFilesystem reads all user information from filesystem and stores it internally.
 func ReadUsersFromFilesystem() {
-	rememberUsers(usersFromFixedCredentials())
+	if util.UseFixedAuth {
+		rememberUsers(usersFromFixedCredentials())
+	}
+	if util.UseRegistration {
+		rememberUsers(usersFromRegistrationCredentials())
+	}
 	readTokensToUsers()
 }
 
-func usersFromFixedCredentials() []*User {
-	var users []*User
-	contents, err := ioutil.ReadFile(util.FixedCredentialsPath)
+func usersFromFile(path string, source UserSource) (users []*User) {
+	contents, err := ioutil.ReadFile(path)
+	if os.IsNotExist(err) {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +43,21 @@ func usersFromFixedCredentials() []*User {
 	if err != nil {
 		log.Fatal(err)
 	}
+	for _, u := range users {
+		u.Source = source
+	}
+	return users
+}
+
+func usersFromFixedCredentials() (users []*User) {
+	users = usersFromFile(files.FixedCredentialsJSON(), SourceFixed)
 	log.Println("Found", len(users), "fixed users")
+	return users
+}
+
+func usersFromRegistrationCredentials() (users []*User) {
+	users = usersFromFile(files.RegistrationCredentialsJSON(), SourceRegistration)
+	log.Println("Found", len(users), "registered users")
 	return users
 }
 
@@ -39,7 +69,7 @@ func rememberUsers(uu []*User) {
 }
 
 func readTokensToUsers() {
-	contents, err := ioutil.ReadFile(tokenStoragePath())
+	contents, err := ioutil.ReadFile(files.TokensJSON())
 	if os.IsNotExist(err) {
 		return
 	}
@@ -59,16 +89,29 @@ func readTokensToUsers() {
 	log.Println("Found", len(tmp), "active sessions")
 }
 
-// Return path to tokens.json. Creates folders if needed.
-func tokenStoragePath() string {
-	dir, err := xdg.DataFile("mycorrhiza/tokens.json")
+func dumpRegistrationCredentials() error {
+	tmp := []*User{}
+
+	for u := range YieldUsers() {
+		if u.Source != SourceRegistration {
+			continue
+		}
+		copiedUser := u
+		copiedUser.Password = ""
+		tmp = append(tmp, copiedUser)
+	}
+
+	blob, err := json.Marshal(tmp)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return err
 	}
-	if strings.HasPrefix(dir, util.WikiDir) {
-		log.Fatal("Error: Wiki storage directory includes private config files")
+	err = ioutil.WriteFile(files.RegistrationCredentialsJSON(), blob, 0644)
+	if err != nil {
+		log.Println(err)
+		return err
 	}
-	return dir
+	return nil
 }
 
 func dumpTokens() {
@@ -85,6 +128,6 @@ func dumpTokens() {
 	if err != nil {
 		log.Println(err)
 	} else {
-		ioutil.WriteFile(tokenStoragePath(), blob, 0644)
+		ioutil.WriteFile(files.TokensJSON(), blob, 0644)
 	}
 }

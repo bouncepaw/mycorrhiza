@@ -1,6 +1,7 @@
 //go:generate go get -u github.com/valyala/quicktemplate/qtc
 //go:generate qtc -dir=assets
 //go:generate qtc -dir=views
+//go:generate qtc -dir=tree
 package main
 
 import (
@@ -13,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/assets"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -117,6 +119,12 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	w.Header().Set("Content-Type", "text/javascript;charset=utf-8")
+	w.Write([]byte(assets.ToolbarJS()))
+}
+
 func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	iconName := strings.TrimPrefix(rq.URL.Path, "/static/icon/")
 	if iconName == "https" {
@@ -139,6 +147,8 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 		w.Write([]byte(assets.IconMailto()))
 	case "gopher":
 		w.Write([]byte(assets.IconGopher()))
+	case "feed":
+		w.Write([]byte(assets.IconFeed()))
 	default:
 		w.Write([]byte(assets.IconHTTP()))
 	}
@@ -169,13 +179,24 @@ Crawl-delay: 5`))
 
 func main() {
 	parseCliArgs()
-	log.Println("Running MycorrhizaWiki β")
+
+	// It is ok if the path is ""
+	util.ReadConfigFile(util.ConfigFilePath)
+
+	if err := files.CalculatePaths(); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Running MycorrhizaWiki")
 	if err := os.Chdir(WikiDir); err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Wiki storage directory is", WikiDir)
 	hyphae.Index(WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
+
+	// Initialize user database
+	user.InitUserDatabase()
 
 	history.Start(WikiDir)
 	shroom.SetHeaderLinks()
@@ -199,6 +220,7 @@ func main() {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
+	http.HandleFunc("/static/toolbar.js", handlerToolbar)
 	http.HandleFunc("/static/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {

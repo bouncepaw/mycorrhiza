@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net/http"
 
@@ -10,10 +11,40 @@ import (
 )
 
 func init() {
+	http.HandleFunc("/register", handlerRegister)
 	http.HandleFunc("/login", handlerLogin)
 	http.HandleFunc("/login-data", handlerLoginData)
 	http.HandleFunc("/logout", handlerLogout)
 	http.HandleFunc("/logout-confirm", handlerLogoutConfirm)
+}
+
+func handlerRegister(w http.ResponseWriter, rq *http.Request) {
+	log.Println(rq.URL)
+	if !util.UseRegistration {
+		w.WriteHeader(http.StatusForbidden)
+	}
+	if rq.Method == http.MethodGet {
+		io.WriteString(
+			w,
+			base(
+				"Register",
+				views.RegisterHTML(rq),
+				user.FromRequest(rq),
+			),
+		)
+	} else if rq.Method == http.MethodPost {
+		var (
+			username = rq.PostFormValue("username")
+			password = rq.PostFormValue("password")
+			err      = user.Register(username, password)
+		)
+		if err != nil {
+			io.WriteString(w, err.Error())
+		} else {
+			user.LoginDataHTTP(w, rq, username, password)
+			http.Redirect(w, rq, "/"+rq.URL.RawQuery, http.StatusSeeOther)
+		}
+	}
 }
 
 func handlerLogout(w http.ResponseWriter, rq *http.Request) {

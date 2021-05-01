@@ -22,11 +22,14 @@ var (
 	URL            string
 	GeminiCertPath string
 
-	UseFixedAuth         bool
-	FixedCredentialsPath string
-
 	WikiDir        string
 	ConfigFilePath string
+
+	UseFixedAuth                bool
+	FixedCredentialsPath        string
+	UseRegistration             bool
+	RegistrationCredentialsPath string
+	LimitRegistration           int
 )
 
 // LettersNumbersOnly keeps letters and numbers only in the given string.
@@ -91,13 +94,24 @@ func BeautifulName(uglyName string) string {
 
 // CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
 func CanonicalName(name string) string {
-	return strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+	return strings.ToLower(
+		strings.ReplaceAll(
+			strings.TrimRight(
+				strings.TrimLeft(name, "_"),
+				"_",
+			), " ", "_"))
 }
 
 // HyphaPattern is a pattern which all hyphae must match.
 var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
 
+var UsernamePattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}/]+`)
+
 // IsCanonicalName checks if the `name` is canonical.
 func IsCanonicalName(name string) bool {
 	return HyphaPattern.MatchString(name)
+}
+
+func IsPossibleUsername(username string) bool {
+	return UsernamePattern.MatchString(strings.TrimSpace(username))
 }

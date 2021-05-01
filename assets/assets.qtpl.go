@@ -70,6 +70,10 @@ GeminiCertificatePath = /home/wiki/gemcerts
 [Authorization]
 UseFixedAuth = true
 FixedAuthCredentialsPath = /home/wiki/mycocredentials.json
+
+UseRegistration = true
+RegistrationCredentialsPath = /home/wiki/mycoregistration.json
+LimitRegistration = 10
 `)
 //line assets/assets.qtpl:6
 	qw422016.N().S(`
@@ -109,7 +113,8 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:10
-	qw422016.N().S(`.amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
+	qw422016.N().S(`
+.amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
 .upload-binary__input { display: block; margin: .25rem 0; }
 
 .modal__title { font-size: 2rem; }
@@ -170,25 +175,36 @@ header { width: 100%; margin-bottom: 1rem; }
 	.header-links__entry:nth-of-type(1), .hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
 }
 
+
 /* Wide enough to fit two columns ok */
 @media screen and (min-width: 1100px) {
 	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; row-gap: 1rem; }
 	.main-width { margin: 0; }
 	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
-	.relative-hyphae { grid-column: 2 / span 1; grid-row: 1 / span 1; }
+	.relative-hyphae, .edit-toolbar { grid-column: 2 / span 1; grid-row: 1 / span 1; }
 	.layout-card { width: 100%; }
+	.edit-toolbar__buttons {display: grid; }
+}
+
+@media screen and (min-width: 1150px) {
+	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; }
 }
 
 @media screen and (min-width: 1250px) {
 	.layout { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-	.layout-card { max-width: 16rem; }
+	.layout-card {max-width: 18rem;}
 	.main-width { margin: 0 auto; }
 	.backlinks { grid-column: 1 / span 1; margin-right: 0; }
 	main { grid-column: 2 / span 1; }
-	.relative-hyphae { grid-column: 3 / span 1; margin-left: 0; }
+	.relative-hyphae, .edit-toolbar { grid-column: 3 / span 1; margin-left: 0; }
+	.edit-toolbar__buttons { grid-template-columns: 1fr; }
 
 	.backlinks__title { text-align: right; }
 	.backlinks__link { text-align: right; padding-right: 1.25rem; padding-left: .25rem; }
+}
+
+@media screen and (min-width: 1400px) {
+	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; }
 }
 
 *, *::before, *::after {box-sizing: border-box;}
@@ -204,6 +220,7 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 .edit-form {height:70vh;}
 .edit-form textarea {width:100%;height:95%;}
 .edit-form__save { font-weight: bold; }
+.edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
 
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
@@ -281,19 +298,16 @@ td { padding: .25rem; }
 caption { caption-side: top; font-size: small; }
 
 .subhyphae__list, .subhyphae__list ul { display: flex; padding: 0; margin: 0; flex-wrap: wrap; }
+.subhyphae__list ul { font-size: 90%; }
 .subhyphae__entry { list-style-type: none; border: 1px solid #999; padding: 0; margin: .125rem; border-radius: .25rem; }
 .subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
 .subhyphae__link:hover { background: #eee; }
 
-.navitree { padding: 0; margin: 0; }
-.navitree__entry { }
-.navitree > .navitree__entry > a::before { display: inline-block; width: .5rem; color: #999; margin: 0 .25rem; }
-.navitree > .navitree__entry_infertile > a::before { content: " "} /* nbsp, careful */
-.navitree > .navitree__sibling_fertile > a::before { content: "▸"}
-.navitree__trunk { border-left: 1px #999 solid; }
-.navitree__link { text-decoration: none; display: block; padding: .25rem; }
-.navitree__entry_this > span { display: block; padding: .25rem; font-weight: bold; }
-.navitree__entry_this > span::before { content: " "; display: inline-block; width: 1rem; }
+.relative-hyphae__list { padding: 0; margin: 0; }
+.relative-hyphae__entry { clear: both; }
+.relative-hyphae__count { display: inline-block; float: right; }
+.relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
+.relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
 
 /* Color stuff */
@@ -326,7 +340,7 @@ table { background-color: #eee; }
 
 /* Other stuff */
 html { background-color: #ddd; 
-background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23bbbbbb' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='199' viewBox='0 0 100 199'%3E%3Cg fill='%23bbbbbb' %3E%3Cpath d='M0 199V0h1v1.99L100 199h-1.12L1 4.22V199H0zM100 2h-.12l-1-2H100v2z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
 } /* heropatterns.com */
 header { background-color: #bbb; }
 .header-links__link { color: black; }
@@ -342,7 +356,7 @@ blockquote { border-left: 4px black solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
-.navitree__link:hover, .backlinks__link:hover { background-color: #eee; }
+.relative-hyphae__link:hover, .backlinks__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
@@ -352,7 +366,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.navitree__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .relative-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
@@ -381,6 +395,8 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 	.hypha-tabs { background-color: #232323; }
 }
 }
+
+
 `)
 //line assets/assets.qtpl:10
 	qw422016.N().S(`
@@ -414,136 +430,273 @@ func DefaultCSS() string {
 //line assets/assets.qtpl:11
 }
 
+//line assets/assets.qtpl:13
+func StreamToolbarJS(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:13
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:14
+	qw422016.N().S(`const editTextarea = document.getElementsByClassName('edit-form__textarea')[0]
+
+function placeCursor(position, el = editTextarea) {
+    el.selectionEnd = position
+    el.selectionStart = el.selectionEnd
+}
+
+function getSelectedText(el = editTextarea) {
+    const [start, end] = [el.selectionStart, el.selectionEnd]
+    const text = el.value
+    return text.substring(start, end)
+}
+
+function textInserter(text, cursorPosition = null, el = editTextarea) {
+    return function() {
+        const [start, end] = [el.selectionStart, el.selectionEnd]
+        el.setRangeText(text, start, end, 'select')
+        el.focus()
+        if (cursorPosition == null) {
+            placeCursor(end + text.length)
+        } else {
+            placeCursor(end + cursorPosition)
+        }
+    }
+}
+
+function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTextarea) {
+    return function() {
+        const [start, end] = [el.selectionStart, el.selectionEnd]
+        if (postfix == null) {
+            postfix = prefix
+        }
+        let text = getSelectedText(el)
+        let result = prefix + text + postfix
+        el.setRangeText(result, start, end, 'select')
+        el.focus()
+        placeCursor(end + cursorPosition)
+    }
+}
+
+const wrapBold = selectionWrapper(2, '**'),
+    wrapItalic = selectionWrapper(2, '//'),
+    wrapMonospace = selectionWrapper(1, '`)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(`'),
+    wrapHighlighted = selectionWrapper(2, '!!'),
+    wrapLifted = selectionWrapper(1, '^'),
+    wrapLowered = selectionWrapper(2, ',,'),
+    wrapStrikethrough = selectionWrapper(2, '~~'),
+    wrapLink = selectionWrapper(2, '[[', ']]')
+
+const insertHorizontalBar = textInserter('\n----\n'),
+    insertImgBlock = textInserter('\nimg {\n   \n}\n', 10),
+    insertTableBlock = textInserter('\ntable {\n   \n}\n', 12),
+    insertRocket = textInserter('\n=> '),
+    insertXcl = textInserter('\n<= '),
+    insertHeading2 = textInserter('\n## '),
+    insertHeading3 = textInserter('\n### '),
+    insertCodeblock = textInserter('\n`)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(``)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(``)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(`\n\n`)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(``)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(``)
+//line assets/assets.qtpl:14
+	qw422016.N().S("`")
+//line assets/assets.qtpl:14
+	qw422016.N().S(`\n', 5),
+    insertBulletedList = textInserter('\n* '),
+    insertNumberedList = textInserter('\n*. ')
+
+function insertDate() {
+    let date = new Date().toISOString().split('T')[0]
+    textInserter(date)()
+}
+
+function insertUserlink() {
+    const userlink = document.querySelector('.header-links__entry_user a')
+    const userHypha = userlink.getAttribute('href').substring(7) // no /hypha/
+    textInserter('[[' + userHypha + ']]')()
+}
+`)
+//line assets/assets.qtpl:14
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:15
+}
+
+//line assets/assets.qtpl:15
+func WriteToolbarJS(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:15
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:15
+	StreamToolbarJS(qw422016)
+//line assets/assets.qtpl:15
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:15
+}
+
+//line assets/assets.qtpl:15
+func ToolbarJS() string {
+//line assets/assets.qtpl:15
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:15
+	WriteToolbarJS(qb422016)
+//line assets/assets.qtpl:15
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:15
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:15
+	return qs422016
+//line assets/assets.qtpl:15
+}
+
 // Next three are from https://remixicon.com/
 
-//line assets/assets.qtpl:14
+//line assets/assets.qtpl:18
 func StreamIconHTTP(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:14
+//line assets/assets.qtpl:18
 	qw422016.N().S(`
 `)
-//line assets/assets.qtpl:15
+//line assets/assets.qtpl:19
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2.29-2.333A17.9 17.9 0 0 1 8.027 13H4.062a8.008 8.008 0 0 0 5.648 6.667zM10.03 13c.151 2.439.848 4.73 1.97 6.752A15.905 15.905 0 0 0 13.97 13h-3.94zm9.908 0h-3.965a17.9 17.9 0 0 1-1.683 6.667A8.008 8.008 0 0 0 19.938 13zM4.062 11h3.965A17.9 17.9 0 0 1 9.71 4.333 8.008 8.008 0 0 0 4.062 11zm5.969 0h3.938A15.905 15.905 0 0 0 12 4.248 15.905 15.905 0 0 0 10.03 11zm4.259-6.667A17.9 17.9 0 0 1 15.973 11h3.965a8.008 8.008 0 0 0-5.648-6.667z"/></svg>
 `)
-//line assets/assets.qtpl:15
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:16
-func WriteIconHTTP(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:16
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:16
-	StreamIconHTTP(qw422016)
-//line assets/assets.qtpl:16
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:16
-func IconHTTP() string {
-//line assets/assets.qtpl:16
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:16
-	WriteIconHTTP(qb422016)
-//line assets/assets.qtpl:16
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:16
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:16
-	return qs422016
-//line assets/assets.qtpl:16
-}
-
-//line assets/assets.qtpl:18
-func StreamIconGemini(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:18
-	qw422016.N().S(`
-`)
 //line assets/assets.qtpl:19
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:20
+func WriteIconHTTP(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:20
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:20
+	StreamIconHTTP(qw422016)
+//line assets/assets.qtpl:20
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:20
+func IconHTTP() string {
+//line assets/assets.qtpl:20
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:20
+	WriteIconHTTP(qb422016)
+//line assets/assets.qtpl:20
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:20
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:20
+	return qs422016
+//line assets/assets.qtpl:20
+}
+
+//line assets/assets.qtpl:22
+func StreamIconGemini(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:22
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:23
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M15.502 20A6.523 6.523 0 0 1 12 23.502 6.523 6.523 0 0 1 8.498 20h2.26c.326.489.747.912 1.242 1.243.495-.33.916-.754 1.243-1.243h2.259zM18 14.805l2 2.268V19H4v-1.927l2-2.268V9c0-3.483 2.504-6.447 6-7.545C15.496 2.553 18 5.517 18 9v5.805zM17.27 17L16 15.56V9c0-2.318-1.57-4.43-4-5.42C9.57 4.57 8 6.681 8 9v6.56L6.73 17h10.54zM12 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
 `)
-//line assets/assets.qtpl:19
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:20
-func WriteIconGemini(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:20
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:20
-	StreamIconGemini(qw422016)
-//line assets/assets.qtpl:20
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:20
-func IconGemini() string {
-//line assets/assets.qtpl:20
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:20
-	WriteIconGemini(qb422016)
-//line assets/assets.qtpl:20
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:20
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:20
-	return qs422016
-//line assets/assets.qtpl:20
-}
-
-//line assets/assets.qtpl:22
-func StreamIconMailto(qw422016 *qt422016.Writer) {
-//line assets/assets.qtpl:22
-	qw422016.N().S(`
-`)
 //line assets/assets.qtpl:23
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:24
+func WriteIconGemini(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:24
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:24
+	StreamIconGemini(qw422016)
+//line assets/assets.qtpl:24
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:24
+func IconGemini() string {
+//line assets/assets.qtpl:24
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:24
+	WriteIconGemini(qb422016)
+//line assets/assets.qtpl:24
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:24
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:24
+	return qs422016
+//line assets/assets.qtpl:24
+}
+
+//line assets/assets.qtpl:26
+func StreamIconMailto(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:26
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:27
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="#999" d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/></svg>
 `)
-//line assets/assets.qtpl:23
-	qw422016.N().S(`
-`)
-//line assets/assets.qtpl:24
-}
-
-//line assets/assets.qtpl:24
-func WriteIconMailto(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:24
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:24
-	StreamIconMailto(qw422016)
-//line assets/assets.qtpl:24
-	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:24
-}
-
-//line assets/assets.qtpl:24
-func IconMailto() string {
-//line assets/assets.qtpl:24
-	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:24
-	WriteIconMailto(qb422016)
-//line assets/assets.qtpl:24
-	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:24
-	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:24
-	return qs422016
-//line assets/assets.qtpl:24
-}
-
-// This is a modified version of https://www.svgrepo.com/svg/232085/rat
-
-//line assets/assets.qtpl:27
-func StreamIconGopher(qw422016 *qt422016.Writer) {
 //line assets/assets.qtpl:27
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:28
+}
+
+//line assets/assets.qtpl:28
+func WriteIconMailto(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:28
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:28
+	StreamIconMailto(qw422016)
+//line assets/assets.qtpl:28
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:28
+}
+
+//line assets/assets.qtpl:28
+func IconMailto() string {
+//line assets/assets.qtpl:28
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:28
+	WriteIconMailto(qb422016)
+//line assets/assets.qtpl:28
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:28
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:28
+	return qs422016
+//line assets/assets.qtpl:28
+}
+
+// This is a modified version of https://www.svgrepo.com/svg/232085/rat
+
+//line assets/assets.qtpl:31
+func StreamIconGopher(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:31
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:32
 	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
 <path fill="#999" d="M447.238,204.944v-70.459c0-8.836-7.164-16-16-16c-34.051,0-64.414,21.118-75.079,55.286
 C226.094,41.594,0,133.882,0,319.435c0,0.071,0.01,0.14,0.011,0.21c0.116,44.591,36.423,80.833,81.04,80.833h171.203
@@ -556,34 +709,92 @@ c55.425-8.382,107.014,29.269,115.759,84.394H295.484z"/>
 <circle fill="#999" cx="415.238" cy="260.05" r="21.166"/>
 </svg>
 `)
-//line assets/assets.qtpl:28
+//line assets/assets.qtpl:32
 	qw422016.N().S(`
 `)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 }
 
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 func WriteIconGopher(qq422016 qtio422016.Writer) {
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	StreamIconGopher(qw422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qt422016.ReleaseWriter(qw422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 }
 
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 func IconGopher() string {
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qb422016 := qt422016.AcquireByteBuffer()
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	WriteIconGopher(qb422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qs422016 := string(qb422016.B)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	qt422016.ReleaseByteBuffer(qb422016)
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
 	return qs422016
-//line assets/assets.qtpl:29
+//line assets/assets.qtpl:33
+}
+
+// https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg
+
+//line assets/assets.qtpl:36
+func StreamIconFeed(qw422016 *qt422016.Writer) {
+//line assets/assets.qtpl:36
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:37
+	qw422016.N().S(`<svg xmlns="http://www.w3.org/2000/svg"
+     id="RSSicon"
+     viewBox="0 0 8 8" width="256" height="256">
+
+  <title>RSS feed icon</title>
+
+  <style type="text/css">
+    .button {stroke: none; fill: orange;}
+    .symbol {stroke: none; fill: white;}
+  </style>
+
+  <rect   class="button" width="8" height="8" rx="1.5" />
+  <circle class="symbol" cx="2" cy="6" r="1" />
+  <path   class="symbol" d="m 1,4 a 3,3 0 0 1 3,3 h 1 a 4,4 0 0 0 -4,-4 z" />
+  <path   class="symbol" d="m 1,2 a 5,5 0 0 1 5,5 h 1 a 6,6 0 0 0 -6,-6 z" />
+
+</svg>
+`)
+//line assets/assets.qtpl:37
+	qw422016.N().S(`
+`)
+//line assets/assets.qtpl:38
+}
+
+//line assets/assets.qtpl:38
+func WriteIconFeed(qq422016 qtio422016.Writer) {
+//line assets/assets.qtpl:38
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line assets/assets.qtpl:38
+	StreamIconFeed(qw422016)
+//line assets/assets.qtpl:38
+	qt422016.ReleaseWriter(qw422016)
+//line assets/assets.qtpl:38
+}
+
+//line assets/assets.qtpl:38
+func IconFeed() string {
+//line assets/assets.qtpl:38
+	qb422016 := qt422016.AcquireByteBuffer()
+//line assets/assets.qtpl:38
+	WriteIconFeed(qb422016)
+//line assets/assets.qtpl:38
+	qs422016 := string(qb422016.B)
+//line assets/assets.qtpl:38
+	qt422016.ReleaseByteBuffer(qb422016)
+//line assets/assets.qtpl:38
+	return qs422016
+//line assets/assets.qtpl:38
 }

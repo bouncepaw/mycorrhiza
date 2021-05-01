@@ -66,7 +66,7 @@ func (l *Link) Classes() string {
 func (l *Link) Href() string {
 	switch l.Kind {
 	case LinkExternal, LinkLocalRoot:
-		return l.Address
+		return l.Address + l.Anchor
 	default:
 		return "/hypha/" + l.Address + l.Anchor
 	}
@@ -97,7 +97,7 @@ func From(address, display, hyphaName string) *Link {
 		link.Display = strings.TrimSpace(display)
 	}
 
-	if pos := strings.IndexRune(address, '#'); pos != -1 {
+	if pos := strings.IndexRune(address, '#'); pos != -1 && pos != 0 {
 		link.Anchor = address[pos:]
 		address = address[:pos]
 	}
@@ -113,8 +113,13 @@ func From(address, display, hyphaName string) *Link {
 			if strings.HasPrefix(link.Display, "//") && len(link.Display) > 2 {
 				link.Display = link.Display[2:]
 			}
+			link.Display += link.Anchor
 		}
 		link.Address = address
+	case strings.HasPrefix(address, "#"):
+		link.Kind = LinkLocalHypha
+		link.Address = util.CanonicalName(hyphaName)
+		link.Anchor = address
 	case strings.HasPrefix(address, "/"):
 		link.Address = address
 		link.Kind = LinkLocalRoot
@@ -124,10 +129,6 @@ func From(address, display, hyphaName string) *Link {
 	case strings.HasPrefix(address, "../"):
 		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(path.Join(path.Dir(hyphaName), address[3:]))
-	case strings.HasPrefix(address, "#"):
-		link.Kind = LinkLocalHypha
-		link.Address = util.CanonicalName(hyphaName)
-		link.Anchor = address
 	default:
 		link.Kind = LinkLocalHypha
 		link.Address = util.CanonicalName(address)
