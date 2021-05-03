@@ -529,6 +529,11 @@ function insertDate() {
     textInserter(date)()
 }
 
+function insertTimeUTC() {
+	let time = new Date().toISOString().substring(11, 19) + " UTC"
+	textInserter(time)()
+}
+
 function insertUserlink() {
     const userlink = document.querySelector('.header-links__entry_user a')
     const userHypha = userlink.getAttribute('href').substring(7) // no /hypha/

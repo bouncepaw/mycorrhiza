@@ -46,6 +46,7 @@
 			display string
 		}{
 			{"date", "insertDate()", "Insert current date"},
+			{"time", "insertTimeUTC()", "Insert current time"},
 		} %}
 		<button
 			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"

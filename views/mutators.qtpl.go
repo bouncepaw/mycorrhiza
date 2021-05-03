@@ -95,35 +95,36 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 		display string
 	}{
 		{"date", "insertDate()", "Insert current date"},
+		{"time", "insertTimeUTC()", "Insert current time"},
 	} {
-//line views/mutators.qtpl:49
+//line views/mutators.qtpl:50
 		qw422016.N().S(`
 		<button
 			class="edit-toolbar__btn edit-toolbar__`)
-//line views/mutators.qtpl:51
+//line views/mutators.qtpl:52
 		qw422016.E().S(el.class)
-//line views/mutators.qtpl:51
+//line views/mutators.qtpl:52
 		qw422016.N().S(`"
 			onclick="`)
-//line views/mutators.qtpl:52
+//line views/mutators.qtpl:53
 		qw422016.E().S(el.onclick)
-//line views/mutators.qtpl:52
+//line views/mutators.qtpl:53
 		qw422016.N().S(`">
 			`)
-//line views/mutators.qtpl:53
+//line views/mutators.qtpl:54
 		qw422016.N().S(el.display)
-//line views/mutators.qtpl:53
+//line views/mutators.qtpl:54
 		qw422016.N().S(`
 		</button>
 	`)
-//line views/mutators.qtpl:55
+//line views/mutators.qtpl:56
 	}
-//line views/mutators.qtpl:55
+//line views/mutators.qtpl:56
 	qw422016.N().S(`
 	`)
-//line views/mutators.qtpl:56
+//line views/mutators.qtpl:57
 	if u.Group != "anon" {
-//line views/mutators.qtpl:56
+//line views/mutators.qtpl:57
 		qw422016.N().S(`
 		<button
 			class="edit-toolbar__btn edit-toolbar__user-link"
@@ -131,201 +132,201 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 			Link yourself
 		</button>
 	`)
-//line views/mutators.qtpl:62
+//line views/mutators.qtpl:63
 	}
-//line views/mutators.qtpl:62
+//line views/mutators.qtpl:63
 	qw422016.N().S(`
 	</section>
 </aside>
 <script src="/static/toolbar.js"></script>
 `)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 }
 
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 func WriteToolbar(qq422016 qtio422016.Writer, u *user.User) {
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	StreamToolbar(qw422016, u)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 }
 
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 func Toolbar(u *user.User) string {
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	WriteToolbar(qb422016, u)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 	return qs422016
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:67
 }
 
-//line views/mutators.qtpl:68
+//line views/mutators.qtpl:69
 func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line views/mutators.qtpl:68
+//line views/mutators.qtpl:69
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:69
+//line views/mutators.qtpl:70
 	qw422016.N().S(NavHTML(rq, hyphaName, "edit"))
-//line views/mutators.qtpl:69
+//line views/mutators.qtpl:70
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">Edit `)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:73
 	qw422016.E().S(util.BeautifulName(hyphaName))
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:73
 	qw422016.N().S(`</h1>
 	`)
-//line views/mutators.qtpl:73
+//line views/mutators.qtpl:74
 	qw422016.N().S(warning)
-//line views/mutators.qtpl:73
+//line views/mutators.qtpl:74
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line views/mutators.qtpl:75
+//line views/mutators.qtpl:76
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:75
+//line views/mutators.qtpl:76
 	qw422016.N().S(`">
 		<textarea name="text" class="edit-form__textarea">`)
-//line views/mutators.qtpl:76
+//line views/mutators.qtpl:77
 	qw422016.E().S(textAreaFill)
-//line views/mutators.qtpl:76
+//line views/mutators.qtpl:77
 	qw422016.N().S(`</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/page/`)
-//line views/mutators.qtpl:80
+//line views/mutators.qtpl:81
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:80
+//line views/mutators.qtpl:81
 	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
 `)
-//line views/mutators.qtpl:83
+//line views/mutators.qtpl:84
 	qw422016.N().S(Toolbar(user.FromRequest(rq)))
-//line views/mutators.qtpl:83
+//line views/mutators.qtpl:84
 	qw422016.N().S(`
 </div>
 `)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 }
 
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 func WriteEditHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	StreamEditHTML(qw422016, rq, hyphaName, textAreaFill, warning)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 }
 
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string {
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	WriteEditHTML(qb422016, rq, hyphaName, textAreaFill, warning)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 	return qs422016
-//line views/mutators.qtpl:85
+//line views/mutators.qtpl:86
 }
 
-//line views/mutators.qtpl:87
+//line views/mutators.qtpl:88
 func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) {
-//line views/mutators.qtpl:87
+//line views/mutators.qtpl:88
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:88
+//line views/mutators.qtpl:89
 	qw422016.N().S(NavHTML(rq, hyphaName, "edit"))
-//line views/mutators.qtpl:88
+//line views/mutators.qtpl:89
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width edit edit_with-preview">
 	<h1>Edit `)
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:92
 	qw422016.E().S(util.BeautifulName(hyphaName))
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:92
 	qw422016.N().S(` (preview)</h1>
 	`)
-//line views/mutators.qtpl:92
+//line views/mutators.qtpl:93
 	qw422016.N().S(warning)
-//line views/mutators.qtpl:92
+//line views/mutators.qtpl:93
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line views/mutators.qtpl:94
+//line views/mutators.qtpl:95
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:94
+//line views/mutators.qtpl:95
 	qw422016.N().S(`">
 		<textarea class="edit-form__textarea" name="text">`)
-//line views/mutators.qtpl:95
+//line views/mutators.qtpl:96
 	qw422016.E().S(textAreaFill)
-//line views/mutators.qtpl:95
+//line views/mutators.qtpl:96
 	qw422016.N().S(`</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/page/`)
-//line views/mutators.qtpl:99
+//line views/mutators.qtpl:100
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:99
+//line views/mutators.qtpl:100
 	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">`)
-//line views/mutators.qtpl:102
+//line views/mutators.qtpl:103
 	qw422016.N().S(renderedPage)
-//line views/mutators.qtpl:102
+//line views/mutators.qtpl:103
 	qw422016.N().S(`</article>
 </main>
 `)
-//line views/mutators.qtpl:104
+//line views/mutators.qtpl:105
 	qw422016.N().S(Toolbar(user.FromRequest(rq)))
-//line views/mutators.qtpl:104
+//line views/mutators.qtpl:105
 	qw422016.N().S(`
 </div>
 `)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 }
 
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 func WritePreviewHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) {
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	StreamPreviewHTML(qw422016, rq, hyphaName, textAreaFill, warning, renderedPage)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 }
 
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) string {
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	WritePreviewHTML(qb422016, rq, hyphaName, textAreaFill, warning, renderedPage)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 	return qs422016
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:107
 }
