@@ -24,16 +24,14 @@ func Start(wikiDir string) {
 	path, err := exec.LookPath("git")
 	if err != nil {
 		log.Fatal("Cound not find the git executable. Check your $PATH.")
-	} else {
-		log.Println("Git path is", path)
 	}
 	gitpath = path
 
-	_, err = gitsh("config", "user.name", "wikimind")
+	_, err = silentGitsh("config", "user.name", "wikimind")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = gitsh("config", "user.email", "wikimind@mycorrhiza")
+	_, err = silentGitsh("config", "user.email", "wikimind@mycorrhiza")
 	if err != nil {
 		log.Fatal(err)
 	}
