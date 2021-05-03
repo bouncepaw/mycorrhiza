@@ -4,6 +4,7 @@ package history
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func recentChangesFeed() *feeds.Feed {
 		Updated:     time.Now(),
 	}
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--max-count=30",
@@ -34,6 +35,7 @@ func recentChangesFeed() *feeds.Feed {
 			revs = append(revs, parseRevisionLine(line))
 		}
 	}
+	log.Printf("Found %d recent changes", len(revs))
 	for _, rev := range revs {
 		feed.Add(&feeds.Item{
 			Title:       rev.Message,
@@ -62,7 +64,7 @@ func RecentChangesJSON() (string, error) {
 
 func RecentChanges(n int) []Revision {
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--max-count="+strconv.Itoa(n),
@@ -74,6 +76,7 @@ func RecentChanges(n int) []Revision {
 			revs = append(revs, parseRevisionLine(line))
 		}
 	}
+	log.Printf("Found %d recent changes", len(revs))
 	return revs
 }
 
@@ -86,7 +89,7 @@ func FileChanged(path string) bool {
 // Revisions returns slice of revisions for the given hypha name.
 func Revisions(hyphaName string) ([]Revision, error) {
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			// Hash, author email, author time, commit msg separated by tab
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
@@ -101,6 +104,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 			}
 		}
 	}
+	log.Printf("Found %d revisions for ‘%s’\n", len(revs), hyphaName)
 	return revs, err
 }
 
@@ -177,6 +181,6 @@ func FileAtRevision(filepath, hash string) (string, error) {
 }
 
 func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
+	out, err := silentGitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
 	return out.String(), err
 }

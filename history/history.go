@@ -3,6 +3,7 @@ package history
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"log"
 	"os/exec"
 	"regexp"
@@ -44,7 +45,24 @@ type Revision struct {
 	Username          string
 	Time              time.Time
 	Message           string
+	filesAffectedBuf  []string
 	hyphaeAffectedBuf []string
+}
+
+// filesAffected tells what files have been affected by the revision.
+func (rev *Revision) filesAffected() (filenames []string) {
+	if nil != rev.filesAffectedBuf {
+		return rev.filesAffectedBuf
+	}
+	// List of files affected by this revision, one per line.
+	out, err := silentGitsh("diff-tree", "--no-commit-id", "--name-only", "-r", rev.Hash)
+	// There's an error? Well, whatever, let's just assign an empty slice, who cares.
+	if err != nil {
+		rev.filesAffectedBuf = []string{}
+	} else {
+		rev.filesAffectedBuf = strings.Split(out.String(), "\n")
+	}
+	return rev.filesAffectedBuf
 }
 
 // determine what hyphae were affected by this revision
@@ -54,8 +72,6 @@ func (rev *Revision) hyphaeAffected() (hyphae []string) {
 	}
 	hyphae = make([]string, 0)
 	var (
-		// List of files affected by this revision, one per line.
-		out, err = gitsh("diff-tree", "--no-commit-id", "--name-only", "-r", rev.Hash)
 		// set is used to determine if a certain hypha has been already noted (hyphae are stored in 2 files at most currently).
 		set       = make(map[string]bool)
 		isNewName = func(hyphaName string) bool {
@@ -65,11 +81,9 @@ func (rev *Revision) hyphaeAffected() (hyphae []string) {
 			set[hyphaName] = true
 			return true
 		}
+		filesAffected = rev.filesAffected()
 	)
-	if err != nil {
-		return hyphae
-	}
-	for _, filename := range strings.Split(out.String(), "\n") {
+	for _, filename := range filesAffected {
 		if strings.IndexRune(filename, '.') >= 0 {
 			dotPos := strings.LastIndexByte(filename, '.')
 			hyphaName := string([]byte(filename)[0:dotPos]) // is it safe?
@@ -94,15 +108,44 @@ func (rev Revision) HyphaeLinksHTML() (html string) {
 		if i > 0 {
 			html += `<span aria-hidden="true">, </span>`
 		}
-		html += fmt.Sprintf(`<a href="/page/%[1]s">%[1]s</a>`, hyphaName)
+		html += fmt.Sprintf(`<a href="/hypha/%[1]s">%[1]s</a>`, hyphaName)
 	}
 	return html
 }
 
-func (rev *Revision) descriptionForFeed() (html string) {
+// descriptionForFeed generates a good enough HTML contents for a web feed.
+func (rev *Revision) descriptionForFeed() (htmlDesc string) {
 	return fmt.Sprintf(
 		`<p>%s</p>
-<p><b>Hyphae affected:</b> %s</p>`, rev.Message, rev.HyphaeLinksHTML())
+<p><b>Hyphae affected:</b> %s</p>
+<pre><code>%s</code></pre>`, rev.Message, rev.HyphaeLinksHTML(), html.EscapeString(rev.textDiff()))
+}
+
+// textDiff generates a good enough diff to display in a web feed. It is not html-escaped.
+func (rev *Revision) textDiff() (diff string) {
+	filenames, ok := rev.mycoFiles()
+	if !ok {
+		return "No text changes"
+	}
+	for _, filename := range filenames {
+		text, err := PrimitiveDiffAtRevision(filename, rev.Hash)
+		if err != nil {
+			diff += "\nAn error has occured with " + filename + "\n"
+		}
+		diff += text + "\n"
+	}
+	return diff
+}
+
+// mycoFiles returns filenames of .myco file. It is not ok if there are no myco files.
+func (rev *Revision) mycoFiles() (filenames []string, ok bool) {
+	filenames = []string{}
+	for _, filename := range rev.filesAffected() {
+		if strings.HasSuffix(filename, ".myco") {
+			filenames = append(filenames, filename)
+		}
+	}
+	return filenames, len(filenames) > 0
 }
 
 // Try and guess what link is the most important by looking at the message.
@@ -113,11 +156,11 @@ func (rev *Revision) bestLink() string {
 	)
 	switch {
 	case renameRes != nil:
-		return "/page/" + renameRes[1]
+		return "/hypha/" + renameRes[1]
 	case len(revs) == 0:
 		return ""
 	default:
-		return "/page/" + revs[0]
+		return "/hypha/" + revs[0]
 	}
 }
 
@@ -132,6 +175,15 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 	if err != nil {
 		log.Println("gitsh:", err)
 	}
+	return *bytes.NewBuffer(b), err
+}
+
+// silentGitsh is like gitsh, except it writes less to the stdout.
+func silentGitsh(args ...string) (out bytes.Buffer, err error) {
+	cmd := exec.Command(gitpath, args...)
+	cmd.Dir = util.WikiDir
+
+	b, err := cmd.CombinedOutput()
 	return *bytes.NewBuffer(b), err
 }
 
