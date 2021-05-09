@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509/pkix"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
@@ -23,7 +23,7 @@ func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 You have successfully served the wiki through Gemini. Currently, support is really work-in-progress; you should resort to using Mycorrhiza through the web protocols.
 
 Visit home hypha:
-=> /hypha/` + util.HomePage))
+=> /hypha/` + cfg.HomeHypha))
 }
 
 func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
@@ -48,10 +48,10 @@ func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 }
 
 func handleGemini() {
-	if util.GeminiCertPath == "" {
+	if cfg.GeminiCertificatePath == "" {
 		return
 	}
-	certPath, err := filepath.Abs(util.GeminiCertPath)
+	certPath, err := filepath.Abs(cfg.GeminiCertificatePath)
 	if err != nil {
 		log.Fatal(err)
 	}

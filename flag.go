@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"os"
 	"path/filepath"
@@ -14,7 +15,7 @@ import (
 var printExampleConfig bool
 
 func init() {
-	flag.StringVar(&util.ConfigFilePath, "config-path", "", "Path to a configuration file. Leave empty if you don't want to use it.")
+	flag.StringVar(&cfg.ConfigFilePath, "config-path", "", "Path to a configuration file. Leave empty if you don't want to use it.")
 	flag.BoolVar(&printExampleConfig, "print-example-config", false, "If true, print an example configuration file contents and exit. You can save the output to a file and base your own configuration on it.")
 	flag.Usage = func() {
 		fmt.Fprintf(
@@ -42,16 +43,16 @@ func parseCliArgs() {
 
 	var err error
 	WikiDir, err = filepath.Abs(args[0])
-	util.WikiDir = WikiDir
+	cfg.WikiDir = WikiDir
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if util.URL == "" {
-		util.URL = "http://0.0.0.0:" + util.ServerPort
+	if cfg.URL == "" {
+		cfg.URL = "http://0.0.0.0:" + cfg.HTTPPort
 	}
 
-	util.HomePage = util.CanonicalName(util.HomePage)
-	util.UserHypha = util.CanonicalName(util.UserHypha)
-	util.HeaderLinksHypha = util.CanonicalName(util.HeaderLinksHypha)
+	cfg.HomeHypha = util.CanonicalName(cfg.HomeHypha)
+	cfg.UserHypha = util.CanonicalName(cfg.UserHypha)
+	cfg.HeaderLinksHypha = util.CanonicalName(cfg.HeaderLinksHypha)
 }

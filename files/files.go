@@ -3,11 +3,11 @@ package files
 import (
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"path/filepath"
 	"strings"
 
 	"github.com/adrg/xdg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/mitchellh/go-homedir"
 )
 
@@ -49,7 +49,7 @@ func tokenStoragePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if strings.HasPrefix(dir, util.WikiDir) {
+	if strings.HasPrefix(dir, cfg.WikiDir) {
 		return "", errors.New("wiki storage directory includes private config files")
 	}
 	return dir, nil
@@ -57,7 +57,7 @@ func tokenStoragePath() (string, error) {
 
 func registrationCredentialsPath() (string, error) {
 	var err error
-	path := util.RegistrationCredentialsPath
+	path := cfg.RegistrationCredentialsPath
 
 	if len(path) == 0 {
 		path, err = xdg.DataFile("mycorrhiza/registration.json")
@@ -81,7 +81,7 @@ func registrationCredentialsPath() (string, error) {
 
 func fixedCredentialsPath() (string, error) {
 	var err error
-	path := util.FixedCredentialsPath
+	path := cfg.FixedAuthCredentialsPath
 
 	if len(path) > 0 {
 		path, err = homedir.Expand(path)

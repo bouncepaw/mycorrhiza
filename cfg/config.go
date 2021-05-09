@@ -1,4 +1,4 @@
-package util
+package cfg
 
 import (
 	"log"
@@ -8,7 +8,31 @@ import (
 	"github.com/go-ini/ini"
 )
 
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields
+var (
+	WikiName      string
+	NaviTitleIcon string
+
+	HomeHypha        string
+	UserHypha        string
+	HeaderLinksHypha string
+
+	HTTPPort              string
+	URL                   string
+	GeminiCertificatePath string
+
+	WikiDir        string
+	ConfigFilePath string
+
+	UseFixedAuth                bool
+	FixedAuthCredentialsPath    string
+	UseRegistration             bool
+	RegistrationCredentialsPath string
+	LimitRegistration           int
+)
+
+// Config represents a Mycorrhiza wiki configuration file.
+//
+// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for fields' docs.
 type Config struct {
 	WikiName      string
 	NaviTitleIcon string
@@ -17,18 +41,21 @@ type Config struct {
 	Authorization
 }
 
+// Hyphae is a section of Config which has fields related to special hyphae.
 type Hyphae struct {
 	HomeHypha        string
 	UserHypha        string
 	HeaderLinksHypha string
 }
 
+// Network is a section of Config that has fields related to network stuff: HTTP and Gemini.
 type Network struct {
 	HTTPPort              uint64
 	URL                   string
 	GeminiCertificatePath string
 }
 
+// Authorization is a section of Config that has fields related to authorization and authentication.
 type Authorization struct {
 	UseFixedAuth             bool
 	FixedAuthCredentialsPath string
@@ -38,6 +65,7 @@ type Authorization struct {
 	LimitRegistration           uint64
 }
 
+// ReadConfigFile reads a config on the given path and stores the configuration.
 func ReadConfigFile(path string) {
 	cfg := &Config{
 		WikiName:      "MycorrhizaWiki",
@@ -76,16 +104,16 @@ func ReadConfigFile(path string) {
 	}
 
 	// Map the struct to the global variables
-	SiteName = cfg.WikiName
-	SiteNavIcon = cfg.NaviTitleIcon
-	HomePage = cfg.HomeHypha
+	WikiName = cfg.WikiName
+	NaviTitleIcon = cfg.NaviTitleIcon
+	HomeHypha = cfg.HomeHypha
 	UserHypha = cfg.UserHypha
 	HeaderLinksHypha = cfg.HeaderLinksHypha
-	ServerPort = strconv.FormatUint(cfg.HTTPPort, 10)
+	HTTPPort = strconv.FormatUint(cfg.HTTPPort, 10)
 	URL = cfg.URL
-	GeminiCertPath = cfg.GeminiCertificatePath
+	GeminiCertificatePath = cfg.GeminiCertificatePath
 	UseFixedAuth = cfg.UseFixedAuth
-	FixedCredentialsPath = cfg.FixedAuthCredentialsPath
+	FixedAuthCredentialsPath = cfg.FixedAuthCredentialsPath
 	UseRegistration = cfg.UseRegistration
 	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
 	LimitRegistration = int(cfg.LimitRegistration)

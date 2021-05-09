@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,7 +20,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
@@ -52,13 +52,13 @@ var base = views.BaseHTML
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	prepareRq(rq)
-	if _, err := os.Stat(util.WikiDir + "/static/common.css"); err == nil {
-		http.ServeFile(w, rq, util.WikiDir+"/static/common.css")
+	if _, err := os.Stat(cfg.WikiDir + "/static/common.css"); err == nil {
+		http.ServeFile(w, rq, cfg.WikiDir+"/static/common.css")
 	} else {
 		w.Header().Set("Content-Type", "text/css;charset=utf-8")
 		w.Write([]byte(assets.DefaultCSS()))
 	}
-	if bytes, err := ioutil.ReadFile(util.WikiDir + "/static/custom.css"); err == nil {
+	if bytes, err := ioutil.ReadFile(cfg.WikiDir + "/static/custom.css"); err == nil {
 		w.Write(bytes)
 	}
 }
@@ -124,7 +124,7 @@ func main() {
 	parseCliArgs()
 
 	// It is ok if the path is ""
-	util.ReadConfigFile(util.ConfigFilePath)
+	cfg.ReadConfigFile(cfg.ConfigFilePath)
 
 	if err := files.CalculatePaths(); err != nil {
 		log.Fatal(err)
@@ -163,9 +163,9 @@ func main() {
 	http.HandleFunc("/static/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		addr, _ := url.Parse("/hypha/" + util.HomePage) // Let's pray it never fails
+		addr, _ := url.Parse("/hypha/" + cfg.HomeHypha) // Let's pray it never fails
 		rq.URL = addr
 		handlerHypha(w, rq)
 	})
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+cfg.HTTPPort, nil))
 }

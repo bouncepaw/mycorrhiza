@@ -1,7 +1,7 @@
 {% import "net/http" %}
 {% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 This is the <nav> seen on top of many pages.
 {% code
@@ -52,7 +52,7 @@ var navEntries = []navEntry{
 	{% if u.Group == "anon" %}
 	<a href="/login" class="header-links__link">Login</a>
 	{% else %}
-	<a href="/hypha/{%s util.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s u.Name %}</a>
+	<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s u.Name %}</a>
 	{% endif %}
 </li>
 {% endif %}

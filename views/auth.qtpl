@@ -1,15 +1,15 @@
 {% import "net/http" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 
 {% func RegisterHTML(rq *http.Request) %}
 <div class="layout">
 <main class="main-width">
 	<section>
-	{% if util.UseRegistration %}
+	{% if cfg.UseRegistration %}
 		<form class="modal" method="post" action="/register?{%s rq.URL.RawQuery %}" id="register-form" enctype="multipart/form-data" autocomplete="off">
 			<fieldset class="modal__fieldset">
-				<legend class="modal__title">Register to {%s util.SiteName %}</legend>
+				<legend class="modal__title">Register to {%s cfg.WikiName %}</legend>
 
 				<label for="register-form__username">Username</label>
 				<br>
@@ -24,7 +24,7 @@
 				<a class="modal__action modal__cancel" href="/">Cancel</a>
 			</fieldset>
 		</form>
-	{% elseif util.UseFixedAuth %}
+	{% elseif cfg.UseFixedAuth %}
 		<p>Administrators have forbidden registration for this wiki. Administrators can make an account for you by hand; contact them.</p>
 		<p><a href="{%s rq.URL.RawQuery %}">← Go back</a></p>
 	{% else %}
@@ -43,7 +43,7 @@
 	{% if user.AuthUsed %}
 		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
-				<legend class="modal__title">Log in to {%s util.SiteName %}</legend>
+				<legend class="modal__title">Log in to {%s cfg.WikiName %}</legend>
 				<p>Use the data you were given by an administrator.</p>
 				<label for="login-form__username">Username</label>
 				<br>

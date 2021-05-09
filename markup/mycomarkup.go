@@ -3,12 +3,12 @@ package markup
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"html"
 	"regexp"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/link"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // A Mycomarkup-formatted document
@@ -63,14 +63,14 @@ func (md *MycoDoc) OpenGraphHTML() string {
 		ogTag("title", md.hyphaName),
 		ogTag("type", "article"),
 		ogTag("image", md.firstImageURL),
-		ogTag("url", util.URL+"/hypha/"+md.hyphaName),
+		ogTag("url", cfg.URL+"/hypha/"+md.hyphaName),
 		ogTag("determiner", ""),
 		ogTag("description", htmlTagRe.ReplaceAllString(md.description, "")),
 	}, "\n")
 }
 
 func (md *MycoDoc) ogFillVars() *MycoDoc {
-	md.firstImageURL = util.URL + "/favicon.ico"
+	md.firstImageURL = cfg.URL + "/favicon.ico"
 	foundDesc := false
 	foundImg := false
 	for _, line := range md.ast {
@@ -84,7 +84,7 @@ func (md *MycoDoc) ogFillVars() *MycoDoc {
 			if !foundImg && len(v.entries) > 0 {
 				md.firstImageURL = v.entries[0].srclink.ImgSrc()
 				if v.entries[0].srclink.Kind != link.LinkExternal {
-					md.firstImageURL = util.URL + md.firstImageURL
+					md.firstImageURL = cfg.URL + md.firstImageURL
 				}
 				foundImg = true
 			}

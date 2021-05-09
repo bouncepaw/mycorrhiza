@@ -3,6 +3,7 @@ package history
 import (
 	"bytes"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"html"
 	"log"
 	"os/exec"
@@ -167,7 +168,7 @@ func (rev *Revision) bestLink() string {
 func gitsh(args ...string) (out bytes.Buffer, err error) {
 	fmt.Printf("$ %v\n", args)
 	cmd := exec.Command(gitpath, args...)
-	cmd.Dir = util.WikiDir
+	cmd.Dir = cfg.WikiDir
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
@@ -179,7 +180,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 // silentGitsh is like gitsh, except it writes less to the stdout.
 func silentGitsh(args ...string) (out bytes.Buffer, err error) {
 	cmd := exec.Command(gitpath, args...)
-	cmd.Dir = util.WikiDir
+	cmd.Dir = cfg.WikiDir
 
 	b, err := cmd.CombinedOutput()
 	return *bytes.NewBuffer(b), err

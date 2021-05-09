@@ -11,7 +11,7 @@ import "net/http"
 import "github.com/bouncepaw/mycorrhiza/user"
 
 //line views/auth.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/util"
+import "github.com/bouncepaw/mycorrhiza/cfg"
 
 //line views/auth.qtpl:5
 import (
@@ -35,7 +35,7 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 	<section>
 	`)
 //line views/auth.qtpl:9
-	if util.UseRegistration {
+	if cfg.UseRegistration {
 //line views/auth.qtpl:9
 		qw422016.N().S(`
 		<form class="modal" method="post" action="/register?`)
@@ -46,7 +46,7 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">Register to `)
 //line views/auth.qtpl:12
-		qw422016.E().S(util.SiteName)
+		qw422016.E().S(cfg.WikiName)
 //line views/auth.qtpl:12
 		qw422016.N().S(`</legend>
 
@@ -65,7 +65,7 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 		</form>
 	`)
 //line views/auth.qtpl:27
-	} else if util.UseFixedAuth {
+	} else if cfg.UseFixedAuth {
 //line views/auth.qtpl:27
 		qw422016.N().S(`
 		<p>Administrators have forbidden registration for this wiki. Administrators can make an account for you by hand; contact them.</p>
@@ -139,7 +139,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer) {
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">Log in to `)
 //line views/auth.qtpl:46
-		qw422016.E().S(util.SiteName)
+		qw422016.E().S(cfg.WikiName)
 //line views/auth.qtpl:46
 		qw422016.N().S(`</legend>
 				<p>Use the data you were given by an administrator.</p>

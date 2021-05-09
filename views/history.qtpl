@@ -1,5 +1,6 @@
 {% import "net/http" %}
 
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
@@ -76,7 +77,7 @@ if err != nil {
 <li class="rc-entry__time"><time>{%s rev.TimeString() %}</time></li>
 <li class="rc-entry__hash">{%s rev.Hash %}</li>
 <li class="rc-entry__links">{%s= rev.HyphaeLinksHTML() %}</li>
-<li class="rc-entry__msg">{%s rev.Message %} {% if rev.Username != "anon" %}<span class="rc-entry__author">by <a href="/hypha/{%s util.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>{% endif %}</li>
+<li class="rc-entry__msg">{%s rev.Message %} {% if rev.Username != "anon" %}<span class="rc-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>{% endif %}</li>
 {% endfunc %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}

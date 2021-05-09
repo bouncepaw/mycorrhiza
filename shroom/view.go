@@ -1,6 +1,7 @@
 package shroom
 
 import (
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io/ioutil"
 	"os"
 
@@ -24,7 +25,7 @@ func FetchTextPart(h *hyphae.Hypha) (string, error) {
 }
 
 func SetHeaderLinks() {
-	if userLinksHypha := hyphae.ByName(util.HeaderLinksHypha); !userLinksHypha.Exists {
+	if userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha); !userLinksHypha.Exists {
 		util.SetDefaultHeaderLinks()
 	} else {
 		contents, err := ioutil.ReadFile(userLinksHypha.TextPath)

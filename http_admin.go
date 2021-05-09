@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 
 	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
@@ -38,6 +38,6 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	prepareRq(rq)
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()
-		http.Redirect(w, rq, "/hypha/"+util.UserHypha, http.StatusSeeOther)
+		http.Redirect(w, rq, "/hypha/"+cfg.UserHypha, http.StatusSeeOther)
 	}
 }

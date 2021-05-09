@@ -1,12 +1,13 @@
 package util
 
 import (
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"strings"
 )
 
 func SetDefaultHeaderLinks() {
 	HeaderLinks = []HeaderLink{
-		{"/", SiteName},
+		{"/", cfg.WikiName},
 		{"/recent-changes", "Recent changes"},
 		{"/list", "All hyphae"},
 		{"/random", "Random"},
@@ -18,7 +19,7 @@ func ParseHeaderLinks(text string, rocketlinkλ func(string, string) (string, st
 	HeaderLinks = []HeaderLink{}
 	for _, line := range strings.Split(text, "\n") {
 		if strings.HasPrefix(line, "=>") {
-			href, text, _ := rocketlinkλ(line, HeaderLinksHypha)
+			href, text, _ := rocketlinkλ(line, cfg.HeaderLinksHypha)
 			HeaderLinks = append(HeaderLinks, HeaderLink{
 				Href:    href,
 				Display: text,

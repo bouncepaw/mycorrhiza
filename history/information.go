@@ -4,20 +4,20 @@ package history
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/gorilla/feeds"
 )
 
 func recentChangesFeed() *feeds.Feed {
 	feed := &feeds.Feed{
 		Title:       "Recent changes",
-		Link:        &feeds.Link{Href: util.URL},
+		Link:        &feeds.Link{Href: cfg.URL},
 		Description: "List of 30 recent changes on the wiki",
 		Author:      &feeds.Author{Name: "Wikimind", Email: "wikimind@mycorrhiza"},
 		Updated:     time.Now(),
@@ -44,7 +44,7 @@ func recentChangesFeed() *feeds.Feed {
 			Description: rev.descriptionForFeed(),
 			Created:     rev.Time,
 			Updated:     rev.Time,
-			Link:        &feeds.Link{Href: util.URL + rev.bestLink()},
+			Link:        &feeds.Link{Href: cfg.URL + rev.bestLink()},
 		})
 	}
 	return feed
@@ -141,7 +141,7 @@ func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
 	author := ""
 	if rev.Username != "anon" {
 		author = fmt.Sprintf(`
-		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, util.UserHypha, rev.Username)
+		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, cfg.UserHypha, rev.Username)
 	}
 	return fmt.Sprintf(`
 <li class="history__entry">
@@ -176,7 +176,7 @@ func parseRevisionLine(line string) Revision {
 
 // See how the file with `filepath` looked at commit with `hash`.
 func FileAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, util.WikiDir+"/"))
+	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, cfg.WikiDir+"/"))
 	return out.String(), err
 }
 

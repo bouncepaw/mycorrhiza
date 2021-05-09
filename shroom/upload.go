@@ -3,6 +3,7 @@ package shroom
 import (
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -13,7 +14,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func UploadText(h *hyphae.Hypha, data []byte, u *user.User) (hop *history.HistoryOp, errtitle string) {
@@ -56,7 +56,7 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte, u *user.User) (*history.HistoryOp, string) {
 	var (
-		fullPath         = filepath.Join(util.WikiDir, h.Name+ext)
+		fullPath         = filepath.Join(cfg.WikiDir, h.Name+ext)
 		originalFullPath = &h.TextPath
 	)
 	if hop.Type == history.TypeEditBinary {

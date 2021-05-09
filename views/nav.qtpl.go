@@ -11,10 +11,10 @@ import "net/http"
 import "strings"
 
 //line views/nav.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/user"
+import "github.com/bouncepaw/mycorrhiza/cfg"
 
 //line views/nav.qtpl:4
-import "github.com/bouncepaw/mycorrhiza/util"
+import "github.com/bouncepaw/mycorrhiza/user"
 
 // This is the <nav> seen on top of many pages.
 
@@ -164,7 +164,7 @@ func StreamUserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 			qw422016.N().S(`
 	<a href="/hypha/`)
 //line views/nav.qtpl:55
-			qw422016.E().S(util.UserHypha)
+			qw422016.E().S(cfg.UserHypha)
 //line views/nav.qtpl:55
 			qw422016.N().S(`/`)
 //line views/nav.qtpl:55

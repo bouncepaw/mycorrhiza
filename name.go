@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"strings"
@@ -19,7 +20,7 @@ func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 		}
 	}
 	log.Println("HyphaNameFromRq: this request is invalid, fallback to home hypha")
-	return util.HomePage
+	return cfg.HomeHypha
 }
 
 // geminiHyphaNameFromRq extracts hypha name from gemini request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".

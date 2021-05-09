@@ -2,10 +2,10 @@ package shroom
 
 import (
 	"errors"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
@@ -31,8 +31,8 @@ func init() {
 	}
 	markup.HyphaImageForOG = func(hyphaName string) string {
 		if h := hyphae.ByName(hyphaName); h.Exists && h.BinaryPath != "" {
-			return util.URL + "/binary/" + hyphaName
+			return cfg.URL + "/binary/" + hyphaName
 		}
-		return util.URL + "/favicon.ico"
+		return cfg.URL + "/favicon.ico"
 	}
 }

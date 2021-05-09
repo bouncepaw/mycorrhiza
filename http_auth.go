@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io"
 	"log"
 	"net/http"
@@ -20,7 +21,7 @@ func init() {
 
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	prepareRq(rq)
-	if !util.UseRegistration {
+	if !cfg.UseRegistration {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	if rq.Method == http.MethodGet {
