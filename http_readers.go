@@ -29,7 +29,7 @@ func init() {
 }
 
 func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		hyphaName = HyphaNameFromRq(rq, "attachment")
 		h         = hyphae.ByName(hyphaName)
@@ -43,7 +43,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		shorterUrl      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
 		firstSlashIndex = strings.IndexRune(shorterUrl, '/')
@@ -61,7 +61,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 
 // handlerRevision displays a specific revision of text part a page
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
@@ -88,7 +88,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 
 // handlerText serves raw source text of the hypha.
 func handlerText(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	hyphaName := HyphaNameFromRq(rq, "text")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.TextPath)
@@ -99,7 +99,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 
 // handlerBinary serves binary part of the hypha.
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	hyphaName := HyphaNameFromRq(rq, "binary")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.BinaryPath)
@@ -110,7 +110,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 
 // handlerHypha is the main hypha action that displays the hypha and the binary upload form along with some navigation.
 func handlerHypha(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		hyphaName = HyphaNameFromRq(rq, "page", "hypha")
 		h         = hyphae.ByName(hyphaName)

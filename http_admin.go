@@ -19,7 +19,7 @@ func initAdmin() {
 }
 
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if user.CanProceed(rq, "admin") {
 		w.Header().Set("Content-Type", "text/html;charset=utf-8")
 		w.WriteHeader(http.StatusOK)
@@ -28,14 +28,14 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if user.CanProceed(rq, "admin/shutdown") && rq.Method == "POST" {
 		log.Fatal("An admin commanded the wiki to shutdown")
 	}
 }
 
 func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()
 		http.Redirect(w, rq, "/hypha/"+util.UserHypha, http.StatusSeeOther)

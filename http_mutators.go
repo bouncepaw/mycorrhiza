@@ -35,7 +35,7 @@ func factoryHandlerAsker(
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
-		log.Println(rq.URL)
+		prepareRq(rq)
 		var (
 			hyphaName = HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
@@ -85,7 +85,7 @@ func factoryHandlerConfirmer(
 	confirmer func(*hyphae.Hypha, *user.User, *http.Request) (*history.HistoryOp, string),
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
-		log.Println(rq.URL)
+		prepareRq(rq)
 		var (
 			hyphaName = HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
@@ -129,7 +129,7 @@ var handlerRenameConfirm = factoryHandlerConfirmer(
 
 // handlerEdit shows the edit form. It doesn't edit anything actually.
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		hyphaName    = HyphaNameFromRq(rq, "edit")
 		h            = hyphae.ByName(hyphaName)
@@ -166,7 +166,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 
 // handlerUploadText uploads a new text part for the hypha.
 func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		hyphaName = HyphaNameFromRq(rq, "upload-text")
 		h         = hyphae.ByName(hyphaName)
@@ -206,7 +206,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 
 // handlerUploadBinary uploads a new binary part for the hypha.
 func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	rq.ParseMultipartForm(10 << 20) // Set upload limit
 	var (
 		hyphaName          = HyphaNameFromRq(rq, "upload-binary")

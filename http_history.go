@@ -23,7 +23,7 @@ func init() {
 
 // handlerHistory lists all revisions of a hypha
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	hyphaName := HyphaNameFromRq(rq, "history")
 	var list string
 
@@ -40,7 +40,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 
 // Recent changes
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
@@ -53,7 +53,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 }
 
 func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if content, err := f(); err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)

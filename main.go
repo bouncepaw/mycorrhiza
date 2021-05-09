@@ -48,7 +48,7 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 
 // Show all hyphae
 func handlerList(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
 }
 
@@ -57,7 +57,7 @@ var base = views.BaseHTML
 
 // Reindex all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be an admin to reindex hyphae.")
 		log.Println("Rejected", rq.URL)
@@ -75,7 +75,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 
 // Update header links by reading the configured hypha, if there is any, or resorting to default values.
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be a moderator to update header links.")
 		log.Println("Rejected", rq.URL)
@@ -87,7 +87,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 
 // Redirect to a random hypha.
 func handlerRandom(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		randomHyphaName string
 		amountOfHyphae  int = hyphae.Count()
@@ -108,7 +108,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if _, err := os.Stat(util.WikiDir + "/static/common.css"); err == nil {
 		http.ServeFile(w, rq, util.WikiDir+"/static/common.css")
 	} else {
@@ -121,7 +121,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	w.Header().Set("Content-Type", "text/javascript;charset=utf-8")
 	w.Write([]byte(assets.ToolbarJS()))
 }
@@ -178,6 +178,11 @@ Disallow: /
 Crawl-delay: 5`))
 }
 
+func prepareRq(rq *http.Request) {
+	log.Println(rq.RequestURI)
+	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
+}
+
 func main() {
 	parseCliArgs()
 
@@ -210,12 +215,12 @@ func main() {
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
 	// See http_history.go for /history/, /recent-changes
-	http.HandleFunc("/list", handlerList)
-	http.HandleFunc("/reindex", handlerReindex)
-	http.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
-	http.HandleFunc("/random", handlerRandom)
-	http.HandleFunc("/about", handlerAbout)
-	http.HandleFunc("/user-list", handlerUserList)
+	http.HandleFunc("/list/", handlerList)
+	http.HandleFunc("/reindex/", handlerReindex)
+	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
+	http.HandleFunc("/random/", handlerRandom)
+	http.HandleFunc("/about/", handlerAbout)
+	http.HandleFunc("/user-list/", handlerUserList)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")

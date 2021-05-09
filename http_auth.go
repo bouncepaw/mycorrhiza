@@ -19,7 +19,7 @@ func init() {
 }
 
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	if !util.UseRegistration {
 		w.WriteHeader(http.StatusForbidden)
 	}
@@ -69,7 +69,7 @@ func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	var (
 		username = util.CanonicalName(rq.PostFormValue("username"))
 		password = rq.PostFormValue("password")
@@ -83,7 +83,7 @@ func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerLogin(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	prepareRq(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if user.AuthUsed {
 		w.WriteHeader(http.StatusOK)
