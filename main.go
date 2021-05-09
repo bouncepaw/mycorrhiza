@@ -10,6 +10,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -224,7 +225,9 @@ func main() {
 	http.HandleFunc("/static/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/hypha/"+util.HomePage, http.StatusSeeOther)
+		addr, _ := url.Parse("/hypha/" + util.HomePage) // Let's pray it never fails
+		rq.URL = addr
+		handlerHypha(w, rq)
 	})
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+util.ServerPort, nil))
 }
