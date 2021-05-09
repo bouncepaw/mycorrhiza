@@ -13,7 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
+func initHistory() {
 	http.HandleFunc("/history/", handlerHistory)
 	http.HandleFunc("/recent-changes/", handlerRecentChanges)
 	http.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
@@ -21,7 +21,7 @@ func init() {
 	http.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 }
 
-// handlerHistory lists all revisions of a hypha
+// handlerHistory lists all revisions of a hypha.
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "history")
@@ -38,7 +38,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 		views.BaseHTML(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
 }
 
-// Recent changes
+// handlerRecentChanges displays the /recent-changes/ page.
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
@@ -52,6 +52,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+// genericHandlerOfFeeds is a helper function for the web feed handlers.
 func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
 	util.PrepareRq(rq)
 	if content, err := f(); err != nil {

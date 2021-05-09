@@ -15,7 +15,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
+func initStuff() {
 	http.HandleFunc("/list/", handlerList)
 	http.HandleFunc("/reindex/", handlerReindex)
 	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
@@ -33,7 +33,7 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
-		HttpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be an admin to reindex hyphae.")
+		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be an admin to reindex hyphae.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -51,7 +51,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
-		HttpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be a moderator to update header links.")
+		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be a moderator to update header links.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -67,7 +67,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 		amountOfHyphae  = hyphae.Count()
 	)
 	if amountOfHyphae == 0 {
-		HttpErr(w, http.StatusNotFound, cfg.HomeHypha, "There are no hyphae",
+		httpErr(w, http.StatusNotFound, cfg.HomeHypha, "There are no hyphae",
 			"It is impossible to display a random hypha because the wiki does not contain any hyphae")
 		return
 	}

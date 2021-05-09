@@ -1,6 +1,7 @@
 package web
 
 import (
+	"io"
 	"log"
 	"net/http"
 
@@ -10,32 +11,38 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-// InitAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
-func InitAdmin() {
+// initAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
+func initAdmin() {
 	if user.AuthUsed {
-		http.HandleFunc("/admin", HandlerAdmin)
-		http.HandleFunc("/admin/shutdown", HandlerAdminShutdown)
-		http.HandleFunc("/admin/reindex-users", HandlerAdminReindexUsers)
+		http.HandleFunc("/admin", handlerAdmin)
+		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
+		http.HandleFunc("/admin/reindex-users", handlerAdminReindexUsers)
 	}
 }
 
-func HandlerAdmin(w http.ResponseWriter, rq *http.Request) {
+// handlerAdmin provides the admin panel.
+func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if user.CanProceed(rq, "admin") {
 		w.Header().Set("Content-Type", "text/html;charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(views.BaseHTML("Admin panel", views.AdminPanelHTML(), user.FromRequest(rq))))
+		_, err := io.WriteString(w, views.BaseHTML("Admin panel", views.AdminPanelHTML(), user.FromRequest(rq)))
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 
-func HandlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
+// handlerAdminShutdown kills the wiki.
+func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if user.CanProceed(rq, "admin/shutdown") && rq.Method == "POST" {
 		log.Fatal("An admin commanded the wiki to shutdown")
 	}
 }
 
-func HandlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
+// handlerAdminReindexUsers reinitialises the user system.
+func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()

@@ -11,14 +11,20 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
-	http.HandleFunc("/register", handlerRegister)
+func initAuth() {
+	if !user.AuthUsed {
+		return
+	}
+	if cfg.UseRegistration {
+		http.HandleFunc("/register", handlerRegister)
+	}
 	http.HandleFunc("/login", handlerLogin)
 	http.HandleFunc("/login-data", handlerLoginData)
 	http.HandleFunc("/logout", handlerLogout)
 	http.HandleFunc("/logout-confirm", handlerLogoutConfirm)
 }
 
+// handlerRegister both displays the register form (GET) and registers users (POST).
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if !cfg.UseRegistration {
@@ -48,6 +54,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+// handlerLogout shows the logout form.
 func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u   = user.FromRequest(rq)
@@ -64,11 +71,29 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 	w.Write([]byte(views.BaseHTML("Logout?", views.LogoutHTML(can), u)))
 }
 
+// handlerLogoutConfirm logs the user out.
+//
+// TODO: merge into handlerLogout as POST method.
 func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 	user.LogoutFromRequest(w, rq)
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
+// handlerLogin shows the login form.
+func handlerLogin(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	if user.AuthUsed {
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+	}
+	w.Write([]byte(views.BaseHTML("Login", views.LoginHTML(), user.EmptyUser())))
+}
+
+// handlerLoginData logs the user in.
+//
+// TODO: merge into handlerLogin as POST method.
 func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
@@ -81,15 +106,4 @@ func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
 	}
-}
-
-func handlerLogin(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	if user.AuthUsed {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		w.WriteHeader(http.StatusForbidden)
-	}
-	w.Write([]byte(views.BaseHTML("Login", views.LoginHTML(), user.EmptyUser())))
 }

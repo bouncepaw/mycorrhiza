@@ -18,7 +18,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
+func initReaders() {
 	http.HandleFunc("/page/", handlerHypha)
 	http.HandleFunc("/hypha/", handlerHypha)
 	http.HandleFunc("/text/", handlerText)

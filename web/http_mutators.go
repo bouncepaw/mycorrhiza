@@ -14,7 +14,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
+func initMutators() {
 	// Those that do not actually mutate anything:
 	http.HandleFunc("/edit/", handlerEdit)
 	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
@@ -42,7 +42,7 @@ func factoryHandlerAsker(
 			u         = user.FromRequest(rq)
 		)
 		if err, errtitle := asker(u, h); err != nil {
-			HttpErr(
+			httpErr(
 				w,
 				http.StatusInternalServerError,
 				hyphaName,
@@ -92,7 +92,7 @@ func factoryHandlerConfirmer(
 			u         = user.FromRequest(rq)
 		)
 		if hop, errtitle := confirmer(h, u, rq); hop.HasErrors() {
-			HttpErr(w, http.StatusInternalServerError, hyphaName,
+			httpErr(w, http.StatusInternalServerError, hyphaName,
 				errtitle,
 				hop.FirstErrorText())
 			return
@@ -139,7 +139,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		u            = user.FromRequest(rq)
 	)
 	if err, errtitle := shroom.CanEdit(u, h); err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
 		return
@@ -148,7 +148,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		textAreaFill, err = shroom.FetchTextPart(h)
 		if err != nil {
 			log.Println(err)
-			HttpErr(w, http.StatusInternalServerError, hyphaName,
+			httpErr(w, http.StatusInternalServerError, hyphaName,
 				"Error",
 				"Could not fetch text data")
 			return
@@ -180,7 +180,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	if action != "Preview" {
 		hop, errtitle = shroom.UploadText(h, []byte(textData), u)
 		if hop.HasErrors() {
-			HttpErr(w, http.StatusForbidden, hyphaName,
+			httpErr(w, http.StatusForbidden, hyphaName,
 				errtitle,
 				hop.FirstErrorText())
 			return
@@ -215,12 +215,12 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		file, handler, err = rq.FormFile("binary")
 	)
 	if err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, http.StatusInternalServerError, hyphaName,
 			"Error",
 			err.Error())
 	}
 	if err, errtitle := shroom.CanAttach(u, h); err != nil {
-		HttpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
 	}
@@ -240,7 +240,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if hop.HasErrors() {
-		HttpErr(w, http.StatusInternalServerError, hyphaName, errtitle, hop.FirstErrorText())
+		httpErr(w, http.StatusInternalServerError, hyphaName, errtitle, hop.FirstErrorText())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)

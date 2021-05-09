@@ -27,6 +27,8 @@ func Index(path string) {
 			h.Insert()
 		}
 	}
+
+	log.Println("Indexed", Count(), "hyphae")
 }
 
 // indexHelper finds all hypha files in the full `path` and sends them to the channel. Handling of duplicate entries and attachment and counting them is up to the caller.

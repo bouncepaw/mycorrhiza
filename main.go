@@ -32,16 +32,15 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Wiki storage directory is", cfg.WikiDir)
+
+	// Init the subsystems:
 	hyphae.Index(cfg.WikiDir)
-	log.Println("Indexed", hyphae.Count(), "hyphae")
-
 	user.InitUserDatabase()
-
 	history.Start(cfg.WikiDir)
 	shroom.SetHeaderLinks()
 
+	// Network:
 	go handleGemini()
-
 	web.Init()
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+cfg.HTTPPort, nil))
 }

@@ -1,3 +1,6 @@
+// Package web contains web handlers and initialization stuff.
+//
+// It exports just one function: Init. Call it if you want to have web capabilities.
 package web
 
 import (
@@ -17,8 +20,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-// HttpErr is used by many handlers to signal errors in a compact way.
-func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
+// httpErr is used by many handlers to signal errors in a compact way.
+func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	log.Println(errMsg, "for", name)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(status)
@@ -103,14 +106,14 @@ Crawl-delay: 5`))
 }
 
 func Init() {
-	// See http_admin.go for /admin, /admin/*
-	InitAdmin()
-	// See http_readers.go for /page/, /hypha/, /text/, /binary/, /attachment/
-	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
-	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
+	initAdmin()
+	initReaders()
+	initMutators()
+	initAuth()
+	initHistory()
+	initStuff()
+
 	http.HandleFunc("/user-list/", handlerUserList)
-	// See http_history.go for /history/, /recent-changes
-	// See http_stuff.go for list, reindex, update-header-links, random, about
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(cfg.WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, cfg.WikiDir+"/static/favicon.ico")
