@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -48,8 +49,6 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 // This part is present in all html documents.
 var base = views.BaseHTML
 
-// Stop the wiki
-
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	prepareRq(rq)
 	if _, err := os.Stat(cfg.WikiDir + "/static/common.css"); err == nil {
@@ -69,33 +68,34 @@ func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
 	w.Write([]byte(assets.ToolbarJS()))
 }
 
+// handlerIcon serves the requested icon. All icons are distributed as part of the Mycorrhiza binary.
+//
+// See assets/assets/icon/ for icons themselves, see assets/assets.qtpl for their sources.
 func handlerIcon(w http.ResponseWriter, rq *http.Request) {
-	iconName := strings.TrimPrefix(rq.URL.Path, "/static/icon/")
+	iconName := strings.TrimPrefix(rq.URL.Path, "/assets/icon/")
 	if iconName == "https" {
 		iconName = "http"
 	}
-	files, err := ioutil.ReadDir(WikiDir + "/static/icon")
-	if err == nil {
-		for _, f := range files {
-			if strings.HasPrefix(f.Name(), iconName+"-protocol-icon") {
-				http.ServeFile(w, rq, WikiDir+"/static/icon/"+f.Name())
-				return
-			}
-		}
-	}
 	w.Header().Set("Content-Type", "image/svg+xml")
-	switch iconName {
-	case "gemini":
-		w.Write([]byte(assets.IconGemini()))
-	case "mailto":
-		w.Write([]byte(assets.IconMailto()))
-	case "gopher":
-		w.Write([]byte(assets.IconGopher()))
-	case "feed":
-		w.Write([]byte(assets.IconFeed()))
-	default:
-		w.Write([]byte(assets.IconHTTP()))
+	icon := func() string {
+		switch iconName {
+		case "gemini":
+			return assets.IconGemini()
+		case "mailto":
+			return assets.IconMailto()
+		case "gopher":
+			return assets.IconGopher()
+		case "feed":
+			return assets.IconFeed()
+		default:
+			return assets.IconHTTP()
+		}
+	}()
+	_, err := io.WriteString(w, icon)
+	if err != nil {
+		log.Println(err)
 	}
+
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
@@ -160,7 +160,7 @@ func main() {
 	})
 	http.HandleFunc("/static/common.css", handlerStyle)
 	http.HandleFunc("/static/toolbar.js", handlerToolbar)
-	http.HandleFunc("/static/icon/", handlerIcon)
+	http.HandleFunc("/assets/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		addr, _ := url.Parse("/hypha/" + cfg.HomeHypha) // Let's pray it never fails
