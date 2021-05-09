@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -46,66 +45,10 @@ func HttpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	)
 }
 
-// Show all hyphae
-func handlerList(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
-}
-
 // This part is present in all html documents.
 var base = views.BaseHTML
 
-// Reindex all hyphae by checking the wiki storage directory anew.
-func handlerReindex(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	if ok := user.CanProceed(rq, "reindex"); !ok {
-		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be an admin to reindex hyphae.")
-		log.Println("Rejected", rq.URL)
-		return
-	}
-	hyphae.ResetCount()
-	log.Println("Wiki storage directory is", WikiDir)
-	log.Println("Start indexing hyphae...")
-	hyphae.Index(WikiDir)
-	log.Println("Indexed", hyphae.Count(), "hyphae")
-	http.Redirect(w, rq, "/", http.StatusSeeOther)
-}
-
 // Stop the wiki
-
-// Update header links by reading the configured hypha, if there is any, or resorting to default values.
-func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	if ok := user.CanProceed(rq, "update-header-links"); !ok {
-		HttpErr(w, http.StatusForbidden, util.HomePage, "Not enough rights", "You must be a moderator to update header links.")
-		log.Println("Rejected", rq.URL)
-		return
-	}
-	shroom.SetHeaderLinks()
-	http.Redirect(w, rq, "/", http.StatusSeeOther)
-}
-
-// Redirect to a random hypha.
-func handlerRandom(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	var (
-		randomHyphaName string
-		amountOfHyphae  int = hyphae.Count()
-	)
-	if amountOfHyphae == 0 {
-		HttpErr(w, http.StatusNotFound, util.HomePage, "There are no hyphae",
-			"It is not possible to display a random hypha because the wiki does not contain any hyphae")
-		return
-	}
-	i := rand.Intn(amountOfHyphae)
-	for h := range hyphae.YieldExistingHyphae() {
-		if i == 0 {
-			randomHyphaName = h.Name
-		}
-		i--
-	}
-	http.Redirect(w, rq, "/hypha/"+randomHyphaName, http.StatusSeeOther)
-}
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	prepareRq(rq)
@@ -153,12 +96,6 @@ func handlerIcon(w http.ResponseWriter, rq *http.Request) {
 	default:
 		w.Write([]byte(assets.IconHTTP()))
 	}
-}
-
-func handlerAbout(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base("About "+util.SiteName, views.AboutHTML(), user.FromRequest(rq))))
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
@@ -214,13 +151,9 @@ func main() {
 	// See http_readers.go for /page/, /hypha/, /text/, /binary/, /attachment/
 	// See http_mutators.go for /upload-binary/, /upload-text/, /edit/, /delete-ask/, /delete-confirm/, /rename-ask/, /rename-confirm/, /unattach-ask/, /unattach-confirm/
 	// See http_auth.go for /login, /login-data, /logout, /logout-confirm
-	// See http_history.go for /history/, /recent-changes
-	http.HandleFunc("/list/", handlerList)
-	http.HandleFunc("/reindex/", handlerReindex)
-	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
-	http.HandleFunc("/random/", handlerRandom)
-	http.HandleFunc("/about/", handlerAbout)
 	http.HandleFunc("/user-list/", handlerUserList)
+	// See http_history.go for /history/, /recent-changes
+	// See http_stuff.go for list, reindex, update-header-links, random, about
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(WikiDir+"/static"))))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, WikiDir+"/static/favicon.ico")
