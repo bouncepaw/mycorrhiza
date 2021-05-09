@@ -41,9 +41,8 @@ func parseCliArgs() {
 		log.Fatal("Error: pass a wiki directory")
 	}
 
-	var err error
-	WikiDir, err = filepath.Abs(args[0])
-	cfg.WikiDir = WikiDir
+	wikiDir, err := filepath.Abs(args[0])
+	cfg.WikiDir = wikiDir
 	if err != nil {
 		log.Fatal(err)
 	}

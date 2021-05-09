@@ -1,4 +1,4 @@
-package main
+package web
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ func init() {
 
 // handlerHistory lists all revisions of a hypha
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	hyphaName := HyphaNameFromRq(rq, "history")
+	util.PrepareRq(rq)
+	hyphaName := util.HyphaNameFromRq(rq, "history")
 	var list string
 
 	// History can be found for files that do not exist anymore.
@@ -35,25 +35,25 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
-		base(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
+		views.BaseHTML(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
 }
 
 // Recent changes
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
 	)
 	if err == nil && n < 101 {
-		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
+		util.HTTP200Page(w, views.BaseHTML(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}
 }
 
 func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	if content, err := f(); err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)

@@ -1,5 +1,5 @@
 // http_stuff.go is used for meta stuff about the wiki or all hyphae at once.
-package main
+package web
 
 import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -25,22 +25,22 @@ func init() {
 
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	util.HTTP200Page(w, base("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
+	util.PrepareRq(rq)
+	util.HTTP200Page(w, views.BaseHTML("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		HttpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be an admin to reindex hyphae.")
 		log.Println("Rejected", rq.URL)
 		return
 	}
 	hyphae.ResetCount()
-	log.Println("Wiki storage directory is", WikiDir)
+	log.Println("Wiki storage directory is", cfg.WikiDir)
 	log.Println("Start indexing hyphae...")
-	hyphae.Index(WikiDir)
+	hyphae.Index(cfg.WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
@@ -49,7 +49,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 //
 // See https://mycorrhiza.lesarbr.es/hypha/configuration/header
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		HttpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be a moderator to update header links.")
 		log.Println("Rejected", rq.URL)
@@ -61,7 +61,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 
 // handlerRandom redirects to a random hypha.
 func handlerRandom(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
 		randomHyphaName string
 		amountOfHyphae  = hyphae.Count()
@@ -85,7 +85,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, err := io.WriteString(w, base("About "+cfg.WikiName, views.AboutHTML(), user.FromRequest(rq)))
+	_, err := io.WriteString(w, views.BaseHTML("About "+cfg.WikiName, views.AboutHTML(), user.FromRequest(rq)))
 	if err != nil {
 		log.Println(err)
 	}

@@ -1,4 +1,4 @@
-package main
+package web
 
 import (
 	"fmt"
@@ -35,9 +35,9 @@ func factoryHandlerAsker(
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
-		prepareRq(rq)
+		util.PrepareRq(rq)
 		var (
-			hyphaName = HyphaNameFromRq(rq, actionPath)
+			hyphaName = util.HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)
@@ -52,7 +52,7 @@ func factoryHandlerAsker(
 		}
 		util.HTTP200Page(
 			w,
-			base(
+			views.BaseHTML(
 				fmt.Sprintf(succTitleTemplate, hyphaName),
 				succPageTemplate(rq, hyphaName, h.Exists),
 				u))
@@ -85,9 +85,9 @@ func factoryHandlerConfirmer(
 	confirmer func(*hyphae.Hypha, *user.User, *http.Request) (*history.HistoryOp, string),
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
-		prepareRq(rq)
+		util.PrepareRq(rq)
 		var (
-			hyphaName = HyphaNameFromRq(rq, actionPath)
+			hyphaName = util.HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)
@@ -129,9 +129,9 @@ var handlerRenameConfirm = factoryHandlerConfirmer(
 
 // handlerEdit shows the edit form. It doesn't edit anything actually.
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
-		hyphaName    = HyphaNameFromRq(rq, "edit")
+		hyphaName    = util.HyphaNameFromRq(rq, "edit")
 		h            = hyphae.ByName(hyphaName)
 		warning      string
 		textAreaFill string
@@ -158,7 +158,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	}
 	util.HTTP200Page(
 		w,
-		base(
+		views.BaseHTML(
 			"Edit "+hyphaName,
 			views.EditHTML(rq, hyphaName, textAreaFill, warning),
 			u))
@@ -166,9 +166,9 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 
 // handlerUploadText uploads a new text part for the hypha.
 func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
-		hyphaName = HyphaNameFromRq(rq, "upload-text")
+		hyphaName = util.HyphaNameFromRq(rq, "upload-text")
 		h         = hyphae.ByName(hyphaName)
 		textData  = rq.PostFormValue("text")
 		action    = rq.PostFormValue("action")
@@ -190,7 +190,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	if action == "Preview" {
 		util.HTTP200Page(
 			w,
-			base(
+			views.BaseHTML(
 				"Preview "+hyphaName,
 				views.PreviewHTML(
 					rq,
@@ -206,10 +206,10 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 
 // handlerUploadBinary uploads a new binary part for the hypha.
 func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	rq.ParseMultipartForm(10 << 20) // Set upload limit
 	var (
-		hyphaName          = HyphaNameFromRq(rq, "upload-binary")
+		hyphaName          = util.HyphaNameFromRq(rq, "upload-binary")
 		h                  = hyphae.ByName(hyphaName)
 		u                  = user.FromRequest(rq)
 		file, handler, err = rq.FormFile("binary")

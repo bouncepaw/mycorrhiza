@@ -4,11 +4,17 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
 	"unicode"
 )
+
+func PrepareRq(rq *http.Request) {
+	log.Println(rq.RequestURI)
+	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
+}
 
 // LettersNumbersOnly keeps letters and numbers only in the given string.
 func LettersNumbersOnly(s string) string {
@@ -92,4 +98,16 @@ func IsCanonicalName(name string) bool {
 
 func IsPossibleUsername(username string) bool {
 	return UsernamePattern.MatchString(strings.TrimSpace(username))
+}
+
+// HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
+func HyphaNameFromRq(rq *http.Request, actions ...string) string {
+	p := rq.URL.Path
+	for _, action := range actions {
+		if strings.HasPrefix(p, "/"+action+"/") {
+			return CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
+		}
+	}
+	log.Println("HyphaNameFromRq: this request is invalid, fallback to home hypha")
+	return cfg.HomeHypha
 }

@@ -1,4 +1,4 @@
-package main
+package web
 
 import (
 	"fmt"
@@ -29,9 +29,9 @@ func init() {
 }
 
 func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
-		hyphaName = HyphaNameFromRq(rq, "attachment")
+		hyphaName = util.HyphaNameFromRq(rq, "attachment")
 		h         = hyphae.ByName(hyphaName)
 		u         = user.FromRequest(rq)
 	)
@@ -43,7 +43,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
 		shorterUrl      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
 		firstSlashIndex = strings.IndexRune(shorterUrl, '/')
@@ -61,7 +61,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 
 // handlerRevision displays a specific revision of text part a page
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
@@ -83,13 +83,13 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(base(util.BeautifulName(hyphaName), page, u)))
+	w.Write([]byte(views.BaseHTML(util.BeautifulName(hyphaName), page, u)))
 }
 
 // handlerText serves raw source text of the hypha.
 func handlerText(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	hyphaName := HyphaNameFromRq(rq, "text")
+	util.PrepareRq(rq)
+	hyphaName := util.HyphaNameFromRq(rq, "text")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.TextPath)
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
@@ -99,8 +99,8 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 
 // handlerBinary serves binary part of the hypha.
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
-	hyphaName := HyphaNameFromRq(rq, "binary")
+	util.PrepareRq(rq)
+	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.BinaryPath)
 		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath)))
@@ -110,9 +110,9 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 
 // handlerHypha is the main hypha action that displays the hypha and the binary upload form along with some navigation.
 func handlerHypha(w http.ResponseWriter, rq *http.Request) {
-	prepareRq(rq)
+	util.PrepareRq(rq)
 	var (
-		hyphaName = HyphaNameFromRq(rq, "page", "hypha")
+		hyphaName = util.HyphaNameFromRq(rq, "page", "hypha")
 		h         = hyphae.ByName(hyphaName)
 		contents  string
 		openGraph string
