@@ -1,6 +1,6 @@
-// http_stuff.go is used for meta stuff about the wiki or all hyphae at once.
 package web
 
+// stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io"

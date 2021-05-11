@@ -2,6 +2,7 @@
 //go:generate qtc -dir=assets
 //go:generate qtc -dir=views
 //go:generate qtc -dir=tree
+// Command mycorrhiza is a program that runs a mycorrhiza wiki.
 package main
 
 import (
@@ -21,7 +22,7 @@ func main() {
 	parseCliArgs()
 
 	// It is ok if the path is ""
-	cfg.ReadConfigFile(cfg.ConfigFilePath)
+	cfg.ReadConfigFile()
 
 	if err := files.CalculatePaths(); err != nil {
 		log.Fatal(err)

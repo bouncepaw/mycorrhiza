@@ -1,3 +1,4 @@
+// Package cfg contains global variables that represent the current wiki configuration, including CLI options, configuration file values and header links.
 package cfg
 
 import (
@@ -8,6 +9,9 @@ import (
 	"github.com/go-ini/ini"
 )
 
+// These variables represent the configuration. You are not meant to modify them after they were set.
+//
+// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for their docs.
 var (
 	WikiName      string
 	NaviTitleIcon string
@@ -20,9 +24,6 @@ var (
 	URL                   string
 	GeminiCertificatePath string
 
-	WikiDir        string
-	ConfigFilePath string
-
 	UseFixedAuth                bool
 	FixedAuthCredentialsPath    string
 	UseRegistration             bool
@@ -30,9 +31,15 @@ var (
 	LimitRegistration           int
 )
 
-// Config represents a Mycorrhiza wiki configuration file.
-//
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for fields' docs.
+// These variables are set before reading the config file, they are set in main.parseCliArgs.
+var (
+	// WikiDir is a full path to the wiki storage directory, which also must be a git repo.
+	WikiDir string
+	// ConfigFilePath is a path to the config file. Its value is used when calling ReadConfigFile.
+	ConfigFilePath string
+)
+
+// Config represents a Mycorrhiza wiki configuration file. This type is used only when reading configs.
 type Config struct {
 	WikiName      string
 	NaviTitleIcon string
@@ -65,8 +72,10 @@ type Authorization struct {
 	LimitRegistration           uint64
 }
 
-// ReadConfigFile reads a config on the given path and stores the configuration.
-func ReadConfigFile(path string) {
+// ReadConfigFile reads a config on the given path and stores the configuration. Call it sometime during the initialization.
+//
+// Note that it may log.Fatal.
+func ReadConfigFile() {
 	cfg := &Config{
 		WikiName:      "MycorrhizaWiki",
 		NaviTitleIcon: "🍄",
@@ -90,8 +99,8 @@ func ReadConfigFile(path string) {
 		},
 	}
 
-	if path != "" {
-		path, err := filepath.Abs(path)
+	if ConfigFilePath != "" {
+		path, err := filepath.Abs(ConfigFilePath)
 		if err != nil {
 			log.Fatalf("cannot expand config file path: %s", err)
 		}
@@ -117,4 +126,9 @@ func ReadConfigFile(path string) {
 	UseRegistration = cfg.UseRegistration
 	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
 	LimitRegistration = int(cfg.LimitRegistration)
+
+	// This URL makes much more sense.
+	if URL == "" {
+		URL = "http://0.0.0.0:" + HTTPPort
+	}
 }

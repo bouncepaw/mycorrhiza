@@ -3,12 +3,13 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 func PrepareRq(rq *http.Request) {

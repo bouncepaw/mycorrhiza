@@ -63,7 +63,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 				<ul class="header-links__list">
 `)
 //line views/stuff.qtpl:21
-	for _, link := range util.HeaderLinks {
+	for _, link := range cfg.HeaderLinks {
 //line views/stuff.qtpl:21
 		qw422016.N().S(`					<li class="header-links__entry"><a class="header-links__link" href="`)
 //line views/stuff.qtpl:22
