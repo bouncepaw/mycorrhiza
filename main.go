@@ -37,7 +37,7 @@ func main() {
 	// Init the subsystems:
 	hyphae.Index(cfg.WikiDir)
 	user.InitUserDatabase()
-	history.Start(cfg.WikiDir)
+	history.Start()
 	shroom.SetHeaderLinks()
 
 	// Network:

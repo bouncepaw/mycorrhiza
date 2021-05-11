@@ -5,9 +5,6 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/assets"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"io"
 	"io/ioutil"
 	"log"
@@ -16,7 +13,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/assets"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 

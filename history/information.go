@@ -1,7 +1,7 @@
-// information.go
-// 	Things related to gathering existing information.
 package history
 
+// information.go
+// 	Things related to gathering existing information.
 import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -174,13 +174,20 @@ func parseRevisionLine(line string) Revision {
 	}
 }
 
-// See how the file with `filepath` looked at commit with `hash`.
+// FileAtRevision shows how the file with the given file path looked at the commit with the hash. It may return an error if git fails.
 func FileAtRevision(filepath, hash string) (string, error) {
 	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, cfg.WikiDir+"/"))
+	if err != nil {
+		return "", err
+	}
 	return out.String(), err
 }
 
+// PrimitiveDiffAtRevision generates a plain-text diff for the given filepath at the commit with the given hash. It may return an error if git fails.
 func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
 	out, err := silentGitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
+	if err != nil {
+		return "", err
+	}
 	return out.String(), err
 }

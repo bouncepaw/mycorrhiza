@@ -2,6 +2,7 @@ package markup
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"path"
 	"strconv"
 	"strings"
@@ -67,11 +68,11 @@ func parseTransclusion(line, hyphaName string) (xclusion Transclusion) {
 func xclCanonicalName(hyphaName, xclName string) string {
 	switch {
 	case strings.HasPrefix(xclName, "./"):
-		return canonicalName(path.Join(hyphaName, strings.TrimPrefix(xclName, "./")))
+		return util.CanonicalName(path.Join(hyphaName, strings.TrimPrefix(xclName, "./")))
 	case strings.HasPrefix(xclName, "../"):
-		return canonicalName(path.Join(path.Dir(hyphaName), strings.TrimPrefix(xclName, "../")))
+		return util.CanonicalName(path.Join(path.Dir(hyphaName), strings.TrimPrefix(xclName, "../")))
 	default:
-		return canonicalName(xclName)
+		return util.CanonicalName(xclName)
 	}
 }
 

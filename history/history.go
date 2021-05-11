@@ -1,9 +1,9 @@
+// Package history provides a git wrapper.
 package history
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"html"
 	"log"
 	"os/exec"
@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -21,10 +22,10 @@ var gitpath string
 var renameMsgPattern = regexp.MustCompile(`^Rename ‘(.*)’ to ‘.*’`)
 
 // Start finds git and initializes git credentials.
-func Start(wikiDir string) {
+func Start() {
 	path, err := exec.LookPath("git")
 	if err != nil {
-		log.Fatal("Cound not find the git executable. Check your $PATH.")
+		log.Fatal("Could not find the git executable. Check your $PATH.")
 	}
 	gitpath = path
 

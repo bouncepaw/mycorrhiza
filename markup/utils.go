@@ -10,14 +10,3 @@ func remover(prefix string) func(string) string {
 		return strings.TrimSpace(strings.TrimPrefix(l, prefix))
 	}
 }
-
-// Remove #, ## or ### from beginning of `line`.
-func removeHeadingOctothorps(line string) string {
-	f := remover("#")
-	return f(f(f(line)))
-}
-
-// Return a canonical representation of a hypha `name`.
-func canonicalName(name string) string {
-	return strings.ToLower(strings.ReplaceAll(strings.TrimSpace(name), " ", "_"))
-}
