@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/link"
+	"github.com/bouncepaw/mycomarkup/links"
 )
 
 var imgRe = regexp.MustCompile(`^img\s+{`)
@@ -33,8 +33,8 @@ type Img struct {
 
 func (img *Img) pushEntry() {
 	if strings.TrimSpace(img.currEntry.path.String()) != "" {
-		img.currEntry.srclink = link.From(img.currEntry.path.String(), "", img.hyphaName)
-		img.currEntry.srclink.DoubtExistence()
+		img.currEntry.srclink = links.From(img.currEntry.path.String(), "", img.hyphaName)
+		// img.currEntry.srclink.DoubtExistence()
 		img.entries = append(img.entries, img.currEntry)
 		img.currEntry = imgEntry{}
 		img.currEntry.path.Reset()
@@ -164,7 +164,7 @@ func parseDimensions(dimensions string) (sizeW, sizeH string) {
 func (img *Img) markExistenceOfSrcLinks() {
 	HyphaIterate(func(hn string) {
 		for _, entry := range img.entries {
-			if hn == entry.srclink.Address {
+			if hn == entry.srclink.Address() {
 				entry.srclink.DestinationUnknown = false
 			}
 		}

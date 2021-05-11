@@ -3,7 +3,7 @@ package markup
 import (
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/link"
+	"github.com/bouncepaw/mycomarkup/links"
 )
 
 // LinkParts determines what href, text and class should resulting <a> have based on mycomarkup's addr, display and hypha name.
@@ -12,11 +12,11 @@ import (
 // [[addr|display]]
 // TODO: deprecate
 func LinkParts(addr, display, hyphaName string) (href, text, class string) {
-	l := link.From(addr, display, hyphaName)
-	if l.Kind == link.LinkLocalHypha && !HyphaExists(l.Address) {
+	l := links.From(addr, display, hyphaName)
+	if l.OfKind(links.LinkLocalHypha) && !HyphaExists(l.Address()) {
 		l.DestinationUnknown = true
 	}
-	return l.Href(), l.Display, l.Classes()
+	return l.Href(), l.Display(), l.Classes()
 }
 
 // Parse markup line starting with "=>" according to wikilink rules.

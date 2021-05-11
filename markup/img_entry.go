@@ -3,11 +3,11 @@ package markup
 import (
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/link"
+	"github.com/bouncepaw/mycomarkup/links"
 )
 
 type imgEntry struct {
-	srclink *link.Link
+	srclink *links.Link
 	path    strings.Builder
 	sizeW   strings.Builder
 	sizeH   strings.Builder

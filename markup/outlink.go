@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/link"
+	"github.com/bouncepaw/mycomarkup/links"
 )
 
 // OutLinks returns a channel of names of hyphae this mycodocument links.
@@ -50,8 +50,8 @@ func extractLinks(html string, ch chan string) {
 
 func extractImageLinks(img Img, ch chan string) {
 	for _, entry := range img.entries {
-		if entry.srclink.Kind == link.LinkLocalHypha {
-			ch <- entry.srclink.Address
+		if entry.srclink.OfKind(links.LinkLocalHypha) {
+			ch <- entry.srclink.Address()
 		}
 	}
 }

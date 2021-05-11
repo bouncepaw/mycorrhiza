@@ -3,12 +3,13 @@ package markup
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"html"
 	"regexp"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/link"
+	"github.com/bouncepaw/mycorrhiza/cfg"
+
+	"github.com/bouncepaw/mycomarkup/links"
 )
 
 // A Mycomarkup-formatted document
@@ -83,7 +84,7 @@ func (md *MycoDoc) ogFillVars() *MycoDoc {
 		case Img:
 			if !foundImg && len(v.entries) > 0 {
 				md.firstImageURL = v.entries[0].srclink.ImgSrc()
-				if v.entries[0].srclink.Kind != link.LinkExternal {
+				if !v.entries[0].srclink.OfKind(links.LinkExternal) {
 					md.firstImageURL = cfg.URL + md.firstImageURL
 				}
 				foundImg = true

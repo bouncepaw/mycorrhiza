@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
-	// "github.com/bouncepaw/mycorrhiza/util"
 )
 
 var tableRe = regexp.MustCompile(`^table\s+{`)
