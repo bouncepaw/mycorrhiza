@@ -11,11 +11,12 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
+
+	"github.com/bouncepaw/mycomarkup/legacy"
 )
 
 func initReaders() {

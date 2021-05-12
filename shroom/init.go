@@ -2,11 +2,11 @@ package shroom
 
 import (
 	"errors"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/views"
+
+	"github.com/bouncepaw/mycomarkup/legacy"
 )
 
 func init() {
@@ -28,11 +28,5 @@ func init() {
 		for h := range hyphae.YieldExistingHyphae() {
 			λ(h.Name)
 		}
-	}
-	markup.HyphaImageForOG = func(hyphaName string) string {
-		if h := hyphae.ByName(hyphaName); h.Exists && h.BinaryPath != "" {
-			return cfg.URL + "/binary/" + hyphaName
-		}
-		return cfg.URL + "/favicon.ico"
 	}
 }

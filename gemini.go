@@ -20,8 +20,9 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
+
+	"github.com/bouncepaw/mycomarkup/legacy"
 )
 
 func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
