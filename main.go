@@ -28,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Running MycorrhizaWiki")
+	log.Println("Running MycorrhizaWiki 1.2.0 indev")
 	if err := os.Chdir(cfg.WikiDir); err != nil {
 		log.Fatal(err)
 	}

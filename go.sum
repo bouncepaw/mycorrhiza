@@ -9,6 +9,8 @@ github.com/bouncepaw/mycomarkup v0.0.0-20210511092446-956f169b1499 h1:RLKVj992Qu
 github.com/bouncepaw/mycomarkup v0.0.0-20210511092446-956f169b1499/go.mod h1:fx0FBKaCaV1fofgCQOu2lNIVB/5EoDg/83i8BgBdgpc=
 github.com/bouncepaw/mycomarkup v0.0.0-20210512131946-becfae76473f h1:PgXG/AqO96jahMGQA81CWclIg90gsGt5kK4o7y0eZy8=
 github.com/bouncepaw/mycomarkup v0.0.0-20210512131946-becfae76473f/go.mod h1:4Fz80hsrXi3lRVZuVfIk5+2xocp50CFAbJfGeJWb5aM=
+github.com/bouncepaw/mycomarkup v0.0.0-20210512135928-b81258c9a977 h1:xLVu4JAcNhaLRaVVn7VL/l0/ZgESwuqQ2GWErrP7H8k=
+github.com/bouncepaw/mycomarkup v0.0.0-20210512135928-b81258c9a977/go.mod h1:4Fz80hsrXi3lRVZuVfIk5+2xocp50CFAbJfGeJWb5aM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-ini/ini v1.62.0 h1:7VJT/ZXjzqSrvtraFp4ONq80hTcRQth1c9ZnQ3uNQvU=
