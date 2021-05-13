@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycomarkup/doc"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,8 +16,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
-
-	"github.com/bouncepaw/mycomarkup/legacy"
 )
 
 func initReaders() {
@@ -74,7 +73,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
-		contents = markup.Doc(hyphaName, textContents).AsHTML()
+		contents = doc.Doc(hyphaName, textContents).AsHTML()
 	}
 	page := views.RevisionHTML(
 		rq,
@@ -123,7 +122,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
-			md := markup.Doc(hyphaName, string(fileContentsT))
+			md := doc.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsHTML()
 			openGraph = md.OpenGraphHTML()
 		}

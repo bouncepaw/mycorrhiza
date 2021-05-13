@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycomarkup/doc"
 	"log"
 	"net/http"
 
@@ -11,8 +12,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
-
-	"github.com/bouncepaw/mycomarkup/legacy"
 )
 
 func initMutators() {
@@ -198,7 +197,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					hyphaName,
 					textData,
 					"",
-					markup.Doc(hyphaName, textData).AsHTML()),
+					doc.Doc(hyphaName, textData).AsHTML()),
 				u))
 	} else {
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
