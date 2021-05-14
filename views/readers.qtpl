@@ -75,26 +75,17 @@ If `contents` == "", a helpful message is shown instead.
 {% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
 {% code
 	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+	u := user.FromRequest(rq)
 %}
 {%= NavHTML(rq, h.Name, "page") %}
 <div class="layout">
 <main class="main-width">
 	<article>
 		{%s= NaviTitleHTML(h) %}
-		{% if contents == "" %}
-			<p>This hypha has no text. Why not <a href="/edit/{%s h.Name %}">create it</a>?</p>
-		{% if u := user.FromRequest(rq); (!user.AuthUsed || u.Group != "anon") && !h.Exists %}
-			<form action="/upload-binary/{%s h.Name %}"
-					method="post" enctype="multipart/form-data"
-					class="upload-binary">
-				<label for="upload-binary__input">Upload an attachment:</label>
-				<input type="file" id="upload-binary__input" name="binary">
-				<input type="submit">
-			</form>
-			<br>
-		{% endif %}
-		{% else %}
+		{% if h.Exists %}
 			{%s= contents %}
+		{% else %}
+		    {%= nonExistentHyphaNotice(h, u) %}
 		{% endif %}
 	</article>
 	<section class="prevnext">

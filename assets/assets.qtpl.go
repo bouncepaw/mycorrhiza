@@ -113,9 +113,14 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:10
-	qw422016.N().S(`
+	qw422016.N().S(`.non-existent-hypha { }
+.non-existent-hypha__ways { display: flex; flex-direction: column; width: 100%; margin: 0 0 1rem 0;}
+.non-existent-hypha__way { border: 1px #999 solid; border-radius: .25rem; padding: .25rem; }
+.non-existent-hypha__title { margin-bottom: 1rem; }
+.non-existent-hypha__subtitle { margin: 0; }
+
 .amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
-.upload-binary__input { display: block; margin: .25rem 0; }
+#upload-binary__input { display: block; margin: .25rem 0 .5rem 0; }
 
 .modal__title { font-size: 2rem; }
 .modal__title_small { font-size: 1.5rem; }
@@ -155,6 +160,12 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { grid-template-columns: auto; grid-template-rows: auto auto auto; }
 	.main-width { width: 100%; }
 	main { padding: 1rem; margin: 0; }
+}
+
+@media screen and (min-width: 500px) {
+	.non-existent-hypha__way { flex: 1; margin-right: .5rem; }
+	.non-existent-hypha__ways { flex-direction: row; }
+	.non-existent-hypha__way:last-child { margin-right: 0; }
 }
 
 /* No longer a phone but still small screen: draw normal tabs, center main */
@@ -310,8 +321,13 @@ caption { caption-side: top; font-size: small; }
 .relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
 
+.btn { display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; }
+
 /* Color stuff */
 /* Lighter stuff #eee */
+.btn { background-color: #eee; color: black; }
+.btn:visited { color: black; }
+
 article code,
 article .codeblock,
 .transclusion,
@@ -394,6 +410,7 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 @media screen and (max-width: 800px) {
 	.hypha-tabs { background-color: #232323; }
 }
+	.btn { background-color: #ddd; color: black; }
 }
 
 
