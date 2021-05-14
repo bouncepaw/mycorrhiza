@@ -120,7 +120,7 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 .non-existent-hypha__subtitle { margin: 0; }
 
 .amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
-#upload-binary__input { display: block; margin: .25rem 0 .5rem 0; }
+#upload-binary__input { display: block; margin: .25rem 0 .25rem 0; }
 
 .modal__title { font-size: 2rem; }
 .modal__title_small { font-size: 1.5rem; }
@@ -321,7 +321,7 @@ caption { caption-side: top; font-size: small; }
 .relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
 ::-webkit-file-upload-button,
-.btn { display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
+.btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
