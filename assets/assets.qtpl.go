@@ -394,6 +394,8 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
+
+.btn,
 article code, 
 article .codeblock, 
 .transclusion,
@@ -404,13 +406,14 @@ article .codeblock,
 .upload-amnt, 
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
+.btn:visited { color: #ddd;}
+
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
 mark { background: rgba(130, 80, 30, 5); color: inherit; }
 @media screen and (max-width: 800px) {
 	.hypha-tabs { background-color: #232323; }
 }
-	.btn { background-color: #ddd; color: black; }
 }
 
 

@@ -70,7 +70,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 		<h3 class="non-existent-hypha__subtitle">📝 Write a text</h3>
 		<p>Write a note, a diary, an article, a story or anything textual using <a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup">Mycomarkup</a>.</p>
 		<p>Make sure to follow this wiki&apos;s writing conventions if there are any.</p>
-		<a class="btn" href="/edit/`)
+		<a class="btn stick-to-bottom" href="/edit/`)
 //line views/hypha.qtpl:25
 		qw422016.E().S(h.Name)
 //line views/hypha.qtpl:25
@@ -90,7 +90,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
         	<label for="upload-binary__input"></label>
         	<input type="file" id="upload-binary__input" name="binary">
 
-        	<input type="submit" class="btn" value="Upload">
+        	<input type="submit" class="btn stick-to-bottom" value="Upload">
         </form>
 	</section>
 	</div>
