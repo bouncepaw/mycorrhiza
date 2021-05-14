@@ -320,12 +320,12 @@ caption { caption-side: top; font-size: small; }
 .relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
 .relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
-
-.btn { display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; }
+::-webkit-file-upload-button,
+.btn { display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
-.btn { background-color: #eee; color: black; }
+::-webkit-file-upload-button, .btn { background-color: #eee; color: black; }
 .btn:visited { color: black; }
 
 article code,
@@ -395,6 +395,7 @@ blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
 
+::-webkit-file-upload-button,
 .btn,
 article code, 
 article .codeblock, 
