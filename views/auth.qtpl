@@ -20,16 +20,16 @@
 				<input type="password" required name="password">
 				<p>The server stores your password in an encrypted form; even administrators cannot read it.</p>
 				<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you. You will stay logged in until you log out.</p>
-				<input class="modal__action modal__submit" type="submit">
-				<a class="modal__action modal__cancel" href="/">Cancel</a>
+				<input class="btn" type="submit" value="Register">
+				<a class="btn btn_weak" href="/{%s rq.URL.RawQuery %}">Cancel</a>
 			</fieldset>
 		</form>
 	{% elseif cfg.UseFixedAuth %}
 		<p>Administrators have forbidden registration for this wiki. Administrators can make an account for you by hand; contact them.</p>
-		<p><a href="{%s rq.URL.RawQuery %}">← Go back</a></p>
+		<p><a href="/{%s rq.URL.RawQuery %}">← Go back</a></p>
 	{% else %}
 		<p>Administrators of this wiki have not configured any authorization method. You can make edits anonymously.</p>
-		<p><a href="{%s rq.URL.RawQuery %}">← Go back</a></p>
+		<p><a href="/{%s rq.URL.RawQuery %}">← Go back</a></p>
 	{% endif %}
 	</section>
 </main>
@@ -44,7 +44,6 @@
 		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">Log in to {%s cfg.WikiName %}</legend>
-				<p>Use the data you were given by an administrator.</p>
 				<label for="login-form__username">Username</label>
 				<br>
 				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
@@ -53,8 +52,8 @@
 				<br>
 				<input type="password" required name="password" autocomplete="current-password">
 				<p>By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you. You will stay logged in until you log out.</p>
-				<input class="modal__action modal__submit" type="submit">
-				<a class="modal__action modal__cancel" href="/">Cancel</a>
+				<input class="btn" type="submit" value="Log in">
+				<a class="btn btn_weak" href="/">Cancel</a>
 			</fieldset>
 		</form>
 	{% else %}

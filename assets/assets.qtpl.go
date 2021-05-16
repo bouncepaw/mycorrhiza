@@ -322,11 +322,13 @@ caption { caption-side: top; font-size: small; }
 
 ::-webkit-file-upload-button,
 .btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
+.btn_weak { border: 1px #999 dashed; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
 ::-webkit-file-upload-button, .btn { background-color: #eee; color: black; }
 .btn:visited { color: black; }
+.btn_weak { background-color: transparent; }
 
 article code,
 article .codeblock,
@@ -395,6 +397,7 @@ blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
 
+input[type="text"], input[type="password"],
 ::-webkit-file-upload-button,
 .btn,
 article code, 
@@ -408,6 +411,9 @@ article .codeblock,
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
 .btn:visited { color: #ddd;}
+
+	.btn { border: #444 solid 1px; border-radius: .25rem; }
+	.btn_weak { background-color: transparent; }
 
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
