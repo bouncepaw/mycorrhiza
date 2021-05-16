@@ -143,7 +143,7 @@ header { width: 100%; margin-bottom: 1rem; }
 .header-links__entry, .hypha-tabs__tab { list-style-type: none; }
 
 .header-links__entry { margin-right: .5rem; }
-.header-links__entry_user { font-style:italic; }
+.header-links__entry_user, .header-links__entry_register { font-style:italic; }
 .header-links__link { display: inline-block; padding: .25rem; text-decoration: none; }
 
 .hypha-tabs { padding: 0; margin: 0; }
