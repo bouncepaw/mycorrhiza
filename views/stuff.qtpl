@@ -10,7 +10,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/static/common.css">
+		<link rel="stylesheet" type="text/css" href="/assets/common.css">
 		<title>{%s title %}</title>
 		{% for _, el := range headElements %}{%s= el %}{% endfor %}
 	</head>

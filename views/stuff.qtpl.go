@@ -41,7 +41,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/static/common.css">
+		<link rel="stylesheet" type="text/css" href="/assets/common.css">
 		<title>`)
 //line views/stuff.qtpl:14
 	qw422016.E().S(title)

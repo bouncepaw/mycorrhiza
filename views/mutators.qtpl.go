@@ -141,7 +141,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 	qw422016.N().S(`
 	</section>
 </aside>
-<script src="/static/toolbar.js"></script>
+<script src="/assets/toolbar.js"></script>
 `)
 //line views/mutators.qtpl:69
 }

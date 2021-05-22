@@ -41,13 +41,13 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if _, err := os.Stat(cfg.WikiDir + "/static/common.css"); err == nil {
-		http.ServeFile(w, rq, cfg.WikiDir+"/static/common.css")
+	if _, err := os.Stat(cfg.WikiDir + "/assets/common.css"); err == nil {
+		http.ServeFile(w, rq, cfg.WikiDir+"/assets/common.css")
 	} else {
 		w.Header().Set("Content-Type", "text/css;charset=utf-8")
 		w.Write([]byte(assets.DefaultCSS()))
 	}
-	if bytes, err := ioutil.ReadFile(cfg.WikiDir + "/static/custom.css"); err == nil {
+	if bytes, err := ioutil.ReadFile(cfg.WikiDir + "/assets/custom.css"); err == nil {
 		w.Write(bytes)
 	}
 }
@@ -118,8 +118,8 @@ func Init() {
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.ServeFile(w, rq, cfg.WikiDir+"/static/favicon.ico")
 	})
-	http.HandleFunc("/static/common.css", handlerStyle)
-	http.HandleFunc("/static/toolbar.js", handlerToolbar)
+	http.HandleFunc("/assets/common.css", handlerStyle)
+	http.HandleFunc("/assets/toolbar.js", handlerToolbar)
 	http.HandleFunc("/assets/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
