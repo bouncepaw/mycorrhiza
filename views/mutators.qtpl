@@ -1,4 +1,6 @@
 {% import "net/http" %}
+
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
@@ -83,6 +85,7 @@
 </main>
 {%s= Toolbar(user.FromRequest(rq)) %}
 </div>
+{%= editScripts() %}
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
@@ -104,4 +107,11 @@
 </main>
 {%s= Toolbar(user.FromRequest(rq)) %}
 </div>
+{%= editScripts() %}
+{% endfunc %}
+
+{% func editScripts() %}
+{% for _, scriptPath := range cfg.EditScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
 {% endfunc %}

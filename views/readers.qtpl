@@ -3,6 +3,7 @@
 {% import "path" %}
 {% import "os" %}
 
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
@@ -100,6 +101,7 @@ If `contents` == "", a helpful message is shown instead.
 </main>
 {%= RelativeHyphaeHTML(relatives) %}
 </div>
+{%= viewScripts() %}
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) %}
@@ -118,4 +120,11 @@ If `contents` == "", a helpful message is shown instead.
 </main>
 {%= RelativeHyphaeHTML(relatives) %}
 </div>
+{%= viewScripts() %}
+{% endfunc %}
+
+{% func viewScripts() %}
+{% for _, scriptPath := range cfg.ViewScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
 {% endfunc %}

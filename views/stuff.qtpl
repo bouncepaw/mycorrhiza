@@ -26,6 +26,7 @@
 			</nav>
 		</header>
 		{%s= body %}
+		{%= omnipresentScripts() %}
 	</body>
 </html>
 {% endfunc %}
@@ -151,4 +152,10 @@ for u := range user.YieldUsers() {
 	</section>
 </main>
 </div>
+{% endfunc %}
+
+{% func omnipresentScripts() %}
+{% for _, scriptPath := range cfg.OmnipresentScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
 {% endfunc %}

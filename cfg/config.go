@@ -29,6 +29,10 @@ var (
 	UseRegistration             bool
 	RegistrationCredentialsPath string
 	LimitRegistration           int
+
+	OmnipresentScripts []string
+	ViewScripts        []string
+	EditScripts        []string
 )
 
 // These variables are set before reading the config file, they are set in main.parseCliArgs.
@@ -46,6 +50,7 @@ type Config struct {
 	Hyphae
 	Network
 	Authorization
+	CustomScripts
 }
 
 // Hyphae is a section of Config which has fields related to special hyphae.
@@ -60,6 +65,16 @@ type Network struct {
 	HTTPPort              uint64
 	URL                   string
 	GeminiCertificatePath string
+}
+
+// CustomScripts is a section with paths to JavaScript files that are loaded on specified pages.
+type CustomScripts struct {
+	// OmnipresentScripts: everywhere...
+	OmnipresentScripts []string `delim:","`
+	// ViewScripts: /hypha, /rev
+	ViewScripts []string `delim:","`
+	// Edit: /edit
+	EditScripts []string `delim:","`
 }
 
 // Authorization is a section of Config that has fields related to authorization and authentication.
@@ -97,6 +112,11 @@ func ReadConfigFile() {
 			RegistrationCredentialsPath: "",
 			LimitRegistration:           0,
 		},
+		CustomScripts: CustomScripts{
+			OmnipresentScripts: []string{},
+			ViewScripts:        []string{},
+			EditScripts:        []string{},
+		},
 	}
 
 	if ConfigFilePath != "" {
@@ -126,6 +146,9 @@ func ReadConfigFile() {
 	UseRegistration = cfg.UseRegistration
 	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
 	LimitRegistration = int(cfg.LimitRegistration)
+	OmnipresentScripts = cfg.OmnipresentScripts
+	ViewScripts = cfg.ViewScripts
+	EditScripts = cfg.EditScripts
 
 	// This URL makes much more sense.
 	if URL == "" {
