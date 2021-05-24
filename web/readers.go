@@ -2,7 +2,9 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycomarkup"
 	"github.com/bouncepaw/mycomarkup/doc"
+	"github.com/bouncepaw/mycomarkup/parser"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -122,9 +124,11 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
+			ctx, _ := parser.ContextFromStringInput(hyphaName, "") // FIXME:
 			md := doc.Doc(hyphaName, string(fileContentsT))
-			contents = md.AsHTML()
-			//openGraph = md.OpenGraphHTML()
+			ast := md.Lex()
+			contents = doc.GenerateHTML(ast, 0)
+			openGraph = mycomarkup.OpenGraphHTML(ctx, ast)
 		}
 		if !os.IsNotExist(errB) {
 			contents = views.AttachmentHTML(h) + contents
