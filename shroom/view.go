@@ -6,8 +6,6 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-
-	"github.com/bouncepaw/mycomarkup/blocks"
 )
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
@@ -33,7 +31,7 @@ func SetHeaderLinks() {
 			cfg.SetDefaultHeaderLinks()
 		} else {
 			text := string(contents)
-			cfg.ParseHeaderLinks(text, blocks.Rocketlink)
+			cfg.ParseHeaderLinks(text)
 		}
 	}
 }

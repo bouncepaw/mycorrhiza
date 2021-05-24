@@ -2,6 +2,7 @@ package cfg
 
 // See https://mycorrhiza.lesarbr.es/hypha/configuration/header
 import (
+	"github.com/bouncepaw/mycomarkup/blocks"
 	"strings"
 )
 
@@ -18,8 +19,8 @@ func SetDefaultHeaderLinks() {
 	}
 }
 
-// ParseHeaderLinks extracts all rocketlinks from the given text and saves them as header links. rocketlinkλ must be set to markup.Rocketlink. You have to pass it like that to avoid cyclical dependency.
-func ParseHeaderLinks(text string, rocketlinkλ func(string, string) (string, string, string)) {
+// ParseHeaderLinks extracts all rocketlinks from the given text and saves them as header links.
+func ParseHeaderLinks(text string) {
 	HeaderLinks = []HeaderLink{}
 	for _, line := range strings.Split(text, "\n") {
 		// There is a false positive when parsing markup like that:
@@ -30,7 +31,8 @@ func ParseHeaderLinks(text string, rocketlinkλ func(string, string) (string, st
 		//
 		// I do not really care.
 		if strings.HasPrefix(line, "=>") {
-			href, display, _ := rocketlinkλ(line, HeaderLinksHypha)
+			rl := blocks.MakeRocketLink(line, HeaderLinksHypha)
+			href, display := rl.Href(), rl.Display()
 			HeaderLinks = append(HeaderLinks, HeaderLink{
 				Href:    href,
 				Display: display,

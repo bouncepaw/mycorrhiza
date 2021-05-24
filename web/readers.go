@@ -83,7 +83,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.BaseHTML(util.BeautifulName(hyphaName), page, u)))
+	_, _ = fmt.Fprint(w, views.BaseHTML(util.BeautifulName(hyphaName), page, u))
 }
 
 // handlerText serves raw source text of the hypha.
@@ -124,7 +124,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		if errT == nil {
 			md := doc.Doc(hyphaName, string(fileContentsT))
 			contents = md.AsHTML()
-			openGraph = md.OpenGraphHTML()
+			//openGraph = md.OpenGraphHTML()
 		}
 		if !os.IsNotExist(errB) {
 			contents = views.AttachmentHTML(h) + contents
