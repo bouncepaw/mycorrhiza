@@ -2,7 +2,8 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup/doc"
+	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
 	"log"
 	"net/http"
 
@@ -188,6 +189,8 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if action == "Preview" {
+		ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textData)
+
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
@@ -197,7 +200,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					hyphaName,
 					textData,
 					"",
-					doc.Doc(hyphaName, textData).AsHTML()),
+					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
 				u))
 	} else {
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)

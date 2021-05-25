@@ -21,8 +21,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
-
-	"github.com/bouncepaw/mycomarkup/doc"
 )
 
 func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
@@ -46,8 +44,7 @@ func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 	if h.Exists {
 		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		if errT == nil {
-			md := doc.Doc(hyphaName, string(fileContentsT))
-			contents = md.AsGemtext()
+			contents = string(fileContentsT)
 		}
 	}
 	if hasAmnt {

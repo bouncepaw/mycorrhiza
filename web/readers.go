@@ -2,9 +2,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup"
-	"github.com/bouncepaw/mycomarkup/doc"
-	"github.com/bouncepaw/mycomarkup/parser"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,6 +16,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
+
+	"github.com/bouncepaw/mycomarkup"
 )
 
 func initReaders() {
@@ -75,7 +75,8 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {
-		contents = doc.Doc(hyphaName, textContents).AsHTML()
+		ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textContents)
+		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
 	}
 	page := views.RevisionHTML(
 		rq,
@@ -124,10 +125,9 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
-			ctx, _ := parser.ContextFromStringInput(hyphaName, "") // FIXME:
-			md := doc.Doc(hyphaName, string(fileContentsT))
-			ast := md.Lex()
-			contents = doc.GenerateHTML(ast, 0)
+			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
+			ast := mycomarkup.BlockTree(ctx)
+			contents = mycomarkup.BlocksToHTML(ctx, ast)
 			openGraph = mycomarkup.OpenGraphHTML(ctx, ast)
 		}
 		if !os.IsNotExist(errB) {
