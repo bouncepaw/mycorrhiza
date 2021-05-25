@@ -306,7 +306,7 @@ func modalBegin(path, hyphaName, formAttrs, legend string) string {
 func streammodalEnd(qw422016 *qt422016.Writer, hyphaName string, shouldFocusOnConfirm bool) {
 //line views/modal.qtpl:56
 	qw422016.N().S(`
-			<input type="submit" value="Confirm" class="modal__action modal__submit" `)
+			<input type="submit" value="Confirm" class="btn" `)
 //line views/modal.qtpl:57
 	if shouldFocusOnConfirm {
 //line views/modal.qtpl:57
@@ -319,7 +319,7 @@ func streammodalEnd(qw422016 *qt422016.Writer, hyphaName string, shouldFocusOnCo
 //line views/modal.qtpl:58
 	qw422016.E().S(hyphaName)
 //line views/modal.qtpl:58
-	qw422016.N().S(`" class="modal__action modal__cancel">Cancel</a>
+	qw422016.N().S(`" class="btn btn_weak">Cancel</a>
 		</fieldset>
 	</form>
 </main>

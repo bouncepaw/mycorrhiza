@@ -125,9 +125,6 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 .modal__title { font-size: 2rem; }
 .modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
-.modal__action { display: inline-block; font-size: 1rem; padding: .25rem; border-radius: .25rem; }
-.modal__submit { border: 1px #999 solid; }
-.modal__cancel { border: 1px #999 dashed; text-decoration: none; }
 
 .hypha-list { padding-left: 0; }
 .hypha-list__entry { list-style-type: none; }
@@ -253,7 +250,7 @@ main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
 .heading__link:hover::after, .heading__link:active::after { color: #999; }
 article p { margin: .5rem 0; }
 article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
-article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
+article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; font-family: 'Menlo', 'PT Mono', monospace; }
 article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
 .transclusion { border-radius: .25rem; }
@@ -354,10 +351,10 @@ table { background-color: #eee; }
 
 .layout-card { border-radius: .25rem; background-color: white; }
 .layout-card__title { font-size: 1rem; margin: 0; padding: .25rem .5rem; border-radius: .25rem .25rem 0 0; }
-.layout-card__title { background-color: #eee; }
+.layout-card__title { border-bottom: 1px solid #eee; }
 
 /* Other stuff */
-html { background-color: #ddd;
+html { background-color: #eee;
 }
 header { background-color: #eee; }
 .header-links__link { color: black; }

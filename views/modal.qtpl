@@ -54,8 +54,8 @@
 {% endfunc %}
 
 {% func modalEnd(hyphaName string, shouldFocusOnConfirm bool) %}
-			<input type="submit" value="Confirm" class="modal__action modal__submit" {% if shouldFocusOnConfirm %}autofocus{% endif %}>
-			<a href="/hypha/{%s hyphaName %}" class="modal__action modal__cancel">Cancel</a>
+			<input type="submit" value="Confirm" class="btn" {% if shouldFocusOnConfirm %}autofocus{% endif %}>
+			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">Cancel</a>
 		</fieldset>
 	</form>
 </main>

@@ -47,12 +47,14 @@
 	{% if u.CanProceed("upload-binary") %}
 	<form action="/upload-binary/{%s h.Name %}"
 			method="post" enctype="multipart/form-data"
-			class="modal amnt-menu-block">
-		<fieldset class="modal__fieldset upload-binary">
+			class="upload-binary modal amnt-menu-block">
+		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">Attach</legend>
 			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.</p>
-			<input type="file" class="upload-binary__input" name="binary">
-			<input type="submit" class="modal__action modal__submit">
+			<label for="upload-binary__input"></label>
+			<input type="file" id="upload-binary__input" name="binary">
+
+			<input type="submit" class="btn stick-to-bottom" value="Upload">
 		</fieldset>
 	</form>
 	{% endif %}
@@ -62,7 +64,7 @@
 		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">Unattach</legend>
 			<p class="modal__confirmation-msg">Please note that you don't have to unattach before uploading a new attachment.</p>
-			<input type="submit" class="modal__action modal__submit">
+			<input type="submit" class="btn" value="Unattach">
 		</fieldset>
 	</form>
 	{% endif %}
