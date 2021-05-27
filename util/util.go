@@ -98,7 +98,7 @@ func IsCanonicalName(name string) bool {
 }
 
 func IsPossibleUsername(username string) bool {
-	return UsernamePattern.MatchString(strings.TrimSpace(username))
+	return username != "anon" && UsernamePattern.MatchString(strings.TrimSpace(username))
 }
 
 // HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
