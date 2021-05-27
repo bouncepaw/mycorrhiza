@@ -507,7 +507,7 @@ const wrapBold = selectionWrapper(2, '**'),
 //line assets/assets.qtpl:14
 	qw422016.N().S(`'),
     wrapHighlighted = selectionWrapper(2, '!!'),
-    wrapLifted = selectionWrapper(1, '^'),
+    wrapLifted = selectionWrapper(2, '^^'),
     wrapLowered = selectionWrapper(2, ',,'),
     wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapLink = selectionWrapper(2, '[[', ']]')

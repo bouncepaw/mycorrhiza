@@ -50,7 +50,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 		{"italic", "wrapItalic()", "<i>//Italic//</i>"},
 		{"highlighted", "wrapHighlighted()", "<mark>!!Highlight!!</mark>"},
 		{"monospace", "wrapMonospace()", "<code>`Monospace`</code>"},
-		{"lifted", "wrapLifted()", "<sup>^Lifted^</sup>"},
+		{"lifted", "wrapLifted()", "<sup>^^Lifted^^</sup>"},
 		{"lowered", "wrapLowered()", "<sub>,,Lowered,,</sub>"},
 		{"strikethrough", "wrapStrikethrough()", "<strike>~~Strikethrough~~</strike>"},
 		{"rocket", "insertRocket()", "=> rocketlink"},
