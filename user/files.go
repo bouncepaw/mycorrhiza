@@ -101,7 +101,7 @@ func dumpRegistrationCredentials() error {
 		tmp = append(tmp, copiedUser)
 	}
 
-	blob, err := json.Marshal(tmp)
+	blob, err := json.MarshalIndent(tmp, "", "\t")
 	if err != nil {
 		log.Println(err)
 		return err
@@ -124,7 +124,7 @@ func dumpTokens() {
 		return true
 	})
 
-	blob, err := json.Marshal(tmp)
+	blob, err := json.MarshalIndent(tmp, "", "\t")
 	if err != nil {
 		log.Println(err)
 	} else {
