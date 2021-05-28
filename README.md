@@ -54,6 +54,6 @@ Options:
 * Basic Gemini protocol support
 
 ## Contributing
-Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor us on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
+Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor bouncepaw on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
 
 You can view list of all planned features on [our kanban board](https://github.com/bouncepaw/mycorrhiza/projects/1).
