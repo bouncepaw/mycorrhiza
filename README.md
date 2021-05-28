@@ -14,6 +14,14 @@ make
 # * create an executable called `mycorrhiza`. Run it with path to your wiki.
 ```
 
+## Installing
+
+If you use linux disto with pacman package manager (Arch, Manjaro, Garuda, etc) you can install it from PKGBUILD:
+```sh
+$ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/PKGBUILD
+$ makepkg --install
+```
+
 ## Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
