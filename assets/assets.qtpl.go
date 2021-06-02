@@ -261,9 +261,11 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 /* Derived from https://commons.wikimedia.org/wiki/File:U%2B21D2.svg */
 .launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath fill='%23999' d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
 
+.binary-container { width: 100%; }
+.binary-container > a { display: flex; justify-content: center; }
 .binary-container_with-img img,
 .binary-container_with-video video,
-.binary-container_with-audio audio {width: 100%}
+.binary-container_with-audio audio {max-height: 30em; width: auto; }
 
 .subhyphae__title { padding-bottom: .5rem; clear: both; }
 .navi-title { padding-bottom: .5rem; margin: .25rem 0; }
