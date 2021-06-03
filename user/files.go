@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"io/ioutil"
 	"log"
 	"os"
@@ -44,6 +45,7 @@ func usersFromFile(path string, source UserSource) (users []*User) {
 		log.Fatal(err)
 	}
 	for _, u := range users {
+		u.Name = util.CanonicalName(u.Name)
 		u.Source = source
 	}
 	return users
