@@ -233,7 +233,7 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
-blockquote { margin-left: 0; padding-left: 1rem; }
+blockquote { margin: 0; padding-left: .75rem; }
 .wikilink_external::before { display: inline-block; width: 18px; height: 16px; vertical-align: sub; }
 /* .wikilink_external { padding-left: 16px; } */
 .wikilink_gopher::before { content: url("/assets/icon/gopher"); }
@@ -363,7 +363,7 @@ header { background-color: #eee; }
 .header-links__link:hover { background-color: #ddd; }
 main { background-color: white; }
 
-blockquote { border-left: 4px black solid; }
+blockquote { border-left: 2px #999 solid; }
 .wikilink_new {color:#a55858;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
 .transclusion__link { color: black; }
@@ -391,7 +391,6 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
 .layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
 
-blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
 
