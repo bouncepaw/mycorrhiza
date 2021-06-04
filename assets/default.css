@@ -176,7 +176,7 @@ figcaption { padding-bottom: .5rem; }
 .rc-entry__links, .rc-entry__msg { grid-column: 1 / span 2; }
 .rc-entry__author { font-style: italic; }
 
-.prevnext__el { display: inline-block; min-width: 40%; padding: .5rem; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; }
+.prevnext__el { display: inline-block; min-width: 40%; padding: .5rem; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; max-width: 49%; }
 .prevnext__prev { float: left; }
 .prevnext__next { float: right; text-align: right; }
 
