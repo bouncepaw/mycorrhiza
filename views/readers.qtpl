@@ -3,6 +3,7 @@
 {% import "path" %}
 {% import "os" %}
 
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
@@ -46,12 +47,14 @@
 	{% if u.CanProceed("upload-binary") %}
 	<form action="/upload-binary/{%s h.Name %}"
 			method="post" enctype="multipart/form-data"
-			class="modal amnt-menu-block">
-		<fieldset class="modal__fieldset upload-binary">
+			class="upload-binary modal amnt-menu-block">
+		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">Attach</legend>
 			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.</p>
-			<input type="file" class="upload-binary__input" name="binary">
-			<input type="submit" class="modal__action modal__submit">
+			<label for="upload-binary__input"></label>
+			<input type="file" id="upload-binary__input" name="binary">
+
+			<input type="submit" class="btn stick-to-bottom" value="Upload">
 		</fieldset>
 	</form>
 	{% endif %}
@@ -61,7 +64,7 @@
 		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">Unattach</legend>
 			<p class="modal__confirmation-msg">Please note that you don't have to unattach before uploading a new attachment.</p>
-			<input type="submit" class="modal__action modal__submit">
+			<input type="submit" class="btn" value="Unattach">
 		</fieldset>
 	</form>
 	{% endif %}
@@ -75,26 +78,17 @@ If `contents` == "", a helpful message is shown instead.
 {% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
 {% code
 	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+	u := user.FromRequest(rq)
 %}
 {%= NavHTML(rq, h.Name, "page") %}
 <div class="layout">
 <main class="main-width">
 	<article>
 		{%s= NaviTitleHTML(h) %}
-		{% if contents == "" %}
-			<p>This hypha has no text. Why not <a href="/edit/{%s h.Name %}">create it</a>?</p>
-		{% if u := user.FromRequest(rq); (!user.AuthUsed || u.Group != "anon") && !h.Exists %}
-			<form action="/upload-binary/{%s h.Name %}"
-					method="post" enctype="multipart/form-data"
-					class="upload-binary">
-				<label for="upload-binary__input">Upload an attachment:</label>
-				<input type="file" id="upload-binary__input" name="binary">
-				<input type="submit">
-			</form>
-			<br>
-		{% endif %}
-		{% else %}
+		{% if h.Exists %}
 			{%s= contents %}
+		{% else %}
+		    {%= nonExistentHyphaNotice(h, u) %}
 		{% endif %}
 	</article>
 	<section class="prevnext">
@@ -109,6 +103,7 @@ If `contents` == "", a helpful message is shown instead.
 </main>
 {%= RelativeHyphaeHTML(relatives) %}
 </div>
+{%= viewScripts() %}
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) %}
@@ -127,4 +122,11 @@ If `contents` == "", a helpful message is shown instead.
 </main>
 {%= RelativeHyphaeHTML(relatives) %}
 </div>
+{%= viewScripts() %}
+{% endfunc %}
+
+{% func viewScripts() %}
+{% for _, scriptPath := range cfg.ViewScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
 {% endfunc %}

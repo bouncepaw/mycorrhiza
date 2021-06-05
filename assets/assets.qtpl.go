@@ -113,16 +113,18 @@ func StreamDefaultCSS(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 `)
 //line assets/assets.qtpl:10
-	qw422016.N().S(`
+	qw422016.N().S(`.non-existent-hypha { }
+.non-existent-hypha__ways { display: flex; flex-direction: column; width: 100%; margin: 0 0 1rem 0;}
+.non-existent-hypha__way { border: 1px #999 solid; border-radius: .25rem; padding: .25rem; }
+.non-existent-hypha__title { margin-bottom: 1rem; }
+.non-existent-hypha__subtitle { margin: 0; }
+
 .amnt-grid { display: grid; grid-template-columns: 1fr 1fr; }
-.upload-binary__input { display: block; margin: .25rem 0; }
+#upload-binary__input { display: block; margin: .25rem 0 .25rem 0; }
 
 .modal__title { font-size: 2rem; }
 .modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
-.modal__action { display: inline-block; font-size: 1rem; padding: .25rem; border-radius: .25rem; }
-.modal__submit { border: 1px #999 solid; }
-.modal__cancel { border: 1px #999 dashed; text-decoration: none; }
 
 .hypha-list { padding-left: 0; }
 .hypha-list__entry { list-style-type: none; }
@@ -138,7 +140,7 @@ header { width: 100%; margin-bottom: 1rem; }
 .header-links__entry, .hypha-tabs__tab { list-style-type: none; }
 
 .header-links__entry { margin-right: .5rem; }
-.header-links__entry_user { font-style:italic; }
+.header-links__entry_user, .header-links__entry_register { font-style:italic; }
 .header-links__link { display: inline-block; padding: .25rem; text-decoration: none; }
 
 .hypha-tabs { padding: 0; margin: 0; }
@@ -155,6 +157,12 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { grid-template-columns: auto; grid-template-rows: auto auto auto; }
 	.main-width { width: 100%; }
 	main { padding: 1rem; margin: 0; }
+}
+
+@media screen and (min-width: 500px) {
+	.non-existent-hypha__way { flex: 1; margin-right: .5rem; }
+	.non-existent-hypha__ways { flex-direction: row; }
+	.non-existent-hypha__way:last-child { margin-right: 0; }
 }
 
 /* No longer a phone but still small screen: draw normal tabs, center main */
@@ -225,15 +233,15 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
-blockquote { margin-left: 0; padding-left: 1rem; }
+blockquote { margin: 0; padding-left: .75rem; }
 .wikilink_external::before { display: inline-block; width: 18px; height: 16px; vertical-align: sub; }
 /* .wikilink_external { padding-left: 16px; } */
-.wikilink_gopher::before { content: url("/static/icon/gopher"); }
-.wikilink_http::before { content: url("/static/icon/http"); }
-.wikilink_https::before { content: url("/static/icon/http"); }
-/* .wikilink_https { background: transparent url("/static/icon/http") center left no-repeat; } */
-.wikilink_gemini::before { content: url("/static/icon/gemini"); }
-.wikilink_mailto::before { content: url("/static/icon/mailto"); }
+.wikilink_gopher::before { content: url("/assets/icon/gopher"); }
+.wikilink_http::before { content: url("/assets/icon/http"); }
+.wikilink_https::before { content: url("/assets/icon/http"); }
+/* .wikilink_https { background: transparent url("/assets/icon/http") center left no-repeat; } */
+.wikilink_gemini::before { content: url("/assets/icon/gemini"); }
+.wikilink_mailto::before { content: url("/assets/icon/mailto"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
@@ -242,7 +250,7 @@ main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
 .heading__link:hover::after, .heading__link:active::after { color: #999; }
 article p { margin: .5rem 0; }
 article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
-article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; }
+article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; font-family: 'Menlo', 'PT Mono', monospace; }
 article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
 .transclusion { border-radius: .25rem; }
@@ -253,9 +261,11 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 /* Derived from https://commons.wikimedia.org/wiki/File:U%2B21D2.svg */
 .launchpad__entry { list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25' height='12'%3E%3Cg transform='scale(0.7,0.8) translate(-613.21429,-421)'%3E%3Cpath fill='%23999' d='M 638.06773,429.49751 L 631.01022,436.87675 L 630.1898,436.02774 L 632.416,433.30375 L 613.46876,433.30375 L 613.46876,431.66382 L 633.82089,431.66382 L 635.57789,429.5261 L 633.79229,427.35979 L 613.46876,427.35979 L 613.46876,425.71985 L 632.416,425.71985 L 630.1898,422.99587 L 631.01022,422.08788 L 638.06773,429.49751 z '/%3E%3C/g%3E%3C/svg%3E"); }
 
+.binary-container { width: 100%; }
+.binary-container > a { display: flex; justify-content: center; }
 .binary-container_with-img img,
 .binary-container_with-video video,
-.binary-container_with-audio audio {width: 100%}
+.binary-container_with-audio audio {max-height: 30em; width: auto; }
 
 .subhyphae__title { padding-bottom: .5rem; clear: both; }
 .navi-title { padding-bottom: .5rem; margin: .25rem 0; }
@@ -309,9 +319,16 @@ caption { caption-side: top; font-size: small; }
 .relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
 .relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
+::-webkit-file-upload-button,
+.btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
+.btn_weak { border: 1px #999 dashed; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
+::-webkit-file-upload-button, .btn { background-color: #eee; color: black; }
+.btn:visited { color: black; }
+.btn_weak { background-color: transparent; }
+
 article code,
 article .codeblock,
 .transclusion,
@@ -336,18 +353,17 @@ table { background-color: #eee; }
 
 .layout-card { border-radius: .25rem; background-color: white; }
 .layout-card__title { font-size: 1rem; margin: 0; padding: .25rem .5rem; border-radius: .25rem .25rem 0 0; }
-.layout-card__title { background-color: #eee; }
+.layout-card__title { border-bottom: 1px solid #eee; }
 
 /* Other stuff */
-html { background-color: #ddd; 
-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='199' viewBox='0 0 100 199'%3E%3Cg fill='%23bbbbbb' %3E%3Cpath d='M0 199V0h1v1.99L100 199h-1.12L1 4.22V199H0zM100 2h-.12l-1-2H100v2z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-} /* heropatterns.com */
-header { background-color: #bbb; }
+html { background-color: #eee;
+}
+header { background-color: #eee; }
 .header-links__link { color: black; }
-.header-links__link:hover { background-color: #eee; }
+.header-links__link:hover { background-color: #ddd; }
 main { background-color: white; }
 
-blockquote { border-left: 4px black solid; }
+blockquote { border-left: 2px #999 solid; }
 .wikilink_new {color:#a55858;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
 .transclusion__link { color: black; }
@@ -375,9 +391,12 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
 .layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
 
-blockquote { border-left: 4px #ddd solid; }
 
 .transclusion .transclusion__link { color: #ddd; }
+
+input[type="text"], input[type="password"],
+::-webkit-file-upload-button,
+.btn,
 article code, 
 article .codeblock, 
 .transclusion,
@@ -388,6 +407,11 @@ article .codeblock,
 .upload-amnt, 
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
+.btn:visited { color: #ddd;}
+
+	.btn { border: #444 solid 1px; border-radius: .25rem; }
+	.btn_weak { background-color: transparent; }
+
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
 mark { background: rgba(130, 80, 30, 5); color: inherit; }
@@ -484,7 +508,7 @@ const wrapBold = selectionWrapper(2, '**'),
 //line assets/assets.qtpl:14
 	qw422016.N().S(`'),
     wrapHighlighted = selectionWrapper(2, '!!'),
-    wrapLifted = selectionWrapper(1, '^'),
+    wrapLifted = selectionWrapper(2, '^^'),
     wrapLowered = selectionWrapper(2, ',,'),
     wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapLink = selectionWrapper(2, '[[', ']]')
@@ -527,6 +551,11 @@ const insertHorizontalBar = textInserter('\n----\n'),
 function insertDate() {
     let date = new Date().toISOString().split('T')[0]
     textInserter(date)()
+}
+
+function insertTimeUTC() {
+	let time = new Date().toISOString().substring(11, 19) + " UTC"
+	textInserter(time)()
 }
 
 function insertUserlink() {

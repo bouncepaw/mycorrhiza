@@ -1,4 +1,4 @@
-package main
+package web
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func init() {
+func initHistory() {
 	http.HandleFunc("/history/", handlerHistory)
 	http.HandleFunc("/recent-changes/", handlerRecentChanges)
 	http.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
@@ -21,10 +21,10 @@ func init() {
 	http.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 }
 
-// handlerHistory lists all revisions of a hypha
+// handlerHistory lists all revisions of a hypha.
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
-	hyphaName := HyphaNameFromRq(rq, "history")
+	util.PrepareRq(rq)
+	hyphaName := util.HyphaNameFromRq(rq, "history")
 	var list string
 
 	// History can be found for files that do not exist anymore.
@@ -35,25 +35,26 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	util.HTTP200Page(w,
-		base(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
+		views.BaseHTML(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
 }
 
-// Recent changes
+// handlerRecentChanges displays the /recent-changes/ page.
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
-	log.Println(rq.URL)
+	util.PrepareRq(rq)
 	var (
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
 	)
 	if err == nil && n < 101 {
-		util.HTTP200Page(w, base(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
+		util.HTTP200Page(w, views.BaseHTML(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
 	} else {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	}
 }
 
+// genericHandlerOfFeeds is a helper function for the web feed handlers.
 func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
-	log.Println(rq.URL)
+	util.PrepareRq(rq)
 	if content, err := f(); err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)

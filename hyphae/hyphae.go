@@ -1,4 +1,4 @@
-// The `hyphae` package is for the Hypha type, hypha storage and stuff like that. It shall not depend on mycorrhiza modules other than util.
+// Package hyphae is for the Hypha type, hypha storage and stuff like that. It shall not depend on mycorrhiza modules other than util.
 package hyphae
 
 import (
@@ -8,7 +8,7 @@ import (
 )
 
 // HyphaPattern is a pattern which all hyphae must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"\'&%{}]+`)
+var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
 
 type Hypha struct {
 	sync.RWMutex

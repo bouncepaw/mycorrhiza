@@ -1,18 +1,10 @@
-# 🍄 MycorrhizaWiki 1.1
+# 🍄 MycorrhizaWiki 1.2
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
 
 ## Building
-Also see [detailed instructions](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on wiki.
-```sh
-git clone --recurse-submodules https://github.com/bouncepaw/mycorrhiza
-cd mycorrhiza
-make
-# That make will:
-# * run the default wiki. You can edit it right away.
-# * create an executable called `mycorrhiza`. Run it with path to your wiki.
-```
+See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wiki.
 
 ## Installing
 

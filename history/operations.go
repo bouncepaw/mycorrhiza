@@ -1,7 +1,7 @@
-// history/operations.go
-// 	Things related to writing history.
 package history
 
+// history/operations.go
+// 	Things related to writing history.
 import (
 	"fmt"
 	"os"
@@ -84,7 +84,10 @@ func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
 func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
 	for from, to := range pairs {
 		if from != "" {
-			os.MkdirAll(filepath.Dir(to), 0777)
+			if err := os.MkdirAll(filepath.Dir(to), 0777); err != nil {
+				hop.Errs = append(hop.Errs, err)
+				continue
+			}
 			if err := Rename(from, to); err != nil {
 				hop.Errs = append(hop.Errs, err)
 			}

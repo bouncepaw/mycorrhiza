@@ -4,9 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/markup"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
@@ -24,15 +23,15 @@ func FetchTextPart(h *hyphae.Hypha) (string, error) {
 }
 
 func SetHeaderLinks() {
-	if userLinksHypha := hyphae.ByName(util.HeaderLinksHypha); !userLinksHypha.Exists {
-		util.SetDefaultHeaderLinks()
+	if userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha); !userLinksHypha.Exists {
+		cfg.SetDefaultHeaderLinks()
 	} else {
 		contents, err := ioutil.ReadFile(userLinksHypha.TextPath)
 		if err != nil || len(contents) == 0 {
-			util.SetDefaultHeaderLinks()
+			cfg.SetDefaultHeaderLinks()
 		} else {
 			text := string(contents)
-			util.ParseHeaderLinks(text, markup.Rocketlink)
+			cfg.ParseHeaderLinks(text)
 		}
 	}
 }

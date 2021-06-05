@@ -1,29 +1,36 @@
 package main
 
+// Gemini-related stuff. This is currently a proof-of-concept implementation, no one really uses it.
+// Maybe we should deprecate it until we find power to do it properly?
+//
+// When this stuff gets more serious, a separate module will be needed.
+
 import (
 	"crypto/tls"
 	"crypto/x509/pkix"
+	"io"
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"git.sr.ht/~adnano/go-gemini"
 	"git.sr.ht/~adnano/go-gemini/certificate"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/markup"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 	log.Println(rq.URL)
-	w.Write([]byte(`# MycorrhizaWiki
+	_, _ = io.WriteString(w, `# MycorrhizaWiki
 
 You have successfully served the wiki through Gemini. Currently, support is really work-in-progress; you should resort to using Mycorrhiza through the web protocols.
 
 Visit home hypha:
-=> /hypha/` + util.HomePage))
+=> /hypha/`+cfg.HomeHypha)
 }
 
 func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
@@ -37,21 +44,20 @@ func geminiHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 	if h.Exists {
 		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
 		if errT == nil {
-			md := markup.Doc(hyphaName, string(fileContentsT))
-			contents = md.AsGemtext()
+			contents = string(fileContentsT)
 		}
 	}
 	if hasAmnt {
-		w.Write([]byte("This hypha has an attachment\n"))
+		_, _ = io.WriteString(w, "This hypha has an attachment\n")
 	}
-	w.Write([]byte(contents))
+	_, _ = io.WriteString(w, contents)
 }
 
 func handleGemini() {
-	if util.GeminiCertPath == "" {
+	if cfg.GeminiCertificatePath == "" {
 		return
 	}
-	certPath, err := filepath.Abs(util.GeminiCertPath)
+	certPath, err := filepath.Abs(cfg.GeminiCertificatePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,4 +87,16 @@ func handleGemini() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// geminiHyphaNameFromRq extracts hypha name from gemini request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
+func geminiHyphaNameFromRq(rq *gemini.Request, actions ...string) string {
+	p := rq.URL.Path
+	for _, action := range actions {
+		if strings.HasPrefix(p, "/"+action+"/") {
+			return util.CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
+		}
+	}
+	log.Fatal("HyphaNameFromRq: no matching action passed")
+	return ""
 }

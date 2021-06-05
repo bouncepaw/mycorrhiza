@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"strconv"
@@ -39,8 +40,8 @@ func Register(username, password string) error {
 	username = util.CanonicalName(username)
 	log.Println("Attempt to register user", username)
 	switch {
-	case CountRegistered() >= util.LimitRegistration && util.LimitRegistration > 0:
-		i := strconv.Itoa(util.LimitRegistration)
+	case CountRegistered() >= cfg.LimitRegistration && cfg.LimitRegistration > 0:
+		i := strconv.Itoa(cfg.LimitRegistration)
 		log.Println("Limit reached: " + i)
 		return errors.New("Reached the limit of registered users: " + i)
 	case HasUsername(username):

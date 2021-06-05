@@ -1,13 +1,14 @@
+// Package files is used to get paths to different files Mycorrhiza uses. Also see cfg.
 package files
 
 import (
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"path/filepath"
 	"strings"
 
 	"github.com/adrg/xdg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/mitchellh/go-homedir"
 )
 
@@ -17,9 +18,20 @@ var paths struct {
 	fixedCredentialsJSON        string
 }
 
-func TokensJSON() string                  { return paths.tokensJSON }
+// TokensJSON returns a path to the JSON file where users' tokens are stored.
+//
+// Default path: $XDG_DATA_HOME/mycorrhiza/tokens.json
+func TokensJSON() string { return paths.tokensJSON }
+
+// RegistrationCredentialsJSON returns a path to the JSON file where registration credentials are stored.
+//
+// Default path: $XDG_DATA_HOME/mycorrhiza/registration.json
 func RegistrationCredentialsJSON() string { return paths.registrationCredentialsJSON }
-func FixedCredentialsJSON() string        { return paths.fixedCredentialsJSON }
+
+// FixedCredentialsJSON returns a path to the JSON file where fixed credentials are stored.
+//
+// There is no default path.
+func FixedCredentialsJSON() string { return paths.fixedCredentialsJSON }
 
 // CalculatePaths looks for all external paths and stores them. Tries its best to find any errors. It is safe it to call it multiple times in order to save new paths.
 func CalculatePaths() error {
@@ -49,7 +61,7 @@ func tokenStoragePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if strings.HasPrefix(dir, util.WikiDir) {
+	if strings.HasPrefix(dir, cfg.WikiDir) {
 		return "", errors.New("wiki storage directory includes private config files")
 	}
 	return dir, nil
@@ -57,7 +69,7 @@ func tokenStoragePath() (string, error) {
 
 func registrationCredentialsPath() (string, error) {
 	var err error
-	path := util.RegistrationCredentialsPath
+	path := cfg.RegistrationCredentialsPath
 
 	if len(path) == 0 {
 		path, err = xdg.DataFile("mycorrhiza/registration.json")
@@ -81,7 +93,7 @@ func registrationCredentialsPath() (string, error) {
 
 func fixedCredentialsPath() (string, error) {
 	var err error
-	path := util.FixedCredentialsPath
+	path := cfg.FixedAuthCredentialsPath
 
 	if len(path) > 0 {
 		path, err = homedir.Expand(path)

@@ -1,7 +1,46 @@
 {% import "path/filepath" %}
 {% import "strings" %}
+
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+
+{% func nonExistentHyphaNotice(h *hyphae.Hypha, u *user.User) %}
+<section class="non-existent-hypha">
+	<h2 class="non-existent-hypha__title">This hypha does not exist</h2>
+	{% if user.AuthUsed && u.Group == "anon" %}
+	<p>You are not authorized to create new hyphae. Here is what you can do:</p>
+	<ul>
+		<li><a href="/login">Log in to your account, if you have one</a></li>
+		{% if cfg.UseRegistration %}<li><a href="/register">Register a new account</a></li>{% endif %}
+	</ul>
+	{% else %}
+
+	<div class="non-existent-hypha__ways">
+	<section class="non-existent-hypha__way">
+		<h3 class="non-existent-hypha__subtitle">📝 Write a text</h3>
+		<p>Write a note, a diary, an article, a story or anything textual using <a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup">Mycomarkup</a>. Full history of edits to the document will be saved.</p>
+		<p>Make sure to follow this wiki&apos;s writing conventions if there are any.</p>
+		<a class="btn stick-to-bottom" href="/edit/{%s h.Name %}">Create</a>
+	</section>
+
+	<section class="non-existent-hypha__way">
+		<h3 class="non-existent-hypha__subtitle">🖼 Upload a media</h3>
+		<p>Upload a picture, a video or an audio. Most common formats can be accessed from the browser, others can be only downloaded afterwards. You can write a description for the media later.</p>
+		<form action="/upload-binary/{%s h.Name %}"
+        		method="post" enctype="multipart/form-data"
+        		class="upload-binary">
+        	<label for="upload-binary__input"></label>
+        	<input type="file" id="upload-binary__input" name="binary">
+
+        	<input type="submit" class="btn stick-to-bottom" value="Upload">
+        </form>
+	</section>
+	</div>
+	{% endif %}
+</section>
+{% endfunc %}
 
 {% func NaviTitleHTML(h *hyphae.Hypha) %}
 {% code 
@@ -12,8 +51,8 @@
 %}
 <h1 class="navi-title">
 {% stripspace %}
-	<a href="/hypha/{%s util.HomePage %}">
-		{%-s= util.SiteNavIcon -%}
+	<a href="/hypha/{%s cfg.HomeHypha %}">
+		{%-s= cfg.NaviTitleIcon -%}
 		<span aria-hidden="true" class="navi-title__colon">:</span>
 	</a>
 

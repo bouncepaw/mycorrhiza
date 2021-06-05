@@ -1,4 +1,6 @@
 {% import "net/http" %}
+
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
@@ -18,7 +20,7 @@
 			{"italic", "wrapItalic()", "<i>//Italic//</i>"},
 			{"highlighted", "wrapHighlighted()", "<mark>!!Highlight!!</mark>"},
 			{"monospace", "wrapMonospace()", "<code>`Monospace`</code>"},
-			{"lifted", "wrapLifted()", "<sup>^Lifted^</sup>"},
+			{"lifted", "wrapLifted()", "<sup>^^Lifted^^</sup>"},
 			{"lowered", "wrapLowered()", "<sub>,,Lowered,,</sub>"},
 			{"strikethrough", "wrapStrikethrough()", "<strike>~~Strikethrough~~</strike>"},
 			{"rocket", "insertRocket()", "=> rocketlink"},
@@ -46,6 +48,7 @@
 			display string
 		}{
 			{"date", "insertDate()", "Insert current date"},
+			{"time", "insertTimeUTC()", "Insert current time"},
 		} %}
 		<button
 			class="edit-toolbar__btn edit-toolbar__{%s el.class %}"
@@ -62,7 +65,7 @@
 	{% endif %}
 	</section>
 </aside>
-<script src="/static/toolbar.js"></script>
+<script src="/assets/toolbar.js"></script>
 {% endfunc %}
 
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
@@ -82,6 +85,7 @@
 </main>
 {%s= Toolbar(user.FromRequest(rq)) %}
 </div>
+{%= editScripts() %}
 {% endfunc %}
 
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
@@ -103,4 +107,11 @@
 </main>
 {%s= Toolbar(user.FromRequest(rq)) %}
 </div>
+{%= editScripts() %}
+{% endfunc %}
+
+{% func editScripts() %}
+{% for _, scriptPath := range cfg.EditScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
 {% endfunc %}

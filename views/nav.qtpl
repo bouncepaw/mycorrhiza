@@ -1,5 +1,6 @@
 {% import "net/http" %}
 {% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
@@ -48,13 +49,18 @@ var navEntries = []navEntry{
 
 {% func UserMenuHTML(u *user.User) %}
 {% if user.AuthUsed %}
-<li class="header-links__entry header-links__entry_user">
-	{% if u.Group == "anon" %}
-	<a href="/login" class="header-links__link">Login</a>
-	{% else %}
-	<a href="/hypha/{%s util.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s u.Name %}</a>
-	{% endif %}
-</li>
+	<li class="header-links__entry header-links__entry_user">
+		{% if u.Group == "anon" %}
+		<a href="/login" class="header-links__link">Login</a>
+		{% else %}
+		<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s util.BeautifulName(u.Name) %}</a>
+		{% endif %}
+	</li>
+{% endif %}
+{% if user.AuthUsed && cfg.UseRegistration && u.Group == "anon" %}
+	<li class="header-links__entry header-links__entry_register">
+		<a href="/register" class="header-links__link">Register</a>
+	</li>
 {% endif %}
 {% endfunc %}
 

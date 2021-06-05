@@ -1,28 +1,29 @@
-// information.go
-// 	Things related to gathering existing information.
 package history
 
+// information.go
+// 	Things related to gathering existing information.
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/gorilla/feeds"
 )
 
 func recentChangesFeed() *feeds.Feed {
 	feed := &feeds.Feed{
 		Title:       "Recent changes",
-		Link:        &feeds.Link{Href: util.URL},
+		Link:        &feeds.Link{Href: cfg.URL},
 		Description: "List of 30 recent changes on the wiki",
 		Author:      &feeds.Author{Name: "Wikimind", Email: "wikimind@mycorrhiza"},
 		Updated:     time.Now(),
 	}
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--max-count=30",
@@ -34,6 +35,7 @@ func recentChangesFeed() *feeds.Feed {
 			revs = append(revs, parseRevisionLine(line))
 		}
 	}
+	log.Printf("Found %d recent changes", len(revs))
 	for _, rev := range revs {
 		feed.Add(&feeds.Item{
 			Title:       rev.Message,
@@ -42,7 +44,7 @@ func recentChangesFeed() *feeds.Feed {
 			Description: rev.descriptionForFeed(),
 			Created:     rev.Time,
 			Updated:     rev.Time,
-			Link:        &feeds.Link{Href: util.URL + rev.bestLink()},
+			Link:        &feeds.Link{Href: cfg.URL + rev.bestLink()},
 		})
 	}
 	return feed
@@ -62,7 +64,7 @@ func RecentChangesJSON() (string, error) {
 
 func RecentChanges(n int) []Revision {
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
 			"--max-count="+strconv.Itoa(n),
@@ -74,6 +76,7 @@ func RecentChanges(n int) []Revision {
 			revs = append(revs, parseRevisionLine(line))
 		}
 	}
+	log.Printf("Found %d recent changes", len(revs))
 	return revs
 }
 
@@ -86,7 +89,7 @@ func FileChanged(path string) bool {
 // Revisions returns slice of revisions for the given hypha name.
 func Revisions(hyphaName string) ([]Revision, error) {
 	var (
-		out, err = gitsh(
+		out, err = silentGitsh(
 			"log", "--oneline", "--no-merges",
 			// Hash, author email, author time, commit msg separated by tab
 			"--pretty=format:\"%h\t%ae\t%at\t%s\"",
@@ -101,6 +104,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 			}
 		}
 	}
+	log.Printf("Found %d revisions for ‘%s’\n", len(revs), hyphaName)
 	return revs, err
 }
 
@@ -137,7 +141,7 @@ func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
 	author := ""
 	if rev.Username != "anon" {
 		author = fmt.Sprintf(`
-		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, util.UserHypha, rev.Username)
+		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, cfg.UserHypha, rev.Username)
 	}
 	return fmt.Sprintf(`
 <li class="history__entry">
@@ -170,13 +174,20 @@ func parseRevisionLine(line string) Revision {
 	}
 }
 
-// See how the file with `filepath` looked at commit with `hash`.
+// FileAtRevision shows how the file with the given file path looked at the commit with the hash. It may return an error if git fails.
 func FileAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, util.WikiDir+"/"))
+	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, cfg.WikiDir+"/"))
+	if err != nil {
+		return "", err
+	}
 	return out.String(), err
 }
 
+// PrimitiveDiffAtRevision generates a plain-text diff for the given filepath at the commit with the given hash. It may return an error if git fails.
 func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
+	out, err := silentGitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
+	if err != nil {
+		return "", err
+	}
 	return out.String(), err
 }

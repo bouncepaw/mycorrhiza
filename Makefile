@@ -1,11 +1,13 @@
+WIKI=~/src/example-wiki
+
 run: build
-	./mycorrhiza metarrhiza
+	./mycorrhiza ${WIKI}
 
 config_run: build
-	./mycorrhiza -config-path "assets/config.ini" metarrhiza
+	./mycorrhiza -config-path "assets/config.ini" ${WIKI}
 
 devconfig_run: build
-	./mycorrhiza -config-path "assets/devconfig.ini" metarrhiza
+	./mycorrhiza -config-path "assets/devconfig.ini" ${WIKI}
 
 build:
 	go generate

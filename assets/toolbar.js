@@ -42,7 +42,7 @@ const wrapBold = selectionWrapper(2, '**'),
     wrapItalic = selectionWrapper(2, '//'),
     wrapMonospace = selectionWrapper(1, '`'),
     wrapHighlighted = selectionWrapper(2, '!!'),
-    wrapLifted = selectionWrapper(1, '^'),
+    wrapLifted = selectionWrapper(2, '^^'),
     wrapLowered = selectionWrapper(2, ',,'),
     wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapLink = selectionWrapper(2, '[[', ']]')
@@ -61,6 +61,11 @@ const insertHorizontalBar = textInserter('\n----\n'),
 function insertDate() {
     let date = new Date().toISOString().split('T')[0]
     textInserter(date)()
+}
+
+function insertTimeUTC() {
+	let time = new Date().toISOString().substring(11, 19) + " UTC"
+	textInserter(time)()
 }
 
 function insertUserlink() {
