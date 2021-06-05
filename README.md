@@ -6,11 +6,19 @@ A wiki engine.
 ## Building
 See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wiki.
 
+## Installing
+
+If you use a linux distro with pacman package manager (Arch, Manjaro, Garuda, etc) you can install it using PKGBUILD:
+```sh
+$ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/PKGBUILD
+$ makepkg --install
+```
+
 ## Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
 
-WIKI_PATH must be a path to git repository which you want to be a wiki.
+WIKI_PATH must be a path to a git repository which you want to be a wiki.
 
 Options:
   -config-path string
@@ -21,7 +29,7 @@ Options:
 
 ## Features
 * Wiki pages (called hyphae) are written in mycomarkup
-* Edit pages through html forms, graphical preview, toolbar that helps you use the markup
+* Edit pages through html forms, a graphical preview and a toolbar that helps you use mycomarkup
 * Responsive design, dark theme (synced with system theme)
 * Works in text browsers
 * Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with
@@ -31,13 +39,13 @@ Options:
 * History page
 * Random page
 * Recent changes page; RSS, Atom and JSON feeds available
-* Hyphae can be deleted (while still preserving history)
+* Hyphae can be deleted while still preserving history
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources
 * Authorization with pre-set credentials, registration
 * Basic Gemini protocol support
 
 ## Contributing
-Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact directly.
+Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor bouncepaw on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
 
 You can view list of all planned features on [our kanban board](https://github.com/bouncepaw/mycorrhiza/projects/1).
