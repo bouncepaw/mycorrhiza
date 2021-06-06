@@ -9,7 +9,7 @@
 	{% if cfg.UseRegistration %}
 		<form class="modal" method="post" action="/register?{%s rq.URL.RawQuery %}" id="register-form" enctype="multipart/form-data" autocomplete="off">
 			<fieldset class="modal__fieldset">
-				<legend class="modal__title">Register to {%s cfg.WikiName %}</legend>
+				<legend class="modal__title">Register on {%s cfg.WikiName %}</legend>
 
 				<label for="register-form__username">Username</label>
 				<br>

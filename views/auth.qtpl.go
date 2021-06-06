@@ -44,7 +44,7 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 //line views/auth.qtpl:10
 		qw422016.N().S(`" id="register-form" enctype="multipart/form-data" autocomplete="off">
 			<fieldset class="modal__fieldset">
-				<legend class="modal__title">Register to `)
+				<legend class="modal__title">Register on `)
 //line views/auth.qtpl:12
 		qw422016.E().S(cfg.WikiName)
 //line views/auth.qtpl:12
