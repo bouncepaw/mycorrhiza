@@ -21,6 +21,8 @@ var gitpath string
 
 var renameMsgPattern = regexp.MustCompile(`^Rename ‘(.*)’ to ‘.*’`)
 
+var gitEnv = []string{"GIT_COMMITTER_NAME=wikimind", "GIT_COMMITTER_EMAIL=wikimind@mycorrhiza"}
+
 // Start finds git and initializes git credentials.
 func Start() {
 	path, err := exec.LookPath("git")
@@ -28,15 +30,6 @@ func Start() {
 		log.Fatal("Could not find the git executable. Check your $PATH.")
 	}
 	gitpath = path
-
-	_, err = silentGitsh("config", "user.name", "wikimind")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = silentGitsh("config", "user.email", "wikimind@mycorrhiza")
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 // Revision represents a revision, duh. Hash is usually short. Username is extracted from email.
@@ -170,6 +163,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 	fmt.Printf("$ %v\n", args)
 	cmd := exec.Command(gitpath, args...)
 	cmd.Dir = cfg.WikiDir
+	cmd.Env = gitEnv
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
@@ -182,6 +176,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 func silentGitsh(args ...string) (out bytes.Buffer, err error) {
 	cmd := exec.Command(gitpath, args...)
 	cmd.Dir = cfg.WikiDir
+	cmd.Env = gitEnv
 
 	b, err := cmd.CombinedOutput()
 	return *bytes.NewBuffer(b), err
