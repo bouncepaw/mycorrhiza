@@ -3,8 +3,8 @@ git.sr.ht/~adnano/go-gemini v0.1.13/go.mod h1:If1VxEWcZDrRt5FeAFnGTcM2Ud1E3BXs3V
 github.com/adrg/xdg v0.2.2 h1:A7ZHKRz5KGOLJX/bg7IPzStryhvCzAE1wX+KWawPiAo=
 github.com/adrg/xdg v0.2.2/go.mod h1:7I2hH/IT30IsupOpKZ5ue7/qNi3CoKzD6tL3HwpaRMQ=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
-github.com/bouncepaw/mycomarkup v0.4.5 h1:QBLSGmqGsb3smjAmywosio2nVL7A8sR2KF5AB38GrXc=
-github.com/bouncepaw/mycomarkup v0.4.5/go.mod h1:0n6thlGGgrx2Y/2NaaUH4qHW4v1xJ+EpW7yMFUxNRIg=
+github.com/bouncepaw/mycomarkup v0.4.6 h1:XxTD+ryAUSGTsd3Zr8Jn7HFy94Tpv+bEuKLnrjdb9QY=
+github.com/bouncepaw/mycomarkup v0.4.6/go.mod h1:0n6thlGGgrx2Y/2NaaUH4qHW4v1xJ+EpW7yMFUxNRIg=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-ini/ini v1.62.0 h1:7VJT/ZXjzqSrvtraFp4ONq80hTcRQth1c9ZnQ3uNQvU=
