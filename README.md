@@ -8,10 +8,40 @@ See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wik
 
 ## Installing
 
+### Pacman
+
 If you use a linux distro with pacman package manager (Arch, Manjaro, Garuda, etc) you can install it using PKGBUILD:
 ```sh
 $ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/PKGBUILD
 $ makepkg --install
+```
+
+### Docker
+
+You can run Mycorrhiza Wiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
+```sh
+$ git clone https://github.com/bouncepaw/mycorrhiza/
+$ docker build -t mycorrhiza .
+```
+
+Now you can create a new Mycorrhiza Wiki container using this command:
+```sh
+$ docker run -v /full/path/to/my/wiki:/wiki -p 1737:1737 mycorrhiza
+```
+
+Example:
+```sh
+$ cd /dev/shm
+$ git clone https://github.com/bouncepaw/mycorrhiza/
+$ docker build -t mycorrhiza .
+$ git clone https://github.com/bouncepaw/example-wiki
+$ docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
+```
+
+Example 2:
+```sh
+...
+$ docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorrhiza -config-path /config/myconfig.ini /wiki
 ```
 
 ## Usage
