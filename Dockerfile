@@ -1,18 +1,16 @@
-FROM golang as build
+FROM golang:alpine as build
 WORKDIR src
 COPY . .
 ENV CGO_ENABLED=0
-RUN make build
+RUN go generate
+RUN go build -o /out/mycorrhiza .
 
 FROM alpine/git as app
 EXPOSE 1737
 
 WORKDIR /
 RUN mkdir wiki
-COPY --from=build /go/src/mycorrhiza /usr/bin
-RUN mkdir config
-
-VOLUME /config
+COPY --from=build /out/mycorrhiza /usr/bin
 
 WORKDIR /wiki
 VOLUME /wiki
