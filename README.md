@@ -39,6 +39,11 @@ $ git clone https://github.com/bouncepaw/example-wiki
 $ docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
 ```
 
+Example 2:
+```sh
+$ docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorrhiza -config-path /config/myconfig.ini /wiki
+```
+
 ## Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
