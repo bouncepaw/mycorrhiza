@@ -20,7 +20,7 @@ $ makepkg --install
 
 Use Dockerfile:
 ```sh
-$ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/Dockerfile
+$ git clone https://github.com/bouncepaw/mycorrhiza/
 $ docker build -t mycorrhiza .
 ```
 
@@ -32,8 +32,7 @@ $ docker run -v /full/path/to/my/wiki:/wiki -p 1737:1737 mycorrhiza
 Example:
 ```sh
 $ cd /dev/shm
-
-$ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/Dockerfile
+$ git clone https://github.com/bouncepaw/mycorrhiza/
 $ docker build -t mycorrhiza .
 $ git clone https://github.com/bouncepaw/example-wiki
 $ docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
@@ -41,6 +40,7 @@ $ docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
 
 Example 2:
 ```sh
+...
 $ docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorrhiza -config-path /config/myconfig.ini /wiki
 ```
 
