@@ -18,13 +18,13 @@ $ makepkg --install
 
 ### Docker
 
-You can run MycorrhizaWiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
+You can run Mycorrhiza Wiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
 ```sh
 $ git clone https://github.com/bouncepaw/mycorrhiza/
 $ docker build -t mycorrhiza .
 ```
 
-Now you can create a new MycorrhizaWiki container using this command:
+Now you can create a new Mycorrhiza Wiki container using this command:
 ```sh
 $ docker run -v /full/path/to/my/wiki:/wiki -p 1737:1737 mycorrhiza
 ```
