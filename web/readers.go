@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/mycocontext"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -126,9 +127,11 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
-			ast := mycomarkup.BlockTree(ctx)
+			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
+			getOpenGraph, descVisitor, imgVisitor := mycomarkup.OpenGraphVisitors(ctx)
+			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
 			contents = mycomarkup.BlocksToHTML(ctx, ast)
-			openGraph = mycomarkup.OpenGraphHTML(ctx, ast)
+			openGraph = getOpenGraph()
 		}
 		if !os.IsNotExist(errB) {
 			contents = views.AttachmentHTML(h) + contents
