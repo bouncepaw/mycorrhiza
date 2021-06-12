@@ -65,7 +65,7 @@
 	{% endif %}
 	</section>
 </aside>
-<script src="/assets/toolbar.js"></script>
+<script src="/static/toolbar.js"></script>
 {% endfunc %}
 
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}

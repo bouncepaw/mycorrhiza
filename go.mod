@@ -1,6 +1,6 @@
 module github.com/bouncepaw/mycorrhiza
 
-go 1.14
+go 1.16
 
 require (
 	git.sr.ht/~adnano/go-gemini v0.1.13

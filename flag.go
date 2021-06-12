@@ -1,17 +1,19 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/bouncepaw/mycorrhiza/assets"
 )
 
 // CLI options are read and parsed here.
+
+//go:embed assets/config.ini
+var defaultConfig []byte
 
 var printExampleConfig bool
 
@@ -21,11 +23,11 @@ func init() {
 	flag.Usage = printHelp
 }
 
-// printHelp prints the help message. The help message is stored in assets.
+// printHelp prints the help message.
 func printHelp() {
 	_, err := fmt.Fprintf(
 		flag.CommandLine.Output(),
-		assets.HelpMessage(),
+		"Usage of %s:\n",
 		os.Args[0],
 	)
 	if err != nil {
@@ -40,7 +42,7 @@ func parseCliArgs() {
 
 	args := flag.Args()
 	if printExampleConfig {
-		fmt.Printf(assets.ExampleConfig())
+		os.Stdout.Write(defaultConfig)
 		os.Exit(0)
 	}
 

@@ -163,7 +163,7 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int) {
 		recent changes
 	</nav>
 
-	<p><img class="icon" width="20" height="20" src="/assets/icon/feed">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
+	<p><img class="icon" width="20" height="20" src="/static/icon/feed.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
 
 	`)
 //line views/history.qtpl:55

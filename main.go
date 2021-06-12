@@ -11,6 +11,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
+	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/web"
 	"log"
@@ -39,6 +40,9 @@ func main() {
 	user.InitUserDatabase()
 	history.Start()
 	shroom.SetHeaderLinks()
+
+	// Static files:
+	static.InitFS(cfg.WikiDir + "/static")
 
 	// Network:
 	go handleGemini()

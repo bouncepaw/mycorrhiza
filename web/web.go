@@ -6,19 +6,19 @@ package web
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
+	"mime"
 	"net/http"
 	"net/url"
-	"os"
-	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/assets"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
+
+var stylesheets = []string{"default.css", "custom.css"}
 
 // httpErr is used by many handlers to signal errors in a compact way.
 func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
@@ -41,51 +41,16 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if _, err := os.Stat(cfg.WikiDir + "/assets/common.css"); err == nil {
-		http.ServeFile(w, rq, cfg.WikiDir+"/assets/common.css")
-	} else {
-		w.Header().Set("Content-Type", "text/css;charset=utf-8")
-		w.Write([]byte(assets.DefaultCSS()))
-	}
-	if bytes, err := ioutil.ReadFile(cfg.WikiDir + "/assets/custom.css"); err == nil {
-		w.Write(bytes)
-	}
-}
 
-func handlerToolbar(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-	w.Header().Set("Content-Type", "text/javascript;charset=utf-8")
-	w.Write([]byte(assets.ToolbarJS()))
-}
-
-// handlerIcon serves the requested icon. All icons are distributed as part of the Mycorrhiza binary.
-//
-// See assets/assets/icon/ for icons themselves, see assets/assets.qtpl for their sources.
-func handlerIcon(w http.ResponseWriter, rq *http.Request) {
-	iconName := strings.TrimPrefix(rq.URL.Path, "/assets/icon/")
-	if iconName == "https" {
-		iconName = "http"
-	}
-	w.Header().Set("Content-Type", "image/svg+xml")
-	icon := func() string {
-		switch iconName {
-		case "gemini":
-			return assets.IconGemini()
-		case "mailto":
-			return assets.IconMailto()
-		case "gopher":
-			return assets.IconGopher()
-		case "feed":
-			return assets.IconFeed()
-		default:
-			return assets.IconHTTP()
+	w.Header().Set("Content-Type", mime.TypeByExtension("css"))
+	for _, name := range stylesheets {
+		file, err := static.FS.Open(name)
+		if err != nil {
+			continue
 		}
-	}()
-	_, err := io.WriteString(w, icon)
-	if err != nil {
-		log.Println(err)
+		io.Copy(w, file)
+		file.Close()
 	}
-
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
@@ -113,15 +78,15 @@ func Init() {
 	initHistory()
 	initStuff()
 
+	// Miscellaneous
 	http.HandleFunc("/user-list/", handlerUserList)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(cfg.WikiDir+"/static"))))
-	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
-		http.ServeFile(w, rq, cfg.WikiDir+"/static/favicon.ico")
-	})
-	http.HandleFunc("/assets/common.css", handlerStyle)
-	http.HandleFunc("/assets/toolbar.js", handlerToolbar)
-	http.HandleFunc("/assets/icon/", handlerIcon)
 	http.HandleFunc("/robots.txt", handlerRobotsTxt)
+
+	// Static assets
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+	http.HandleFunc("/static/style.css", handlerStyle)
+
+	// Index page
 	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
 		addr, _ := url.Parse("/hypha/" + cfg.HomeHypha) // Let's pray it never fails
 		rq.URL = addr

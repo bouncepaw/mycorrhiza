@@ -8,10 +8,11 @@
 <!doctype html>
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/assets/common.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{%s title %}</title>
+		<link rel="shortcut icon" href="/static/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="/static/style.css">
 		{% for _, el := range headElements %}{%s= el %}{% endfor %}
 	</head>
 	<body>
