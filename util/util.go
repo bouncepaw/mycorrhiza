@@ -13,7 +13,6 @@ import (
 )
 
 func PrepareRq(rq *http.Request) {
-	log.Println(rq.RequestURI)
 	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
 }
 
