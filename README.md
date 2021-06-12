@@ -3,48 +3,7 @@ A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
 
-## Building
-See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wiki.
-
-## Installing
-
-### Pacman
-
-If you use a linux distro with pacman package manager (Arch, Manjaro, Garuda, etc) you can install it using PKGBUILD:
-```sh
-$ wget https://raw.githubusercontent.com/bouncepaw/mycorrhiza/master/PKGBUILD
-$ makepkg --install
-```
-
-### Docker
-
-You can run Mycorrhiza Wiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
-```sh
-$ git clone https://github.com/bouncepaw/mycorrhiza/
-$ docker build -t mycorrhiza .
-```
-
-Now you can create a new Mycorrhiza Wiki container using this command:
-```sh
-$ docker run -v /full/path/to/my/wiki:/wiki -p 1737:1737 mycorrhiza
-```
-
-Example:
-```sh
-$ cd /dev/shm
-$ git clone https://github.com/bouncepaw/mycorrhiza/
-$ docker build -t mycorrhiza .
-$ git clone https://github.com/bouncepaw/example-wiki
-$ docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
-```
-
-Example 2:
-```sh
-...
-$ docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorrhiza -config-path /config/myconfig.ini /wiki
-```
-
-## Usage
+# Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
 
@@ -74,6 +33,47 @@ Options:
 * Light on resources
 * Authorization with pre-set credentials, registration
 * Basic Gemini protocol support
+
+# Building
+See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wiki.
+
+# Installing
+
+## AUR
+
+You can install Mycorrhiza Wiki from AUR using your favorite package manager on any Arch Linux-derivative distro (Arch, Manjaro, Garuda, etc):
+```sh
+yay -S mycorrhiza  # or mycorrhiza-bin if you don't want to
+                   # build it from scratch
+```
+
+## Docker
+
+You can run Mycorrhiza Wiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
+```sh
+git clone https://github.com/bouncepaw/mycorrhiza/
+docker build -t mycorrhiza .
+```
+
+Now you can create a new Mycorrhiza Wiki container using this command:
+```sh
+docker run -v /path/to/wiki:/wiki -p 1737:1737 mycorrhiza
+```
+
+Example:
+```sh
+cd /dev/shm
+git clone https://github.com/bouncepaw/mycorrhiza/
+docker build -t mycorrhiza .
+git clone https://github.com/bouncepaw/example-wiki
+docker run -v /dev/shm/example-wiki:/wiki -p 1737:1737 mycorrhiza
+```
+
+Example 2:
+```sh
+# ...
+docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorrhiza -config-path /config/myconfig.ini /wiki
+```
 
 ## Contributing
 Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor bouncepaw on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
