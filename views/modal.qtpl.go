@@ -46,7 +46,7 @@ func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 	streammodalReallyWant(qw422016, hyphaName, "unattach")
 //line views/modal.qtpl:11
 	qw422016.N().S(`
-		<p>In this version of MycorrhizaWiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
+		<p>In this version of Mycorrhiza Wiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
 `)
 //line views/modal.qtpl:13
 	streammodalEnd(qw422016, hyphaName, true)

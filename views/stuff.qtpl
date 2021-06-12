@@ -100,7 +100,7 @@ for u := range user.YieldUsers() {
 	<section>
 		<h1>About {%s cfg.WikiName %}</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.lesarbr.es">MycorrhizaWiki</a> version:</b> 1.2.0 indev</li>
+			<li><b><a href="https://mycorrhiza.lesarbr.es">Mycorrhiza Wiki</a> version:</b> 1.2.0 indev</li>
 		{%- if user.AuthUsed -%}
 			<li><b>User count:</b> {%d user.Count() %}</li>
 			<li><b>Home page:</b> <a href="/">{%s cfg.HomeHypha %}</a></li>

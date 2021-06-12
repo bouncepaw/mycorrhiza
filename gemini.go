@@ -25,7 +25,7 @@ import (
 
 func geminiHomeHypha(w *gemini.ResponseWriter, rq *gemini.Request) {
 	log.Println(rq.URL)
-	_, _ = io.WriteString(w, `# MycorrhizaWiki
+	_, _ = io.WriteString(w, `# Mycorrhiza Wiki
 
 You have successfully served the wiki through Gemini. Currently, support is really work-in-progress; you should resort to using Mycorrhiza through the web protocols.
 

@@ -9,7 +9,7 @@
 	"",
 	"Delete "+util.BeautifulName(hyphaName)+"?") %}
 {%= modalReallyWant(hyphaName, "unattach") %}
-		<p>In this version of MycorrhizaWiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
+		<p>In this version of Mycorrhiza Wiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
 {%= modalEnd(hyphaName, true) %}
 {% endfunc %}
 

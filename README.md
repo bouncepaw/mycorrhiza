@@ -1,4 +1,4 @@
-# 🍄 MycorrhizaWiki 1.2
+# 🍄 Mycorrhiza Wiki 1.2
 A wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)

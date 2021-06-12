@@ -92,7 +92,7 @@ type Authorization struct {
 // Note that it may log.Fatal.
 func ReadConfigFile() {
 	cfg := &Config{
-		WikiName:      "MycorrhizaWiki",
+		WikiName:      "Mycorrhiza Wiki",
 		NaviTitleIcon: "🍄",
 		Hyphae: Hyphae{
 			HomeHypha:        "home",
