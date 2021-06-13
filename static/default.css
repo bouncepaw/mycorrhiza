@@ -303,4 +303,83 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 }
 }
 
+/* handlerug: sorry but I can't write in that unique and very special way */
+/* i have to resort to the BORING way of writing CSS */
+.kbd-key {
+	display: inline-block;
+	min-width: 1.5ch;
+	text-align: center;
+}
 
+.dialog-wrap {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+	overflow-y: auto;
+
+	padding: 0 16px;
+}
+
+.dialog {
+	position: relative;
+
+	width: 100%;
+	max-width: 700px;
+	margin: 96px auto;
+	padding: 24px;
+
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dialog__title {
+	margin: 0;
+	font-size: 1.5em;
+}
+
+.dialog__close-button {
+	position: absolute;
+	display: block;
+	top: 0;
+	right: 0;
+	margin: 16px;
+	padding: 8px;
+	border: none;
+	background: url(/static/icon/x.svg) no-repeat 8px 8px / 16px 16px;
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+}
+
+.dialog__close-button:active {
+	opacity: .7;
+}
+
+.shortcuts-group-heading {
+	margin: 1em 0 0.5em;
+	font-size: 1.2em;
+}
+
+.shortcuts-group {
+	margin: 0;
+	padding: 0;
+}
+
+.shortcuts-group + .shortcuts-group {
+	margin-top: 1.5em;
+}
+
+.shortcut-row {
+	display: flex;
+	margin: 0.5em 0;
+	padding: 0;
+	list-style: none;
+}
+
+.shortcut-row__description {
+	flex: 1;
+}

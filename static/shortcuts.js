@@ -2,6 +2,8 @@
     const $ = document.querySelector.bind(document);
     const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...args));
 
+    const isMac = /Macintosh/.test(window.navigator.userAgent);
+
     function keyEventToShortcut(event) {
         let elideShift = event.key.toUpperCase() === event.key && event.shiftKey;
         return (event.ctrlKey ? 'Ctrl+' : '') +
@@ -11,6 +13,55 @@
             (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key);
     }
 
+    function prettifyShortcut(shortcut) {
+        let keys = shortcut.split('+');
+
+        if (isMac) {
+            let cmdIdx = keys.indexOf('Meta');
+            if (cmdIdx !== -1 && keys.length - cmdIdx > 2) {
+                let tmp = keys[cmdIdx + 1];
+                keys[cmdIdx + 1] = 'Meta';
+                keys[cmdIdx] = tmp;
+            }
+        }
+
+        let lastKey = keys[keys.length - 1];
+        if (!keys.includes('Shift') && lastKey.toUpperCase() === lastKey && lastKey.toLowerCase() !== lastKey) {
+            keys.splice(keys.length - 1, 0, 'Shift');
+        }
+
+        for (let i = 0; i < keys.length; i++) {
+            if (isMac) {
+                switch (keys[i]) {
+                    case 'Ctrl': keys[i] = '⌃'; break;
+                    case 'Alt': keys[i] = '⌥'; break;
+                    case 'Shift': keys[i] = '⇧'; break;
+                    case 'Meta': keys[i] = '⌘'; break;
+                }
+            }
+
+            switch (keys[i]) {
+                case 'ArrowLeft': keys[i] = '←'; break;
+                case 'ArrowRight': keys[i] = '→'; break;
+                case 'ArrowTop': keys[i] = '↑'; break;
+                case 'ArrowBottom': keys[i] = '↓'; break;
+                case 'Comma': keys[i] = ','; break;
+            }
+
+            if (i === keys.length - 1 && i > 0) {
+                keys[i] = keys[i].toUpperCase();
+            }
+
+            switch (keys[i]) {
+                case ' ': keys[i] = 'Space'; break;
+            }
+
+            keys[i] = `<span class="kbd-key">${keys[i]}</span>`;
+        }
+
+        return keys.join(isMac ? '' : ' + ');
+    }
+
     function isTextField(element) {
         let name = element.nodeName.toLowerCase();
         return name === 'textarea' ||
@@ -18,6 +69,11 @@
             (name === 'input' && !['submit', 'reset', 'checkbox', 'radio'].includes(element.type)) ||
             element.isContentEditable;
     }
+
+    let notTextField = event => !(event.target instanceof Node && isTextField(event.target));
+
+    let allShortcuts = [];
+    let shortcutsGroup = null;
 
     class ShortcutHandler {
         constructor(element, filter = () => true) {
@@ -39,6 +95,14 @@
         add(text, action, description = null) {
             let shortcuts = text.split(',').map(shortcut => shortcut.trim().split(' '));
 
+            if (shortcutsGroup) {
+                shortcutsGroup.push({
+                    action,
+                    shortcut: text,
+                    description,
+                })
+            }
+
             for (let shortcut of shortcuts) {
                 let node = this.map;
                 for (let key of shortcut) {
@@ -57,6 +121,23 @@
                 node.shortcut = shortcut;
                 node.description = description;
             }
+        }
+
+        groupStart() {
+            shortcutsGroup = [];
+        }
+
+        groupEnd() {
+            if (shortcutsGroup && shortcutsGroup.length) allShortcuts.push(shortcutsGroup);
+            shortcutsGroup = null;
+        }
+
+        fakeItem(shortcut, description = null) {
+            let list = shortcutsGroup || allShortcuts;
+            list.push({
+                shortcut: description ? shortcut : null,
+                description: description || shortcut,
+            });
         }
 
         handleKeyDown(event) {
@@ -110,9 +191,104 @@
         return (shortcut, link, ...other) => handler.add(shortcut, () => window.location.href = link, ...other);
     }
 
+    let prevActiveElement = null;
+    let shortcutsListDialog = null;
+
+    function openShortcutsReference() {
+        if (!shortcutsListDialog) {
+            let wrap = document.createElement('div');
+            wrap.className = 'dialog-wrap';
+            shortcutsListDialog = wrap;
+
+            let dialog = document.createElement('div');
+            dialog.className = 'dialog shortcuts-modal';
+            dialog.tabIndex = 0;
+            wrap.appendChild(dialog);
+
+            let dialogHeader = document.createElement('div');
+            dialogHeader.className = 'dialog__header';
+            dialog.appendChild(dialogHeader);
+
+            let title = document.createElement('h1');
+            title.className = 'dialog__title';
+            title.textContent = 'List of shortcuts';
+            dialogHeader.appendChild(title);
+
+            let closeButton = document.createElement('button');
+            closeButton.className = 'dialog__close-button';
+            closeButton.setAttribute('aria-label', 'Close this dialog');
+            dialogHeader.appendChild(closeButton);
+
+            for (let item of allShortcuts) {
+                if (item.description && !item.shortcut) {
+                    let heading = document.createElement('h2');
+                    heading.className = 'shortcuts-group-heading';
+                    heading.textContent = item.description;
+                    dialog.appendChild(heading);
+
+                } else {
+                    let list = document.createElement('ul');
+                    list.className = 'shortcuts-group';
+
+                    for (let shortcut of item) {
+                        let listItem = document.createElement('li');
+                        listItem.className = 'shortcut-row';
+                        list.appendChild(listItem);
+
+                        let descriptionColumn = document.createElement('div')
+                        descriptionColumn.className = 'shortcut-row__description';
+                        descriptionColumn.textContent = shortcut.description;
+                        listItem.appendChild(descriptionColumn);
+
+                        let shortcutColumn = document.createElement('div');
+                        shortcutColumn.className = 'shortcut-row__keys';
+                        shortcutColumn.innerHTML = shortcut.shortcut.split(',')
+                            .map(shortcuts => shortcuts.trim().split(' ').map(prettifyShortcut).join(' '))
+                            .join(' or ');
+                        listItem.appendChild(shortcutColumn);
+                    }
+
+                    dialog.appendChild(list);
+                }
+            }
+
+            let handleClose = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                closeShortcutsReference();
+            };
+
+            let dialogShortcuts = new ShortcutHandler(dialog, notTextField);
+
+            dialogShortcuts.add('Escape', handleClose);
+            closeButton.addEventListener('click', handleClose);
+            wrap.addEventListener('click', handleClose);
+
+            dialog.addEventListener('click', event => event.stopPropagation());
+
+            document.body.appendChild(wrap);
+        }
+
+        document.body.overflow = 'hidden';
+        shortcutsListDialog.hidden = false;
+        prevActiveElement = document.activeElement;
+        shortcutsListDialog.children[0].focus();
+    }
+
+    function closeShortcutsReference() {
+        if (shortcutsListDialog) {
+            document.body.overflow = '';
+            shortcutsListDialog.hidden = true;
+
+            if (prevActiveElement) {
+                prevActiveElement.focus();
+                prevActiveElement = null;
+            }
+        }
+    }
+
     window.addEventListener('load', () => {
-        let notFormField = event => !(event.target instanceof Node && isTextField(event.target));
-        let globalShortcuts = new ShortcutHandler(document, notFormField);
+        let globalShortcuts = new ShortcutHandler(document, notTextField);
 
         // Global shortcuts
 
@@ -120,28 +296,36 @@
         let bindLink = bindLinkFactory(globalShortcuts);
 
         // * Common shortcuts
+        globalShortcuts.fakeItem('Common');
 
-        bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
-        bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-        bindElement('s, Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
-
-        bindLink('g h', '/', 'Home');
-        bindLink('g l', '/list/', 'List of hyphae');
-        bindLink('g r', '/recent-changes/', 'Recent changes');
-
-        bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha')
+        globalShortcuts.groupStart();
+            globalShortcuts.fakeItem('g 1 – 9', 'First 9 header links');
+            bindLink('g h', '/', 'Home');
+            bindLink('g l', '/list/', 'List of hyphae');
+            bindLink('g r', '/recent-changes/', 'Recent changes');
+            bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
+        globalShortcuts.groupEnd();
 
         let headerLinks = $$('.header-links__link');
         for (let i = 1; i <= headerLinks.length && i < 10; i++) {
             bindElement(`g ${i}`, headerLinks[i-1], `Header link #${i}`);
         }
 
-        // * Hypha shortcuts
+        globalShortcuts.groupStart();
+            globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
+            bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
+            bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
+            bindElement('s, Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
+        globalShortcuts.groupEnd();
 
         let hyphaLinks = $$('article .wikilink');
         for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
             bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
         }
+
+        // * Meta shortcuts
+
+        globalShortcuts.add('?', openShortcutsReference);
 
         // Hypha editor shortcuts
 
@@ -153,20 +337,21 @@
                 // And by myself, too.
 
                 // Win+Linux    Mac              Action              Description
-                ['Ctrl+b',      'Meta+b',        wrapBold,           'Editor: Bold'],
-                ['Ctrl+i',      'Meta+i',        wrapItalic,         'Editor: Italic'],
-                ['Ctrl+M',      'Meta+Shift+m',  wrapMonospace,      'Editor: Monospaced'],
-                ['Ctrl+I',      'Meta+Shift+i',  wrapHighlighted,    'Editor: Highlight'],
-                ['Ctrl+.',      'Meta+.',        wrapLifted,         'Editor: Superscript'],
-                ['Ctrl+Comma',  'Meta+Comma',    wrapLowered,        'Editor: Subscript'],
+                ['Ctrl+b',      'Meta+b',        wrapBold,           'Format: Bold'],
+                ['Ctrl+i',      'Meta+i',        wrapItalic,         'Format: Italic'],
+                ['Ctrl+M',      'Meta+Shift+m',  wrapMonospace,      'Format: Monospaced'],
+                ['Ctrl+I',      'Meta+Shift+i',  wrapHighlighted,    'Format: Highlight'],
+                ['Ctrl+.',      'Meta+.',        wrapLifted,         'Format: Superscript'],
+                ['Ctrl+Comma',  'Meta+Comma',    wrapLowered,        'Format: Subscript'],
                 // Strikethrough conflicts with 1Password on my machine but
-                // I'm probably the only Mycorrhiza user who uses 1Password.
-                ['Ctrl+X',      'Meta+Shift+x',  wrapStrikethrough,  'Editor: Strikethrough'],
-                ['Ctrl+k',      'Meta+k',        wrapLink,           'Editor: Link'],
+                // I'm probably the only Mycorrhiza user who uses 1Password. -handlerug
+                ['Ctrl+X',      'Meta+Shift+x',  wrapStrikethrough,  'Format: Strikethrough'],
+                ['Ctrl+k',      'Meta+k',        wrapLink,           'Format: Link'],
             ];
 
-            let isMac = /Macintosh/.test(window.navigator.userAgent);
+            editorShortcuts.fakeItem('Editor');
 
+            editorShortcuts.groupStart();
             for (let shortcut of shortcuts) {
                 if (isMac) {
                     editorShortcuts.add(shortcut[1], ...shortcut.slice(2))
@@ -174,6 +359,9 @@
                     editorShortcuts.add(shortcut[0], ...shortcut.slice(2))
                 }
             }
+            editorShortcuts.groupEnd();
+
+            editorShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openShortcutsReference);
         }
     });
 })();
