@@ -76,7 +76,7 @@
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
-		<textarea name="text" class="edit-form__textarea">{%s textAreaFill %}</textarea>
+		<textarea name="text" class="edit-form__textarea" autofocus>{%s textAreaFill %}</textarea>
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">

@@ -199,7 +199,7 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:78
 	qw422016.N().S(`">
-		<textarea name="text" class="edit-form__textarea">`)
+		<textarea name="text" class="edit-form__textarea" autofocus>`)
 //line views/mutators.qtpl:79
 	qw422016.E().S(textAreaFill)
 //line views/mutators.qtpl:79
