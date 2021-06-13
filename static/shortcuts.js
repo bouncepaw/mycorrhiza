@@ -331,7 +331,7 @@ class Shortcut {
                 bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
                 bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
                 bindElement('s, Alt+ArrowTop, Ctrl+Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
-                bindElement('e', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
+                bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
             globalShortcuts.groupEnd();
 
             let hyphaLinks = $$('article .wikilink');
