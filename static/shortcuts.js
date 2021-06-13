@@ -130,5 +130,10 @@
         for (let i = 1; i <= headerLinks.length && i < 10; i++) {
             bindElement(`g ${i}`, headerLinks[i-1], `Header link #${i}`);
         }
+
+        let hyphaLinks = $$('article .wikilink');
+        for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
+            bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
+        }
     });
 })();
