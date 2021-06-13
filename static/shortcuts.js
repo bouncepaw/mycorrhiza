@@ -153,7 +153,6 @@
             this.active = this.active[shortcut];
             if (this.active.action) {
                 this.active.action(event);
-                event.preventDefault();
                 this.resetActive();
                 return;
             }
@@ -315,9 +314,9 @@
 
             globalShortcuts.groupStart();
                 globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
-                bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
-                bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-                bindElement('s, Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
+                bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
+                bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
+                bindElement('s, Alt+ArrowTop, Ctrl+Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
                 bindElement('e', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
             globalShortcuts.groupEnd();
 
