@@ -103,7 +103,7 @@ header { width: 100%; margin-bottom: 1rem; }
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
 body {height:100%; margin:0; }
-body, input { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
+body, input, kbd { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
@@ -305,7 +305,8 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 
 /* handlerug: sorry but I can't write in that unique and very special way */
 /* i have to resort to the BORING way of writing CSS */
-.kbd-key {
+/* bouncepaw: they say that the best codes style is the consistent code style ☝️ */
+kbd {
 	display: inline-block;
 	min-width: 1.5ch;
 	text-align: center;

@@ -54,7 +54,7 @@
                 case ' ': keys[i] = 'Space'; break;
             }
 
-            keys[i] = `<span class="kbd-key">${keys[i]}</span>`;
+            keys[i] = `<kbd>${keys[i]}</kbd>`;
         }
 
         return keys.join(isMac ? '' : ' + ');
