@@ -8,7 +8,7 @@
             (event.altKey ? 'Alt+' : '') +
             (event.metaKey ? 'Meta+' : '') +
             (!elideShift && event.shiftKey ? 'Shift+' : '') +
-            event.key;
+            (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key);
     }
 
     function isTextField(element) {
@@ -20,7 +20,7 @@
     }
 
     class ShortcutHandler {
-        constructor(element, filter = () => {}) {
+        constructor(element, filter = () => true) {
             this.element = element;
             this.map = {};
             this.active = this.map;
@@ -74,6 +74,7 @@
             this.active = this.active[shortcut];
             if (this.active.action) {
                 this.active.action(event);
+                event.preventDefault();
                 this.resetActive();
                 return;
             }
@@ -113,8 +114,12 @@
         let notFormField = event => !(event.target instanceof Node && isTextField(event.target));
         let globalShortcuts = new ShortcutHandler(document, notFormField);
 
+        // Global shortcuts
+
         let bindElement = bindElementFactory(globalShortcuts);
         let bindLink = bindLinkFactory(globalShortcuts);
+
+        // * Common shortcuts
 
         bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
         bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
@@ -131,9 +136,44 @@
             bindElement(`g ${i}`, headerLinks[i-1], `Header link #${i}`);
         }
 
+        // * Hypha shortcuts
+
         let hyphaLinks = $$('article .wikilink');
         for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
             bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
+        }
+
+        // Hypha editor shortcuts
+
+        if (typeof editTextarea !== 'undefined') {
+            let editorShortcuts = new ShortcutHandler(editTextarea);
+
+            let shortcuts = [
+                // Inspired by MS Word, Pages, Google Docs and Telegram desktop clients.
+                // And by myself, too.
+
+                // Win+Linux    Mac              Action              Description
+                ['Ctrl+b',      'Meta+b',        wrapBold,           'Editor: Bold'],
+                ['Ctrl+i',      'Meta+i',        wrapItalic,         'Editor: Italic'],
+                ['Ctrl+M',      'Meta+Shift+m',  wrapMonospace,      'Editor: Monospaced'],
+                ['Ctrl+I',      'Meta+Shift+i',  wrapHighlighted,    'Editor: Highlight'],
+                ['Ctrl+.',      'Meta+.',        wrapLifted,         'Editor: Superscript'],
+                ['Ctrl+Comma',  'Meta+Comma',    wrapLowered,        'Editor: Subscript'],
+                // Strikethrough conflicts with 1Password on my machine but
+                // I'm probably the only Mycorrhiza user who uses 1Password.
+                ['Ctrl+X',      'Meta+Shift+x',  wrapStrikethrough,  'Editor: Strikethrough'],
+                ['Ctrl+k',      'Meta+k',        wrapLink,           'Editor: Link'],
+            ];
+
+            let isMac = /Macintosh/.test(window.navigator.userAgent);
+
+            for (let shortcut of shortcuts) {
+                if (isMac) {
+                    editorShortcuts.add(shortcut[1], ...shortcut.slice(2))
+                } else {
+                    editorShortcuts.add(shortcut[0], ...shortcut.slice(2))
+                }
+            }
         }
     });
 })();
