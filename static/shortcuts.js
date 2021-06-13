@@ -311,24 +311,25 @@
             bindElement(`g ${i}`, headerLinks[i-1], `Header link #${i}`);
         }
 
-        globalShortcuts.groupStart();
-            globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
-            bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
-            bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-            bindElement('s, Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
-        globalShortcuts.groupEnd();
+        // * Hypha shortcuts
+        if (typeof editTextarea === 'undefined') {
+            globalShortcuts.fakeItem('Hypha');
 
-        let hyphaLinks = $$('article .wikilink');
-        for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
-            bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
+            globalShortcuts.groupStart();
+                globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
+                bindElement('p, Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
+                bindElement('n, Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
+                bindElement('s, Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
+                bindElement('e', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
+            globalShortcuts.groupEnd();
+
+            let hyphaLinks = $$('article .wikilink');
+            for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
+                bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
+            }
         }
 
-        // * Meta shortcuts
-
-        globalShortcuts.add('?', openShortcutsReference);
-
         // Hypha editor shortcuts
-
         if (typeof editTextarea !== 'undefined') {
             let editorShortcuts = new ShortcutHandler(editTextarea);
 
@@ -363,5 +364,8 @@
 
             editorShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openShortcutsReference);
         }
+
+        // * Meta shortcuts
+        globalShortcuts.add('?', openShortcutsReference);
     });
 })();
