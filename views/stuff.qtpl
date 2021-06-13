@@ -12,7 +12,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{%s title %}</title>
 		<link rel="shortcut icon" href="/static/favicon.ico">
-		<link rel="stylesheet" type="text/css" href="/static/style.css">
+		<link rel="stylesheet" href="/static/style.css">
+		<script src="/static/shortcuts.js"></script>
 		{% for _, el := range headElements %}{%s= el %}{% endfor %}
 	</head>
 	<body>
