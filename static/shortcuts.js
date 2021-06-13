@@ -40,19 +40,17 @@
                 }
             }
 
+            if (i === keys.length - 1 && i > 0 && keys[i].length === 1) {
+                keys[i] = keys[i].toUpperCase();
+            }
+
             switch (keys[i]) {
                 case 'ArrowLeft': keys[i] = '←'; break;
                 case 'ArrowRight': keys[i] = '→'; break;
                 case 'ArrowTop': keys[i] = '↑'; break;
                 case 'ArrowBottom': keys[i] = '↓'; break;
                 case 'Comma': keys[i] = ','; break;
-            }
-
-            if (i === keys.length - 1 && i > 0) {
-                keys[i] = keys[i].toUpperCase();
-            }
-
-            switch (keys[i]) {
+                case 'Enter': keys[i] = '↩'; break;
                 case ' ': keys[i] = 'Space'; break;
             }
 
@@ -332,6 +330,7 @@
         // Hypha editor shortcuts
         if (typeof editTextarea !== 'undefined') {
             let editorShortcuts = new ShortcutHandler(editTextarea);
+            let bindElement = bindElementFactory(editorShortcuts);
 
             let shortcuts = [
                 // Inspired by MS Word, Pages, Google Docs and Telegram desktop clients.
@@ -362,6 +361,11 @@
             }
             editorShortcuts.groupEnd();
 
+            editorShortcuts.groupStart();
+            bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
+            editorShortcuts.groupEnd();
+
+            // Help shortcut
             editorShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openShortcutsReference);
         }
 
