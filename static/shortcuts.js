@@ -53,8 +53,8 @@ class Shortcut {
         switch (key) {
             case 'ArrowLeft': return '←';
             case 'ArrowRight': return '→';
-            case 'ArrowTop': return '↑';
-            case 'ArrowBottom': return '↓';
+            case 'ArrowUp': return '↑';
+            case 'ArrowDown': return '↓';
             case 'Comma': return ',';
             case 'Enter': return '↩';
             case ' ': return 'Space';
@@ -330,7 +330,7 @@ class Shortcut {
                 globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
                 bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
                 bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-                bindElement('s, Alt+ArrowTop, Ctrl+Alt+ArrowTop', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
+                bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
                 bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
             globalShortcuts.groupEnd();
 
