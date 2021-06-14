@@ -334,8 +334,8 @@
                 ['Ctrl+i',      'Meta+i',            wrapItalic,         'Format: Italic'],
                 ['Ctrl+M',      'Meta+Shift+m',      wrapMonospace,      'Format: Monospaced'],
                 ['Ctrl+I',      'Meta+Shift+i',      wrapHighlighted,    'Format: Highlight'],
-                ['Ctrl+.',      'Meta+Shift+.',      wrapLifted,         'Format: Superscript'],
-                ['Ctrl+Comma',  'Meta+Shift+Comma',  wrapLowered,        'Format: Subscript'],
+                ['Ctrl+.',      'Meta+.',            wrapLifted,         'Format: Superscript'],
+                ['Ctrl+Comma',  'Meta+Comma',        wrapLowered,        'Format: Subscript'],
                 ['Ctrl+X',      'Meta+Shift+x',      wrapStrikethrough,  'Format: Strikethrough'],
                 ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Link'],
             ];
