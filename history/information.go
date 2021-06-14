@@ -176,7 +176,7 @@ func parseRevisionLine(line string) Revision {
 
 // FileAtRevision shows how the file with the given file path looked at the commit with the hash. It may return an error if git fails.
 func FileAtRevision(filepath, hash string) (string, error) {
-	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, cfg.WikiDir+"/"))
+	out, err := gitsh("show", hash+":"+strings.TrimPrefix(filepath, cfg.WikiGitDir+"/"))
 	if err != nil {
 		return "", err
 	}

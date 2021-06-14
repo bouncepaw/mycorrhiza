@@ -34,10 +34,10 @@ func LettersNumbersOnly(s string) string {
 	return strings.Trim(ret.String(), "_")
 }
 
-// ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
+// ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiGitDir.
 func ShorterPath(path string) string {
-	if strings.HasPrefix(path, cfg.WikiDir) {
-		tmp := strings.TrimPrefix(path, cfg.WikiDir)
+	if strings.HasPrefix(path, cfg.WikiGitDir) {
+		tmp := strings.TrimPrefix(path, cfg.WikiGitDir)
 		if tmp == "" {
 			return ""
 		}
