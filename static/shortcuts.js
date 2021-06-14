@@ -220,16 +220,26 @@
             closeButton.setAttribute('aria-label', 'Close this dialog');
             dialogHeader.appendChild(closeButton);
 
+            let shortcutsGroupTemplate = document.createElement('div');
+            shortcutsGroupTemplate.className = 'shortcuts-group';
+
+            let shortcutsGroup = shortcutsGroupTemplate.cloneNode();
+
             for (let item of allShortcuts) {
                 if (item.description && !item.shortcut) {
+                    if (shortcutsGroup.children.length > 0) {
+                        dialog.appendChild(shortcutsGroup);
+                        shortcutsGroup = shortcutsGroupTemplate.cloneNode();
+                    }
+
                     let heading = document.createElement('h2');
                     heading.className = 'shortcuts-group-heading';
                     heading.textContent = item.description;
-                    dialog.appendChild(heading);
+                    shortcutsGroup.appendChild(heading);
 
                 } else {
                     let list = document.createElement('ul');
-                    list.className = 'shortcuts-group';
+                    list.className = 'shortcuts-list';
 
                     for (let shortcut of item) {
                         let listItem = document.createElement('li');
@@ -249,8 +259,13 @@
                         listItem.appendChild(shortcutColumn);
                     }
 
-                    dialog.appendChild(list);
+                    shortcutsGroup.appendChild(list);
                 }
+            }
+
+            if (shortcutsGroup.children.length > 0) {
+                dialog.appendChild(shortcutsGroup);
+                shortcutsGroup = shortcutsGroupTemplate.cloneNode();
             }
 
             let handleClose = (event) => {

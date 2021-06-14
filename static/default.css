@@ -332,13 +332,17 @@ kbd {
 	position: relative;
 
 	width: 100%;
-	max-width: 400px;
+	max-width: 700px;
 	margin: 96px auto;
 	padding: 24px;
 
 	background-color: #fff;
 	border-radius: 4px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dialog__header {
+	grid-column: 1 / -1;
 }
 
 .dialog__title {
@@ -364,17 +368,23 @@ kbd {
 	opacity: .7;
 }
 
+.shortcuts-modal {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-column-gap: 32px;
+}
+
 .shortcuts-group-heading {
 	margin: 1em 0 0.5em;
 	font-size: 1.2em;
 }
 
-.shortcuts-group {
+.shortcuts-list {
 	margin: 0;
 	padding: 0;
 }
 
-.shortcuts-group + .shortcuts-group {
+.shortcuts-list + .shortcuts-list {
 	margin-top: 1.5em;
 }
 
