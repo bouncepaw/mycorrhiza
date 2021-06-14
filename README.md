@@ -1,9 +1,11 @@
 # 🍄 Mycorrhiza Wiki 1.2
-A wiki engine.
+<img src="https://mycorrhiza.lesarbr.es/binary/release/1.2/screenshot" alt="A screenshot of Mycorrhiza Wiki home hypha in the Safari browser" width="500">
+
+**Mycorrhiza Wiki** is a filesystem and git-based wiki engine.
 
 [Main wiki](https://mycorrhiza.lesarbr.es)
 
-# Usage
+## Usage
 ```
 mycorrhiza [OPTIONS...] WIKI_PATH
 
@@ -17,8 +19,8 @@ Options:
 ```
 
 ## Features
-* Wiki pages (called hyphae) are written in mycomarkup
-* Edit pages through html forms, a graphical preview and a toolbar that helps you use mycomarkup
+* Wiki pages (called hyphae) are written in Mycomarkup
+* Edit pages through HTML forms, a graphical preview and a toolbar that helps you use Mycomarkup
 * Responsive design, dark theme (synced with system theme)
 * Works in text browsers
 * Everything is stored as simple files, no database required. You can run a wiki on almost any directory and get something to work with
@@ -33,22 +35,24 @@ Options:
 * Light on resources
 * Authorization with pre-set credentials, registration
 * Basic Gemini protocol support
+* Hotkeys (press `?` to see what hotkeys there are)
 
-# Building
+## Building
 See [the guide](https://mycorrhiza.lesarbr.es/hypha/guide/deployment) on the wiki.
 
-# Installing
+## Installing
 
-## AUR
-
+### AUR
 You can install Mycorrhiza Wiki from AUR using your favorite package manager on any Arch Linux-derivative distro (Arch, Manjaro, Garuda, etc):
 ```sh
-yay -S mycorrhiza  # or mycorrhiza-bin if you don't want to
-                   # build it from scratch
+# Build from sources
+yay -S mycorrhiza
+# OR
+# Use pre-built binaries from the Releases page
+yay -S mycorrhiza-bin
 ```
 
-## Docker
-
+### Docker
 You can run Mycorrhiza Wiki in Docker using Dockerfile provided by this repository. Clone the repo and build the image:
 ```sh
 git clone https://github.com/bouncepaw/mycorrhiza/
@@ -76,6 +80,6 @@ docker run -v /dev/shm/:/config -v /dev/shm/example-wiki:/wiki -p 80:1737 mycorr
 ```
 
 ## Contributing
-Help is always needed. We have a [tg chat](https://t.me/mycorrhizadev) where some development is coordinated. You can also sponsor bouncepaw on [boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
+We always need help. We have a [Telegram chat](https://t.me/mycorrhizadev) where we coordinate development. You can also sponsor @bouncepaw on [Boosty](https://boosty.to/bouncepaw). Feel free to open an issue or contact us directly.
 
-You can view list of all planned features on [our kanban board](https://github.com/bouncepaw/mycorrhiza/projects/1).
+You can view list of many planned features on [our kanban board](https://github.com/bouncepaw/mycorrhiza/projects/1).

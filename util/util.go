@@ -3,35 +3,17 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"github.com/bouncepaw/mycomarkup/util"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
-	"unicode"
-
-	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
+// PrepareRq strips the trailing / in rq.URL.Path. In the future it might do more stuff for making all request structs uniform.
 func PrepareRq(rq *http.Request) {
 	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
-}
-
-// LettersNumbersOnly keeps letters and numbers only in the given string.
-func LettersNumbersOnly(s string) string {
-	var (
-		ret            strings.Builder
-		usedUnderscore bool
-	)
-	for _, r := range s {
-		if unicode.IsLetter(r) || unicode.IsNumber(r) {
-			ret.WriteRune(r)
-			usedUnderscore = false
-		} else if !usedUnderscore {
-			ret.WriteRune('_')
-			usedUnderscore = true
-		}
-	}
-	return strings.Trim(ret.String(), "_")
 }
 
 // ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiGitDir.
@@ -50,16 +32,17 @@ func ShorterPath(path string) string {
 func HTTP404Page(w http.ResponseWriter, page string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte(page))
+	_, _ = w.Write([]byte(page))
 }
 
 // HTTP200Page wraps some frequently used things for successful 200 responses.
 func HTTP200Page(w http.ResponseWriter, page string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(page))
+	_, _ = w.Write([]byte(page))
 }
 
+// RandomString generates a random string of the given length. It is cryptographically secure to some extent.
 func RandomString(n int) (string, error) {
 	bytes := make([]byte, n)
 	if _, err := rand.Read(bytes); err != nil {
@@ -68,36 +51,30 @@ func RandomString(n int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
-// Strip hypha name from all ancestor names, replace _ with spaces, title case
+// BeautifulName makes the ugly name beautiful by replacing _ with spaces and using title case.
 func BeautifulName(uglyName string) string {
-	if uglyName == "" {
-		return uglyName
-	}
-	return strings.Title(strings.ReplaceAll(uglyName, "_", " "))
+	// Why not reuse
+	return util.BeautifulName(uglyName)
 }
 
 // CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
 func CanonicalName(name string) string {
-	return strings.ToLower(
-		strings.ReplaceAll(
-			strings.TrimRight(
-				strings.TrimLeft(name, "_"),
-				"_",
-			), " ", "_"))
+	return util.CanonicalName(name)
 }
 
-// HyphaPattern is a pattern which all hyphae must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
+// hyphaPattern is a pattern which all hypha names must match.
+var hyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
 
-var UsernamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}/]+`)
+var usernamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}/]+`)
 
 // IsCanonicalName checks if the `name` is canonical.
 func IsCanonicalName(name string) bool {
-	return HyphaPattern.MatchString(name)
+	return hyphaPattern.MatchString(name)
 }
 
+// IsPossibleUsername is true if the given username is ok. Same as IsCanonicalName, but cannot have / in it and cannot be equal to "anon" or "wikimind"
 func IsPossibleUsername(username string) bool {
-	return username != "anon" && UsernamePattern.MatchString(strings.TrimSpace(username))
+	return username != "anon" && username != "wikimind" && usernamePattern.MatchString(strings.TrimSpace(username))
 }
 
 // HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
@@ -108,6 +85,6 @@ func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 			return CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
 		}
 	}
-	log.Println("HyphaNameFromRq: this request is invalid, fallback to home hypha")
+	log.Println("HyphaNameFromRq: this request is invalid, fall back to home hypha")
 	return cfg.HomeHypha
 }
