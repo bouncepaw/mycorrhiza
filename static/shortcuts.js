@@ -47,8 +47,8 @@
             switch (keys[i]) {
                 case 'ArrowLeft': keys[i] = '←'; break;
                 case 'ArrowRight': keys[i] = '→'; break;
-                case 'ArrowTop': keys[i] = '↑'; break;
-                case 'ArrowBottom': keys[i] = '↓'; break;
+                case 'ArrowUp': keys[i] = '↑'; break;
+                case 'ArrowDown': keys[i] = '↓'; break;
                 case 'Comma': keys[i] = ','; break;
                 case 'Enter': keys[i] = '↩'; break;
                 case ' ': keys[i] = 'Space'; break;
