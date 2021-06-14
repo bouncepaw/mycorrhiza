@@ -28,7 +28,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 	if message == "" {
 		hop.WithMsg(fmt.Sprintf("%s ‘%s’", action, h.Name))
 	} else {
-		hop.WithMsg(fmt.Sprintf("%s ‘%s’ with message: ‘%s’", action, h.Name, message))
+		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.Name, message))
 	}
 
 
