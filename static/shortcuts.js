@@ -245,7 +245,7 @@
                         shortcutColumn.className = 'shortcut-row__keys';
                         shortcutColumn.innerHTML = shortcut.shortcut.split(',')
                             .map(shortcuts => shortcuts.trim().split(' ').map(prettifyShortcut).join(' '))
-                            .join(' or ');
+                            .join(' <span class="kbd-or">or</span> ');
                         listItem.appendChild(shortcutColumn);
                     }
 

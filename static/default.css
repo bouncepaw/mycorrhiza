@@ -312,6 +312,10 @@ kbd {
 	text-align: center;
 }
 
+.kbd-or {
+	opacity: .4;
+}
+
 .dialog-wrap {
 	position: fixed;
 	top: 0;
