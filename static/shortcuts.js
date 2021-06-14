@@ -1,6 +1,10 @@
-class Shortcut {
-    // turns the given event into a string representation of it.
-    static fromEvent(event) {
+(() => {
+    const $ = document.querySelector.bind(document);
+    const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...args));
+
+    const isMac = /Macintosh/.test(window.navigator.userAgent);
+
+    function keyEventToShortcut(event) {
         let elideShift = event.key.toUpperCase() === event.key && event.shiftKey;
         return (event.ctrlKey ? 'Ctrl+' : '') +
             (event.altKey ? 'Alt+' : '') +
@@ -9,11 +13,9 @@ class Shortcut {
             (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key);
     }
 
-    // Some keys look better with cool symbols instead of their long and boring names.
-    static prettify(shortcut, isMac) {
+    function prettifyShortcut(shortcut) {
         let keys = shortcut.split('+');
 
-        // Uh it places the cmd sign before the letter to follow the Mac conventions, I guess.
         if (isMac) {
             let cmdIdx = keys.indexOf('Meta');
             if (cmdIdx !== -1 && keys.length - cmdIdx > 2) {
@@ -24,52 +26,39 @@ class Shortcut {
         }
 
         let lastKey = keys[keys.length - 1];
-        // Uhh add Shift if the letter is uppercase??
         if (!keys.includes('Shift') && lastKey.toUpperCase() === lastKey && lastKey.toLowerCase() !== lastKey) {
             keys.splice(keys.length - 1, 0, 'Shift');
         }
 
-        return keys.map((key, i) => {
-            // If last element and there is more than one element and it's a letter
-            if (i === keys.length - 1 && i > 0 && key.length === 1) {
-                // Show in upper case. ⌘K looks better ⌘k, no doubt.
-                key = key.toUpperCase();
+        for (let i = 0; i < keys.length; i++) {
+            if (isMac) {
+                switch (keys[i]) {
+                    case 'Ctrl': keys[i] = '⌃'; break;
+                    case 'Alt': keys[i] = '⌥'; break;
+                    case 'Shift': keys[i] = '⇧'; break;
+                    case 'Meta': keys[i] = '⌘'; break;
+                }
             }
 
-            return `<kbd>${Shortcut.symbolifyKey(key, isMac)}</kbd>`;
-        }).join(isMac ? '' : ' + ');
-    }
-
-    static symbolifyKey(key, isMac) {
-        if (isMac) {
-            switch (key) {
-                case 'Ctrl': return '⌃';
-                case 'Alt': return '⌥';
-                case 'Shift': return '⇧';
-                case 'Meta': return '⌘';
+            if (i === keys.length - 1 && i > 0 && keys[i].length === 1) {
+                keys[i] = keys[i].toUpperCase();
             }
+
+            switch (keys[i]) {
+                case 'ArrowLeft': keys[i] = '←'; break;
+                case 'ArrowRight': keys[i] = '→'; break;
+                case 'ArrowTop': keys[i] = '↑'; break;
+                case 'ArrowBottom': keys[i] = '↓'; break;
+                case 'Comma': keys[i] = ','; break;
+                case 'Enter': keys[i] = '↩'; break;
+                case ' ': keys[i] = 'Space'; break;
+            }
+
+            keys[i] = `<kbd>${keys[i]}</kbd>`;
         }
 
-        switch (key) {
-            case 'ArrowLeft': return '←';
-            case 'ArrowRight': return '→';
-            case 'ArrowUp': return '↑';
-            case 'ArrowDown': return '↓';
-            case 'Comma': return ',';
-            case 'Enter': return '↩';
-            case ' ': return 'Space';
-        }
-        return key
+        return keys.join(isMac ? '' : ' + ');
     }
-}
-
-(() => {
-    const $ = document.querySelector.bind(document);
-    const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...args));
-
-    // Some things look different on Mac.
-    // Note that the ⌘ command key is called Meta in JS for some reason.
-    const isMac = /Macintosh/.test(window.navigator.userAgent);
 
     function isTextField(element) {
         let name = element.nodeName.toLowerCase();
@@ -81,12 +70,9 @@ class Shortcut {
 
     let notTextField = event => !(event.target instanceof Node && isTextField(event.target));
 
-    // The whole shortcut table for current page. It is used for generating the dialog.
     let allShortcuts = [];
-    // Temporary variable for building a shortcut group.
     let shortcutsGroup = null;
 
-    // Advanced stuff.
     class ShortcutHandler {
         constructor(element, override, filter = () => true) {
             this.element = element;
@@ -98,6 +84,10 @@ class Shortcut {
 
             this.handleKeyDown = this.handleKeyDown.bind(this);
             this.resetActive = this.resetActive.bind(this);
+            this.addEventListeners();
+        }
+
+        addEventListeners() {
             this.element.addEventListener('keydown', this.handleKeyDown);
         }
 
@@ -141,11 +131,8 @@ class Shortcut {
             shortcutsGroup = null;
         }
 
-        // A dirty and shameful hack for inserting non-generated entries into the table.
         fakeItem(shortcut, description = null) {
-            // So it's a boolean, right?
             let list = shortcutsGroup || allShortcuts;
-            // And we push something into a boolean. I give up.
             list.push({
                 shortcut: description ? shortcut : null,
                 description: description || shortcut,
@@ -157,7 +144,7 @@ class Shortcut {
             if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
             if (!this.filter(event)) return;
 
-            let shortcut = Shortcut.fromEvent(event);
+            let shortcut = keyEventToShortcut(event);
 
             if (!this.active[shortcut]) {
                 this.resetActive();
@@ -209,7 +196,7 @@ class Shortcut {
     let shortcutsListDialog = null;
 
     function openShortcutsReference() {
-        if (!shortcutsListDialog) { // I guess the dialog is reused for second and subsequent invocations.
+        if (!shortcutsListDialog) {
             let wrap = document.createElement('div');
             wrap.className = 'dialog-wrap';
             shortcutsListDialog = wrap;
@@ -230,7 +217,7 @@ class Shortcut {
 
             let closeButton = document.createElement('button');
             closeButton.className = 'dialog__close-button';
-            closeButton.setAttribute('aria-label', 'Close this dialog'); // a11y gang
+            closeButton.setAttribute('aria-label', 'Close this dialog');
             dialogHeader.appendChild(closeButton);
 
             for (let item of allShortcuts) {
@@ -257,7 +244,7 @@ class Shortcut {
                         let shortcutColumn = document.createElement('div');
                         shortcutColumn.className = 'shortcut-row__keys';
                         shortcutColumn.innerHTML = shortcut.shortcut.split(',')
-                            .map(shortcuts => shortcuts.trim().split(' ').map((sc) => Shortcut.prettify(sc, isMac)).join(' '))
+                            .map(shortcuts => shortcuts.trim().split(' ').map(prettifyShortcut).join(' '))
                             .join(' or ');
                         listItem.appendChild(shortcutColumn);
                     }
@@ -312,7 +299,6 @@ class Shortcut {
         // * Common shortcuts
         globalShortcuts.fakeItem('Common');
 
-        // Nice indentation here
         globalShortcuts.groupStart();
             globalShortcuts.fakeItem('g 1 – 9', 'First 9 header links');
             bindLink('g h', '/', 'Home');
@@ -345,7 +331,7 @@ class Shortcut {
             }
         }
 
-        // * Editor shortcuts
+        // Hypha editor shortcuts
         if (typeof editTextarea !== 'undefined') {
             let editorShortcuts = new ShortcutHandler(editTextarea, true);
             let bindElement = bindElementFactory(editorShortcuts);
