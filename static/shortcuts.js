@@ -78,7 +78,7 @@
             this.element = element;
             this.map = {};
             this.active = this.map;
-	    this.override = override;
+            this.override = override;
             this.filter = filter;
             this.timeout = null;
 
@@ -91,10 +91,10 @@
             this.element.addEventListener('keydown', this.handleKeyDown);
         }
 
-        add(text, action, description = null) {
-            let shortcuts = text.split(',').map(shortcut => shortcut.trim().split(' '));
+        add(text, action, description = null, shownInHelp = true) {
+            let shortcuts = text.trim().split(',').map(shortcut => shortcut.trim().split(' '));
 
-            if (shortcutsGroup) {
+            if (shortcutsGroup && shownInHelp) {
                 shortcutsGroup.push({
                     action,
                     shortcut: text,
@@ -122,7 +122,8 @@
             }
         }
 
-        groupStart() {
+        groupStart(title = null) {
+            if (title) this.fakeItem(title);
             shortcutsGroup = [];
         }
 
@@ -154,9 +155,7 @@
             this.active = this.active[shortcut];
             if (this.active.action) {
                 this.active.action(event);
-		if (this.override) {
-		    event.preventDefault();
-		}
+                if (this.override) event.preventDefault();
                 this.resetActive();
                 return;
             }
@@ -190,6 +189,22 @@
 
     function bindLinkFactory(handler) {
         return (shortcut, link, ...other) => handler.add(shortcut, () => window.location.href = link, ...other);
+    }
+
+    function bindCollectionFactory(handler) {
+        return (prefix, elements, collectionDescription, itemDescription) => {
+            handler.fakeItem(prefix + ' 1 – 9', collectionDescription);
+
+            if (typeof elements === 'string') {
+                elements = $$(elements);
+            } else if (Array.isArray(elements)) {
+                elements = elements.map(el => typeof el === 'string' ? $(el) : el);
+            }
+
+            for (let i = 1; i <= elements.length && i < 10; i++) {
+                bindElementFactory(handler)(`${prefix} ${i}`, elements[i-1], `${itemDescription} #${i}`, false);
+            }
+        }
     }
 
     let prevActiveElement = null;
@@ -304,57 +319,43 @@
     }
 
     window.addEventListener('load', () => {
-        let globalShortcuts = new ShortcutHandler(document, false, notTextField);
+        // Global shortcuts work everywhere.
+        let globalShortcuts = new ShortcutHandler(document, false);
+        globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openShortcutsReference);
 
-        // Global shortcuts
+        // Common shortcuts work everywhere except on text fields.
+        let commonShortcuts = new ShortcutHandler(document, false, notTextField);
 
-        let bindElement = bindElementFactory(globalShortcuts);
-        let bindLink = bindLinkFactory(globalShortcuts);
+        let bindElement = bindElementFactory(commonShortcuts);
+        let bindLink = bindLinkFactory(commonShortcuts);
+        let bindCollection = bindCollectionFactory(commonShortcuts);
 
-        // * Common shortcuts
-        globalShortcuts.fakeItem('Common');
-
-        globalShortcuts.groupStart();
-            globalShortcuts.fakeItem('g 1 – 9', 'First 9 header links');
+        // Common shortcuts
+        commonShortcuts.groupStart('Common');
+            bindCollection('g', '.header-links__link', 'First 9 header links', 'Header link');
             bindLink('g h', '/', 'Home');
             bindLink('g l', '/list/', 'List of hyphae');
             bindLink('g r', '/recent-changes/', 'Recent changes');
             bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
-        globalShortcuts.groupEnd();
+        commonShortcuts.groupEnd();
 
-        let headerLinks = $$('.header-links__link');
-        for (let i = 1; i <= headerLinks.length && i < 10; i++) {
-            bindElement(`g ${i}`, headerLinks[i-1], `Header link #${i}`);
-        }
-
-        // * Hypha shortcuts
         if (typeof editTextarea === 'undefined') {
-            globalShortcuts.fakeItem('Hypha');
-
-            globalShortcuts.groupStart();
-                globalShortcuts.fakeItem('1 – 9', 'First 9 hypha′s links');
+            // Hypha shortcuts
+            commonShortcuts.groupStart('Hypha');
+                bindCollection('', 'article .wikilink', 'First 9 hypha′s links', 'Hypha link');
                 bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
                 bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
                 bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
                 bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
                 bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
-            globalShortcuts.groupEnd();
+            commonShortcuts.groupEnd();
 
-            let hyphaLinks = $$('article .wikilink');
-            for (let i = 1; i <= hyphaLinks.length && i < 10; i++) {
-                bindElement(i.toString(), hyphaLinks[i-1], `Hypha link #${i}`);
-            }
-        }
-
-        // Hypha editor shortcuts
-        if (typeof editTextarea !== 'undefined') {
+        } else {
+            // Hypha editor shortcuts. These work only on editor's text area.
             let editorShortcuts = new ShortcutHandler(editTextarea, true);
             let bindElement = bindElementFactory(editorShortcuts);
 
             let shortcuts = [
-                // Inspired by MS Word, Pages, Google Docs and Telegram desktop clients.
-                // And by myself, too.
-
                 // Win+Linux    Mac                  Action              Description
                 ['Ctrl+b',      'Meta+b',            wrapBold,           'Format: Bold'],
                 ['Ctrl+i',      'Meta+i',            wrapItalic,         'Format: Italic'],
@@ -366,9 +367,7 @@
                 ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Link'],
             ];
 
-            editorShortcuts.fakeItem('Editor');
-
-            editorShortcuts.groupStart();
+            editorShortcuts.groupStart('Editor');
             for (let shortcut of shortcuts) {
                 if (isMac) {
                     editorShortcuts.add(shortcut[1], ...shortcut.slice(2))
@@ -381,12 +380,6 @@
             editorShortcuts.groupStart();
             bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
             editorShortcuts.groupEnd();
-
-            // Help shortcut
-            editorShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openShortcutsReference);
         }
-
-        // * Meta shortcuts
-        globalShortcuts.add('?', openShortcutsReference);
     });
 })();
