@@ -77,7 +77,10 @@
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
 		<textarea name="text" class="edit-form__textarea" autofocus>{%s textAreaFill %}</textarea>
-		<br/>
+		<br/><br/>
+		<label for="text">Edit description:</label>
+		<input id="text" type="text" name="message" class="edit-form__message">
+		<br/><br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/hypha/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
@@ -88,7 +91,7 @@
 {%= editScripts() %}
 {% endfunc %}
 
-{% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, warning string, renderedPage string) %}
+{% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) %}
 {%s= NavHTML(rq, hyphaName, "edit") %}
 <div class="layout">
 <main class="main-width edit edit_with-preview">
@@ -97,7 +100,10 @@
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
 		<textarea class="edit-form__textarea" name="text">{%s textAreaFill %}</textarea>
-		<br/>
+		<br/><br/>
+		<label for="text">Edit description:</label>
+		<input id="text" type="text" name="message" class="edit-form__message" value="{%s message %}">
+		<br/><br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
 		<a href="/hypha/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>

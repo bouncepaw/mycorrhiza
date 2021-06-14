@@ -173,13 +173,14 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		h         = hyphae.ByName(hyphaName)
 		textData  = rq.PostFormValue("text")
 		action    = rq.PostFormValue("action")
+		message   = rq.PostFormValue("message")
 		u         = user.FromRequest(rq)
 		hop       *history.HistoryOp
 		errtitle  string
 	)
 
 	if action != "Preview" {
-		hop, errtitle = shroom.UploadText(h, []byte(textData), u)
+		hop, errtitle = shroom.UploadText(h, []byte(textData), message, u)
 		if hop.HasErrors() {
 			httpErr(w, http.StatusForbidden, hyphaName,
 				errtitle,
@@ -199,6 +200,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					rq,
 					hyphaName,
 					textData,
+					message,
 					"",
 					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
 				u))

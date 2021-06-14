@@ -111,7 +111,7 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
 .edit-form {height:70vh;}
-.edit-form textarea {width:100%;height:95%;}
+.edit-form textarea {width:100%;height:calc(100% - 6rem);}
 .edit-form__save { font-weight: bold; }
 .edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
 
