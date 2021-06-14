@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -30,7 +31,6 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 	} else {
 		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.Name, message))
 	}
-
 
 	if err, errtitle := CanEdit(u, h); err != nil {
 		return hop.WithErrAbort(err), errtitle
@@ -64,9 +64,16 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte, u *user.User) (*history.HistoryOp, string) {
 	var (
-		fullPath         = filepath.Join(cfg.WikiDir, h.Name+ext)
+		fullPath, err    = filepath.EvalSymlinks(filepath.Join(cfg.WikiDir, h.Name+ext))
 		originalFullPath = &h.TextPath
 	)
+	if err != nil {
+		return hop.WithErrAbort(err), err.Error()
+	}
+	if !strings.HasPrefix(fullPath, cfg.WikiDir) { // If the path somehow got outside the wiki dir
+		err = errors.New("bad path")
+		return hop.WithErrAbort(err), err.Error()
+	}
 	if hop.Type == history.TypeEditBinary {
 		originalFullPath = &h.BinaryPath
 	}
