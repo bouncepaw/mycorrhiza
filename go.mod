@@ -5,7 +5,7 @@ go 1.16
 require (
 	git.sr.ht/~adnano/go-gemini v0.1.13
 	github.com/adrg/xdg v0.2.2
-	github.com/bouncepaw/mycomarkup v0.5.3
+	github.com/bouncepaw/mycomarkup v0.5.4
 	github.com/go-ini/ini v1.62.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/kr/pretty v0.2.1 // indirect
@@ -17,4 +17,4 @@ require (
 )
 
 // Use this trick for testing of mycomarkup:
-// replace github.com/bouncepaw/mycomarkup v0.5.3 => "/Users/bouncepaw/GolandProjects/mycomarkup"
+// replace github.com/bouncepaw/mycomarkup v0.5.4 => "/Users/bouncepaw/GolandProjects/mycomarkup"
