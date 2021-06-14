@@ -368,7 +368,7 @@ kbd {
 	opacity: .7;
 }
 
-.shortcuts-modal {
+.shortcuts-help .dialog__content {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-column-gap: 32px;

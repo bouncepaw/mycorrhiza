@@ -207,45 +207,36 @@
         }
     }
 
-    let prevActiveElement = null;
-    let shortcutsListDialog = null;
+    class ShortcutsHelpDialog {
+        constructor() {
+            let template = $('#dialog-template');
+            this.wrap = template.content.firstElementChild.cloneNode(true);
+            this.wrap.classList.add('shortcuts-help');
+            this.wrap.hidden = true;
 
-    function openShortcutsReference() {
-        if (!shortcutsListDialog) {
-            let wrap = document.createElement('div');
-            wrap.className = 'dialog-wrap';
-            shortcutsListDialog = wrap;
+            let handleClose = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.close();
+            };
 
-            let dialog = document.createElement('div');
-            dialog.className = 'dialog shortcuts-modal';
-            dialog.tabIndex = 0;
-            wrap.appendChild(dialog);
+            this.shortcuts = new ShortcutHandler(this.wrap, false);
+            this.shortcuts.add('Escape', handleClose, null, false);
 
-            let dialogHeader = document.createElement('div');
-            dialogHeader.className = 'dialog__header';
-            dialog.appendChild(dialogHeader);
+            this.wrap.querySelector('.dialog__title').textContent = 'List of shortcuts';
+            this.wrap.querySelector('.dialog__close-button').addEventListener('click', handleClose);
 
-            let title = document.createElement('h1');
-            title.className = 'dialog__title';
-            title.textContent = 'List of shortcuts';
-            dialogHeader.appendChild(title);
+            this.wrap.addEventListener('click', handleClose);
+            this.wrap.querySelector('.dialog').addEventListener('click', event => event.stopPropagation());
 
-            let closeButton = document.createElement('button');
-            closeButton.className = 'dialog__close-button';
-            closeButton.setAttribute('aria-label', 'Close this dialog');
-            dialogHeader.appendChild(closeButton);
-
+            let shortcutsGroup;
             let shortcutsGroupTemplate = document.createElement('div');
             shortcutsGroupTemplate.className = 'shortcuts-group';
 
-            let shortcutsGroup = shortcutsGroupTemplate.cloneNode();
-
             for (let item of allShortcuts) {
                 if (item.description && !item.shortcut) {
-                    if (shortcutsGroup.children.length > 0) {
-                        dialog.appendChild(shortcutsGroup);
-                        shortcutsGroup = shortcutsGroupTemplate.cloneNode();
-                    }
+                    shortcutsGroup = shortcutsGroupTemplate.cloneNode();
+                    this.wrap.querySelector('.dialog__content').appendChild(shortcutsGroup);
 
                     let heading = document.createElement('h2');
                     heading.className = 'shortcuts-group-heading';
@@ -278,47 +269,35 @@
                 }
             }
 
-            if (shortcutsGroup.children.length > 0) {
-                dialog.appendChild(shortcutsGroup);
-                shortcutsGroup = shortcutsGroupTemplate.cloneNode();
-            }
-
-            let handleClose = (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                closeShortcutsReference();
-            };
-
-            let dialogShortcuts = new ShortcutHandler(dialog, true, notTextField);
-
-            dialogShortcuts.add('Escape', handleClose);
-            closeButton.addEventListener('click', handleClose);
-            wrap.addEventListener('click', handleClose);
-
-            dialog.addEventListener('click', event => event.stopPropagation());
-
-            document.body.appendChild(wrap);
+            document.body.appendChild(this.wrap);
         }
 
-        document.body.overflow = 'hidden';
-        shortcutsListDialog.hidden = false;
-        prevActiveElement = document.activeElement;
-        shortcutsListDialog.children[0].focus();
-    }
+        open() {
+            this.prevActiveElement = document.activeElement;
 
-    function closeShortcutsReference() {
-        if (shortcutsListDialog) {
+            document.body.overflow = 'hidden';
+            this.wrap.hidden = false;
+            this.wrap.children[0].focus();
+        }
+
+        close() {
             document.body.overflow = '';
-            shortcutsListDialog.hidden = true;
+            this.wrap.hidden = true;
 
-            if (prevActiveElement) {
-                prevActiveElement.focus();
-                prevActiveElement = null;
+            if (this.prevActiveElement) {
+                this.prevActiveElement.focus();
+                this.prevActiveElement = null;
             }
         }
     }
 
     window.addEventListener('load', () => {
+        let helpDialog = null;
+        let openHelp = () => {
+            if (!helpDialog) helpDialog = new ShortcutsHelpDialog();
+            helpDialog.open();
+        };
+
         // Global shortcuts work everywhere.
         let globalShortcuts = new ShortcutHandler(document, false);
         globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openShortcutsReference);

@@ -28,6 +28,18 @@
 			</nav>
 		</header>
 		{%s= body %}
+		<template id="dialog-template">
+			<div class="dialog-wrap">
+				<div class="dialog" tabindex="0">
+					<div class="dialog__header">
+						<h1 class="dialog__title"></h1>
+						<button class="dialog__close-button" aria-label="Close this dialog"></button>
+					</div>
+
+					<div class="dialog__content"></div>
+				</div>
+			</div>
+		</template>
 		{%= omnipresentScripts() %}
 	</body>
 </html>
