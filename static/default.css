@@ -312,29 +312,38 @@ kbd {
 	text-align: center;
 }
 
-.dialog-wrap {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.3);
-	overflow-y: auto;
-
-	padding: 0 16px;
+.kbd-or {
+	opacity: .4;
 }
 
 .dialog {
-	position: relative;
+	position: absolute;
 
+	top: 0;
+	left: 50%;
 	width: 100%;
-	max-width: 400px;
+	max-width: 700px;
 	margin: 96px auto;
 	padding: 24px;
+	transform: translate(-50%, 0);
 
 	background-color: #fff;
 	border-radius: 4px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+.dialog__header {
+	position: relative;
+	grid-column: 1 / -1;
 }
 
 .dialog__title {
@@ -347,7 +356,7 @@ kbd {
 	display: block;
 	top: 0;
 	right: 0;
-	margin: 16px;
+	margin: 0;
 	padding: 8px;
 	border: none;
 	background: url(/static/icon/x.svg) no-repeat 8px 8px / 16px 16px;
@@ -360,17 +369,23 @@ kbd {
 	opacity: .7;
 }
 
+.shortcuts-help .dialog__content {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-column-gap: 32px;
+}
+
 .shortcuts-group-heading {
 	margin: 1em 0 0.5em;
 	font-size: 1.2em;
 }
 
-.shortcuts-group {
+.shortcuts-list {
 	margin: 0;
 	padding: 0;
 }
 
-.shortcuts-group + .shortcuts-group {
+.shortcuts-list + .shortcuts-list {
 	margin-top: 1.5em;
 }
 

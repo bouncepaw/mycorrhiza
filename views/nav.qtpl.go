@@ -41,7 +41,7 @@ type navEntry struct {
 }
 
 var navEntries = []navEntry{
-	{"page", "Hypha"},
+	{"hypha", "Hypha"},
 	{"edit", "Edit"},
 	{"attachment", "Attachment"},
 	{"history", "History"},
