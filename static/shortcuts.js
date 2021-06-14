@@ -88,10 +88,11 @@ class Shortcut {
 
     // Advanced stuff.
     class ShortcutHandler {
-        constructor(element, filter = () => true) {
+        constructor(element, override, filter = () => true) {
             this.element = element;
             this.map = {};
             this.active = this.map;
+	    this.override = override;
             this.filter = filter;
             this.timeout = null;
 
@@ -166,6 +167,9 @@ class Shortcut {
             this.active = this.active[shortcut];
             if (this.active.action) {
                 this.active.action(event);
+		if (this.override) {
+		    event.preventDefault();
+		}
                 this.resetActive();
                 return;
             }
@@ -268,7 +272,7 @@ class Shortcut {
                 closeShortcutsReference();
             };
 
-            let dialogShortcuts = new ShortcutHandler(dialog, notTextField);
+            let dialogShortcuts = new ShortcutHandler(dialog, true, notTextField);
 
             dialogShortcuts.add('Escape', handleClose);
             closeButton.addEventListener('click', handleClose);
@@ -298,7 +302,7 @@ class Shortcut {
     }
 
     window.addEventListener('load', () => {
-        let globalShortcuts = new ShortcutHandler(document, notTextField);
+        let globalShortcuts = new ShortcutHandler(document, false, notTextField);
 
         // Global shortcuts
 
@@ -343,7 +347,7 @@ class Shortcut {
 
         // * Editor shortcuts
         if (typeof editTextarea !== 'undefined') {
-            let editorShortcuts = new ShortcutHandler(editTextarea);
+            let editorShortcuts = new ShortcutHandler(editTextarea, true);
             let bindElement = bindElementFactory(editorShortcuts);
 
             let shortcuts = [
