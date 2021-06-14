@@ -296,6 +296,8 @@
             helpDialog.open();
         };
 
+        let onEditPage = typeof editTextarea !== 'undefined';
+
         // Global shortcuts work everywhere.
         let globalShortcuts = new ShortcutHandler(document, false);
         globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openHelp);
@@ -313,7 +315,7 @@
             this.bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
         });
 
-        if (typeof editTextarea === 'undefined') {
+        if (!onEditPage) {
             // Hypha shortcuts
             pageShortcuts.group('Hypha', function () {
                 this.bindCollection('', 'article .wikilink', 'First 9 hypha′s links', 'Hypha link');
@@ -321,7 +323,12 @@
                 this.bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
                 this.bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
                 this.bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
+
+                this.bindElement('v', '.hypha-tabs__link[href^="/hypha/"]', 'Go to hypha′s page');
                 this.bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
+                this.bindElement('a', '.hypha-tabs__link[href^="/attachment/"]', 'Go to attachment');
+                this.bindElement('h', '.hypha-tabs__link[href^="/history/"]', 'Go to history');
+                this.bindElement('r', '.hypha-tabs__link[href^="/rename-ask/"]', 'Rename this hypha');
             });
 
         } else {
