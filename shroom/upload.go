@@ -16,13 +16,21 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-func UploadText(h *hyphae.Hypha, data []byte, u *user.User) (hop *history.HistoryOp, errtitle string) {
+func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop *history.HistoryOp, errtitle string) {
 	hop = history.Operation(history.TypeEditText)
+	var action string
 	if h.Exists {
-		hop.WithMsg(fmt.Sprintf("Edit ‘%s’", h.Name))
+		action = "Edit"
 	} else {
-		hop.WithMsg(fmt.Sprintf("Create ‘%s’", h.Name))
+		action = "Create"
 	}
+
+	if message == "" {
+		hop.WithMsg(fmt.Sprintf("%s ‘%s’", action, h.Name))
+	} else {
+		hop.WithMsg(fmt.Sprintf("%s ‘%s’ with message: ‘%s’", action, h.Name, message))
+	}
+
 
 	if err, errtitle := CanEdit(u, h); err != nil {
 		return hop.WithErrAbort(err), errtitle
