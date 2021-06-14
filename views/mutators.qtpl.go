@@ -207,7 +207,7 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
-		<a href="/page/`)
+		<a href="/hypha/`)
 //line views/mutators.qtpl:83
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:83
@@ -290,7 +290,7 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
-		<a href="/page/`)
+		<a href="/hypha/`)
 //line views/mutators.qtpl:103
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:103

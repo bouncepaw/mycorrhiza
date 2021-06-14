@@ -141,7 +141,7 @@ func (rev *Revision) asHistoryEntry(hyphaName string) (html string) {
 	author := ""
 	if rev.Username != "anon" {
 		author = fmt.Sprintf(`
-		<span class="history-entry__author">by <a href="/page/%[1]s/%[2]s" rel="author">%[2]s</span>`, cfg.UserHypha, rev.Username)
+		<span class="history-entry__author">by <a href="/hypha/%[1]s/%[2]s" rel="author">%[2]s</span>`, cfg.UserHypha, rev.Username)
 	}
 	return fmt.Sprintf(`
 <li class="history__entry">

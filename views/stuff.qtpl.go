@@ -175,7 +175,7 @@ func StreamUserListHTML(qw422016 *qt422016.Writer) {
 	for _, name := range admins {
 //line views/stuff.qtpl:70
 		qw422016.N().S(`
-			<li><a href="/page/`)
+			<li><a href="/hypha/`)
 //line views/stuff.qtpl:71
 		qw422016.E().S(cfg.UserHypha)
 //line views/stuff.qtpl:71
@@ -201,7 +201,7 @@ func StreamUserListHTML(qw422016 *qt422016.Writer) {
 	for _, name := range moderators {
 //line views/stuff.qtpl:76
 		qw422016.N().S(`
-			<li><a href="/page/`)
+			<li><a href="/hypha/`)
 //line views/stuff.qtpl:77
 		qw422016.E().S(cfg.UserHypha)
 //line views/stuff.qtpl:77
@@ -227,7 +227,7 @@ func StreamUserListHTML(qw422016 *qt422016.Writer) {
 	for _, name := range editors {
 //line views/stuff.qtpl:82
 		qw422016.N().S(`
-			<li><a href="/page/`)
+			<li><a href="/hypha/`)
 //line views/stuff.qtpl:83
 		qw422016.E().S(cfg.UserHypha)
 //line views/stuff.qtpl:83
@@ -399,7 +399,7 @@ func StreamAboutHTML(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:121
 			}
 //line views/stuff.qtpl:121
-			qw422016.N().S(`				<a href="/page/`)
+			qw422016.N().S(`				<a href="/hypha/`)
 //line views/stuff.qtpl:122
 			qw422016.E().S(cfg.UserHypha)
 //line views/stuff.qtpl:122

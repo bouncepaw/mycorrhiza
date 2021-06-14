@@ -241,7 +241,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:83
-	StreamNavHTML(qw422016, rq, h.Name, "page")
+	StreamNavHTML(qw422016, rq, h.Name, "hypha")
 //line views/readers.qtpl:83
 	qw422016.N().S(`
 <div class="layout">

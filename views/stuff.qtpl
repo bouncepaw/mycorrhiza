@@ -68,19 +68,19 @@ for u := range user.YieldUsers() {
 	<section>
 		<h2>Admins</h2>
 		<ol>{% for _, name := range admins %}
-			<li><a href="/page/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
+			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
 	<section>
 		<h2>Moderators</h2>
 		<ol>{% for _, name := range moderators %}
-			<li><a href="/page/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
+			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
 	<section>
 		<h2>Editors</h2>
 		<ol>{% for _, name := range editors %}
-			<li><a href="/page/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
+			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
 </main>
@@ -119,7 +119,7 @@ for u := range user.YieldUsers() {
 			<li><b>Administrators:</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
 				{%- if i > 0 -%}<span aria-hidden="true">, </span>
 				{%- endif -%}
-				<a href="/page/{%s cfg.UserHypha %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
+				<a href="/hypha/{%s cfg.UserHypha %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
 		{%- else -%}
 			<li>This wiki does not use authorization</li>
 		{%- endif -%}

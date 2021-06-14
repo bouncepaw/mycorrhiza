@@ -30,7 +30,7 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 		views.BaseHTML(
 			title,
 			fmt.Sprintf(
-				`<main class="main-width"><p>%s. <a href="/page/%s">Go back to the hypha.<a></p></main>`,
+				`<main class="main-width"><p>%s. <a href="/hypha/%s">Go back to the hypha.<a></p></main>`,
 				errMsg,
 				name,
 			),

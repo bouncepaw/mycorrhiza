@@ -80,7 +80,7 @@ If `contents` == "", a helpful message is shown instead.
 	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
 	u := user.FromRequest(rq)
 %}
-{%= NavHTML(rq, h.Name, "page") %}
+{%= NavHTML(rq, h.Name, "hypha") %}
 <div class="layout">
 <main class="main-width">
 	<article>

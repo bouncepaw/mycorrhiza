@@ -80,7 +80,7 @@
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
-		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
+		<a href="/hypha/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 </main>
 {%s= Toolbar(user.FromRequest(rq)) %}
@@ -100,7 +100,7 @@
 		<br/>
 		<input type="submit" name="action" value="Save" class="edit-form__save"/>
 		<input type="submit" name="action" value="Preview" class="edit-form__preview">
-		<a href="/page/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
+		<a href="/hypha/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">{%s= renderedPage %}</article>
