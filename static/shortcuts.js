@@ -340,17 +340,15 @@
                 // Inspired by MS Word, Pages, Google Docs and Telegram desktop clients.
                 // And by myself, too.
 
-                // Win+Linux    Mac              Action              Description
-                ['Ctrl+b',      'Meta+b',        wrapBold,           'Format: Bold'],
-                ['Ctrl+i',      'Meta+i',        wrapItalic,         'Format: Italic'],
-                ['Ctrl+M',      'Meta+Shift+m',  wrapMonospace,      'Format: Monospaced'],
-                ['Ctrl+I',      'Meta+Shift+i',  wrapHighlighted,    'Format: Highlight'],
-                ['Ctrl+.',      'Meta+.',        wrapLifted,         'Format: Superscript'],
-                ['Ctrl+Comma',  'Meta+Comma',    wrapLowered,        'Format: Subscript'],
-                // Strikethrough conflicts with 1Password on my machine but
-                // I'm probably the only Mycorrhiza user who uses 1Password. -handlerug
-                ['Ctrl+X',      'Meta+Shift+x',  wrapStrikethrough,  'Format: Strikethrough'],
-                ['Ctrl+k',      'Meta+k',        wrapLink,           'Format: Link'],
+                // Win+Linux    Mac                  Action              Description
+                ['Ctrl+b',      'Meta+b',            wrapBold,           'Format: Bold'],
+                ['Ctrl+i',      'Meta+i',            wrapItalic,         'Format: Italic'],
+                ['Ctrl+M',      'Meta+Shift+m',      wrapMonospace,      'Format: Monospaced'],
+                ['Ctrl+I',      'Meta+Shift+i',      wrapHighlighted,    'Format: Highlight'],
+                ['Ctrl+.',      'Meta+Shift+.',      wrapLifted,         'Format: Superscript'],
+                ['Ctrl+Comma',  'Meta+Shift+Comma',  wrapLowered,        'Format: Subscript'],
+                ['Ctrl+X',      'Meta+Shift+x',      wrapStrikethrough,  'Format: Strikethrough'],
+                ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Link'],
             ];
 
             editorShortcuts.fakeItem('Editor');
