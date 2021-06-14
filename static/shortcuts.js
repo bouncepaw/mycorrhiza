@@ -122,14 +122,44 @@
             }
         }
 
-        groupStart(title = null) {
-            if (title) this.fakeItem(title);
+        group(...args) {
+            if (typeof args[0] === 'string') this.fakeItem(args.shift());
             shortcutsGroup = [];
-        }
 
-        groupEnd() {
+            args[0].bind(this)();
+
             if (shortcutsGroup && shortcutsGroup.length) allShortcuts.push(shortcutsGroup);
             shortcutsGroup = null;
+        }
+
+        bindElement(shortcut, element, ...other) {
+            element = typeof element === 'string' ? $(element) : element;
+            if (!element) return;
+            this.add(shortcut, () => {
+                if (isTextField(element)) {
+                    element.focus();
+                } else {
+                    element.click();
+                }
+            }, ...other);
+        }
+
+        bindLink(shortcut, link, ...other) {
+            this.add(shortcut, () => window.location.href = link, ...other);
+        }
+
+        bindCollection(prefix, elements, collectionDescription, itemDescription) {
+            this.fakeItem(prefix + ' 1 – 9', collectionDescription);
+
+            if (typeof elements === 'string') {
+                elements = $$(elements);
+            } else if (Array.isArray(elements)) {
+                elements = elements.map(el => typeof el === 'string' ? $(el) : el);
+            }
+
+            for (let i = 1; i <= elements.length && i < 10; i++) {
+                this.bindElement(`${prefix} ${i}`, elements[i-1], `${itemDescription} #${i}`, false);
+            }
         }
 
         fakeItem(shortcut, description = null) {
@@ -154,6 +184,7 @@
 
             this.active = this.active[shortcut];
             if (this.active.action) {
+                event.stopPropagation();
                 this.active.action(event);
                 if (this.override) event.preventDefault();
                 this.resetActive();
@@ -173,61 +204,28 @@
         }
     }
 
-    function bindElementFactory(handler) {
-        return (shortcut, element, ...other) => {
-            element = typeof element === 'string' ? $(element) : element;
-            if (!element) return;
-            handler.add(shortcut, () => {
-                if (isTextField(element)) {
-                    element.focus();
-                } else {
-                    element.click();
-                }
-            }, ...other);
-        };
-    }
-
-    function bindLinkFactory(handler) {
-        return (shortcut, link, ...other) => handler.add(shortcut, () => window.location.href = link, ...other);
-    }
-
-    function bindCollectionFactory(handler) {
-        return (prefix, elements, collectionDescription, itemDescription) => {
-            handler.fakeItem(prefix + ' 1 – 9', collectionDescription);
-
-            if (typeof elements === 'string') {
-                elements = $$(elements);
-            } else if (Array.isArray(elements)) {
-                elements = elements.map(el => typeof el === 'string' ? $(el) : el);
-            }
-
-            for (let i = 1; i <= elements.length && i < 10; i++) {
-                bindElementFactory(handler)(`${prefix} ${i}`, elements[i-1], `${itemDescription} #${i}`, false);
-            }
-        }
-    }
-
     class ShortcutsHelpDialog {
         constructor() {
             let template = $('#dialog-template');
-            this.wrap = template.content.firstElementChild.cloneNode(true);
-            this.wrap.classList.add('shortcuts-help');
-            this.wrap.hidden = true;
+            let clonedTemplate = template.content.cloneNode(true);
+            this.backdrop = clonedTemplate.children[0];
+            this.dialog = clonedTemplate.children[1];
 
-            let handleClose = (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                this.close();
-            };
+            this.dialog.classList.add('shortcuts-help');
+            this.dialog.hidden = true;
+            this.backdrop.hidden = true;
 
-            this.shortcuts = new ShortcutHandler(this.wrap, false);
-            this.shortcuts.add('Escape', handleClose, null, false);
+            document.body.appendChild(this.backdrop);
+            document.body.appendChild(this.dialog);
 
-            this.wrap.querySelector('.dialog__title').textContent = 'List of shortcuts';
-            this.wrap.querySelector('.dialog__close-button').addEventListener('click', handleClose);
+            this.close = this.close.bind(this);
 
-            this.wrap.addEventListener('click', handleClose);
-            this.wrap.querySelector('.dialog').addEventListener('click', event => event.stopPropagation());
+            this.dialog.querySelector('.dialog__title').textContent = 'List of shortcuts';
+            this.dialog.querySelector('.dialog__close-button').addEventListener('click', this.close);
+            this.backdrop.addEventListener('click', this.close);
+
+            this.shortcuts = new ShortcutHandler(this.dialog, false);
+            this.shortcuts.add('Escape', this.close, null, false);
 
             let shortcutsGroup;
             let shortcutsGroupTemplate = document.createElement('div');
@@ -236,7 +234,7 @@
             for (let item of allShortcuts) {
                 if (item.description && !item.shortcut) {
                     shortcutsGroup = shortcutsGroupTemplate.cloneNode();
-                    this.wrap.querySelector('.dialog__content').appendChild(shortcutsGroup);
+                    this.dialog.querySelector('.dialog__content').appendChild(shortcutsGroup);
 
                     let heading = document.createElement('h2');
                     heading.className = 'shortcuts-group-heading';
@@ -268,21 +266,21 @@
                     shortcutsGroup.appendChild(list);
                 }
             }
-
-            document.body.appendChild(this.wrap);
         }
 
         open() {
             this.prevActiveElement = document.activeElement;
 
             document.body.overflow = 'hidden';
-            this.wrap.hidden = false;
-            this.wrap.children[0].focus();
+            this.backdrop.hidden = false;
+            this.dialog.hidden = false;
+            this.dialog.focus();
         }
 
         close() {
             document.body.overflow = '';
-            this.wrap.hidden = true;
+            this.backdrop.hidden = true;
+            this.dialog.hidden = true;
 
             if (this.prevActiveElement) {
                 this.prevActiveElement.focus();
@@ -300,39 +298,35 @@
 
         // Global shortcuts work everywhere.
         let globalShortcuts = new ShortcutHandler(document, false);
-        globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openShortcutsReference);
+        globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openHelp);
 
-        // Common shortcuts work everywhere except on text fields.
-        let commonShortcuts = new ShortcutHandler(document, false, notTextField);
-
-        let bindElement = bindElementFactory(commonShortcuts);
-        let bindLink = bindLinkFactory(commonShortcuts);
-        let bindCollection = bindCollectionFactory(commonShortcuts);
+        // Page shortcuts work everywhere except on text fields.
+        let pageShortcuts = new ShortcutHandler(document, false, notTextField);
+        pageShortcuts.add('?', openHelp, null, false);
 
         // Common shortcuts
-        commonShortcuts.groupStart('Common');
-            bindCollection('g', '.header-links__link', 'First 9 header links', 'Header link');
-            bindLink('g h', '/', 'Home');
-            bindLink('g l', '/list/', 'List of hyphae');
-            bindLink('g r', '/recent-changes/', 'Recent changes');
-            bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
-        commonShortcuts.groupEnd();
+        pageShortcuts.group('Common', function () {
+            this.bindCollection('g', '.header-links__link', 'First 9 header links', 'Header link');
+            this.bindLink('g h', '/', 'Home');
+            this.bindLink('g l', '/list/', 'List of hyphae');
+            this.bindLink('g r', '/recent-changes/', 'Recent changes');
+            this.bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
+        });
 
         if (typeof editTextarea === 'undefined') {
             // Hypha shortcuts
-            commonShortcuts.groupStart('Hypha');
-                bindCollection('', 'article .wikilink', 'First 9 hypha′s links', 'Hypha link');
-                bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
-                bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-                bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
-                bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
-                bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
-            commonShortcuts.groupEnd();
+            pageShortcuts.group('Hypha', function () {
+                this.bindCollection('', 'article .wikilink', 'First 9 hypha′s links', 'Hypha link');
+                this.bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
+                this.bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
+                this.bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
+                this.bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
+                this.bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
+            });
 
         } else {
             // Hypha editor shortcuts. These work only on editor's text area.
             let editorShortcuts = new ShortcutHandler(editTextarea, true);
-            let bindElement = bindElementFactory(editorShortcuts);
 
             let shortcuts = [
                 // Win+Linux    Mac                  Action              Description
@@ -346,19 +340,19 @@
                 ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Link'],
             ];
 
-            editorShortcuts.groupStart('Editor');
-            for (let shortcut of shortcuts) {
-                if (isMac) {
-                    editorShortcuts.add(shortcut[1], ...shortcut.slice(2))
-                } else {
-                    editorShortcuts.add(shortcut[0], ...shortcut.slice(2))
+            editorShortcuts.group('Editor', function () {
+                for (let shortcut of shortcuts) {
+                    if (isMac) {
+                        this.add(shortcut[1], ...shortcut.slice(2))
+                    } else {
+                        this.add(shortcut[0], ...shortcut.slice(2))
+                    }
                 }
-            }
-            editorShortcuts.groupEnd();
+            });
 
-            editorShortcuts.groupStart();
-            bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
-            editorShortcuts.groupEnd();
+            editorShortcuts.group(function () {
+                this.bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
+            });
         }
     });
 })();
