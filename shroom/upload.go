@@ -64,14 +64,11 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte, u *user.User) (*history.HistoryOp, string) {
 	var (
-		fullPath, err    = filepath.EvalSymlinks(filepath.Join(cfg.WikiGitDir, h.Name+ext))
+		fullPath         = filepath.Join(cfg.WikiGitDir, h.Name+ext)
 		originalFullPath = &h.TextPath
 	)
-	if err != nil {
-		return hop.WithErrAbort(err), err.Error()
-	}
 	if !strings.HasPrefix(fullPath, cfg.WikiGitDir) { // If the path somehow got outside the wiki dir
-		err = errors.New("bad path")
+		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
 	if hop.Type == history.TypeEditBinary {
