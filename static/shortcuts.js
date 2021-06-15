@@ -325,7 +325,7 @@
                 this.bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
 
                 this.bindElement('v', '.hypha-tabs__link[href^="/hypha/"]', 'Go to hypha′s page');
-                this.bindElement('e, Ctrl+Enter', '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
+                this.bindElement('e, ' + (isMac ? "Meta+Enter" : "Ctrl+Enter"), '.hypha-tabs__link[href^="/edit/"]', 'Edit this hypha');
                 this.bindElement('a', '.hypha-tabs__link[href^="/attachment/"]', 'Go to attachment');
                 this.bindElement('h', '.hypha-tabs__link[href^="/history/"]', 'Go to history');
                 this.bindElement('r', '.hypha-tabs__link[href^="/rename-ask/"]', 'Rename this hypha');
