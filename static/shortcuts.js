@@ -300,7 +300,7 @@
 
         // Global shortcuts work everywhere.
         let globalShortcuts = new ShortcutHandler(document, false);
-        globalShortcuts.add('?, ' + (isMac ? 'Meta+/' : 'Ctrl+/'), openHelp);
+        globalShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openHelp);
 
         // Page shortcuts work everywhere except on text fields.
         let pageShortcuts = new ShortcutHandler(document, false, notTextField);
