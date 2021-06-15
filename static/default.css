@@ -103,7 +103,7 @@ header { width: 100%; margin-bottom: 1rem; }
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
 body {height:100%; margin:0; }
-body, input, kbd { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
+body, input, kbd { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif; color: black; }
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
