@@ -407,7 +407,7 @@ kbd {
 		background-color: #343434;
 		color: #ddd;
 	}
-	kbd {
+	input, kbd {
 		color: #ddd;
 	}
 }
