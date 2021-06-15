@@ -65,7 +65,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 //line views/mutators.qtpl:34
 		qw422016.N().S(`
 		<button
-			class="edit-toolbar__btn edit-toolbar__`)
+			class="btn edit-toolbar__btn edit-toolbar__`)
 //line views/mutators.qtpl:36
 		qw422016.E().S(el.class)
 //line views/mutators.qtpl:36
@@ -103,7 +103,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 //line views/mutators.qtpl:52
 		qw422016.N().S(`
 		<button
-			class="edit-toolbar__btn edit-toolbar__`)
+			class="btn edit-toolbar__btn edit-toolbar__`)
 //line views/mutators.qtpl:54
 		qw422016.E().S(el.class)
 //line views/mutators.qtpl:54
@@ -130,7 +130,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 //line views/mutators.qtpl:59
 		qw422016.N().S(`
 		<button
-			class="edit-toolbar__btn edit-toolbar__user-link"
+			class="btn edit-toolbar__btn edit-toolbar__user-link"
 			onclick="insertUserlink()">
 			Link yourself
 		</button>
@@ -208,13 +208,13 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" placeholder="(optional)">
 		<br/><br/>
-		<input type="submit" name="action" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" value="Preview" class="edit-form__preview">
+		<input type="submit" name="action" class="btn" value="Save" class="edit-form__save"/>
+		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:86
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:86
-	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
+	qw422016.N().S(`" class="btn btn_weak">Cancel</a>
 	</form>
 </main>
 `)

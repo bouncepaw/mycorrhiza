@@ -80,7 +80,7 @@ header { width: 100%; margin-bottom: 1rem; }
 }
 
 @media screen and (min-width: 1150px) {
-	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; }
+	.edit-toolbar__buttons { grid-template-columns: 1fr 1fr; grid-column-gap: .125rem; }
 }
 
 @media screen and (min-width: 1250px) {
@@ -107,6 +107,11 @@ body, input, kbd { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sa
 main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
+::-webkit-file-upload-button,
+.btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
+.btn_weak { border: 1px #999 dashed; }
+.btn:hover, .btn:active { cursor: pointer; }
+
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
@@ -116,6 +121,7 @@ textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;
 .edit-form__message { width: 100%; margin: 0.25em 0; }
 .edit-form__save { font-weight: bold; }
 .edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
+.edit-toolbar__btn { font-size: .75rem; margin-bottom: .125rem; }
 
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
@@ -203,10 +209,6 @@ caption { caption-side: top; font-size: small; }
 .relative-hyphae__count { display: inline-block; float: right; }
 .relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
 .relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
-
-::-webkit-file-upload-button,
-.btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
-.btn_weak { border: 1px #999 dashed; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
