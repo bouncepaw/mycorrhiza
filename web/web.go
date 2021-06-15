@@ -65,6 +65,7 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Write([]byte(
 		`User-agent: *
 Allow: /page/
+Allow: /hypha/
 Allow: /recent-changes
 Disallow: /
 Crawl-delay: 5`))

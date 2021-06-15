@@ -21,6 +21,9 @@ func initStuff() {
 	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
 	http.HandleFunc("/random/", handlerRandom)
 	http.HandleFunc("/about/", handlerAbout)
+	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
+	})
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.
