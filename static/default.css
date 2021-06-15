@@ -405,5 +405,9 @@ kbd {
 @media (prefers-color-scheme: dark) {
 	.dialog {
 		background-color: #343434;
+		color: #ddd;
+	}
+	kbd {
+		color: #ddd;
 	}
 }
