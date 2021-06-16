@@ -61,7 +61,7 @@ func tokenStoragePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if strings.HasPrefix(dir, cfg.WikiGitDir) {
+	if strings.HasPrefix(dir, cfg.WikiDir) {
 		return "", errors.New("wiki storage directory includes private config files")
 	}
 	return dir, nil

@@ -3,12 +3,13 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"github.com/bouncepaw/mycomarkup/util"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/bouncepaw/mycomarkup/util"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 // PrepareRq strips the trailing / in rq.URL.Path. In the future it might do more stuff for making all request structs uniform.
@@ -16,10 +17,10 @@ func PrepareRq(rq *http.Request) {
 	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
 }
 
-// ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiGitDir.
+// ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
 func ShorterPath(path string) string {
-	if strings.HasPrefix(path, cfg.WikiGitDir) {
-		tmp := strings.TrimPrefix(path, cfg.WikiGitDir)
+	if strings.HasPrefix(path, cfg.WikiDir) {
+		tmp := strings.TrimPrefix(path, cfg.WikiDir)
 		if tmp == "" {
 			return ""
 		}

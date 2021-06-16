@@ -30,19 +30,19 @@ func main() {
 	}
 
 	log.Println("Running Mycorrhiza Wiki 1.2.0 indev")
-	if err := os.Chdir(cfg.WikiGitDir); err != nil {
+	if err := os.Chdir(cfg.WikiDir); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Wiki storage directory is", cfg.WikiGitDir)
+	log.Println("Wiki storage directory is", cfg.WikiDir)
 
 	// Init the subsystems:
-	hyphae.Index(cfg.WikiGitDir)
+	hyphae.Index(cfg.WikiDir)
 	user.InitUserDatabase()
 	history.Start()
 	shroom.SetHeaderLinks()
 
 	// Static files:
-	static.InitFS(cfg.WikiGitDir + "/static")
+	static.InitFS(cfg.WikiDir + "/static")
 
 	// Network:
 	go handleGemini()

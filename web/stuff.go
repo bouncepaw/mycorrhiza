@@ -41,9 +41,9 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	hyphae.ResetCount()
-	log.Println("Wiki storage directory is", cfg.WikiGitDir)
+	log.Println("Wiki storage directory is", cfg.WikiDir)
 	log.Println("Start indexing hyphae...")
-	hyphae.Index(cfg.WikiGitDir)
+	hyphae.Index(cfg.WikiDir)
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }

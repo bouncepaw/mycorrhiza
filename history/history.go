@@ -162,7 +162,7 @@ func (rev *Revision) bestLink() string {
 func gitsh(args ...string) (out bytes.Buffer, err error) {
 	fmt.Printf("$ %v\n", args)
 	cmd := exec.Command(gitpath, args...)
-	cmd.Dir = cfg.WikiGitDir
+	cmd.Dir = cfg.WikiDir
 	cmd.Env = gitEnv
 
 	b, err := cmd.CombinedOutput()
@@ -175,7 +175,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 // silentGitsh is like gitsh, except it writes less to the stdout.
 func silentGitsh(args ...string) (out bytes.Buffer, err error) {
 	cmd := exec.Command(gitpath, args...)
-	cmd.Dir = cfg.WikiGitDir
+	cmd.Dir = cfg.WikiDir
 	cmd.Env = gitEnv
 
 	b, err := cmd.CombinedOutput()

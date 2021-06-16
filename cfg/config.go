@@ -37,8 +37,8 @@ var (
 
 // These variables are set before reading the config file, they are set in main.parseCliArgs.
 var (
-	// WikiGitDir is a full path to the wiki storage directory, which also must be a git repo.
-	WikiGitDir string
+	// WikiDir is a full path to the wiki storage directory, which also must be a git repo.
+	WikiDir string
 	// ConfigFilePath is a path to the config file. Its value is used when calling ReadConfigFile.
 	ConfigFilePath string
 )
