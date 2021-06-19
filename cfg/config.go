@@ -3,7 +3,7 @@ package cfg
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"os"
 	"strconv"
 
@@ -86,8 +86,7 @@ type Authorization struct {
 
 // ReadConfigFile reads a config on the given path and stores the
 // configuration. Call it sometime during the initialization.
-// Note that it may call log.Fatal, which terminates the program.
-func ReadConfigFile(path string) {
+func ReadConfigFile(path string) error {
 	cfg := &Config{
 		WikiName:      "Mycorrhiza Wiki",
 		NaviTitleIcon: "🍄",
@@ -121,7 +120,7 @@ func ReadConfigFile(path string) {
 			f = ini.Empty()
 			dirty = true
 		} else {
-			log.Fatal("Failed to parse the config file:", err)
+			return fmt.Errorf("Failed to open the config file: %w", err)
 		}
 	}
 
@@ -134,11 +133,10 @@ func ReadConfigFile(path string) {
 	if HTTPPort != "" && HTTPPort != strconv.FormatUint(cfg.Network.HTTPPort, 10) {
 		port, err := strconv.ParseUint(HTTPPort, 10, 64)
 		if err != nil {
-			log.Fatal("Failed to parse the port from command-line arguments:", err)
+			return fmt.Errorf("Failed to parse the port from command-line arguments: %w", err)
 		}
 
 		cfg.Network.HTTPPort = port
-
 		dirty = true
 	}
 
@@ -146,14 +144,14 @@ func ReadConfigFile(path string) {
 	if dirty {
 		err = f.ReflectFrom(cfg)
 		if err != nil {
-			log.Fatal("Failed to serialize the config:", err)
+			return fmt.Errorf("Failed to serialize the config: %w", err)
 		}
 
 		// Disable key-value auto-aligning, but retain spaces around '=' sign
 		ini.PrettyFormat = false
 		ini.PrettyEqual = true
 		if err = f.SaveTo(path); err != nil {
-			log.Println("Failed to save the config file:", err)
+			return fmt.Errorf("Failed to save the config file: %w", err)
 		}
 	}
 
@@ -177,4 +175,6 @@ func ReadConfigFile(path string) {
 	if URL == "" {
 		URL = "http://0.0.0.0:" + HTTPPort
 	}
+
+	return nil
 }

@@ -25,7 +25,10 @@ func main() {
 	if err := files.PrepareWikiRoot(); err != nil {
 		log.Fatal(err)
 	}
-	cfg.ReadConfigFile(files.ConfigPath())
+
+	if err := cfg.ReadConfigFile(files.ConfigPath()); err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println("Running Mycorrhiza Wiki 1.2.0 indev")
 	if err := os.Chdir(files.HyphaeDir()); err != nil {
