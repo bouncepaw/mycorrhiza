@@ -6,6 +6,10 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -14,9 +18,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/web"
-	"log"
-	"net/http"
-	"os"
 )
 
 func main() {
@@ -25,24 +26,25 @@ func main() {
 	// It is ok if the path is ""
 	cfg.ReadConfigFile()
 
-	if err := files.CalculatePaths(); err != nil {
+	if err := files.PrepareWikiRoot(); err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("Running Mycorrhiza Wiki 1.2.0 indev")
-	if err := os.Chdir(cfg.WikiDir); err != nil {
+	if err := os.Chdir(files.HyphaeDir()); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Wiki storage directory is", cfg.WikiDir)
+	log.Println("Wiki directory is", cfg.WikiDir)
+	log.Println("Using Git storage at", files.HyphaeDir())
 
 	// Init the subsystems:
-	hyphae.Index(cfg.WikiDir)
+	hyphae.Index(files.HyphaeDir())
 	user.InitUserDatabase()
 	history.Start()
 	shroom.SetHeaderLinks()
 
 	// Static files:
-	static.InitFS(cfg.WikiDir + "/static")
+	static.InitFS(files.StaticFiles())
 
 	// Network:
 	go handleGemini()

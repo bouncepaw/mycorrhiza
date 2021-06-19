@@ -2,11 +2,13 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"io"
 	"log"
 	"math/rand"
 	"net/http"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/files"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -41,9 +43,8 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	hyphae.ResetCount()
-	log.Println("Wiki storage directory is", cfg.WikiDir)
-	log.Println("Start indexing hyphae...")
-	hyphae.Index(cfg.WikiDir)
+	log.Println("Reindexing hyphae in", files.HyphaeDir())
+	hyphae.Index(files.HyphaeDir())
 	log.Println("Indexed", hyphae.Count(), "hyphae")
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }

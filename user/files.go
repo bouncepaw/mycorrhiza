@@ -16,7 +16,7 @@ import (
 func InitUserDatabase() {
 	AuthUsed = cfg.UseFixedAuth || cfg.UseRegistration
 
-	if AuthUsed && (cfg.FixedAuthCredentialsPath != "" || cfg.RegistrationCredentialsPath != "") {
+	if AuthUsed {
 		ReadUsersFromFilesystem()
 	}
 }

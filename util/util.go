@@ -3,6 +3,7 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"net/http"
 	"regexp"
@@ -17,10 +18,11 @@ func PrepareRq(rq *http.Request) {
 	rq.URL.Path = strings.TrimSuffix(rq.URL.Path, "/")
 }
 
-// ShorterPath is used by handlerList to display shorter path to the files. It simply strips WikiDir.
+// ShorterPath is used by handlerList to display shorter path to the files. It
+// simply strips the hyphae directory name.
 func ShorterPath(path string) string {
-	if strings.HasPrefix(path, cfg.WikiDir) {
-		tmp := strings.TrimPrefix(path, cfg.WikiDir)
+	if strings.HasPrefix(path, files.HyphaeDir()) {
+		tmp := strings.TrimPrefix(path, files.HyphaeDir())
 		if tmp == "" {
 			return ""
 		}

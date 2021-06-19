@@ -2,109 +2,68 @@
 package files
 
 import (
-	"errors"
-	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"path/filepath"
-	"strings"
+	"os"
+	"path"
 
-	"github.com/adrg/xdg"
-	"github.com/mitchellh/go-homedir"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 var paths struct {
+	gitRepo                     string
+	cacheDir                    string
+	staticFiles                 string
 	tokensJSON                  string
 	registrationCredentialsJSON string
 	fixedCredentialsJSON        string
 }
 
-// TokensJSON returns a path to the JSON file where users' tokens are stored.
-//
-// Default path: $XDG_DATA_HOME/mycorrhiza/tokens.json
+// HyphaeDir returns the path to hyphae storage.
+// A separate function is needed to easily know where a general storage path is
+// needed rather than a concrete Git or the whole wiki storage path, so that we
+// could easily refactor things later if we'll ever support different storages.
+func HyphaeDir() string { return paths.gitRepo }
+
+// GitRepo returns the path to the Git repository of the wiki.
+func GitRepo() string { return paths.gitRepo }
+
+// StaticFiles returns the path to static files directory
+func StaticFiles() string { return paths.staticFiles }
+
+// TokensJSON returns the path to the JSON user tokens storage.
 func TokensJSON() string { return paths.tokensJSON }
 
-// RegistrationCredentialsJSON returns a path to the JSON file where registration credentials are stored.
-//
-// Default path: $XDG_DATA_HOME/mycorrhiza/registration.json
+// RegistrationCredentialsJSON returns the path to the JSON registration
+// credentials storage.
 func RegistrationCredentialsJSON() string { return paths.registrationCredentialsJSON }
 
-// FixedCredentialsJSON returns a path to the JSON file where fixed credentials are stored.
-//
-// There is no default path.
+// FixedCredentialsJSON returns the path to the JSON fixed credentials storage.
 func FixedCredentialsJSON() string { return paths.fixedCredentialsJSON }
 
-// CalculatePaths looks for all external paths and stores them. Tries its best to find any errors. It is safe it to call it multiple times in order to save new paths.
-func CalculatePaths() error {
-	if dir, err := registrationCredentialsPath(); err != nil {
+// PrepareWikiRoot ensures all needed directories and files exist and have
+// correct permissions.
+func PrepareWikiRoot() error {
+	if err := os.MkdirAll(cfg.WikiDir, os.ModeDir|0777); err != nil {
 		return err
-	} else {
-		paths.registrationCredentialsJSON = dir
 	}
 
-	if dir, err := tokenStoragePath(); err != nil {
+	paths.cacheDir = path.Join(cfg.WikiDir, "cache")
+	if err := os.MkdirAll(paths.cacheDir, os.ModeDir|0777); err != nil {
 		return err
-	} else {
-		paths.tokensJSON = dir
 	}
 
-	if dir, err := fixedCredentialsPath(); err != nil {
+	paths.gitRepo = path.Join(cfg.WikiDir, "wiki.git")
+	if err := os.MkdirAll(paths.gitRepo, os.ModeDir|0777); err != nil {
 		return err
-	} else {
-		paths.fixedCredentialsJSON = dir
 	}
+
+	paths.staticFiles = path.Join(cfg.WikiDir, "static")
+	if err := os.MkdirAll(paths.staticFiles, os.ModeDir|0777); err != nil {
+		return err
+	}
+
+	paths.tokensJSON = path.Join(paths.cacheDir, "tokens.json")
+	paths.fixedCredentialsJSON = path.Join(cfg.WikiDir, "fixed-users.json")
+	paths.registrationCredentialsJSON = path.Join(paths.cacheDir, "registered-users.json")
 
 	return nil
-}
-
-func tokenStoragePath() (string, error) {
-	dir, err := xdg.DataFile("mycorrhiza/tokens.json")
-	if err != nil {
-		return "", err
-	}
-	if strings.HasPrefix(dir, cfg.WikiDir) {
-		return "", errors.New("wiki storage directory includes private config files")
-	}
-	return dir, nil
-}
-
-func registrationCredentialsPath() (string, error) {
-	var err error
-	path := cfg.RegistrationCredentialsPath
-
-	if len(path) == 0 {
-		path, err = xdg.DataFile("mycorrhiza/registration.json")
-		if err != nil {
-			return "", fmt.Errorf("cannot get a file to registration credentials, so no registered users will be saved: %w", err)
-		}
-	} else {
-		path, err = homedir.Expand(path)
-		if err != nil {
-			return "", fmt.Errorf("cannot expand RegistrationCredentialsPath: %w", err)
-		}
-
-		path, err = filepath.Abs(path)
-		if err != nil {
-			return "", fmt.Errorf("cannot expand RegistrationCredentialsPath: %w", err)
-		}
-	}
-
-	return path, nil
-}
-
-func fixedCredentialsPath() (string, error) {
-	var err error
-	path := cfg.FixedAuthCredentialsPath
-
-	if len(path) > 0 {
-		path, err = homedir.Expand(path)
-		if err != nil {
-			return "", fmt.Errorf("cannot expand FixedAuthCredentialsPath: %w", err)
-		}
-
-		path, err = filepath.Abs(path)
-		if err != nil {
-			return "", fmt.Errorf("cannot expand FixedAuthCredentialsPath: %w", err)
-		}
-	}
-	return path, nil
 }

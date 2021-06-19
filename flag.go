@@ -51,8 +51,9 @@ func parseCliArgs() {
 	}
 
 	wikiDir, err := filepath.Abs(args[0])
-	cfg.WikiDir = wikiDir
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	cfg.WikiDir = wikiDir
 }

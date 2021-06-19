@@ -10,8 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
-
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
@@ -65,10 +64,11 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte, u *user.User) (*history.HistoryOp, string) {
 	var (
-		fullPath         = filepath.Join(cfg.WikiDir, h.Name+ext)
+		fullPath         = filepath.Join(files.HyphaeDir(), h.Name+ext)
 		originalFullPath = &h.TextPath
 	)
-	if !strings.HasPrefix(fullPath, cfg.WikiDir) { // If the path somehow got outside the wiki dir
+	// Reject if the path is outside the hyphae dir
+	if !strings.HasPrefix(fullPath, files.HyphaeDir()) {
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
@@ -80,7 +80,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
+	if err := ioutil.WriteFile(fullPath, data, 0666); err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
 

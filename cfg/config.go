@@ -25,9 +25,7 @@ var (
 	GeminiCertificatePath string
 
 	UseFixedAuth                bool
-	FixedAuthCredentialsPath    string
 	UseRegistration             bool
-	RegistrationCredentialsPath string
 	LimitRegistration           int
 
 	OmnipresentScripts []string
@@ -80,10 +78,8 @@ type CustomScripts struct {
 // Authorization is a section of Config that has fields related to authorization and authentication.
 type Authorization struct {
 	UseFixedAuth             bool
-	FixedAuthCredentialsPath string
 
 	UseRegistration             bool
-	RegistrationCredentialsPath string
 	LimitRegistration           uint64
 }
 
@@ -106,10 +102,8 @@ func ReadConfigFile() {
 		},
 		Authorization: Authorization{
 			UseFixedAuth:             false,
-			FixedAuthCredentialsPath: "",
 
 			UseRegistration:             false,
-			RegistrationCredentialsPath: "",
 			LimitRegistration:           0,
 		},
 		CustomScripts: CustomScripts{
@@ -142,9 +136,7 @@ func ReadConfigFile() {
 	URL = cfg.URL
 	GeminiCertificatePath = cfg.GeminiCertificatePath
 	UseFixedAuth = cfg.UseFixedAuth
-	FixedAuthCredentialsPath = cfg.FixedAuthCredentialsPath
 	UseRegistration = cfg.UseRegistration
-	RegistrationCredentialsPath = cfg.RegistrationCredentialsPath
 	LimitRegistration = int(cfg.LimitRegistration)
 	OmnipresentScripts = cfg.OmnipresentScripts
 	ViewScripts = cfg.ViewScripts
