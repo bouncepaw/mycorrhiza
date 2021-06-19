@@ -4,10 +4,11 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 // CLI options are read and parsed here.
@@ -25,14 +26,11 @@ func init() {
 
 // printHelp prints the help message.
 func printHelp() {
-	_, err := fmt.Fprintf(
+	fmt.Fprintf(
 		flag.CommandLine.Output(),
-		"Usage of %s:\n",
+		"Usage: %s WIKI_PATH\n",
 		os.Args[0],
 	)
-	if err != nil {
-		log.Fatal(err)
-	}
 	flag.PrintDefaults()
 }
 
