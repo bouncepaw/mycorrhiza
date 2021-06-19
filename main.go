@@ -48,7 +48,6 @@ func main() {
 	static.InitFS(files.StaticFiles())
 
 	// Network:
-	go handleGemini()
 	web.Init()
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+cfg.HTTPPort, nil))
 }
