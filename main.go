@@ -41,6 +41,7 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	user.InitUserDatabase()
 	history.Start()
+	history.InitGitRepo()
 	shroom.SetHeaderLinks()
 
 	// Static files:

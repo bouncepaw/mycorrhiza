@@ -3,7 +3,7 @@ package files
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 )
@@ -46,24 +46,24 @@ func PrepareWikiRoot() error {
 		return err
 	}
 
-	paths.cacheDir = path.Join(cfg.WikiDir, "cache")
+	paths.cacheDir = filepath.Join(cfg.WikiDir, "cache")
 	if err := os.MkdirAll(paths.cacheDir, os.ModeDir|0777); err != nil {
 		return err
 	}
 
-	paths.gitRepo = path.Join(cfg.WikiDir, "wiki.git")
+	paths.gitRepo = filepath.Join(cfg.WikiDir, "wiki.git")
 	if err := os.MkdirAll(paths.gitRepo, os.ModeDir|0777); err != nil {
 		return err
 	}
 
-	paths.staticFiles = path.Join(cfg.WikiDir, "static")
+	paths.staticFiles = filepath.Join(cfg.WikiDir, "static")
 	if err := os.MkdirAll(paths.staticFiles, os.ModeDir|0777); err != nil {
 		return err
 	}
 
-	paths.tokensJSON = path.Join(paths.cacheDir, "tokens.json")
-	paths.fixedCredentialsJSON = path.Join(cfg.WikiDir, "fixed-users.json")
-	paths.registrationCredentialsJSON = path.Join(paths.cacheDir, "registered-users.json")
+	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
+	paths.fixedCredentialsJSON = filepath.Join(cfg.WikiDir, "fixed-users.json")
+	paths.registrationCredentialsJSON = filepath.Join(paths.cacheDir, "registered-users.json")
 
 	return nil
 }

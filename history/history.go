@@ -7,6 +7,7 @@ import (
 	"html"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,6 +31,26 @@ func Start() {
 		log.Fatal("Could not find the git executable. Check your $PATH.")
 	}
 	gitpath = path
+}
+
+func InitGitRepo() {
+	// Detect if the Git repo directory is a Git repository
+	isGitRepo := true
+	buf, err := gitsh("rev-parse", "--git-dir")
+	if err != nil {
+		isGitRepo = false
+	}
+	if isGitRepo {
+		gitDir := buf.String()
+		if filepath.IsAbs(gitDir) && !filepath.HasPrefix(gitDir, files.HyphaeDir()) {
+			isGitRepo = false
+		}
+	}
+	if !isGitRepo {
+		log.Println("Initializing Git repo at", files.HyphaeDir())
+		gitsh("init")
+		gitsh("config", "core.quotePath", "false")
+	}
 }
 
 // Revision represents a revision, duh. Hash is usually short. Username is extracted from email.
