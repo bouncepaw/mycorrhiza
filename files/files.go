@@ -12,6 +12,7 @@ var paths struct {
 	gitRepo                     string
 	cacheDir                    string
 	staticFiles                 string
+	configPath                  string
 	tokensJSON                  string
 	registrationCredentialsJSON string
 	fixedCredentialsJSON        string
@@ -28,6 +29,9 @@ func GitRepo() string { return paths.gitRepo }
 
 // StaticFiles returns the path to static files directory
 func StaticFiles() string { return paths.staticFiles }
+
+// ConfigPath returns the path to the config file.
+func ConfigPath() string { return paths.configPath }
 
 // TokensJSON returns the path to the JSON user tokens storage.
 func TokensJSON() string { return paths.tokensJSON }
@@ -60,6 +64,8 @@ func PrepareWikiRoot() error {
 	if err := os.MkdirAll(paths.staticFiles, os.ModeDir|0777); err != nil {
 		return err
 	}
+
+	paths.configPath = filepath.Join(cfg.WikiDir, "config.ini")
 
 	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
 	paths.fixedCredentialsJSON = filepath.Join(cfg.WikiDir, "fixed-users.json")

@@ -19,7 +19,7 @@ var defaultConfig []byte
 var printExampleConfig bool
 
 func init() {
-	flag.StringVar(&cfg.ConfigFilePath, "config-path", "", "Path to a configuration file. Leave empty if you don't want to use it.")
+	flag.StringVar(&cfg.HTTPPort, "port", "", "Listen on another port. This option also updates the config file for your convenience.")
 	flag.BoolVar(&printExampleConfig, "print-example-config", false, "If true, print an example configuration file contents and exit. You can save the output to a file and base your own configuration on it.")
 	flag.Usage = printHelp
 }

@@ -2,16 +2,18 @@
 package cfg
 
 import (
+	"errors"
 	"log"
-	"path/filepath"
+	"os"
 	"strconv"
 
 	"github.com/go-ini/ini"
 )
 
-// These variables represent the configuration. You are not meant to modify them after they were set.
-//
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for their docs.
+// These variables represent the configuration. You are not meant to modify
+// them after they were set.
+// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for the
+// documentation.
 var (
 	WikiName      string
 	NaviTitleIcon string
@@ -24,69 +26,68 @@ var (
 	URL                   string
 	GeminiCertificatePath string
 
-	UseFixedAuth                bool
-	UseRegistration             bool
-	LimitRegistration           int
+	UseFixedAuth      bool
+	UseRegistration   bool
+	LimitRegistration int
 
 	OmnipresentScripts []string
 	ViewScripts        []string
 	EditScripts        []string
 )
 
-// These variables are set before reading the config file, they are set in main.parseCliArgs.
-var (
-	// WikiDir is a full path to the wiki storage directory, which also must be a git repo.
-	WikiDir string
-	// ConfigFilePath is a path to the config file. Its value is used when calling ReadConfigFile.
-	ConfigFilePath string
-)
+// WikiDir is a full path to the wiki storage directory, which also must be a
+// git repo. This variable is set in parseCliArgs().
+var WikiDir string
 
-// Config represents a Mycorrhiza wiki configuration file. This type is used only when reading configs.
+// Config represents a Mycorrhiza wiki configuration file. This type is used
+// only when reading configs.
 type Config struct {
-	WikiName      string
-	NaviTitleIcon string
+	WikiName      string `comment:"This name appears in the header and on various pages."`
+	NaviTitleIcon string `comment:"This icon is used in the breadcrumbs bar."`
 	Hyphae
 	Network
-	Authorization
-	CustomScripts
+	Authorization `comment:""`
+	CustomScripts `comment:"You can specify additional scripts to load on different kinds of pages, delimited by a comma ',' sign."`
 }
 
 // Hyphae is a section of Config which has fields related to special hyphae.
 type Hyphae struct {
-	HomeHypha        string
-	UserHypha        string
-	HeaderLinksHypha string
+	HomeHypha        string `comment:"This hypha will be the main (index) page of your wiki, served on /."`
+	UserHypha        string `comment:"This hypha is used as a prefix for user hyphae."`
+	HeaderLinksHypha string `comment:"You can also specify a hypha to populate your own custom header links from."`
 }
 
-// Network is a section of Config that has fields related to network stuff: HTTP and Gemini.
+// Network is a section of Config that has fields related to network stuff:
+// HTTP and Gemini.
 type Network struct {
 	HTTPPort              uint64
-	URL                   string
-	GeminiCertificatePath string
+	URL                   string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
+	GeminiCertificatePath string `comment:"Gemini requires servers to use TLS for client connections. Specify your certificate's path here."`
 }
 
-// CustomScripts is a section with paths to JavaScript files that are loaded on specified pages.
+// CustomScripts is a section with paths to JavaScript files that are loaded on
+// specified pages.
 type CustomScripts struct {
 	// OmnipresentScripts: everywhere...
-	OmnipresentScripts []string `delim:","`
+	OmnipresentScripts []string `delim:"," comment:"These scripts are loaded from anywhere."`
 	// ViewScripts: /hypha, /rev
-	ViewScripts []string `delim:","`
+	ViewScripts []string `delim:"," comment:"These scripts are only loaded on view pages."`
 	// Edit: /edit
-	EditScripts []string `delim:","`
+	EditScripts []string `delim:"," comment:"These scripts are only loaded on the edit page."`
 }
 
-// Authorization is a section of Config that has fields related to authorization and authentication.
+// Authorization is a section of Config that has fields related to
+// authorization and authentication.
 type Authorization struct {
-	UseFixedAuth             bool
-
-	UseRegistration             bool
-	LimitRegistration           uint64
+	UseFixedAuth      bool
+	UseRegistration   bool
+	LimitRegistration uint64 `comment:"This field controls the maximum amount of allowed registrations."`
 }
 
-// ReadConfigFile reads a config on the given path and stores the configuration. Call it sometime during the initialization.
-//
-// Note that it may log.Fatal.
-func ReadConfigFile() {
+// ReadConfigFile reads a config on the given path and stores the
+// configuration. Call it sometime during the initialization.
+// Note that it may call log.Fatal, which terminates the program.
+func ReadConfigFile(path string) {
 	cfg := &Config{
 		WikiName:      "Mycorrhiza Wiki",
 		NaviTitleIcon: "🍄",
@@ -101,10 +102,9 @@ func ReadConfigFile() {
 			GeminiCertificatePath: "",
 		},
 		Authorization: Authorization{
-			UseFixedAuth:             false,
-
-			UseRegistration:             false,
-			LimitRegistration:           0,
+			UseFixedAuth:      false,
+			UseRegistration:   false,
+			LimitRegistration: 0,
 		},
 		CustomScripts: CustomScripts{
 			OmnipresentScripts: []string{},
@@ -113,16 +113,47 @@ func ReadConfigFile() {
 		},
 	}
 
-	if ConfigFilePath != "" {
-		path, err := filepath.Abs(ConfigFilePath)
+	dirty := false
+
+	f, err := ini.Load(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			f = ini.Empty()
+			dirty = true
+		} else {
+			log.Fatal("Failed to parse the config file:", err)
+		}
+	}
+
+	// Map the config file to the config struct. It'll do nothing if the file
+	// doesn't exist or is empty.
+	f.MapTo(cfg)
+
+	// Update the port if it's set externally and is different from what's in
+	// the config file
+	if HTTPPort != "" && HTTPPort != strconv.FormatUint(cfg.Network.HTTPPort, 10) {
+		port, err := strconv.ParseUint(HTTPPort, 10, 64)
 		if err != nil {
-			log.Fatalf("cannot expand config file path: %s", err)
+			log.Fatal("Failed to parse the port from command-line arguments:", err)
 		}
 
-		log.Println("Loading config at", path)
-		err = ini.MapTo(cfg, path)
+		cfg.Network.HTTPPort = port
+
+		dirty = true
+	}
+
+	// Save changes, if there are any
+	if dirty {
+		err = f.ReflectFrom(cfg)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Failed to serialize the config:", err)
+		}
+
+		// Disable key-value auto-aligning, but retain spaces around '=' sign
+		ini.PrettyFormat = false
+		ini.PrettyEqual = true
+		if err = f.SaveTo(path); err != nil {
+			log.Println("Failed to save the config file:", err)
 		}
 	}
 

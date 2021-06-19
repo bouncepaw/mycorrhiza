@@ -22,12 +22,10 @@ import (
 func main() {
 	parseCliArgs()
 
-	// It is ok if the path is ""
-	cfg.ReadConfigFile()
-
 	if err := files.PrepareWikiRoot(); err != nil {
 		log.Fatal(err)
 	}
+	cfg.ReadConfigFile(files.ConfigPath())
 
 	log.Println("Running Mycorrhiza Wiki 1.2.0 indev")
 	if err := os.Chdir(files.HyphaeDir()); err != nil {
