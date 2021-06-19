@@ -87,7 +87,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 //line views/mutators.qtpl:40
 	qw422016.N().S(`
 	</section>
-	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" target="_blank">Learn more</a> about mycomarkup</p>
+	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" target="_blank" class="shy-link">Learn more</a> about mycomarkup</p>
 	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
 	<section class="edit-toolbar__buttons">
 	`)
@@ -208,8 +208,8 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" placeholder="(optional)">
 		<br/><br/>
-		<input type="submit" name="action" class="btn" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:86
 	qw422016.E().S(hyphaName)
@@ -298,13 +298,13 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 //line views/mutators.qtpl:105
 	qw422016.N().S(`">
 		<br/><br/>
-		<input type="submit" name="action" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" value="Preview" class="edit-form__preview">
+		<input type="submit" name="action" class="btn btn_accent" value="Save" class="edit-form__save"/>
+		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:109
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:109
-	qw422016.N().S(`" class="edit-form__cancel">Cancel</a>
+	qw422016.N().S(`" class="btn btn_weak">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">`)

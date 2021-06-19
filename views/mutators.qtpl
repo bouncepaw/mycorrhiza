@@ -39,7 +39,7 @@
 		</button>
 	{% endfor %}
 	</section>
-	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" target="_blank">Learn more</a> about mycomarkup</p>
+	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" target="_blank" class="shy-link">Learn more</a> about mycomarkup</p>
 	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
 	<section class="edit-toolbar__buttons">
 	{% for _, el := range []struct{
@@ -81,8 +81,8 @@
 		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" placeholder="(optional)">
 		<br/><br/>
-		<input type="submit" name="action" class="btn" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">Cancel</a>
 	</form>
 </main>
@@ -104,9 +104,9 @@
 		<label for="text">Edit description:</label>
 		<input id="text" type="text" name="message" class="edit-form__message" value="{%s message %}">
 		<br/><br/>
-		<input type="submit" name="action" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" value="Preview" class="edit-form__preview">
-		<a href="/hypha/{%s hyphaName %}" class="edit-form__cancel">Cancel</a>
+		<input type="submit" name="action" class="btn btn_accent" value="Save" class="edit-form__save"/>
+		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
+		<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">Cancel</a>
 	</form>
 	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
 	<article class="edit__preview">{%s= renderedPage %}</article>

@@ -102,21 +102,20 @@ header { width: 100%; margin-bottom: 1rem; }
 
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
-body {height:100%; margin:0; }
 body, input, kbd { font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif; color: black; }
-main > form {margin-bottom:1rem;}
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
 ::-webkit-file-upload-button,
 .btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
 .btn_weak { border: 1px #999 dashed; }
+.btn_accent { font-weight: bold; }
 .btn:hover, .btn:active { cursor: pointer; }
 
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
 .edit-form { height: calc(100vh - 12rem); }
-.edit-form__textarea {width:100%;height:calc(100% - 8rem);}
+.edit-form__textarea { width: 100%; height: calc(100% - 8rem); min-height: 4rem; }
 .edit-form label { font-style: italic; }
 .edit-form__message { width: 100%; margin: 0.25em 0; }
 .edit-form__save { font-weight: bold; }
@@ -249,6 +248,7 @@ header { background-color: #eee; }
 .header-links__link { color: black; }
 .header-links__link:hover { background-color: #ddd; }
 main { background-color: white; }
+.shy-link { color: black; }
 
 blockquote { border-left: 2px #999 solid; }
 .wikilink_new {color:#a55858;}
@@ -278,8 +278,7 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
 .layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
 
-
-.transclusion .transclusion__link { color: #ddd; }
+.transclusion .transclusion__link, a.shy-link { color: #ddd; }
 
 input[type="text"], input[type="password"],
 ::-webkit-file-upload-button,
