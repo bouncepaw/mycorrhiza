@@ -269,11 +269,11 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width edit edit_with-preview">
-	<h1>Edit `)
+	<h1 class="edit__title">Edit `)
 //line views/mutators.qtpl:98
 	qw422016.E().S(util.BeautifulName(hyphaName))
 //line views/mutators.qtpl:98
-	qw422016.N().S(` (preview)</h1>
+	qw422016.N().S(`</h1>
 	`)
 //line views/mutators.qtpl:99
 	qw422016.N().S(warning)
@@ -285,28 +285,28 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:101
 	qw422016.N().S(`">
-		<textarea class="edit-form__textarea" name="text">`)
+		<textarea name="text" class="edit-form__textarea" autofocus>`)
 //line views/mutators.qtpl:102
 	qw422016.E().S(textAreaFill)
 //line views/mutators.qtpl:102
 	qw422016.N().S(`</textarea>
 		<br/><br/>
-		<label for="text">Edit description:</label>
+		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" value="`)
 //line views/mutators.qtpl:105
 	qw422016.E().S(message)
 //line views/mutators.qtpl:105
 	qw422016.N().S(`">
 		<br/><br/>
-		<input type="submit" name="action" class="btn btn_accent" value="Save" class="edit-form__save"/>
-		<input type="submit" name="action" class="btn" value="Preview" class="edit-form__preview">
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:109
 	qw422016.E().S(hyphaName)
 //line views/mutators.qtpl:109
 	qw422016.N().S(`" class="btn btn_weak">Cancel</a>
 	</form>
-	<p class="warning">Note that the hypha is not saved yet. You can preview the changes ↓</p>
+	<p class="warning">Note that the hypha hasn't been saved yet. Here's the preview:</p>
 	<article class="edit__preview">`)
 //line views/mutators.qtpl:112
 	qw422016.N().S(renderedPage)
