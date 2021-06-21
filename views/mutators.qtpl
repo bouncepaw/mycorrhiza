@@ -77,11 +77,11 @@
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
 		<textarea name="text" class="edit-form__textarea" autofocus>{%s textAreaFill %}</textarea>
-		<br/><br/>
+		<br><br>
 		<label for="text">Describe your changes:</label><br>
-		<input id="text" type="text" name="message" class="edit-form__message" placeholder="(optional)">
-		<br/><br/>
-		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<input id="text" type="text" name="message" class="edit-form__message">
+		<br><br>
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">
 		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">Cancel</a>
 	</form>
@@ -100,11 +100,11 @@
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
 		<textarea name="text" class="edit-form__textarea" autofocus>{%s textAreaFill %}</textarea>
-		<br/><br/>
+		<br><br>
 		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" value="{%s message %}">
-		<br/><br/>
-		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<br><br>
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">
 		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">Cancel</a>
 	</form>

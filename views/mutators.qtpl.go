@@ -204,11 +204,11 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 	qw422016.E().S(textAreaFill)
 //line views/mutators.qtpl:79
 	qw422016.N().S(`</textarea>
-		<br/><br/>
+		<br><br>
 		<label for="text">Describe your changes:</label><br>
-		<input id="text" type="text" name="message" class="edit-form__message" placeholder="(optional)">
-		<br/><br/>
-		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<input id="text" type="text" name="message" class="edit-form__message">
+		<br><br>
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">
 		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:86
@@ -290,15 +290,15 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 	qw422016.E().S(textAreaFill)
 //line views/mutators.qtpl:102
 	qw422016.N().S(`</textarea>
-		<br/><br/>
+		<br><br>
 		<label for="text">Describe your changes:</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" value="`)
 //line views/mutators.qtpl:105
 	qw422016.E().S(message)
 //line views/mutators.qtpl:105
 	qw422016.N().S(`">
-		<br/><br/>
-		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save"/>
+		<br><br>
+		<input type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">
 		<input type="submit" name="action" class="btn edit-form__preview" value="Preview">
 		<a href="/hypha/`)
 //line views/mutators.qtpl:109
