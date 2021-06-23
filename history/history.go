@@ -36,7 +36,7 @@ func Start() {
 func InitGitRepo() {
 	// Detect if the Git repo directory is a Git repository
 	isGitRepo := true
-	buf, err := gitsh("rev-parse", "--git-dir")
+	buf, err := silentGitsh("rev-parse", "--git-dir")
 	if err != nil {
 		isGitRepo = false
 	}
