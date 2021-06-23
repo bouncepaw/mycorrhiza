@@ -34,7 +34,8 @@ func (f HybridFS) Open(name string) (fs.File, error) {
 	return nil, err
 }
 
-// InitFS initializes the global HybridFS singleton with the local wiki.
+// InitFS initializes the global HybridFS singleton with the wiki's own static
+// files directory as a primary filesystem and the embedded one as a fallback.
 func InitFS(localPath string) {
 	FS = HybridFS{
 		fs: []fs.FS{
