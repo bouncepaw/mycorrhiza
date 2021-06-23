@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-//go:embed *.css *.js icon
+//go:embed *.css *.js *.txt icon
 var embedFS embed.FS
 
 // FS serves all static files.

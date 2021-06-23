@@ -23,7 +23,7 @@ var stylesheets = []string{"default.css", "custom.css"}
 // httpErr is used by many handlers to signal errors in a compact way.
 func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 	log.Println(errMsg, "for", name)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(status)
 	fmt.Fprint(
 		w,
@@ -54,21 +54,20 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
+	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(views.BaseHTML("User list", views.UserListHTML(), user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(
-		`User-agent: *
-Allow: /page/
-Allow: /hypha/
-Allow: /recent-changes
-Disallow: /
-Crawl-delay: 5`))
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
+	file, err := static.FS.Open("robots.txt")
+	if err != nil {
+		return
+	}
+	io.Copy(w, file)
+	file.Close()
 }
 
 func Init() {
