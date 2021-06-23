@@ -42,7 +42,7 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 
-	w.Header().Set("Content-Type", mime.TypeByExtension("css"))
+	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
 		if err != nil {
