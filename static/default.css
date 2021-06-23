@@ -144,7 +144,8 @@ article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; font-family: 'Menlo', 'PT Mono', monospace; }
 article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
-.transclusion { border-radius: .25rem; }
+.transclusion { border-radius: .25rem; margin-bottom: .25rem; }
+.transclusion_failed { padding: 0 .5rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
 .transclusion__link {display: block; text-align: right; font-style: italic; margin-top: .5rem; margin-right: .25rem; text-decoration: none;}
 .transclusion__link::before {content: "⇐ ";}
@@ -217,11 +218,19 @@ caption { caption-side: top; font-size: small; }
 
 article code,
 article .codeblock,
-.transclusion,
 .img-gallery_many-images,
 .rc-entry,
 .prevnext__el,
 table { background-color: #eee; }
+
+.transclusion {
+	background-color: #eeeeee;
+}
+
+.transclusion_failed {
+	background-color: #eeeeee;
+	border: 1px solid #a55858;
+}
 
 .hypha-tabs__tab { background-color: #eee; }
 .hypha-tabs__tab a { color: black; }
