@@ -69,7 +69,7 @@ func PrepareWikiRoot() error {
 
 	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
 	paths.fixedCredentialsJSON = filepath.Join(cfg.WikiDir, "fixed-users.json")
-	paths.registrationCredentialsJSON = filepath.Join(paths.cacheDir, "registered-users.json")
+	paths.registrationCredentialsJSON = filepath.Join(cfg.WikiDir, "registered-users.json")
 
 	return nil
 }
