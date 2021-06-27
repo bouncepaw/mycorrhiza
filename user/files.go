@@ -2,12 +2,13 @@ package user
 
 import (
 	"encoding/json"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"io/ioutil"
 	"log"
 	"os"
+	"golang.org/x/crypto/bcrypt"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/files"
 )
 
@@ -24,12 +25,45 @@ func InitUserDatabase() {
 // ReadUsersFromFilesystem reads all user information from filesystem and stores it internally.
 func ReadUsersFromFilesystem() {
 	if cfg.UseFixedAuth {
+		// This one will be removed.
 		rememberUsers(usersFromFixedCredentials())
 	}
-	if cfg.UseRegistration {
-		rememberUsers(usersFromRegistrationCredentials())
-	}
+
+	// And this one will be renamed to just "users" in the future.
+	rememberUsers(usersFromRegistrationCredentials())
+
+	// Migrate fixed users to registered
+	tryToMigrate()
+
 	readTokensToUsers()
+}
+
+func tryToMigrate() {
+	// Fixed authorization should be removed by the next release (1.13).
+	// So let's try to help fixed users and migrate them over!
+
+	migrated := 0
+
+	for user := range YieldUsers() {
+		if user.Source == SourceFixed {
+			hashedPasswd, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+			if err != nil {
+				log.Fatal("Failed to migrate fixed users:", err)
+			}
+
+			user.Password = ""
+			user.HashedPassword = string(hashedPasswd)
+			user.Source = SourceRegistration
+			migrated++
+		}
+	}
+
+	if migrated > 0 {
+		if err := dumpRegistrationCredentials(); err != nil {
+			log.Fatal("Failed to migrate fixed users:", err)
+		}
+		log.Printf("Migrated %d users", migrated)
+	}
 }
 
 func usersFromFile(path string, source UserSource) (users []*User) {
@@ -51,21 +85,20 @@ func usersFromFile(path string, source UserSource) (users []*User) {
 	return users
 }
 
-func usersFromFixedCredentials() (users []*User) {
-	users = usersFromFile(files.FixedCredentialsJSON(), SourceFixed)
+func usersFromFixedCredentials() []*User {
+	users := usersFromFile(files.FixedCredentialsJSON(), SourceFixed)
 	log.Println("Found", len(users), "fixed users")
 	return users
 }
 
-func usersFromRegistrationCredentials() (users []*User) {
-	users = usersFromFile(files.RegistrationCredentialsJSON(), SourceRegistration)
+func usersFromRegistrationCredentials() []*User {
+	users := usersFromFile(files.RegistrationCredentialsJSON(), SourceRegistration)
 	log.Println("Found", len(users), "registered users")
 	return users
 }
 
-func rememberUsers(uu []*User) {
-	// uu is used to not shadow the `users` in `users.go`.
-	for _, user := range uu {
+func rememberUsers(userList []*User) {
+	for _, user := range userList {
 		users.Store(user.Name, user)
 	}
 }
