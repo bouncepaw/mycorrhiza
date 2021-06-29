@@ -1,3 +1,4 @@
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
 {% func AdminPanelHTML() %}
@@ -61,7 +62,9 @@
 	<tbody>
 	{% for _, u := range userList %}
 		<tr>
-			<td>{%s u.Name %}</td>
+			<td>
+				<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}">{%s u.Name %}</a>
+			</td>
 			<td>{%s u.Group %}</td>
 			<td>{%s u.RegisteredAt.Format("2006-01-02 15:04:05-0700") %}</td>
 			<td>
