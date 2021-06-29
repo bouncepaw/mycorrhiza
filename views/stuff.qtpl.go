@@ -461,118 +461,50 @@ func AboutHTML() string {
 }
 
 //line views/stuff.qtpl:133
-func StreamAdminPanelHTML(qw422016 *qt422016.Writer) {
+func streamomnipresentScripts(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:133
 	qw422016.N().S(`
-<div class="layout">
-<main class="main-width">
-	<h1>Administrative functions</h1>
-	<section>
-		<h2>Safe things</h2>
-		<ul>
-			<li><a href="/about">About this wiki</a></li>
-			<li><a href="/user-list">User list</a></li>
-			<li><a href="/update-header-links">Update header links</a></li>
-		</ul>
-	</section>
-	<section>
-		<h2>Dangerous things</h2>
-		<form action="/admin/shutdown" method="POST" style="float:left">
-			<fieldset>
-				<legend>Shutdown wiki</legend>
-				<input type="submit">
-			</fieldset>
-		</form>
-		<form action="/reindex" method="GET" style="float:left">
-			<fieldset>
-				<legend>Reindex hyphae</legend>
-				<input type="submit">
-			</fieldset>
-		</form>
-		<form action="/admin/reindex-users" method="POST" style="float:left">
-			<fieldset>
-				<legend>Reindex users</legend>
-				<input type="submit">
-			</fieldset>
-		</form>
-	</section>
-</main>
-</div>
 `)
-//line views/stuff.qtpl:168
-}
-
-//line views/stuff.qtpl:168
-func WriteAdminPanelHTML(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:168
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:168
-	StreamAdminPanelHTML(qw422016)
-//line views/stuff.qtpl:168
-	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:168
-}
-
-//line views/stuff.qtpl:168
-func AdminPanelHTML() string {
-//line views/stuff.qtpl:168
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:168
-	WriteAdminPanelHTML(qb422016)
-//line views/stuff.qtpl:168
-	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:168
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:168
-	return qs422016
-//line views/stuff.qtpl:168
-}
-
-//line views/stuff.qtpl:170
-func streamomnipresentScripts(qw422016 *qt422016.Writer) {
-//line views/stuff.qtpl:170
-	qw422016.N().S(`
-`)
-//line views/stuff.qtpl:171
+//line views/stuff.qtpl:134
 	for _, scriptPath := range cfg.OmnipresentScripts {
-//line views/stuff.qtpl:171
+//line views/stuff.qtpl:134
 		qw422016.N().S(`
 <script src="`)
-//line views/stuff.qtpl:172
+//line views/stuff.qtpl:135
 		qw422016.E().S(scriptPath)
-//line views/stuff.qtpl:172
+//line views/stuff.qtpl:135
 		qw422016.N().S(`"></script>
 `)
-//line views/stuff.qtpl:173
+//line views/stuff.qtpl:136
 	}
-//line views/stuff.qtpl:173
+//line views/stuff.qtpl:136
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 }
 
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 func writeomnipresentScripts(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	streamomnipresentScripts(qw422016)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 }
 
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 func omnipresentScripts() string {
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	writeomnipresentScripts(qb422016)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 	return qs422016
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:137
 }

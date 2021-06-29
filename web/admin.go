@@ -2,9 +2,9 @@ package web
 
 import (
 	"fmt"
-	"mime"
 	"io"
 	"log"
+	"mime"
 	"net/http"
 	"sort"
 	"strings"
@@ -18,9 +18,9 @@ import (
 // initAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
 func initAdmin() {
 	if user.AuthUsed {
-		http.HandleFunc("/admin", handlerAdmin)
-		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
-		http.HandleFunc("/admin/reindex-users", handlerAdminReindexUsers)
+		http.HandleFunc("/admin/", handlerAdmin)
+		http.HandleFunc("/admin/shutdown/", handlerAdminShutdown)
+		http.HandleFunc("/admin/reindex-users/", handlerAdminReindexUsers)
 
 		http.HandleFunc("/admin/users/", handlerAdminUsers)
 	}
@@ -54,7 +54,7 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 		user.ReadUsersFromFilesystem()
 		redirectTo := rq.Referer()
 		if redirectTo == "" {
-			redirectTo = "/hypha/"+cfg.UserHypha
+			redirectTo = "/hypha/" + cfg.UserHypha
 		}
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 	}
