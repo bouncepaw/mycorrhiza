@@ -4,10 +4,10 @@ run: build
 	./mycorrhiza ${WIKI}
 
 config_run: build
-	./mycorrhiza -config-path "assets/config.ini" ${WIKI}
+	./mycorrhiza ${WIKI}
 
 devconfig_run: build
-	./mycorrhiza -config-path "assets/devconfig.ini" ${WIKI}
+	./mycorrhiza ${WIKI}
 
 build:
 	go generate
@@ -15,7 +15,3 @@ build:
 
 test:
 	go test .
-
-help:
-	echo "Read the Makefile to see what it can do. It is simple."
-
