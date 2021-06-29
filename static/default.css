@@ -299,6 +299,7 @@ article .codeblock,
 .upload-amnt,
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
+.transclusion_stand-out { background-color: rgba(68, 68, 68, 0.5); }
 .btn:visited { color: #ddd;}
 
 	.btn { border: #444 solid 1px; border-radius: .25rem; }
