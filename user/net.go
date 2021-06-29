@@ -58,6 +58,7 @@ func Register(username, password string) error {
 		Name:           username,
 		Group:          "editor",
 		HashedPassword: string(hash),
+		RegisteredAt:   time.Now(),
 		Source:         SourceRegistration,
 	}
 	users.Store(username, &u)

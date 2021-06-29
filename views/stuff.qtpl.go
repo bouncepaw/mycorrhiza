@@ -470,7 +470,7 @@ func StreamAdminPanelHTML(qw422016 *qt422016.Writer) {
 	<section>
 		<h2>Safe things</h2>
 		<ul>
-			<li><a href="/about">About this wiki<a></li>
+			<li><a href="/about">About this wiki</a></li>
 			<li><a href="/user-list">User list</a></li>
 			<li><a href="/update-header-links">Update header links</a></li>
 		</ul>

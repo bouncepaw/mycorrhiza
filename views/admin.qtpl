@@ -1,0 +1,34 @@
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+
+{% func AdminUsersPanelHTML(userList []*user.User) %}
+<div class="layout">
+<main class="main-width">
+	<h1>Manage users</h1>
+
+	<form action="/admin/reindex-users" method="get">
+		<button class="btn btn_accent" type="submit">Reindex users</button>
+	</form>
+
+	<h2>Users list</h2>
+
+	<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Group</th>
+			<th>Registered at</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for _, u := range userList %}
+		<tr>
+			<td>{%s= u.Name %}</td>
+			<td>{%s= u.Group %}</td>
+			<td>{%s= u.RegisteredAt.Format("2006-01-02 15:04:05-0700") %}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+</main>
+</div>
+{% endfunc %}

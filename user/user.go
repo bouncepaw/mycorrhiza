@@ -2,6 +2,7 @@ package user
 
 import (
 	"sync"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -24,6 +25,7 @@ type User struct {
 	Group          string     `json:"group"`
 	Password       string     `json:"password"`        // for fixed
 	HashedPassword string     `json:"hashed_password"` // for registered
+	RegisteredAt   time.Time  `json:"registered_on"`
 	Source         UserSource `json:"-"`
 	sync.RWMutex
 

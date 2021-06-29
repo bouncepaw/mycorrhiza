@@ -2,14 +2,14 @@ package user
 
 import (
 	"encoding/json"
+	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"log"
 	"os"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // InitUserDatabase checks the configuration for auth methods and loads users
