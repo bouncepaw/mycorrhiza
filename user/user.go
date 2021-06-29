@@ -51,6 +51,14 @@ var minimalRights = map[string]int{
 	"admin/shutdown":      4,
 }
 
+var groups = []string{
+	"anon",
+	"editor",
+	"trusted",
+	"moderator",
+	"admin",
+}
+
 // Group — Right
 var groupRight = map[string]int{
 	"anon":      0,
@@ -58,6 +66,15 @@ var groupRight = map[string]int{
 	"trusted":   2,
 	"moderator": 3,
 	"admin":     4,
+}
+
+func ValidGroup(group string) bool {
+	for _, grp := range groups {
+		if grp == group {
+			return true
+		}
+	}
+	return false
 }
 
 func EmptyUser() *User {

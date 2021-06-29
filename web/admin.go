@@ -1,10 +1,13 @@
 package web
 
 import (
+	"fmt"
+	"mime"
 	"io"
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -19,7 +22,7 @@ func initAdmin() {
 		http.HandleFunc("/admin/shutdown", handlerAdminShutdown)
 		http.HandleFunc("/admin/reindex-users", handlerAdminReindexUsers)
 
-		http.HandleFunc("/admin/users", handlerAdminUsers)
+		http.HandleFunc("/admin/users/", handlerAdminUsers)
 	}
 }
 
@@ -49,31 +52,79 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()
-		http.Redirect(w, rq, "/hypha/"+cfg.UserHypha, http.StatusSeeOther)
+		redirectTo := rq.Referer()
+		if redirectTo == "" {
+			redirectTo = "/hypha/"+cfg.UserHypha
+		}
+		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 	}
 }
 
 func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 	util.PrepareRq(r)
 	if user.CanProceed(r, "admin") {
-		// Get a sorted list of users
-		var userList []*user.User
-		for u := range user.YieldUsers() {
-			userList = append(userList, u)
+		path := strings.TrimPrefix(r.URL.Path, "/admin/users")
+		parts := strings.Split(path, "/")[1:]
+
+		// Users dashboard
+		if len(parts) == 0 {
+			// Get a sorted list of users
+			var userList []*user.User
+			for u := range user.YieldUsers() {
+				userList = append(userList, u)
+			}
+
+			sort.Slice(userList, func(i, j int) bool {
+				less := userList[i].RegisteredAt.Before(userList[j].RegisteredAt)
+				return less
+			})
+
+			html := views.AdminUsersPanelHTML(userList)
+			html = views.BaseHTML("Manage users", html, user.FromRequest(r))
+
+			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+			if _, err := io.WriteString(w, html); err != nil {
+				log.Println(err)
+			}
+			return
 		}
 
-		sort.Slice(userList, func(i, j int) bool {
-			less := userList[i].RegisteredAt.Before(userList[j].RegisteredAt)
-			return less
-		})
+		// User edit page
+		if len(parts) == 2 && parts[1] == "edit" {
+			u := user.UserByName(parts[0])
 
-		html := views.AdminUsersPanelHTML(userList)
-		html = views.BaseHTML("Manage users", html, user.FromRequest(r))
+			if u != nil && u.Name != "anon" {
+				if r.Method == http.MethodGet {
+					html := views.AdminUsersUserHTML(u)
+					html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, err := io.WriteString(w, html)
-		if err != nil {
-			log.Println(err)
+					w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+					if _, err := io.WriteString(w, html); err != nil {
+						log.Println(err)
+					}
+					return
+				} else if r.Method == http.MethodPost {
+					oldGroup := u.Group
+					newGroup := r.PostFormValue("group")
+					if user.ValidGroup(newGroup) {
+						u.Group = newGroup
+						if err := user.SaveUserDatabase(); err != nil {
+							u.Group = oldGroup
+							log.Println(err)
+							w.WriteHeader(http.StatusInternalServerError)
+							io.WriteString(w, err.Error())
+						} else {
+							http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+						}
+					} else {
+						w.WriteHeader(http.StatusBadRequest)
+						io.WriteString(w, "invalid group")
+					}
+					return
+				}
+			}
 		}
+
+		util.HTTP404Page(w, "404 page not found")
 	}
 }

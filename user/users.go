@@ -56,18 +56,18 @@ func HasUsername(username string) bool {
 }
 
 func CredentialsOK(username, password string) bool {
-	return userByName(username).isCorrectPassword(password)
+	return UserByName(username).isCorrectPassword(password)
 }
 
-func userByToken(token string) *User {
+func UserByToken(token string) *User {
 	if usernameUntyped, ok := tokens.Load(token); ok {
 		username := usernameUntyped.(string)
-		return userByName(username)
+		return UserByName(username)
 	}
 	return EmptyUser()
 }
 
-func userByName(username string) *User {
+func UserByName(username string) *User {
 	if userUntyped, ok := users.Load(username); ok {
 		user := userUntyped.(*User)
 		return user

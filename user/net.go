@@ -23,7 +23,7 @@ func FromRequest(rq *http.Request) *User {
 	if err != nil {
 		return EmptyUser()
 	}
-	return userByToken(cookie.Value)
+	return UserByToken(cookie.Value)
 }
 
 // LogoutFromRequest logs the user in `rq` out and rewrites the cookie in `w`.

@@ -5,7 +5,7 @@
 <main class="main-width">
 	<h1>Manage users</h1>
 
-	<form action="/admin/reindex-users" method="get">
+	<form action="/admin/reindex-users" method="post">
 		<button class="btn btn_accent" type="submit">Reindex users</button>
 	</form>
 
@@ -17,18 +17,45 @@
 			<th>Name</th>
 			<th>Group</th>
 			<th>Registered at</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 	{% for _, u := range userList %}
 		<tr>
-			<td>{%s= u.Name %}</td>
-			<td>{%s= u.Group %}</td>
-			<td>{%s= u.RegisteredAt.Format("2006-01-02 15:04:05-0700") %}</td>
+			<td>{%s u.Name %}</td>
+			<td>{%s u.Group %}</td>
+			<td>{%s u.RegisteredAt.Format("2006-01-02 15:04:05-0700") %}</td>
+			<td>
+				<a href="/admin/users/{%u u.Name %}/edit">Edit</a>
+			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
 	</table>
+</main>
+</div>
+{% endfunc %}
+
+{% func AdminUsersUserHTML(u *user.User) %}
+<div class="layout">
+<main class="main-width">
+	<h1>{%s u.Name %}</h1>
+
+	<form action="" method="post">
+		<label for="group">Group:</label>
+		<select id="group" name="group">
+			<option{% if u.Group == "anon" %} selected{% endif %}>anon</option>
+			<option{% if u.Group == "editor" %} selected{% endif %}>editor</option>
+			<option{% if u.Group == "trusted" %} selected{% endif %}>trusted</option>
+			<option{% if u.Group == "moderator" %} selected{% endif %}>moderator</option>
+			<option{% if u.Group == "admin" %} selected{% endif %}>admin</option>
+		</select>
+		<br>
+		<br>
+
+		<button class="btn btn_accent" type="submit">Update</button>
+	</form>
 </main>
 </div>
 {% endfunc %}

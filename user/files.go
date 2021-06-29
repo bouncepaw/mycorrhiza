@@ -124,6 +124,10 @@ func readTokensToUsers() {
 	log.Println("Found", len(tmp), "active sessions")
 }
 
+func SaveUserDatabase() error {
+	return dumpRegistrationCredentials()
+}
+
 func dumpRegistrationCredentials() error {
 	tmp := []*User{}
 
