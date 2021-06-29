@@ -216,21 +216,19 @@ caption { caption-side: top; font-size: small; }
 .btn:visited { color: black; }
 .btn_weak { background-color: transparent; }
 
-article code,
+p code,
 article .codeblock,
 .img-gallery_many-images,
 .rc-entry,
 .prevnext__el,
-table { background-color: #eee; }
-
-.transclusion {
-	background-color: #eeeeee;
+table,
+.transclusion_stand-out {
+	background-color: rgba(220, 220, 220, 0.5);
 }
-
 .transclusion_failed {
-	background-color: #eeeeee;
 	border: 1px solid #a55858;
 }
+.transclusion_blend .transclusion__link { display: none; }
 
 .hypha-tabs__tab { background-color: #eee; }
 .hypha-tabs__tab a { color: black; }
@@ -293,13 +291,12 @@ input[type="text"], input[type="password"],
 ::-webkit-file-upload-button,
 .btn,
 article code, 
-article .codeblock, 
-.transclusion,
+article .codeblock,
 .img-gallery_many-images,
 .rc-entry,
 .history__entry, 
 .prevnext__el, 
-.upload-amnt, 
+.upload-amnt,
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
 .btn:visited { color: #ddd;}
