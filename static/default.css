@@ -419,3 +419,19 @@ kbd {
 		color: #ddd;
 	}
 }
+
+/*
+ * Tables
+ */
+
+.users-table {
+	width: 100%;
+}
+
+.users-table td {
+	white-space: nowrap;
+}
+
+.table-cell--fill {
+	width: 100%;
+}
