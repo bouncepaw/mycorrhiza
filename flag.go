@@ -13,14 +13,8 @@ import (
 
 // CLI options are read and parsed here.
 
-//go:embed assets/config.ini
-var defaultConfig []byte
-
-var printExampleConfig bool
-
 func init() {
 	flag.StringVar(&cfg.HTTPPort, "port", "", "Listen on another port. This option also updates the config file for your convenience.")
-	flag.BoolVar(&printExampleConfig, "print-example-config", false, "If true, print an example configuration file contents and exit. You can save the output to a file and base your own configuration on it.")
 	flag.Usage = printHelp
 }
 
@@ -39,11 +33,6 @@ func parseCliArgs() {
 	flag.Parse()
 
 	args := flag.Args()
-	if printExampleConfig {
-		os.Stdout.Write(defaultConfig)
-		os.Exit(0)
-	}
-
 	if len(args) == 0 {
 		log.Fatal("Error: pass a wiki directory")
 	}
