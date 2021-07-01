@@ -1,4 +1,3 @@
-//go:generate go get -u github.com/valyala/quicktemplate/qtc
 //go:generate qtc -dir=views
 //go:generate qtc -dir=tree
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.

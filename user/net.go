@@ -2,12 +2,13 @@ package user
 
 import (
 	"errors"
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -49,6 +50,7 @@ func Register(username, password string) error {
 		return errors.New("Username " + username + " is taken already.")
 	case !util.IsPossibleUsername(username):
 		log.Println("Illegal username:", username)
+		return fmt.Errorf("Illegal username \"%s\".", username)
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

@@ -1,11 +1,13 @@
 package web
 
 import (
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"fmt"
 	"io"
 	"log"
+	"mime"
 	"net/http"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -46,7 +48,19 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			err      = user.Register(username, password)
 		)
 		if err != nil {
-			io.WriteString(w, err.Error())
+			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprint(
+				w,
+				views.BaseHTML(
+					"Register",
+					fmt.Sprintf(
+						`<main class="main-width"><p>%s</p><p><a href="/register">Try again<a></p></main>`,
+						err.Error(),
+					),
+					user.FromRequest(rq),
+				),
+			)
 		} else {
 			user.LoginDataHTTP(w, rq, username, password)
 			http.Redirect(w, rq, "/"+rq.URL.RawQuery, http.StatusSeeOther)
