@@ -60,7 +60,13 @@
 				<a href="/hypha/{%u cfg.UserHypha %}/{%u u.Name %}">{%s u.Name %}</a>
 			</td>
 			<td>{%s u.Group %}</td>
-			<td>{%s u.RegisteredAt.UTC().Format("2006-01-02 15:04") %}</td>
+			<td>
+				{% if u.RegisteredAt.IsZero() %}
+					unknown
+				{% else %}
+					{%s u.RegisteredAt.UTC().Format("2006-01-02 15:04") %}
+				{% endif %}
+			</td>
 			<td>
 				<a href="/admin/users/{%u u.Name %}/edit">Edit</a>
 			</td>
