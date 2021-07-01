@@ -33,7 +33,7 @@ Options:
 * Hyphae can be deleted while still preserving history
 * Hyphae can be renamed (recursive renaming of subhyphae is also supported)
 * Light on resources
-* Authorization with pre-set credentials, registration
+* Registration
 * Hotkeys (press `?` to see what hotkeys there are)
 
 ## Building
