@@ -1,4 +1,6 @@
+{% import "fmt" %}
 {% import "net/http" %}
+{% import "time" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
@@ -32,15 +34,15 @@ if err != nil {
 
 	<nav class="recent-changes__count">
 		See 
-	{% for _, m := range []int{20, 0, 50, 0, 100} %}
-	{% switch m %}
-		{% case 0 %}
+	{% for i, m := range []int{20, 50, 100} %}
+	{% if i > 0 %}
 		<span aria-hidden="true">|</span>
-		{% case n %}
-		<b>{%d n %}</b>
-		{% default %}
+	{% endif %}
+	{% if m == n %}
+		<b>{%d m %}</b>
+	{% else %}
 		<a href="/recent-changes/{%d m %}">{%d m %}</a>
-	{% endswitch %}
+	{% endif %}
 	{% endfor %}
 		recent changes
 	</nav>
@@ -54,18 +56,28 @@ if err != nil {
 		How come? I'll add the role anyway. -- bouncepaw
 	{% endcomment %}
 
-	{% code 
+	{% code
 	changes := history.RecentChanges(n)
+	var year, day int
+	var month time.Month
 	%}
 	<section class="recent-changes__list" role="feed">
 	{% if len(changes) == 0 %}
 		<p>Could not find any recent changes.</p>
 	{% else %}
 		{% for i, entry := range changes %}
+
+		{% code y, m, d := entry.Time.UTC().Date() %}
+		{% if d != day || m != month || y != year %}
+		<h2>{%s fmt.Sprintf("%04d-%02d-%02d", y, m, d) %}</h2>
+		{% code year, month, day = y, m, d %}
+		{% endif %}
+
 		<ul class="recent-changes__entry rc-entry" role="article"
 		    aria-setsize="{%d n %}" aria-posinset="{%d i %}">
 			 {%s= recentChangesEntry(entry) %}
 		</ul>
+
 		{% endfor %}
 	{% endif %}
 	</section>
@@ -74,7 +86,7 @@ if err != nil {
 {% endfunc %}
 
 {% func recentChangesEntry(rev history.Revision) %}
-<li class="rc-entry__time"><time>{%s rev.TimeString() %}</time></li>
+<li class="rc-entry__time"><time>{%s rev.Time.UTC().Format("15:04 UTC") %}</time></li>
 <li class="rc-entry__hash">{%s rev.Hash %}</li>
 <li class="rc-entry__links">{%s= rev.HyphaeLinksHTML() %}</li>
 <li class="rc-entry__msg">{%s rev.Message %} {% if rev.Username != "anon" %}<span class="rc-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>{% endif %}</li>
