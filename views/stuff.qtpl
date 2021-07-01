@@ -39,7 +39,7 @@
 				<div class="dialog__content"></div>
 			</div>
 		</template>
-		{%= omnipresentScripts() %}
+		{%= CommonScripts() %}
 	</body>
 </html>
 {% endfunc %}
@@ -130,8 +130,8 @@ for u := range user.YieldUsers() {
 </div>
 {% endfunc %}
 
-{% func omnipresentScripts() %}
-{% for _, scriptPath := range cfg.OmnipresentScripts %}
+{% func CommonScripts() %}
+{% for _, scriptPath := range cfg.CommonScripts %}
 <script src="{%s scriptPath %}"></script>
 {% endfor %}
 {% endfunc %}

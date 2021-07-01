@@ -106,7 +106,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 		</template>
 		`)
 //line views/stuff.qtpl:42
-	streamomnipresentScripts(qw422016)
+	StreamCommonScripts(qw422016)
 //line views/stuff.qtpl:42
 	qw422016.N().S(`
 	</body>
@@ -461,12 +461,12 @@ func AboutHTML() string {
 }
 
 //line views/stuff.qtpl:133
-func streamomnipresentScripts(qw422016 *qt422016.Writer) {
+func StreamCommonScripts(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:133
 	qw422016.N().S(`
 `)
 //line views/stuff.qtpl:134
-	for _, scriptPath := range cfg.OmnipresentScripts {
+	for _, scriptPath := range cfg.CommonScripts {
 //line views/stuff.qtpl:134
 		qw422016.N().S(`
 <script src="`)
@@ -484,22 +484,22 @@ func streamomnipresentScripts(qw422016 *qt422016.Writer) {
 }
 
 //line views/stuff.qtpl:137
-func writeomnipresentScripts(qq422016 qtio422016.Writer) {
+func WriteCommonScripts(qq422016 qtio422016.Writer) {
 //line views/stuff.qtpl:137
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:137
-	streamomnipresentScripts(qw422016)
+	StreamCommonScripts(qw422016)
 //line views/stuff.qtpl:137
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:137
 }
 
 //line views/stuff.qtpl:137
-func omnipresentScripts() string {
+func CommonScripts() string {
 //line views/stuff.qtpl:137
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:137
-	writeomnipresentScripts(qb422016)
+	WriteCommonScripts(qb422016)
 //line views/stuff.qtpl:137
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:137

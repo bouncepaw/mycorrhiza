@@ -30,9 +30,9 @@ var (
 	UseRegistration   bool
 	LimitRegistration int
 
-	OmnipresentScripts []string
-	ViewScripts        []string
-	EditScripts        []string
+	CommonScripts []string
+	ViewScripts   []string
+	EditScripts   []string
 )
 
 // WikiDir is a full path to the wiki storage directory, which also must be a
@@ -68,8 +68,8 @@ type Network struct {
 // CustomScripts is a section with paths to JavaScript files that are loaded on
 // specified pages.
 type CustomScripts struct {
-	// OmnipresentScripts: everywhere...
-	OmnipresentScripts []string `delim:"," comment:"These scripts are loaded from anywhere."`
+	// CommonScripts: everywhere...
+	CommonScripts []string `delim:"," comment:"These scripts are loaded from anywhere."`
 	// ViewScripts: /hypha, /rev
 	ViewScripts []string `delim:"," comment:"These scripts are only loaded on view pages."`
 	// Edit: /edit
@@ -106,9 +106,9 @@ func ReadConfigFile(path string) error {
 			LimitRegistration: 0,
 		},
 		CustomScripts: CustomScripts{
-			OmnipresentScripts: []string{},
-			ViewScripts:        []string{},
-			EditScripts:        []string{},
+			CommonScripts: []string{},
+			ViewScripts:   []string{},
+			EditScripts:   []string{},
 		},
 	}
 
@@ -167,7 +167,7 @@ func ReadConfigFile(path string) error {
 	UseFixedAuth = cfg.UseFixedAuth
 	UseRegistration = cfg.UseRegistration
 	LimitRegistration = int(cfg.LimitRegistration)
-	OmnipresentScripts = cfg.OmnipresentScripts
+	CommonScripts = cfg.CommonScripts
 	ViewScripts = cfg.ViewScripts
 	EditScripts = cfg.EditScripts
 
