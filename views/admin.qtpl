@@ -95,7 +95,7 @@
 	<form action="" method="post">
 		<div class="form-field">
 			<label for="name">Name:</label>
-			<input type="text" name="name" id="name" value="{%s formData.Get("name") %}">
+			<input type="text" name="name" id="name" value="{%s formData.Get("name") %}" autofocus>
 		</div>
 
 		<div class="form-field">

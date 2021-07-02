@@ -244,7 +244,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 //line views/admin.qtpl:98
 	qw422016.E().S(formData.Get("name"))
 //line views/admin.qtpl:98
-	qw422016.N().S(`">
+	qw422016.N().S(`" autofocus>
 		</div>
 
 		<div class="form-field">
