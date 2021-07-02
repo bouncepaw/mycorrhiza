@@ -1,11 +1,9 @@
 package user
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -41,13 +39,12 @@ func Register(username, password string) error {
 	username = util.CanonicalName(username)
 	log.Println("Attempt to register user", username)
 	switch {
-	case CountRegistered() >= cfg.LimitRegistration && cfg.LimitRegistration > 0:
-		i := strconv.Itoa(cfg.LimitRegistration)
-		log.Println("Limit reached: " + i)
-		return errors.New("Reached the limit of registered users: " + i)
+	case cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
+		log.Printf("Limit reached: %d", cfg.RegistrationLimit)
+		return fmt.Errorf("Reached the limit of registered users: %d", cfg.RegistrationLimit)
 	case HasUsername(username):
 		log.Println("Username taken")
-		return errors.New("Username " + username + " is taken already.")
+		return fmt.Errorf("Username \"%s\" is taken already.", username)
 	case !util.IsPossibleUsername(username):
 		log.Println("Illegal username:", username)
 		return fmt.Errorf("Illegal username \"%s\".", username)
@@ -57,14 +54,13 @@ func Register(username, password string) error {
 		return err
 	}
 	u := User{
-		Name:           username,
-		Group:          "editor",
-		HashedPassword: string(hash),
-		RegisteredAt:   time.Now(),
-		Source:         SourceRegistration,
+		Name:         username,
+		Group:        "editor",
+		Password:     string(hash),
+		RegisteredAt: time.Now(),
 	}
 	users.Store(username, &u)
-	err = dumpRegistrationCredentials()
+	err = SaveUserDatabase()
 	if err != nil {
 		return err
 	}

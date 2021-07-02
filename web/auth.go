@@ -14,10 +14,10 @@ import (
 )
 
 func initAuth() {
-	if !user.AuthUsed {
+	if !cfg.UseAuth {
 		return
 	}
-	if cfg.UseRegistration {
+	if cfg.AllowRegistration {
 		http.HandleFunc("/register", handlerRegister)
 	}
 	http.HandleFunc("/login", handlerLogin)
@@ -29,7 +29,7 @@ func initAuth() {
 // handlerRegister both displays the register form (GET) and registers users (POST).
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if !cfg.UseRegistration {
+	if !cfg.AllowRegistration {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	if rq.Method == http.MethodGet {
@@ -97,7 +97,7 @@ func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	if user.AuthUsed {
+	if cfg.UseAuth {
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusForbidden)

@@ -1,12 +1,11 @@
 {% import "net/http" %}
-{% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 
 {% func RegisterHTML(rq *http.Request) %}
 <div class="layout">
 <main class="main-width">
 	<section>
-	{% if cfg.UseRegistration %}
+	{% if cfg.AllowRegistration %}
 		<form class="modal" method="post" action="/register?{%s rq.URL.RawQuery %}" id="register-form" enctype="multipart/form-data" autocomplete="off">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">Register on {%s cfg.WikiName %}</legend>
@@ -24,11 +23,11 @@
 				<a class="btn btn_weak" href="/{%s rq.URL.RawQuery %}">Cancel</a>
 			</fieldset>
 		</form>
-	{% elseif cfg.UseFixedAuth %}
-		<p>Administrators have forbidden registration for this wiki. Administrators can make an account for you by hand; contact them.</p>
+	{% elseif cfg.UseAuth %}
+		<p>Registrations are currently closed. Administrators can make an account for you by hand; contact them.</p>
 		<p><a href="/{%s rq.URL.RawQuery %}">← Go back</a></p>
 	{% else %}
-		<p>Administrators of this wiki have not configured any authorization method. You can make edits anonymously.</p>
+		<p>Authentication is disabled. You can make edits anonymously.</p>
 		<p><a href="/{%s rq.URL.RawQuery %}">← Go back</a></p>
 	{% endif %}
 	</section>
@@ -40,7 +39,7 @@
 <div class="layout">
 <main class="main-width">
 	<section>
-	{% if user.AuthUsed %}
+	{% if cfg.UseAuth %}
 		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">Log in to {%s cfg.WikiName %}</legend>
@@ -57,7 +56,7 @@
 			</fieldset>
 		</form>
 	{% else %}
-		<p>Administrators of this wiki have not configured any authorization method. You can make edits anonymously.</p>
+		<p>Authentication is disabled. You can make edits anonymously.</p>
 		<p><a class="modal__cancel" href="/">← Go home</a></p>
 	{% endif %}
 	</section>

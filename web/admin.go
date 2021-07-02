@@ -17,7 +17,7 @@ import (
 
 // initAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
 func initAdmin() {
-	if user.AuthUsed {
+	if cfg.UseAuth {
 		http.HandleFunc("/admin/", handlerAdmin)
 		http.HandleFunc("/admin/shutdown/", handlerAdminShutdown)
 		http.HandleFunc("/admin/reindex-users/", handlerAdminReindexUsers)

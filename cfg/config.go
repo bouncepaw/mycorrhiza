@@ -26,9 +26,9 @@ var (
 	URL                   string
 	GeminiCertificatePath string
 
-	UseFixedAuth      bool
-	UseRegistration   bool
-	LimitRegistration int
+	UseAuth           bool
+	AllowRegistration bool
+	RegistrationLimit uint64
 
 	CommonScripts []string
 	ViewScripts   []string
@@ -79,9 +79,9 @@ type CustomScripts struct {
 // Authorization is a section of Config that has fields related to
 // authorization and authentication.
 type Authorization struct {
-	UseFixedAuth      bool
-	UseRegistration   bool
-	LimitRegistration uint64 `comment:"This field controls the maximum amount of allowed registrations."`
+	UseAuth           bool
+	AllowRegistration bool
+	RegistrationLimit uint64 `comment:"This field controls the maximum amount of allowed registrations."`
 }
 
 // ReadConfigFile reads a config on the given path and stores the
@@ -101,9 +101,9 @@ func ReadConfigFile(path string) error {
 			GeminiCertificatePath: "",
 		},
 		Authorization: Authorization{
-			UseFixedAuth:      false,
-			UseRegistration:   false,
-			LimitRegistration: 0,
+			UseAuth:           false,
+			AllowRegistration: false,
+			RegistrationLimit: 0,
 		},
 		CustomScripts: CustomScripts{
 			CommonScripts: []string{},
@@ -164,9 +164,9 @@ func ReadConfigFile(path string) error {
 	HTTPPort = strconv.FormatUint(cfg.HTTPPort, 10)
 	URL = cfg.URL
 	GeminiCertificatePath = cfg.GeminiCertificatePath
-	UseFixedAuth = cfg.UseFixedAuth
-	UseRegistration = cfg.UseRegistration
-	LimitRegistration = int(cfg.LimitRegistration)
+	UseAuth = cfg.UseAuth
+	AllowRegistration = cfg.AllowRegistration
+	RegistrationLimit = cfg.RegistrationLimit
 	CommonScripts = cfg.CommonScripts
 	ViewScripts = cfg.ViewScripts
 	EditScripts = cfg.EditScripts

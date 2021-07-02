@@ -9,13 +9,12 @@ import (
 )
 
 var paths struct {
-	gitRepo                     string
-	cacheDir                    string
-	staticFiles                 string
-	configPath                  string
-	tokensJSON                  string
-	registrationCredentialsJSON string
-	fixedCredentialsJSON        string
+	gitRepo             string
+	cacheDir            string
+	staticFiles         string
+	configPath          string
+	tokensJSON          string
+	userCredentialsJSON string
 }
 
 // HyphaeDir returns the path to hyphae storage.
@@ -36,12 +35,8 @@ func ConfigPath() string { return paths.configPath }
 // TokensJSON returns the path to the JSON user tokens storage.
 func TokensJSON() string { return paths.tokensJSON }
 
-// RegistrationCredentialsJSON returns the path to the JSON registration
-// credentials storage.
-func RegistrationCredentialsJSON() string { return paths.registrationCredentialsJSON }
-
-// FixedCredentialsJSON returns the path to the JSON fixed credentials storage.
-func FixedCredentialsJSON() string { return paths.fixedCredentialsJSON }
+// UserCredentialsJSON returns the path to the JSON user credentials storage.
+func UserCredentialsJSON() string { return paths.userCredentialsJSON }
 
 // PrepareWikiRoot ensures all needed directories and files exist and have
 // correct permissions.
@@ -66,10 +61,9 @@ func PrepareWikiRoot() error {
 	}
 
 	paths.configPath = filepath.Join(cfg.WikiDir, "config.ini")
+	paths.userCredentialsJSON = filepath.Join(cfg.WikiDir, "users.json")
 
 	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
-	paths.fixedCredentialsJSON = filepath.Join(cfg.WikiDir, "fixed-users.json")
-	paths.registrationCredentialsJSON = filepath.Join(cfg.WikiDir, "registered-users.json")
 
 	return nil
 }

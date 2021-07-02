@@ -376,11 +376,11 @@ func StreamAboutHTML(qw422016 *qt422016.Writer) {
 			<li><b><a href="https://mycorrhiza.lesarbr.es">Mycorrhiza Wiki</a> version:</b> 1.3.0</li>
 `)
 //line views/stuff.qtpl:116
-	if user.AuthUsed {
+	if cfg.UseAuth {
 //line views/stuff.qtpl:116
 		qw422016.N().S(`			<li><b>User count:</b> `)
 //line views/stuff.qtpl:117
-		qw422016.N().D(user.Count())
+		qw422016.N().DUL(user.Count())
 //line views/stuff.qtpl:117
 		qw422016.N().S(`</li>
 			<li><b>Home page:</b> <a href="/">`)

@@ -4,29 +4,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"golang.org/x/crypto/bcrypt"
-)
-
-// UserSource shows where is the user data gotten from.
-type UserSource int
-
-const (
-	SourceUnknown UserSource = iota
-	// SourceFixed is used with users that are predefined using fixed auth
-	SourceFixed
-	// SourceRegistration is used with users that are registered through the register form
-	SourceRegistration
 )
 
 // User is a user.
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
-	Name           string     `json:"name"`
-	Group          string     `json:"group"`
-	Password       string     `json:"password"`        // for fixed
-	HashedPassword string     `json:"hashed_password"` // for registered
-	RegisteredAt   time.Time  `json:"registered_on"`
-	Source         UserSource `json:"-"`
+	Name         string    `json:"name"`
+	Group        string    `json:"group"`
+	Password     string    `json:"hashed_password"`
+	RegisteredAt time.Time `json:"registered_on"`
 	sync.RWMutex
 
 	// A note about why HashedPassword is string and not []byte. The reason is
@@ -86,7 +74,7 @@ func EmptyUser() *User {
 }
 
 func (user *User) CanProceed(route string) bool {
-	if !AuthUsed {
+	if !cfg.UseAuth {
 		return true
 	}
 
@@ -105,12 +93,6 @@ func (user *User) isCorrectPassword(password string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	switch user.Source {
-	case SourceFixed:
-		return password == user.Password
-	case SourceRegistration:
-		err := bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password))
-		return err == nil
-	}
-	return false
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	return err == nil
 }

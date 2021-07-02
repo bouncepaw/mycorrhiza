@@ -1,10 +1,7 @@
 package user
 
-import (
-	"sync"
-)
+import "sync"
 
-var AuthUsed bool
 var users sync.Map
 var tokens sync.Map
 
@@ -21,28 +18,16 @@ func YieldUsers() chan *User {
 }
 
 func ListUsersWithGroup(group string) []string {
-	usersWithTheGroup := []string{}
+	filtered := []string{}
 	for u := range YieldUsers() {
 		if u.Group == group {
-			usersWithTheGroup = append(usersWithTheGroup, u.Name)
+			filtered = append(filtered, u.Name)
 		}
 	}
-	return usersWithTheGroup
+	return filtered
 }
 
-func CountRegistered() int {
-	i := 0
-	users.Range(func(k, v interface{}) bool {
-		if v.(*User).Source == SourceRegistration {
-			i++
-		}
-		return true
-	})
-	return i
-}
-
-func Count() int {
-	i := 0
+func Count() (i uint64) {
 	users.Range(func(k, v interface{}) bool {
 		i++
 		return true

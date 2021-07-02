@@ -150,7 +150,7 @@ func StreamUserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 	qw422016.N().S(`
 `)
 //line views/nav.qtpl:51
-	if user.AuthUsed {
+	if cfg.UseAuth {
 //line views/nav.qtpl:51
 		qw422016.N().S(`
 	<li class="header-links__entry header-links__entry_user">
@@ -191,7 +191,7 @@ func StreamUserMenuHTML(qw422016 *qt422016.Writer, u *user.User) {
 	qw422016.N().S(`
 `)
 //line views/nav.qtpl:60
-	if user.AuthUsed && cfg.UseRegistration && u.Group == "anon" {
+	if cfg.UseAuth && cfg.AllowRegistration && u.Group == "anon" {
 //line views/nav.qtpl:60
 		qw422016.N().S(`
 	<li class="header-links__entry header-links__entry_register">

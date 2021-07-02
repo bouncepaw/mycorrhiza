@@ -43,7 +43,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 	<h2 class="non-existent-hypha__title">This hypha does not exist</h2>
 	`)
 //line views/hypha.qtpl:12
-	if user.AuthUsed && u.Group == "anon" {
+	if cfg.UseAuth && u.Group == "anon" {
 //line views/hypha.qtpl:12
 		qw422016.N().S(`
 	<p>You are not authorized to create new hyphae. Here is what you can do:</p>
@@ -51,7 +51,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 		<li><a href="/login">Log in to your account, if you have one</a></li>
 		`)
 //line views/hypha.qtpl:16
-		if cfg.UseRegistration {
+		if cfg.AllowRegistration {
 //line views/hypha.qtpl:16
 			qw422016.N().S(`<li><a href="/register">Register a new account</a></li>`)
 //line views/hypha.qtpl:16
