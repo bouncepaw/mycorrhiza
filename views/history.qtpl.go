@@ -306,7 +306,7 @@ func streamrecentChangesEntry(qw422016 *qt422016.Writer, rev history.Revision) {
 //line views/history.qtpl:93
 	qw422016.N().S(`
 	</time>
-	<a class="recent-changes__entry__message" href="#">`)
+	<a class="recent-changes__entry__message">`)
 //line views/history.qtpl:95
 	qw422016.E().S(rev.Hash)
 //line views/history.qtpl:95

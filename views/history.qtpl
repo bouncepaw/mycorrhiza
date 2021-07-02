@@ -92,7 +92,7 @@ if err != nil {
 	<time class="recent-changes__entry__time">
 		{%s rev.Time.UTC().Format("15:04 UTC") %}
 	</time>
-	<a class="recent-changes__entry__message" href="#">{%s rev.Hash %}</a>
+	<a class="recent-changes__entry__message">{%s rev.Hash %}</a>
 
 	{% if rev.Username != "anon" %}
 	<span class="recent-changes__entry__author">
