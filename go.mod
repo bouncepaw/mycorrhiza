@@ -10,6 +10,7 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/valyala/quicktemplate v1.6.3
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
 	gopkg.in/ini.v1 v1.62.0 // indirect
 )
 

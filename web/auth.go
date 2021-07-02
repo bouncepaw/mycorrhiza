@@ -45,9 +45,10 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		var (
 			username = rq.PostFormValue("username")
 			password = rq.PostFormValue("password")
-			err      = user.Register(username, password)
+			err      = user.Register(username, password, "editor", false)
 		)
 		if err != nil {
+			log.Printf("Failed to register \"%s\": %s", username, err.Error())
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(
@@ -62,6 +63,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 				),
 			)
 		} else {
+			log.Printf("Successfully registered \"%s\"", username)
 			user.LoginDataHTTP(w, rq, username, password)
 			http.Redirect(w, rq, "/"+rq.URL.RawQuery, http.StatusSeeOther)
 		}

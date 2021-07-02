@@ -35,36 +35,31 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 }
 
 // Register registers the given user. If it fails, a non-nil error is returned.
-func Register(username, password string) error {
+func Register(username, password, group string, force bool) error {
 	username = util.CanonicalName(username)
-	log.Println("Attempt to register user", username)
+
 	switch {
-	case cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
-		log.Printf("Limit reached: %d", cfg.RegistrationLimit)
-		return fmt.Errorf("Reached the limit of registered users: %d", cfg.RegistrationLimit)
-	case HasUsername(username):
-		log.Println("Username taken")
-		return fmt.Errorf("Username \"%s\" is taken already.", username)
 	case !util.IsPossibleUsername(username):
-		log.Println("Illegal username:", username)
-		return fmt.Errorf("Illegal username \"%s\".", username)
+		return fmt.Errorf("illegal username \"%s\"", username)
+	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
+		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
+	case !force && HasUsername(username):
+		return fmt.Errorf("username \"%s\" is already taken", username)
 	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
+
 	u := User{
 		Name:         username,
-		Group:        "editor",
+		Group:        group,
 		Password:     string(hash),
 		RegisteredAt: time.Now(),
 	}
 	users.Store(username, &u)
-	err = SaveUserDatabase()
-	if err != nil {
-		return err
-	}
-	return nil
+	return SaveUserDatabase()
 }
 
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.
