@@ -211,23 +211,23 @@ func AdminUsersPanelHTML(userList []*user.User) string {
 }
 
 //line views/admin.qtpl:83
-func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
+func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, f util.FormData) {
 //line views/admin.qtpl:83
 	qw422016.N().S(`
 <div class="layout">
-<main class="main-width">
+<main class="main-width form-wrap">
 	<h1>New user</h1>
 
 	`)
 //line views/admin.qtpl:88
-	if formData.HasError() {
+	if f.HasError() {
 //line views/admin.qtpl:88
 		qw422016.N().S(`
 	<div class="notice notice--error">
 		<strong>Error:</strong>
 		`)
 //line views/admin.qtpl:91
-		qw422016.E().S(formData.Error())
+		qw422016.E().S(f.Error())
 //line views/admin.qtpl:91
 		qw422016.N().S(`
 	</div>
@@ -237,12 +237,12 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 //line views/admin.qtpl:93
 	qw422016.N().S(`
 
-	<form action="" method="post">
+	<form class="form--double" action="" method="post">
 		<div class="form-field">
 			<label for="name">Name:</label>
 			<input type="text" name="name" id="name" value="`)
 //line views/admin.qtpl:98
-	qw422016.E().S(formData.Get("name"))
+	qw422016.E().S(f.Get("name"))
 //line views/admin.qtpl:98
 	qw422016.N().S(`" autofocus>
 		</div>
@@ -251,7 +251,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 			<label for="password">Password:</label>
 			<input type="password" name="password" id="password" value="`)
 //line views/admin.qtpl:103
-	qw422016.E().S(formData.Get("password"))
+	qw422016.E().S(f.Get("password"))
 //line views/admin.qtpl:103
 	qw422016.N().S(`">
 		</div>
@@ -261,7 +261,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 			<select id="group" name="group">
 				<option`)
 //line views/admin.qtpl:109
-	if formData.Get("group") == "anon" {
+	if f.Get("group") == "anon" {
 //line views/admin.qtpl:109
 		qw422016.N().S(` selected`)
 //line views/admin.qtpl:109
@@ -270,7 +270,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 	qw422016.N().S(`>anon</option>
 				<option`)
 //line views/admin.qtpl:110
-	if formData.Get("group") == "editor" {
+	if f.Get("group") == "editor" {
 //line views/admin.qtpl:110
 		qw422016.N().S(` selected`)
 //line views/admin.qtpl:110
@@ -279,7 +279,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 	qw422016.N().S(`>editor</option>
 				<option`)
 //line views/admin.qtpl:111
-	if formData.Get("group") == "trusted" {
+	if f.Get("group") == "trusted" {
 //line views/admin.qtpl:111
 		qw422016.N().S(` selected`)
 //line views/admin.qtpl:111
@@ -288,7 +288,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 	qw422016.N().S(`>trusted</option>
 				<option`)
 //line views/admin.qtpl:112
-	if formData.Get("group") == "moderator" {
+	if f.Get("group") == "moderator" {
 //line views/admin.qtpl:112
 		qw422016.N().S(` selected`)
 //line views/admin.qtpl:112
@@ -297,7 +297,7 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 	qw422016.N().S(`>moderator</option>
 				<option`)
 //line views/admin.qtpl:113
-	if formData.Get("group") == "admin" {
+	if f.Get("group") == "admin" {
 //line views/admin.qtpl:113
 		qw422016.N().S(` selected`)
 //line views/admin.qtpl:113
@@ -321,22 +321,22 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, formData util.FormData) {
 }
 
 //line views/admin.qtpl:126
-func WriteAdminUserNewHTML(qq422016 qtio422016.Writer, formData util.FormData) {
+func WriteAdminUserNewHTML(qq422016 qtio422016.Writer, f util.FormData) {
 //line views/admin.qtpl:126
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:126
-	StreamAdminUserNewHTML(qw422016, formData)
+	StreamAdminUserNewHTML(qw422016, f)
 //line views/admin.qtpl:126
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:126
 }
 
 //line views/admin.qtpl:126
-func AdminUserNewHTML(formData util.FormData) string {
+func AdminUserNewHTML(f util.FormData) string {
 //line views/admin.qtpl:126
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:126
-	WriteAdminUserNewHTML(qb422016, formData)
+	WriteAdminUserNewHTML(qb422016, f)
 //line views/admin.qtpl:126
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:126
@@ -347,100 +347,207 @@ func AdminUserNewHTML(formData util.FormData) string {
 }
 
 //line views/admin.qtpl:128
-func StreamAdminUsersUserHTML(qw422016 *qt422016.Writer, u *user.User) {
+func StreamAdminUserEditHTML(qw422016 *qt422016.Writer, u *user.User, f util.FormData) {
 //line views/admin.qtpl:128
 	qw422016.N().S(`
 <div class="layout">
-<main class="main-width">
-	<h1>`)
-//line views/admin.qtpl:131
+<main class="main-width form-wrap">
+	<h1>
+		<a href="/admin/users/">&larr;</a>
+		`)
+//line views/admin.qtpl:133
 	qw422016.E().S(u.Name)
-//line views/admin.qtpl:131
-	qw422016.N().S(`</h1>
+//line views/admin.qtpl:133
+	qw422016.N().S(`
+	</h1>
+
+	<h2>Change group</h2>
+
+	`)
+//line views/admin.qtpl:138
+	if f.HasError() {
+//line views/admin.qtpl:138
+		qw422016.N().S(`
+	<div class="notice notice--error">
+		<strong>Error:</strong>
+		`)
+//line views/admin.qtpl:141
+		qw422016.E().S(f.Error())
+//line views/admin.qtpl:141
+		qw422016.N().S(`
+	</div>
+	`)
+//line views/admin.qtpl:143
+	}
+//line views/admin.qtpl:143
+	qw422016.N().S(`
 
 	<form action="" method="post">
 		<div class="form-field">
-			<label for="group">Group:</label>
-			<select id="group" name="group">
+			<select id="group" name="group" aria-label="Group">
 				<option`)
-//line views/admin.qtpl:137
-	if u.Group == "anon" {
-//line views/admin.qtpl:137
+//line views/admin.qtpl:148
+	if f.Get("group") == "anon" {
+//line views/admin.qtpl:148
 		qw422016.N().S(` selected`)
-//line views/admin.qtpl:137
+//line views/admin.qtpl:148
 	}
-//line views/admin.qtpl:137
+//line views/admin.qtpl:148
 	qw422016.N().S(`>anon</option>
 				<option`)
-//line views/admin.qtpl:138
-	if u.Group == "editor" {
-//line views/admin.qtpl:138
+//line views/admin.qtpl:149
+	if f.Get("group") == "editor" {
+//line views/admin.qtpl:149
 		qw422016.N().S(` selected`)
-//line views/admin.qtpl:138
+//line views/admin.qtpl:149
 	}
-//line views/admin.qtpl:138
+//line views/admin.qtpl:149
 	qw422016.N().S(`>editor</option>
 				<option`)
-//line views/admin.qtpl:139
-	if u.Group == "trusted" {
-//line views/admin.qtpl:139
+//line views/admin.qtpl:150
+	if f.Get("group") == "trusted" {
+//line views/admin.qtpl:150
 		qw422016.N().S(` selected`)
-//line views/admin.qtpl:139
+//line views/admin.qtpl:150
 	}
-//line views/admin.qtpl:139
+//line views/admin.qtpl:150
 	qw422016.N().S(`>trusted</option>
 				<option`)
-//line views/admin.qtpl:140
-	if u.Group == "moderator" {
-//line views/admin.qtpl:140
+//line views/admin.qtpl:151
+	if f.Get("group") == "moderator" {
+//line views/admin.qtpl:151
 		qw422016.N().S(` selected`)
-//line views/admin.qtpl:140
+//line views/admin.qtpl:151
 	}
-//line views/admin.qtpl:140
+//line views/admin.qtpl:151
 	qw422016.N().S(`>moderator</option>
 				<option`)
-//line views/admin.qtpl:141
-	if u.Group == "admin" {
-//line views/admin.qtpl:141
+//line views/admin.qtpl:152
+	if f.Get("group") == "admin" {
+//line views/admin.qtpl:152
 		qw422016.N().S(` selected`)
-//line views/admin.qtpl:141
+//line views/admin.qtpl:152
 	}
-//line views/admin.qtpl:141
+//line views/admin.qtpl:152
 	qw422016.N().S(`>admin</option>
 			</select>
 		</div>
 
-		<button class="btn" type="submit">Update</button>
-		<a class="btn btn_weak" href="/admin/users/">Cancel</a>
+		<div class="form-field">
+			<button class="btn" type="submit">Update</button>
+		</div>
+	</form>
+
+	<h2>Delete user</h2>
+	<p>Remove the user from the database. Changes made by the user will
+	be preserved.</p>
+	<a class="btn btn_destructive" href="/admin/users/`)
+//line views/admin.qtpl:164
+	qw422016.N().U(u.Name)
+//line views/admin.qtpl:164
+	qw422016.N().S(`/delete">Delete</a>
+</main>
+</div>
+`)
+//line views/admin.qtpl:167
+}
+
+//line views/admin.qtpl:167
+func WriteAdminUserEditHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData) {
+//line views/admin.qtpl:167
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/admin.qtpl:167
+	StreamAdminUserEditHTML(qw422016, u, f)
+//line views/admin.qtpl:167
+	qt422016.ReleaseWriter(qw422016)
+//line views/admin.qtpl:167
+}
+
+//line views/admin.qtpl:167
+func AdminUserEditHTML(u *user.User, f util.FormData) string {
+//line views/admin.qtpl:167
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/admin.qtpl:167
+	WriteAdminUserEditHTML(qb422016, u, f)
+//line views/admin.qtpl:167
+	qs422016 := string(qb422016.B)
+//line views/admin.qtpl:167
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/admin.qtpl:167
+	return qs422016
+//line views/admin.qtpl:167
+}
+
+//line views/admin.qtpl:169
+func StreamAdminUserDeleteHTML(qw422016 *qt422016.Writer, u *user.User, f util.FormData) {
+//line views/admin.qtpl:169
+	qw422016.N().S(`
+<div class="layout">
+<main class="main-width form-wrap">
+	<h1>Delete user</h1>
+
+	`)
+//line views/admin.qtpl:174
+	if f.HasError() {
+//line views/admin.qtpl:174
+		qw422016.N().S(`
+	<div class="notice notice--error">
+		<strong>Error:</strong>
+		`)
+//line views/admin.qtpl:177
+		qw422016.E().S(f.Error())
+//line views/admin.qtpl:177
+		qw422016.N().S(`
+	</div>
+	`)
+//line views/admin.qtpl:179
+	}
+//line views/admin.qtpl:179
+	qw422016.N().S(`
+
+	<p>Are you sure you want to delete <strong>`)
+//line views/admin.qtpl:181
+	qw422016.E().S(u.Name)
+//line views/admin.qtpl:181
+	qw422016.N().S(`</strong>
+	from the database? This action is irreversible.</p>
+
+	<form action="" method="post">
+		<button class="btn btn_destructive" type="submit">Delete</button>
+		<a class="btn btn_weak" href="/admin/users/`)
+//line views/admin.qtpl:186
+	qw422016.N().U(u.Name)
+//line views/admin.qtpl:186
+	qw422016.N().S(`/edit">Cancel</a>
 	</form>
 </main>
 </div>
 `)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
 }
 
-//line views/admin.qtpl:150
-func WriteAdminUsersUserHTML(qq422016 qtio422016.Writer, u *user.User) {
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
+func WriteAdminUserDeleteHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData) {
+//line views/admin.qtpl:190
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/admin.qtpl:150
-	StreamAdminUsersUserHTML(qw422016, u)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
+	StreamAdminUserDeleteHTML(qw422016, u, f)
+//line views/admin.qtpl:190
 	qt422016.ReleaseWriter(qw422016)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
 }
 
-//line views/admin.qtpl:150
-func AdminUsersUserHTML(u *user.User) string {
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
+func AdminUserDeleteHTML(u *user.User, f util.FormData) string {
+//line views/admin.qtpl:190
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/admin.qtpl:150
-	WriteAdminUsersUserHTML(qb422016, u)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
+	WriteAdminUserDeleteHTML(qb422016, u, f)
+//line views/admin.qtpl:190
 	qs422016 := string(qb422016.B)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
 	return qs422016
-//line views/admin.qtpl:150
+//line views/admin.qtpl:190
 }

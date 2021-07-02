@@ -107,10 +107,6 @@ input, kbd { font: inherit; color: inherit; }
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
 ::-webkit-file-upload-button,
-.btn { line-height: normal; display: inline-block; border: 1px #999 solid; border-radius: .25rem; text-decoration: none; padding: .25rem; font-size: 1rem; margin: 0; }
-.btn_weak { border: 1px #999 dashed; }
-.btn_accent { font-weight: bold; }
-.btn:hover, .btn:active { cursor: pointer; }
 
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
@@ -300,10 +296,6 @@ article .codeblock,
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
 .transclusion_stand-out { background-color: rgba(68, 68, 68, 0.5); }
-.btn:visited { color: #ddd;}
-
-	.btn { border: #444 solid 1px; border-radius: .25rem; }
-	.btn_weak { background-color: transparent; }
 
 .transclusion code,
 .transclusion .codeblock { background-color: #454545; }
@@ -446,21 +438,30 @@ kbd {
 }
 
 @media (min-width: 600px) {
-	.form-field {
+	.form--double .form-field {
 		display: grid;
 		grid-template-columns: 150px max-content;
 		grid-column-gap: 16px;
 	}
-	.form-field label {
+	.form--double .form-field label {
 		grid-column: 1;
 	}
-	.form-field input,
-	.form-field button,
-	.form-field select,
-	.form-field textarea,
-	.form-field .form-field__input {
+	.form--double .form-field input,
+	.form--double .form-field button,
+	.form--double .form-field select,
+	.form--double .form-field textarea,
+	.form--double .form-field__input {
 		grid-column: 2;
 	}
+}
+
+/*
+ * Form wrap
+ */
+
+.form-wrap h2 {
+	margin: 1.5em 0 0.25em;
+	font-size: 1.2em;
 }
 
 /*
@@ -482,5 +483,57 @@ kbd {
 	.notice--error {
 		border-color: #a84343;
 		background-color: #5b3535;
+	}
+}
+
+/*
+ * Buttons
+ */
+
+.btn {
+	line-height: normal;
+	display: inline-block;
+	border: 1px #999 solid;
+	border-radius: .15rem;
+	text-decoration: none;
+	padding: .25rem .5rem;
+	font-size: 1rem;
+	margin: 0;
+}
+
+.btn:hover {
+	cursor: pointer;
+}
+
+.btn_accent {
+	font-weight: bold;
+}
+
+.btn_weak {
+	border: 1px dashed #999;
+}
+
+.btn_destructive {
+	border-color: #aa1818;
+	background-color: #ee4343;
+	color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+	.btn {
+		border-color: #444 solid 1px;
+	}
+
+	.btn:visited {
+		color: #ddd;
+	}
+
+	.btn_weak {
+		background-color: transparent;
+	}
+
+	.btn_destructive {
+		border-color: #e34343;
+		background-color: #b92828;
 	}
 }

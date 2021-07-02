@@ -90,44 +90,76 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// User edit page
-		if len(parts) == 2 && parts[1] == "edit" {
-			u := user.UserByName(parts[0])
+		if len(parts) != 2 {
+			util.HTTP404Page(w, "404 page not found")
+			return
+		}
 
-			if u != nil && u.Name != "anon" {
-				if r.Method == http.MethodGet {
-					html := views.AdminUsersUserHTML(u)
-					html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
+		u := user.UserByName(parts[0])
+		if u == nil {
+			util.HTTP404Page(w, "404 page not found")
+			return
+		}
 
-					w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-					if _, err := io.WriteString(w, html); err != nil {
+		switch parts[1] {
+		case "edit":
+			f := util.FormDataFromRequest(r, []string{"group"})
+
+			if r.Method == http.MethodPost {
+				oldGroup := u.Group
+				newGroup := f.Get("group")
+
+				if user.ValidGroup(newGroup) {
+					u.Group = newGroup
+					if err := user.SaveUserDatabase(); err != nil {
+						u.Group = oldGroup
 						log.Println(err)
-					}
-					return
-				} else if r.Method == http.MethodPost {
-					oldGroup := u.Group
-					newGroup := r.PostFormValue("group")
-					if user.ValidGroup(newGroup) {
-						u.Group = newGroup
-						if err := user.SaveUserDatabase(); err != nil {
-							u.Group = oldGroup
-							log.Println(err)
-							w.WriteHeader(http.StatusInternalServerError)
-							io.WriteString(w, err.Error())
-						} else {
-							http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
-						}
+						f = f.WithError(err)
 					} else {
-						w.WriteHeader(http.StatusBadRequest)
-						io.WriteString(w, "invalid group")
+						http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+						return
 					}
-					return
+				} else {
+					f = f.WithError(fmt.Errorf("invalid group \"%s\"", newGroup))
 				}
 			}
-		}
-	}
 
-	util.HTTP404Page(w, "404 page not found")
+			f.Put("group", u.Group)
+
+			html := views.AdminUserEditHTML(u, f)
+			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
+
+			if f.HasError() {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+			io.WriteString(w, html)
+			return
+		case "delete":
+			f := util.NewFormData()
+
+			if r.Method == http.MethodPost {
+				f = f.WithError(user.DeleteUser(u.Name))
+				if !f.HasError() {
+					http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+				} else {
+					log.Println(f.Error())
+				}
+			}
+
+			html := views.AdminUserDeleteHTML(u, util.NewFormData())
+			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
+
+			if f.HasError() {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+			io.WriteString(w, html)
+			return
+		}
+
+		util.HTTP404Page(w, "404 page not found")
+	}
 }
 
 func handlerAdminUserNew(w http.ResponseWriter, r *http.Request) {

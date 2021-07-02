@@ -80,37 +80,37 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserNewHTML(formData util.FormData) %}
+{% func AdminUserNewHTML(f util.FormData) %}
 <div class="layout">
-<main class="main-width">
+<main class="main-width form-wrap">
 	<h1>New user</h1>
 
-	{% if formData.HasError() %}
+	{% if f.HasError() %}
 	<div class="notice notice--error">
 		<strong>Error:</strong>
-		{%s formData.Error() %}
+		{%s f.Error() %}
 	</div>
 	{% endif %}
 
-	<form action="" method="post">
+	<form class="form--double" action="" method="post">
 		<div class="form-field">
 			<label for="name">Name:</label>
-			<input type="text" name="name" id="name" value="{%s formData.Get("name") %}" autofocus>
+			<input type="text" name="name" id="name" value="{%s f.Get("name") %}" autofocus>
 		</div>
 
 		<div class="form-field">
 			<label for="password">Password:</label>
-			<input type="password" name="password" id="password" value="{%s formData.Get("password") %}">
+			<input type="password" name="password" id="password" value="{%s f.Get("password") %}">
 		</div>
 
 		<div class="form-field">
 			<label for="group">Group:</label>
 			<select id="group" name="group">
-				<option{% if formData.Get("group") == "anon" %} selected{% endif %}>anon</option>
-				<option{% if formData.Get("group") == "editor" %} selected{% endif %}>editor</option>
-				<option{% if formData.Get("group") == "trusted" %} selected{% endif %}>trusted</option>
-				<option{% if formData.Get("group") == "moderator" %} selected{% endif %}>moderator</option>
-				<option{% if formData.Get("group") == "admin" %} selected{% endif %}>admin</option>
+				<option{% if f.Get("group") == "anon" %} selected{% endif %}>anon</option>
+				<option{% if f.Get("group") == "editor" %} selected{% endif %}>editor</option>
+				<option{% if f.Get("group") == "trusted" %} selected{% endif %}>trusted</option>
+				<option{% if f.Get("group") == "moderator" %} selected{% endif %}>moderator</option>
+				<option{% if f.Get("group") == "admin" %} selected{% endif %}>admin</option>
 			</select>
 		</div>
 
@@ -125,25 +125,65 @@
 </div>
 {% endfunc %}
 
-{% func AdminUsersUserHTML(u *user.User) %}
+{% func AdminUserEditHTML(u *user.User, f util.FormData) %}
 <div class="layout">
-<main class="main-width">
-	<h1>{%s u.Name %}</h1>
+<main class="main-width form-wrap">
+	<h1>
+		<a href="/admin/users/">&larr;</a>
+		{%s u.Name %}
+	</h1>
+
+	<h2>Change group</h2>
+
+	{% if f.HasError() %}
+	<div class="notice notice--error">
+		<strong>Error:</strong>
+		{%s f.Error() %}
+	</div>
+	{% endif %}
 
 	<form action="" method="post">
 		<div class="form-field">
-			<label for="group">Group:</label>
-			<select id="group" name="group">
-				<option{% if u.Group == "anon" %} selected{% endif %}>anon</option>
-				<option{% if u.Group == "editor" %} selected{% endif %}>editor</option>
-				<option{% if u.Group == "trusted" %} selected{% endif %}>trusted</option>
-				<option{% if u.Group == "moderator" %} selected{% endif %}>moderator</option>
-				<option{% if u.Group == "admin" %} selected{% endif %}>admin</option>
+			<select id="group" name="group" aria-label="Group">
+				<option{% if f.Get("group") == "anon" %} selected{% endif %}>anon</option>
+				<option{% if f.Get("group") == "editor" %} selected{% endif %}>editor</option>
+				<option{% if f.Get("group") == "trusted" %} selected{% endif %}>trusted</option>
+				<option{% if f.Get("group") == "moderator" %} selected{% endif %}>moderator</option>
+				<option{% if f.Get("group") == "admin" %} selected{% endif %}>admin</option>
 			</select>
 		</div>
 
-		<button class="btn" type="submit">Update</button>
-		<a class="btn btn_weak" href="/admin/users/">Cancel</a>
+		<div class="form-field">
+			<button class="btn" type="submit">Update</button>
+		</div>
+	</form>
+
+	<h2>Delete user</h2>
+	<p>Remove the user from the database. Changes made by the user will
+	be preserved.</p>
+	<a class="btn btn_destructive" href="/admin/users/{%u u.Name %}/delete">Delete</a>
+</main>
+</div>
+{% endfunc %}
+
+{% func AdminUserDeleteHTML(u *user.User, f util.FormData) %}
+<div class="layout">
+<main class="main-width form-wrap">
+	<h1>Delete user</h1>
+
+	{% if f.HasError() %}
+	<div class="notice notice--error">
+		<strong>Error:</strong>
+		{%s f.Error() %}
+	</div>
+	{% endif %}
+
+	<p>Are you sure you want to delete <strong>{%s u.Name %}</strong>
+	from the database? This action is irreversible.</p>
+
+	<form action="" method="post">
+		<button class="btn btn_destructive" type="submit">Delete</button>
+		<a class="btn btn_weak" href="/admin/users/{%u u.Name %}/edit">Cancel</a>
 	</form>
 </main>
 </div>

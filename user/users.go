@@ -60,6 +60,18 @@ func UserByName(username string) *User {
 	return EmptyUser()
 }
 
+func DeleteUser(name string) error {
+	user, loaded := users.LoadAndDelete(name)
+	if loaded {
+		u := user.(*User)
+		u.Name = "anon"
+		u.Group = "anon"
+		u.Password = ""
+		return SaveUserDatabase()
+	}
+	return nil
+}
+
 func commenceSession(username, token string) {
 	tokens.Store(token, username)
 	dumpTokens()
