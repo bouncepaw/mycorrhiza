@@ -41,10 +41,12 @@ func Register(username, password, group string, force bool) error {
 	switch {
 	case !util.IsPossibleUsername(username):
 		return fmt.Errorf("illegal username \"%s\"", username)
+	case !ValidGroup(group):
+		return fmt.Errorf("invalid group \"%s\"", group)
+	case HasUsername(username):
+		return fmt.Errorf("username \"%s\" is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
-	case !force && HasUsername(username):
-		return fmt.Errorf("username \"%s\" is already taken", username)
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

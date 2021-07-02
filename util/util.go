@@ -91,3 +91,49 @@ func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 	log.Println("HyphaNameFromRq: this request is invalid, fall back to home hypha")
 	return cfg.HomeHypha
 }
+
+// FormData is a convenient struct for passing user input and errors to HTML
+// forms and showing to the user.
+type FormData struct {
+	err    error
+	fields map[string]string
+}
+
+func NewFormData() FormData {
+	return FormData{
+		err:    nil,
+		fields: map[string]string{},
+	}
+}
+
+func FormDataFromRequest(r *http.Request, keys []string) FormData {
+	formData := NewFormData()
+	for _, key := range keys {
+		formData.Put(key, r.FormValue(key))
+	}
+	return formData
+}
+
+func (f FormData) HasError() bool {
+	return f.err != nil
+}
+
+func (f FormData) Error() string {
+	if f.err == nil {
+		return ""
+	}
+	return f.err.Error()
+}
+
+func (f FormData) WithError(err error) FormData {
+	f.err = err
+	return f
+}
+
+func (f FormData) Get(key string) string {
+	return f.fields[key]
+}
+
+func (f FormData) Put(key, value string) {
+	f.fields[key] = value
+}

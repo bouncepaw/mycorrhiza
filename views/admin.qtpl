@@ -1,5 +1,6 @@
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func AdminPanelHTML() %}
 <div class="layout">
@@ -39,10 +40,11 @@
 	<h1>Manage users</h1>
 
 	<form action="/admin/reindex-users" method="post">
+		<a class="btn" href="/admin/user/new">Create a new user</a>
 		<button class="btn" type="submit">Reindex users</button>
 	</form>
 
-	<h2>Users list</h2>
+	<br>
 
 	<table class="users-table">
 	<thead>
@@ -74,6 +76,51 @@
 	{% endfor %}
 	</tbody>
 	</table>
+</main>
+</div>
+{% endfunc %}
+
+{% func AdminUserNewHTML(formData util.FormData) %}
+<div class="layout">
+<main class="main-width">
+	<h1>New user</h1>
+
+	{% if formData.HasError() %}
+	<div class="notice notice--error">
+		<strong>Error:</strong>
+		{%s formData.Error() %}
+	</div>
+	{% endif %}
+
+	<form action="" method="post">
+		<div class="form-field">
+			<label for="name">Name:</label>
+			<input type="text" name="name" id="name" value="{%s formData.Get("name") %}">
+		</div>
+
+		<div class="form-field">
+			<label for="password">Password:</label>
+			<input type="password" name="password" id="password" value="{%s formData.Get("password") %}">
+		</div>
+
+		<div class="form-field">
+			<label for="group">Group:</label>
+			<select id="group" name="group">
+				<option{% if formData.Get("group") == "anon" %} selected{% endif %}>anon</option>
+				<option{% if formData.Get("group") == "editor" %} selected{% endif %}>editor</option>
+				<option{% if formData.Get("group") == "trusted" %} selected{% endif %}>trusted</option>
+				<option{% if formData.Get("group") == "moderator" %} selected{% endif %}>moderator</option>
+				<option{% if formData.Get("group") == "admin" %} selected{% endif %}>admin</option>
+			</select>
+		</div>
+
+		<div class="form-field">
+			<div class="form-field__input">
+				<button class="btn" type="submit">Create</button>
+				<a class="btn btn_weak" href="/admin/users/">Cancel</a>
+			</div>
+		</div>
+	</form>
 </main>
 </div>
 {% endfunc %}

@@ -23,6 +23,7 @@ func initAdmin() {
 		http.HandleFunc("/admin/reindex-users/", handlerAdminReindexUsers)
 
 		http.HandleFunc("/admin/users/", handlerAdminUsers)
+		http.HandleFunc("/admin/user/new", handlerAdminUserNew)
 	}
 }
 
@@ -124,7 +125,41 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
-		util.HTTP404Page(w, "404 page not found")
 	}
+
+	util.HTTP404Page(w, "404 page not found")
+}
+
+func handlerAdminUserNew(w http.ResponseWriter, r *http.Request) {
+	util.PrepareRq(r)
+	if user.CanProceed(r, "admin") {
+		if r.Method == http.MethodGet {
+			// New user form
+			html := views.AdminUserNewHTML(util.NewFormData())
+			html = views.BaseHTML("New user", html, user.FromRequest(r))
+
+			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+			io.WriteString(w, html)
+			return
+		} else if r.Method == http.MethodPost {
+			// Create a user
+			f := util.FormDataFromRequest(r, []string{"name", "password", "group"})
+
+			err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), true)
+
+			if err != nil {
+				html := views.AdminUserNewHTML(f.WithError(err))
+				html = views.BaseHTML("New user", html, user.FromRequest(r))
+
+				w.WriteHeader(http.StatusBadRequest)
+				w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+				io.WriteString(w, html)
+			} else {
+				http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+			}
+			return
+		}
+	}
+
+	util.HTTP404Page(w, "404 page not found")
 }

@@ -313,9 +313,6 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 }
 }
 
-/* handlerug: sorry but I can't write in that unique and very special way */
-/* i have to resort to the BORING way of writing CSS */
-/* bouncepaw: they say that the best codes style is the consistent code style ☝️ */
 kbd {
 	display: inline-block;
 	min-width: 1.5ch;
@@ -382,7 +379,7 @@ kbd {
 .shortcuts-help .dialog__content {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-column-gap: 32px;
+	grid-column-gap: 32px;
 }
 
 .shortcuts-group-heading {
@@ -434,4 +431,56 @@ kbd {
 
 .table-cell--fill {
 	width: 100%;
+}
+
+/*
+ * Form fields
+ */
+
+.form-field {
+	margin: 1em 0;
+}
+
+.form-field label {
+	display: block;
+}
+
+@media (min-width: 600px) {
+	.form-field {
+		display: grid;
+		grid-template-columns: 150px max-content;
+		grid-column-gap: 16px;
+	}
+	.form-field label {
+		grid-column: 1;
+	}
+	.form-field input,
+	.form-field button,
+	.form-field select,
+	.form-field textarea,
+	.form-field .form-field__input {
+		grid-column: 2;
+	}
+}
+
+/*
+ * Notices
+ */
+
+.notice {
+	margin: 0.5em 0;
+	border: 1px solid;
+	padding: 0.5em 0.7em;
+}
+
+.notice--error {
+	border-color: #e15757;
+	background-color: #ffb1b1;
+}
+
+@media (prefers-color-scheme: dark) {
+	.notice--error {
+		border-color: #a84343;
+		background-color: #5b3535;
+	}
 }
