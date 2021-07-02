@@ -3,7 +3,7 @@ package shroom
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"mime/multipart"
 	"os"
@@ -45,7 +45,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User) (*history.HistoryOp, string) {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", h.Name, mime))
-		data, err = ioutil.ReadAll(file)
+		data, err = io.ReadAll(file)
 	)
 
 	if err != nil {
@@ -80,7 +80,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if err := ioutil.WriteFile(fullPath, data, 0666); err != nil {
+	if err := os.WriteFile(fullPath, data, 0666); err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
 

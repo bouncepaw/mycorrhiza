@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/mycocontext"
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -123,7 +122,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		u         = user.FromRequest(rq)
 	)
 	if h.Exists {
-		fileContentsT, errT := ioutil.ReadFile(h.TextPath)
+		fileContentsT, errT := os.ReadFile(h.TextPath)
 		_, errB := os.Stat(h.BinaryPath)
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))

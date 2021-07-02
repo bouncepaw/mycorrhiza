@@ -1,8 +1,8 @@
 package hyphae
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/mimetype"
@@ -33,7 +33,7 @@ func Index(path string) {
 
 // indexHelper finds all hypha files in the full `path` and sends them to the channel. Handling of duplicate entries and attachment and counting them is up to the caller.
 func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
-	nodes, err := ioutil.ReadDir(path)
+	nodes, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
