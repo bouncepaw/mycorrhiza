@@ -69,14 +69,16 @@ if err != nil {
 
 		{% code y, m, d := entry.Time.UTC().Date() %}
 		{% if d != day || m != month || y != year %}
-		<h2>{%s fmt.Sprintf("%04d-%02d-%02d", y, m, d) %}</h2>
+		<h2 class="recent-changes__heading">
+			{%s fmt.Sprintf("%04d-%02d-%02d", y, m, d) %}
+		</h2>
 		{% code year, month, day = y, m, d %}
 		{% endif %}
 
-		<ul class="recent-changes__entry rc-entry" role="article"
+		<div class="recent-changes__entry" role="article"
 		    aria-setsize="{%d n %}" aria-posinset="{%d i %}">
 			 {%s= recentChangesEntry(entry) %}
-		</ul>
+		</div>
 
 		{% endfor %}
 	{% endif %}
@@ -86,10 +88,26 @@ if err != nil {
 {% endfunc %}
 
 {% func recentChangesEntry(rev history.Revision) %}
-<li class="rc-entry__time"><time>{%s rev.Time.UTC().Format("15:04 UTC") %}</time></li>
-<li class="rc-entry__hash">{%s rev.Hash %}</li>
-<li class="rc-entry__links">{%s= rev.HyphaeLinksHTML() %}</li>
-<li class="rc-entry__msg">{%s rev.Message %} {% if rev.Username != "anon" %}<span class="rc-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>{% endif %}</li>
+<div>
+	<time class="recent-changes__entry__time">
+		{%s rev.Time.UTC().Format("15:04 UTC") %}
+	</time>
+	<a class="recent-changes__entry__message" href="#">{%s rev.Hash %}</a>
+
+	{% if rev.Username != "anon" %}
+	<span class="recent-changes__entry__author">
+		&mdash; <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a>
+	</span>
+	{% endif %}
+</div>
+<div>
+	<span class="recent-changes__entry__links">
+		{%s= rev.HyphaeLinksHTML() %}
+	</span>
+	<span class="recent-changes__entry__message">
+		{%s rev.Message %}
+	</span>
+</div>
 {% endfunc %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}

@@ -172,12 +172,6 @@ figcaption { padding-bottom: .5rem; }
 #new-name {width:100%;}
 
 
-.rc-entry { display: grid; list-style-type: none; padding: .25rem; grid-template-columns: 1fr 1fr; border-radius: .25rem; }
-.rc-entry__time { font-style: italic; }
-.rc-entry__hash { font-style: italic; text-align: right; }
-.rc-entry__links, .rc-entry__msg { grid-column: 1 / span 2; }
-.rc-entry__author { font-style: italic; }
-
 .prevnext__el { display: inline-block; min-width: 40%; padding: .5rem; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; max-width: 49%; }
 .prevnext__prev { float: left; }
 .prevnext__next { float: right; text-align: right; }
@@ -215,7 +209,7 @@ caption { caption-side: top; font-size: small; }
 p code,
 article .codeblock,
 .img-gallery_many-images,
-.rc-entry,
+.recent-changes__entry,
 .prevnext__el,
 table,
 .transclusion_stand-out {
@@ -289,7 +283,7 @@ input[type="text"], input[type="password"],
 article code, 
 article .codeblock,
 .img-gallery_many-images,
-.rc-entry,
+.recent-changes__entry,
 .history__entry, 
 .prevnext__el, 
 .upload-amnt,
@@ -536,4 +530,27 @@ kbd {
 		border-color: #e34343;
 		background-color: #b92828;
 	}
+}
+
+/*
+ * Recent changes
+ */
+
+.recent-changes__heading {
+	margin: 1.2em 0 0.3em;
+	font-size: 1.2em;
+}
+
+.recent-changes__entry {
+	margin: 12px 0;
+	padding: 8px 6px;
+	border-radius: 2px;
+}
+
+.recent-changes__entry * + * {
+	margin-top: 4px;
+}
+
+.recent-changes__entry__time {
+	font-weight: bold;
 }
