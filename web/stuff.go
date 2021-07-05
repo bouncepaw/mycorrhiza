@@ -51,7 +51,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 
 // handlerUpdateHeaderLinks updates header links by reading the configured hypha, if there is any, or resorting to default values.
 //
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/header
+// See https://mycorrhiza.wiki/hypha/configuration/header
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {

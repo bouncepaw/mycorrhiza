@@ -14,7 +14,7 @@ import (
 
 // These variables represent the configuration. You are not meant to modify
 // them after they were set.
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/fields for the
+// See https://mycorrhiza.wiki/hypha/configuration/fields for the
 // documentation.
 var (
 	WikiName      string

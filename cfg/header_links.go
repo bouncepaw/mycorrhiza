@@ -1,6 +1,6 @@
 package cfg
 
-// See https://mycorrhiza.lesarbr.es/hypha/configuration/header
+// See https://mycorrhiza.wiki/hypha/configuration/header
 import (
 	"github.com/bouncepaw/mycomarkup/blocks"
 	"strings"

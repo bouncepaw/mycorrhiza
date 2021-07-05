@@ -68,7 +68,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 	<div class="non-existent-hypha__ways">
 	<section class="non-existent-hypha__way">
 		<h3 class="non-existent-hypha__subtitle">📝 Write a text</h3>
-		<p>Write a note, a diary, an article, a story or anything textual using <a href="https://mycorrhiza.lesarbr.es/hypha/mycomarkup" class="shy-link">Mycomarkup</a>. Full history of edits to the document will be saved.</p>
+		<p>Write a note, a diary, an article, a story or anything textual using <a href="https://mycorrhiza.wiki/hypha/mycomarkup" class="shy-link">Mycomarkup</a>. Full history of edits to the document will be saved.</p>
 		<p>Make sure to follow this wiki&apos;s writing conventions if there are any.</p>
 		<a class="btn btn_accent stick-to-bottom" href="/edit/`)
 //line views/hypha.qtpl:25
