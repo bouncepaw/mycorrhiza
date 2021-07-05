@@ -37,7 +37,6 @@ func parseCliArgs() {
 	var createAdminName string
 
 	flag.StringVar(&createAdminName, "create-admin", "", "Create a new admin. The password will be prompted in the terminal.")
-	flag.StringVar(&cfg.HTTPPort, "port", "", "Listen on another port. This option also updates the config file for your convenience.")
 	flag.Usage = printHelp
 	flag.Parse()
 

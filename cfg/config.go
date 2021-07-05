@@ -1,4 +1,6 @@
-// Package cfg contains global variables that represent the current wiki configuration, including CLI options, configuration file values and header links.
+// Package cfg contains global variables that represent the current wiki
+// configuration, including CLI options, configuration file values and header
+// links.
 package cfg
 
 import (
@@ -46,7 +48,7 @@ type Config struct {
 	NaviTitleIcon string `comment:"This icon is used in the breadcrumbs bar."`
 	Hyphae
 	Network
-	Authorization `comment:""`
+	Authorization
 	CustomScripts `comment:"You can specify additional scripts to load on different kinds of pages, delimited by a comma ',' sign."`
 }
 
@@ -60,8 +62,8 @@ type Hyphae struct {
 // Network is a section of Config that has fields related to network stuff:
 // HTTP and Gemini.
 type Network struct {
-	HTTPPort              uint64
-	URL                   string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
+	HTTPPort uint64
+	URL      string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
 }
 
 // CustomScripts is a section with paths to JavaScript files that are loaded on
@@ -95,9 +97,8 @@ func ReadConfigFile(path string) error {
 			HeaderLinksHypha: "",
 		},
 		Network: Network{
-			HTTPPort:              1737,
-			URL:                   "",
-			GeminiCertificatePath: "",
+			HTTPPort: 1737,
+			URL:      "",
 		},
 		Authorization: Authorization{
 			UseAuth:           false,
@@ -111,13 +112,23 @@ func ReadConfigFile(path string) error {
 		},
 	}
 
-	dirty := false
-
 	f, err := ini.Load(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			f = ini.Empty()
-			dirty = true
+
+			// Save the default configuration
+			err = f.ReflectFrom(cfg)
+			if err != nil {
+				return fmt.Errorf("Failed to serialize the config: %w", err)
+			}
+
+			// Disable key-value auto-aligning, but retain spaces around '=' sign
+			ini.PrettyFormat = false
+			ini.PrettyEqual = true
+			if err = f.SaveTo(path); err != nil {
+				return fmt.Errorf("Failed to save the config file: %w", err)
+			}
 		} else {
 			return fmt.Errorf("Failed to open the config file: %w", err)
 		}
@@ -127,30 +138,11 @@ func ReadConfigFile(path string) error {
 	// doesn't exist or is empty.
 	f.MapTo(cfg)
 
-	// Update the port if it's set externally and is different from what's in
-	// the config file
-	if HTTPPort != "" && HTTPPort != strconv.FormatUint(cfg.Network.HTTPPort, 10) {
-		port, err := strconv.ParseUint(HTTPPort, 10, 64)
-		if err != nil {
-			return fmt.Errorf("Failed to parse the port from command-line arguments: %w", err)
-		}
-
-		cfg.Network.HTTPPort = port
-		dirty = true
-	}
-
-	// Save changes, if there are any
-	if dirty {
-		err = f.ReflectFrom(cfg)
-		if err != nil {
-			return fmt.Errorf("Failed to serialize the config: %w", err)
-		}
-
-		// Disable key-value auto-aligning, but retain spaces around '=' sign
-		ini.PrettyFormat = false
-		ini.PrettyEqual = true
-		if err = f.SaveTo(path); err != nil {
-			return fmt.Errorf("Failed to save the config file: %w", err)
+	// Check for PORT env var and use it, if present
+	if os.Getenv("PORT") != "" {
+		port, err := strconv.ParseUint(os.Getenv("PORT"), 10, 64)
+		if err == nil {
+			cfg.Network.HTTPPort = port
 		}
 	}
 
@@ -162,7 +154,6 @@ func ReadConfigFile(path string) error {
 	HeaderLinksHypha = cfg.HeaderLinksHypha
 	HTTPPort = strconv.FormatUint(cfg.HTTPPort, 10)
 	URL = cfg.URL
-	GeminiCertificatePath = cfg.GeminiCertificatePath
 	UseAuth = cfg.UseAuth
 	AllowRegistration = cfg.AllowRegistration
 	RegistrationLimit = cfg.RegistrationLimit
