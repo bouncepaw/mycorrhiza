@@ -137,21 +137,15 @@ func ReadConfigFile(path string) error {
 	// doesn't exist or is empty.
 	f.MapTo(cfg)
 
-	if os.Getenv("LISTEN_ADDR") != "" {
-		cfg.Network.ListenAddr = os.Getenv("LISTEN_ADDR")
-	}
-
-	if os.Getenv("PORT") != "" {
-		cfg.Network.ListenAddr = "127.0.0.1:" + os.Getenv("PORT")
-	}
-
 	// Map the struct to the global variables
 	WikiName = cfg.WikiName
 	NaviTitleIcon = cfg.NaviTitleIcon
 	HomeHypha = cfg.HomeHypha
 	UserHypha = cfg.UserHypha
 	HeaderLinksHypha = cfg.HeaderLinksHypha
-	ListenAddr = cfg.ListenAddr
+	if ListenAddr == "" {
+		ListenAddr = cfg.ListenAddr
+	}
 	URL = cfg.URL
 	UseAuth = cfg.UseAuth
 	AllowRegistration = cfg.AllowRegistration

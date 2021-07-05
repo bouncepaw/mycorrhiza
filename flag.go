@@ -36,6 +36,7 @@ type CreateUserCommand struct {
 func parseCliArgs() {
 	var createAdminName string
 
+	flag.StringVar(&cfg.ListenAddr, "listen-addr", "", "Address to listen on. For example, 127.0.0.1:1737 or /run/mycorrhiza.sock.")
 	flag.StringVar(&createAdminName, "create-admin", "", "Create a new admin. The password will be prompted in the terminal.")
 	flag.Usage = printHelp
 	flag.Parse()
