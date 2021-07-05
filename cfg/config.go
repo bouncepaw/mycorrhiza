@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/go-ini/ini"
 )
@@ -24,7 +23,7 @@ var (
 	UserHypha        string
 	HeaderLinksHypha string
 
-	HTTPPort              string
+	ListenAddr            string
 	URL                   string
 	GeminiCertificatePath string
 
@@ -62,8 +61,8 @@ type Hyphae struct {
 // Network is a section of Config that has fields related to network stuff:
 // HTTP and Gemini.
 type Network struct {
-	HTTPPort uint64
-	URL      string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
+	ListenAddr string
+	URL        string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
 }
 
 // CustomScripts is a section with paths to JavaScript files that are loaded on
@@ -97,8 +96,8 @@ func ReadConfigFile(path string) error {
 			HeaderLinksHypha: "",
 		},
 		Network: Network{
-			HTTPPort: 1737,
-			URL:      "",
+			ListenAddr: "127.0.0.1:1737",
+			URL:        "",
 		},
 		Authorization: Authorization{
 			UseAuth:           false,
@@ -138,12 +137,12 @@ func ReadConfigFile(path string) error {
 	// doesn't exist or is empty.
 	f.MapTo(cfg)
 
-	// Check for PORT env var and use it, if present
+	if os.Getenv("LISTEN_ADDR") != "" {
+		cfg.Network.ListenAddr = os.Getenv("LISTEN_ADDR")
+	}
+
 	if os.Getenv("PORT") != "" {
-		port, err := strconv.ParseUint(os.Getenv("PORT"), 10, 64)
-		if err == nil {
-			cfg.Network.HTTPPort = port
-		}
+		cfg.Network.ListenAddr = "127.0.0.1:" + os.Getenv("PORT")
 	}
 
 	// Map the struct to the global variables
@@ -152,7 +151,7 @@ func ReadConfigFile(path string) error {
 	HomeHypha = cfg.HomeHypha
 	UserHypha = cfg.UserHypha
 	HeaderLinksHypha = cfg.HeaderLinksHypha
-	HTTPPort = strconv.FormatUint(cfg.HTTPPort, 10)
+	ListenAddr = cfg.ListenAddr
 	URL = cfg.URL
 	UseAuth = cfg.UseAuth
 	AllowRegistration = cfg.AllowRegistration
@@ -163,7 +162,7 @@ func ReadConfigFile(path string) error {
 
 	// This URL makes much more sense.
 	if URL == "" {
-		URL = "http://0.0.0.0:" + HTTPPort
+		URL = "http://" + ListenAddr
 	}
 
 	return nil

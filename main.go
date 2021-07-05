@@ -5,7 +5,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -48,5 +47,5 @@ func main() {
 
 	// Network:
 	web.Init()
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+cfg.HTTPPort, nil))
+	serveHTTP()
 }
