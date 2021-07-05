@@ -62,7 +62,6 @@ type Hyphae struct {
 type Network struct {
 	HTTPPort              uint64
 	URL                   string `comment:"Set your wiki's public URL here. It's used for OpenGraph generation and syndication feeds."`
-	GeminiCertificatePath string `comment:"Gemini requires servers to use TLS for client connections. Specify your certificate's path here."`
 }
 
 // CustomScripts is a section with paths to JavaScript files that are loaded on
