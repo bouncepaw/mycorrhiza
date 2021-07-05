@@ -106,8 +106,6 @@ body { margin: 0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', san
 input, kbd { font: inherit; color: inherit; }
 textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
 
-::-webkit-file-upload-button,
-
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
@@ -515,7 +513,7 @@ kbd {
 
 @media (prefers-color-scheme: dark) {
 	.btn {
-		border-color: #444 solid 1px;
+		border: #444 solid 1px;
 	}
 
 	.btn:visited {
