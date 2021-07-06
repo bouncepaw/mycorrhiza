@@ -141,7 +141,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .transclusion { border-radius: .25rem; margin-bottom: .25rem; }
 .transclusion_failed { padding: 0 .5rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
-.transclusion__link {display: block; text-align: right; font-style: italic; margin-top: .5rem; margin-right: .25rem; text-decoration: none;}
+.transclusion__link {display: block; float: right; text-align: right; font-style: italic; margin-right: .25rem; text-decoration: none;}
 .transclusion__link::before {content: "⇐ ";}
 
 /* Derived from https://commons.wikimedia.org/wiki/File:U%2B21D2.svg */
@@ -239,9 +239,9 @@ table,
 /* Other stuff */
 html { background-color: #eee;
 }
-header { background-color: #eee; }
+header { background-color: #ddd; }
 .header-links__link { color: black; }
-.header-links__link:hover { background-color: #ddd; }
+.header-links__link:hover { background-color: #eee; }
 main { background-color: white; }
 .shy-link { color: black; }
 
