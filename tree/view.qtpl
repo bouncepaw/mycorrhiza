@@ -35,17 +35,17 @@ pseudographics:
 
 
 {% func siblingHTML(s *sibling) %}
-<li class="relative-hyphae__entry">
-	<a class="relative-hyphae__link" href="/hypha/{%s s.name %}">
+<li class="sister-hyphae__entry">
+	<a class="sister-hyphae__link" href="/hypha/{%s s.name %}">
 		{%s util.BeautifulName(path.Base(s.name)) %}
-		<span class="relative-hyphae__count">
+		<span class="sister-hyphae__count">
 		{% if s.directSubhyphaeCount > 0 %}
-			<span class="relative-hyphae__direct-count">
+			<span class="sister-hyphae__direct-count">
 				{%d s.directSubhyphaeCount %}
 			</span>
 		{% endif %}
 		{% if s.indirectSubhyphaeCount > 0 %}
-			<span class="relative-hyphae__indirect-count">
+			<span class="sister-hyphae__indirect-count">
 				({%d s.indirectSubhyphaeCount %})
 			</span>
 		{% endif %}

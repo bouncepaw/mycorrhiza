@@ -74,7 +74,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; row-gap: 1rem; }
 	.main-width { margin: 0; }
 	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
-	.relative-hyphae, .edit-toolbar { grid-column: 2 / span 1; grid-row: 1 / span 1; }
+	.sister-hyphae, .edit-toolbar { grid-column: 2 / span 1; grid-row: 1 / span 1; }
 	.layout-card { width: 100%; }
 	.edit-toolbar__buttons {display: grid; }
 }
@@ -89,7 +89,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.main-width { margin: 0 auto; }
 	.backlinks { grid-column: 1 / span 1; margin-right: 0; }
 	main { grid-column: 2 / span 1; }
-	.relative-hyphae, .edit-toolbar { grid-column: 3 / span 1; margin-left: 0; }
+	.sister-hyphae, .edit-toolbar { grid-column: 3 / span 1; margin-left: 0; }
 	.edit-toolbar__buttons { grid-template-columns: 1fr; }
 
 	.backlinks__title { text-align: right; }
@@ -192,11 +192,11 @@ caption { caption-side: top; font-size: small; }
 .subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
 .subhyphae__link:hover { background: #eee; }
 
-.relative-hyphae__list { padding: 0; margin: 0; }
-.relative-hyphae__entry { clear: both; }
-.relative-hyphae__count { display: inline-block; float: right; }
-.relative-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
-.relative-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
+.sister-hyphae__list { padding: 0; margin: 0; }
+.sister-hyphae__entry { clear: both; }
+.sister-hyphae__count { display: inline-block; float: right; }
+.sister-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
+.sister-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
 
 /* Color stuff */
 /* Lighter stuff #eee */
@@ -254,7 +254,7 @@ blockquote { border-left: 2px #999 solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
-.relative-hyphae__link:hover, .backlinks__link:hover { background-color: #eee; }
+.sister-hyphae__link:hover, .backlinks__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
@@ -264,7 +264,7 @@ main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #3434
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.subhyphae__link:hover, .relative-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .sister-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
 
 .header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }

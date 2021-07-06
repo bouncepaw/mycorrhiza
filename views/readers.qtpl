@@ -77,7 +77,7 @@
 If `contents` == "", a helpful message is shown instead.
 {% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
 {% code
-	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+	sisters, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
 	u := user.FromRequest(rq)
 %}
 {%= NavHTML(rq, h.Name, "hypha") %}
@@ -101,14 +101,14 @@ If `contents` == "", a helpful message is shown instead.
 	</section>
 {%= SubhyphaeHTML(subhyphae) %}
 </main>
-{%= RelativeHyphaeHTML(relatives) %}
+{%= sisterHyphaeHTML(sisters) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) %}
 {% code
-	relatives, subhyphae, _, _ := tree.Tree(h.Name)
+	sisters, subhyphae, _, _ := tree.Tree(h.Name)
 %}
 {%= NavHTML(rq, h.Name, "revision", revHash) %}
 <div class="layout">
@@ -120,7 +120,7 @@ If `contents` == "", a helpful message is shown instead.
 	</article>
 {%= SubhyphaeHTML(subhyphae) %}
 </main>
-{%= RelativeHyphaeHTML(relatives) %}
+{%= sisterHyphaeHTML(sisters) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}

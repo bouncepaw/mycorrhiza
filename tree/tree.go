@@ -87,7 +87,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 	for i, s := range siblings {
 		if s.name == hyphaName {
 			I = i
-			siblingsHTML += fmt.Sprintf(`<li class="relative-hyphae__entry relative-hyphae__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
+			siblingsHTML += fmt.Sprintf(`<li class="sister-hyphae__entry sister-hyphae__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
 		} else {
 			siblingsHTML += siblingHTML(s)
 		}
@@ -98,7 +98,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 	if I != len(siblings)-1 && len(siblings) > 1 {
 		next = siblings[I+1].name
 	}
-	return fmt.Sprintf(`<ul class="relative-hyphae__list">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
+	return fmt.Sprintf(`<ul class="sister-hyphae__list">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
 }
 
 type child struct {

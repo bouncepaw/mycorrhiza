@@ -155,8 +155,8 @@ func childHTML(c *child) string {
 func streamsiblingHTML(qw422016 *qt422016.Writer, s *sibling) {
 //line tree/view.qtpl:37
 	qw422016.N().S(`
-<li class="relative-hyphae__entry">
-	<a class="relative-hyphae__link" href="/hypha/`)
+<li class="sister-hyphae__entry">
+	<a class="sister-hyphae__link" href="/hypha/`)
 //line tree/view.qtpl:39
 	qw422016.E().S(s.name)
 //line tree/view.qtpl:39
@@ -166,13 +166,13 @@ func streamsiblingHTML(qw422016 *qt422016.Writer, s *sibling) {
 	qw422016.E().S(util.BeautifulName(path.Base(s.name)))
 //line tree/view.qtpl:40
 	qw422016.N().S(`
-		<span class="relative-hyphae__count">
+		<span class="sister-hyphae__count">
 		`)
 //line tree/view.qtpl:42
 	if s.directSubhyphaeCount > 0 {
 //line tree/view.qtpl:42
 		qw422016.N().S(`
-			<span class="relative-hyphae__direct-count">
+			<span class="sister-hyphae__direct-count">
 				`)
 //line tree/view.qtpl:44
 		qw422016.N().D(s.directSubhyphaeCount)
@@ -189,7 +189,7 @@ func streamsiblingHTML(qw422016 *qt422016.Writer, s *sibling) {
 	if s.indirectSubhyphaeCount > 0 {
 //line tree/view.qtpl:47
 		qw422016.N().S(`
-			<span class="relative-hyphae__indirect-count">
+			<span class="sister-hyphae__indirect-count">
 				(`)
 //line tree/view.qtpl:49
 		qw422016.N().D(s.indirectSubhyphaeCount)

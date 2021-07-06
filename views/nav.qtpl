@@ -64,10 +64,10 @@ var navEntries = []navEntry{
 {% endif %}
 {% endfunc %}
 
-{% func RelativeHyphaeHTML(relatives string) %}
-<aside class="relative-hyphae layout-card">
-	<h2 class="relative-hyphae__title layout-card__title">Relative hyphae</h2>
-	{%s= relatives %}
+{% func sisterHyphaeHTML(sisters string) %}
+<aside class="sister-hyphae layout-card">
+	<h2 class="sister-hyphae__title layout-card__title">Sister hyphae</h2>
+	{%s= sisters %}
 </aside>
 {% endfunc %}
 

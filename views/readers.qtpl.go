@@ -234,7 +234,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:80
-	relatives, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+	sisters, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
 	u := user.FromRequest(rq)
 
 //line views/readers.qtpl:82
@@ -326,7 +326,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 </main>
 `)
 //line views/readers.qtpl:104
-	StreamRelativeHyphaeHTML(qw422016, relatives)
+	streamsisterHyphaeHTML(qw422016, sisters)
 //line views/readers.qtpl:104
 	qw422016.N().S(`
 </div>
@@ -371,7 +371,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.H
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:111
-	relatives, subhyphae, _, _ := tree.Tree(h.Name)
+	sisters, subhyphae, _, _ := tree.Tree(h.Name)
 
 //line views/readers.qtpl:112
 	qw422016.N().S(`
@@ -403,7 +403,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.H
 </main>
 `)
 //line views/readers.qtpl:123
-	StreamRelativeHyphaeHTML(qw422016, relatives)
+	streamsisterHyphaeHTML(qw422016, sisters)
 //line views/readers.qtpl:123
 	qw422016.N().S(`
 </div>

@@ -233,14 +233,14 @@ func UserMenuHTML(u *user.User) string {
 }
 
 //line views/nav.qtpl:67
-func StreamRelativeHyphaeHTML(qw422016 *qt422016.Writer, relatives string) {
+func streamsisterHyphaeHTML(qw422016 *qt422016.Writer, sisters string) {
 //line views/nav.qtpl:67
 	qw422016.N().S(`
-<aside class="relative-hyphae layout-card">
-	<h2 class="relative-hyphae__title layout-card__title">Relative hyphae</h2>
+<aside class="sister-hyphae layout-card">
+	<h2 class="sister-hyphae__title layout-card__title">Sister hyphae</h2>
 	`)
 //line views/nav.qtpl:70
-	qw422016.N().S(relatives)
+	qw422016.N().S(sisters)
 //line views/nav.qtpl:70
 	qw422016.N().S(`
 </aside>
@@ -249,22 +249,22 @@ func StreamRelativeHyphaeHTML(qw422016 *qt422016.Writer, relatives string) {
 }
 
 //line views/nav.qtpl:72
-func WriteRelativeHyphaeHTML(qq422016 qtio422016.Writer, relatives string) {
+func writesisterHyphaeHTML(qq422016 qtio422016.Writer, sisters string) {
 //line views/nav.qtpl:72
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/nav.qtpl:72
-	StreamRelativeHyphaeHTML(qw422016, relatives)
+	streamsisterHyphaeHTML(qw422016, sisters)
 //line views/nav.qtpl:72
 	qt422016.ReleaseWriter(qw422016)
 //line views/nav.qtpl:72
 }
 
 //line views/nav.qtpl:72
-func RelativeHyphaeHTML(relatives string) string {
+func sisterHyphaeHTML(sisters string) string {
 //line views/nav.qtpl:72
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/nav.qtpl:72
-	WriteRelativeHyphaeHTML(qb422016, relatives)
+	writesisterHyphaeHTML(qb422016, sisters)
 //line views/nav.qtpl:72
 	qs422016 := string(qb422016.B)
 //line views/nav.qtpl:72
