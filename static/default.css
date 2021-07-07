@@ -552,3 +552,16 @@ kbd {
 .recent-changes__entry__time {
 	font-weight: bold;
 }
+
+/*
+ * To-do lists
+ */
+.item_todo {
+	position: relative;
+	list-style: none;
+}
+.item_todo > input[type=checkbox] {
+	position: absolute;
+	left: -1.6rem;
+	top: .1rem;
+}
