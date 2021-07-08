@@ -1,10 +1,10 @@
 # 🍄 Mycorrhiza Wiki
 <img src="https://mycorrhiza.wiki/binary/release/1.2/screenshot" alt="A screenshot of Mycorrhiza Wiki's home page in the Safari browser" width="500">
 
-**Mycorrhiza Wiki** is a filesystem-backed wiki engine using Git for keeping
-history.
+**Mycorrhiza Wiki** is a filesystem-backed wiki engine that uses Git for
+keeping history.
 
-[Main wiki](https://mycorrhiza.wiki)
+[⇒ Main wiki](https://mycorrhiza.wiki)
 
 ## Features
 
@@ -33,16 +33,18 @@ See [the deployment guide][deployment] on the wiki.
 
 ## Contributing
 
-Help is always welcome! We have a [Telegram chat][tg] for development
-discussions. You can also sponsor the maintainer of Mycorrhiza,
+Help is always welcome! We have an IRC channel [#mycorrhiza on
+irc.libera.chat][irc] and a [Telegram chat][tg] for discussions and
+development. You can also sponsor the maintainer of Mycorrhiza,
 [@bouncepaw][bp], on [Boosty][bp-donate]. If you want to contribute with code,
 you can either open a pull request on GitHub or send a patch to the [mailing
 list][mlist]. Feel free to open an issue on GitHub or contact us directly.
 
+[irc]: irc://irc.libera.chat/#mycorrhiza
 [tg]: https://t.me/mycorrhizadev
 [bp]: https://github.com/bouncepaw
 [bp-donate]: https://boosty.to/bouncepaw
 [mlist]: https://lists.sr.ht/~handlerug/mycorrhiza-devel
 
-You can view the list of planned features at [our GitHub project kanban
+You can view the list of planned features on [our GitHub project kanban
 board](https://github.com/bouncepaw/mycorrhiza/projects/1).
