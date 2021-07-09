@@ -57,7 +57,7 @@
 		</form>
 	{% else %}
 		<p>Authentication is disabled. You can make edits anonymously.</p>
-		<p><a class="modal__cancel" href="/">← Go home</a></p>
+		<p><a class="btn btn_weak" href="/">← Go home</a></p>
 	{% endif %}
 	</section>
 </main>
@@ -98,4 +98,36 @@
 	</section>
 </main>
 </div>
+{% endfunc %}
+
+{% func LockHTML() %}
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🔒 Locked</title>
+	<link rel="shortcut icon" href="/static/favicon.ico">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<main class="locked-notice">
+		<section class="locked-notice__message">
+			<p class="locked-notice__lock">🔒</p>
+			<h1 class="locked-notice__title">Locked</h1>
+			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+                <label for="login-form__username">Username</label>
+                <br>
+                <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+                <br>
+                <label for="login-form__password">Password</label>
+                <br>
+                <input type="password" required name="password" autocomplete="current-password">
+                <br>
+                <input class="btn" type="submit" value="Log in">
+            </form>
+		</section>
+	</main>
+</body>
+</html>
 {% endfunc %}

@@ -161,7 +161,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer) {
 //line views/auth.qtpl:58
 		qw422016.N().S(`
 		<p>Authentication is disabled. You can make edits anonymously.</p>
-		<p><a class="modal__cancel" href="/">← Go home</a></p>
+		<p><a class="btn btn_weak" href="/">← Go home</a></p>
 	`)
 //line views/auth.qtpl:61
 	}
@@ -329,4 +329,67 @@ func LogoutHTML(can bool) string {
 //line views/auth.qtpl:101
 	return qs422016
 //line views/auth.qtpl:101
+}
+
+//line views/auth.qtpl:103
+func StreamLockHTML(qw422016 *qt422016.Writer) {
+//line views/auth.qtpl:103
+	qw422016.N().S(`
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🔒 Locked</title>
+	<link rel="shortcut icon" href="/static/favicon.ico">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<main class="locked-notice">
+		<section class="locked-notice__message">
+			<p class="locked-notice__lock">🔒</p>
+			<h1 class="locked-notice__title">Locked</h1>
+			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+                <label for="login-form__username">Username</label>
+                <br>
+                <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+                <br>
+                <label for="login-form__password">Password</label>
+                <br>
+                <input type="password" required name="password" autocomplete="current-password">
+                <br>
+                <input class="btn" type="submit" value="Log in">
+            </form>
+		</section>
+	</main>
+</body>
+</html>
+`)
+//line views/auth.qtpl:133
+}
+
+//line views/auth.qtpl:133
+func WriteLockHTML(qq422016 qtio422016.Writer) {
+//line views/auth.qtpl:133
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/auth.qtpl:133
+	StreamLockHTML(qw422016)
+//line views/auth.qtpl:133
+	qt422016.ReleaseWriter(qw422016)
+//line views/auth.qtpl:133
+}
+
+//line views/auth.qtpl:133
+func LockHTML() string {
+//line views/auth.qtpl:133
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/auth.qtpl:133
+	WriteLockHTML(qb422016)
+//line views/auth.qtpl:133
+	qs422016 := string(qb422016.B)
+//line views/auth.qtpl:133
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/auth.qtpl:133
+	return qs422016
+//line views/auth.qtpl:133
 }

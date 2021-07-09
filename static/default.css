@@ -554,6 +554,35 @@ kbd {
 }
 
 /*
+ * The lock page
+ */
+.locked-notice {
+	background-color: transparent;
+	display: flex;
+	justify-content: center;
+}
+
+.locked-notice__message {
+	max-width: 30rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.locked-notice__lock {
+	font-size: 8rem;
+	margin: 0;
+}
+
+.locked-notice__title {
+	margin: 0 0 1rem 0;
+}
+
+.locked-notice__login-form input {
+	margin-bottom: 1rem;
+}
+
+/*
  * To-do lists
  */
 .item_todo {

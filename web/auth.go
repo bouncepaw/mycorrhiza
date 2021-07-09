@@ -14,6 +14,7 @@ import (
 )
 
 func initAuth() {
+	http.HandleFunc("/lock", handlerLock)
 	if !cfg.UseAuth {
 		return
 	}
@@ -24,6 +25,10 @@ func initAuth() {
 	http.HandleFunc("/login-data", handlerLoginData)
 	http.HandleFunc("/logout", handlerLogout)
 	http.HandleFunc("/logout-confirm", handlerLogoutConfirm)
+}
+
+func handlerLock(w http.ResponseWriter, rq *http.Request) {
+	io.WriteString(w, views.LockHTML())
 }
 
 // handlerRegister both displays the register form (GET) and registers users (POST).
