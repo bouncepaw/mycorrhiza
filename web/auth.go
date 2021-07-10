@@ -33,6 +33,9 @@ func handlerLock(w http.ResponseWriter, rq *http.Request) {
 
 // handlerRegister both displays the register form (GET) and registers users (POST).
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	util.PrepareRq(rq)
 	if !cfg.AllowRegistration {
 		w.WriteHeader(http.StatusForbidden)
@@ -102,6 +105,9 @@ func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
 
 // handlerLogin shows the login form.
 func handlerLogin(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	util.PrepareRq(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if cfg.UseAuth {

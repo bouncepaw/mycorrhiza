@@ -23,13 +23,13 @@ var (
 	UserHypha        string
 	HeaderLinksHypha string
 
-	ListenAddr            string
-	URL                   string
-	GeminiCertificatePath string
+	ListenAddr string
+	URL        string
 
 	UseAuth           bool
 	AllowRegistration bool
 	RegistrationLimit uint64
+	Locked            bool
 
 	CommonScripts []string
 	ViewScripts   []string
@@ -82,6 +82,7 @@ type Authorization struct {
 	UseAuth           bool
 	AllowRegistration bool
 	RegistrationLimit uint64 `comment:"This field controls the maximum amount of allowed registrations."`
+	Locked            bool   `comment:"Set if users have to authorize to see anything on the wiki."`
 }
 
 // ReadConfigFile reads a config on the given path and stores the
@@ -103,6 +104,7 @@ func ReadConfigFile(path string) error {
 			UseAuth:           false,
 			AllowRegistration: false,
 			RegistrationLimit: 0,
+			Locked:            false,
 		},
 		CustomScripts: CustomScripts{
 			CommonScripts: []string{},
@@ -135,7 +137,9 @@ func ReadConfigFile(path string) error {
 
 	// Map the config file to the config struct. It'll do nothing if the file
 	// doesn't exist or is empty.
-	f.MapTo(cfg)
+	if err := f.MapTo(cfg); err != nil {
+		return err
+	}
 
 	// Map the struct to the global variables
 	WikiName = cfg.WikiName
@@ -150,6 +154,7 @@ func ReadConfigFile(path string) error {
 	UseAuth = cfg.UseAuth
 	AllowRegistration = cfg.AllowRegistration
 	RegistrationLimit = cfg.RegistrationLimit
+	Locked = cfg.Locked && cfg.UseAuth // Makes no sense to have the lock but no auth
 	CommonScripts = cfg.CommonScripts
 	ViewScripts = cfg.ViewScripts
 	EditScripts = cfg.EditScripts

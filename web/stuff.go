@@ -30,13 +30,20 @@ func initStuff() {
 
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
+	u := user.FromRequest(rq)
+	if shown := u.ShowLockMaybe(w, rq); shown {
+		return
+	}
 	util.PrepareRq(rq)
-	util.HTTP200Page(w, views.BaseHTML("List of pages", views.HyphaListHTML(), user.FromRequest(rq)))
+	util.HTTP200Page(w, views.BaseHTML("List of pages", views.HyphaListHTML(), u))
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be an admin to reindex hyphae.")
 		log.Println("Rejected", rq.URL)
@@ -54,6 +61,9 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 // See https://mycorrhiza.wiki/hypha/configuration/header
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be a moderator to update header links.")
 		log.Println("Rejected", rq.URL)
@@ -66,6 +76,9 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 // handlerRandom redirects to a random hypha.
 func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	var (
 		randomHyphaName string
 		amountOfHyphae  = hyphae.Count()
@@ -87,6 +100,9 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 
 // handlerAbout shows a summary of wiki's software.
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, err := io.WriteString(w, views.BaseHTML("About "+cfg.WikiName, views.AboutHTML(), user.FromRequest(rq)))

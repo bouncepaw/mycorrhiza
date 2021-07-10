@@ -30,6 +30,9 @@ func initAdmin() {
 // handlerAdmin provides the admin panel.
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	if user.CanProceed(rq, "admin") {
 		w.Header().Set("Content-Type", "text/html;charset=utf-8")
 		w.WriteHeader(http.StatusOK)
@@ -43,6 +46,9 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 // handlerAdminShutdown kills the wiki.
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	if user.CanProceed(rq, "admin/shutdown") && rq.Method == "POST" {
 		log.Fatal("An admin commanded the wiki to shutdown")
 	}
@@ -51,6 +57,9 @@ func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 // handlerAdminReindexUsers reinitialises the user system.
 func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()
 		redirectTo := rq.Referer()
@@ -61,10 +70,13 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
-	util.PrepareRq(r)
-	if user.CanProceed(r, "admin") {
-		path := strings.TrimPrefix(r.URL.Path, "/admin/users")
+func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
+	if user.CanProceed(rq, "admin") {
+		path := strings.TrimPrefix(rq.URL.Path, "/admin/users")
 		parts := strings.Split(path, "/")[1:]
 
 		// Users dashboard
@@ -81,7 +93,7 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 			})
 
 			html := views.AdminUsersPanelHTML(userList)
-			html = views.BaseHTML("Manage users", html, user.FromRequest(r))
+			html = views.BaseHTML("Manage users", html, user.FromRequest(rq))
 
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 			if _, err := io.WriteString(w, html); err != nil {
@@ -103,9 +115,9 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 
 		switch parts[1] {
 		case "edit":
-			f := util.FormDataFromRequest(r, []string{"group"})
+			f := util.FormDataFromRequest(rq, []string{"group"})
 
-			if r.Method == http.MethodPost {
+			if rq.Method == http.MethodPost {
 				oldGroup := u.Group
 				newGroup := f.Get("group")
 
@@ -116,7 +128,7 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 						log.Println(err)
 						f = f.WithError(err)
 					} else {
-						http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+						http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 						return
 					}
 				} else {
@@ -127,7 +139,7 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 			f.Put("group", u.Group)
 
 			html := views.AdminUserEditHTML(u, f)
-			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
+			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(rq))
 
 			if f.HasError() {
 				w.WriteHeader(http.StatusBadRequest)
@@ -138,17 +150,17 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 		case "delete":
 			f := util.NewFormData()
 
-			if r.Method == http.MethodPost {
+			if rq.Method == http.MethodPost {
 				f = f.WithError(user.DeleteUser(u.Name))
 				if !f.HasError() {
-					http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+					http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 				} else {
 					log.Println(f.Error())
 				}
 			}
 
 			html := views.AdminUserDeleteHTML(u, util.NewFormData())
-			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(r))
+			html = views.BaseHTML(fmt.Sprintf("User %s", u.Name), html, user.FromRequest(rq))
 
 			if f.HasError() {
 				w.WriteHeader(http.StatusBadRequest)
@@ -162,32 +174,35 @@ func handlerAdminUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlerAdminUserNew(w http.ResponseWriter, r *http.Request) {
-	util.PrepareRq(r)
-	if user.CanProceed(r, "admin") {
-		if r.Method == http.MethodGet {
+func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
+	if user.CanProceed(rq, "admin") {
+		if rq.Method == http.MethodGet {
 			// New user form
 			html := views.AdminUserNewHTML(util.NewFormData())
-			html = views.BaseHTML("New user", html, user.FromRequest(r))
+			html = views.BaseHTML("New user", html, user.FromRequest(rq))
 
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 			io.WriteString(w, html)
 			return
-		} else if r.Method == http.MethodPost {
+		} else if rq.Method == http.MethodPost {
 			// Create a user
-			f := util.FormDataFromRequest(r, []string{"name", "password", "group"})
+			f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
 
 			err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), true)
 
 			if err != nil {
 				html := views.AdminUserNewHTML(f.WithError(err))
-				html = views.BaseHTML("New user", html, user.FromRequest(r))
+				html = views.BaseHTML("New user", html, user.FromRequest(rq))
 
 				w.WriteHeader(http.StatusBadRequest)
 				w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 				io.WriteString(w, html)
 			} else {
-				http.Redirect(w, r, "/admin/users/", http.StatusSeeOther)
+				http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 			}
 			return
 		}

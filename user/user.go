@@ -1,6 +1,7 @@
 package user
 
 import (
+	"net/http"
 	"sync"
 	"time"
 
@@ -95,4 +96,13 @@ func (user *User) isCorrectPassword(password string) bool {
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	return err == nil
+}
+
+// ShowLockMaybe redirects to the lock page if the user is anon and the wiki has been configured to use the lock. It returns true if the user was redirected.
+func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
+	if cfg.Locked && user.Group == "anon" {
+		http.Redirect(w, rq, "/lock", http.StatusSeeOther)
+		return true
+	}
+	return false
 }

@@ -54,6 +54,9 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(views.BaseHTML("User list", views.UserListHTML(), user.FromRequest(rq))))
