@@ -1,0 +1,35 @@
+# Hypha
+**Hypha** (//plural:// hyphae) is the main content unit used in Mycorrhiza Wiki.
+
+## The structure of hypha
+A hypha consists of two parts:
+* **Attachment.** Some form of media. There is only one attachment. See [[/help/en/attachment | Attachment]] for more information about attachments.
+* **Text part.** Either a description of the attachment or a stand-alone text unit such as an article, a diary or a poem. It is written in a special markup, called [[/help/en/mycomarkup | Mycomarkup]].
+
+Both parts are optional. You can have a picture without description, an article without an attachment, etc. You can have them both. You must have at least one part, though.
+
+## How to create a hypha?
+Some links on wiki are red. It means that they link a hypha that does not exist yet. If you follow this link, you will see a special page where you can upload an attachment or open the text editor. This is how you create hyphae.
+
+You can create such red links and follow them to create hyphae.
+
+Alternatively, you can edit your address in browser to jump to such pages directly.
+
+## Hypha names
+Hypha names are case-insensitive. It means that names //amanita muscaria// and //Amanita Muscaria// are the same. Also, space and underscore are also the same (//amanita muscaria// = //amanita_muscaria//). Canonical names are all lowercase and underscored.
+
+There are some characters that cannot be part of a hypha name: `?!:#@><*|"'&%{}\\` Others can be used.
+
+## Genealogy
+A **subhypha** is a hypha that has a name starting with a name of a different hypha, followed by a slash and by the rest of the name. For example, hypha //Fruit/Apple// is a subhypha of hypha //Fruit//. There can be as many subhyphae as you want. Subhyphae can have subhyphae themselves.
+
+Thus, a **superhypha** is a reverse of subhypha: //Fruit// is the superhypha of //Fruit/Apple//. There can be only one superhypha.
+
+**Sister hyphae** are hyphae that are subhyphae of the same hypha. For example, //Fruit/Apple// and //Fruit/Pear// are sister hyphae.
+
+## Word
+Read the word //hypha// as /ˈhaɪfə/. The plural form is //hyphae//. Read it as /ˈhaɪfi/.
+
+The word is taken from mycology, the study of fungi. In a fungus, hyphae are thin white threads from which the mycelium is made. See [[https://en.wikipedia.org/wiki/Hypha | this Wikipedia article]] for more information about real hyphae.
+
+Think of Mycorrhiza Wiki hyphae as of small elements that build up your wiki.
