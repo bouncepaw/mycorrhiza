@@ -2,6 +2,9 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
+	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
+	"github.com/bouncepaw/mycorrhiza/help"
 	"io"
 	"log"
 	"math/rand"
@@ -18,6 +21,7 @@ import (
 )
 
 func initStuff() {
+	http.HandleFunc("/help/", handlerHelp)
 	http.HandleFunc("/list/", handlerList)
 	http.HandleFunc("/reindex/", handlerReindex)
 	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
@@ -26,6 +30,27 @@ func initStuff() {
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
+}
+
+// handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
+func handlerHelp(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
+
+	content, err := help.Get(rq.URL.Path[6:]) // Drop /help/
+	if err != nil {
+		// TODO: proper error reporting that makes sense
+		httpErr(w, http.StatusForbidden, cfg.HomeHypha, err.Error(), err.Error())
+		return
+	}
+
+	// TODO: change for the function that uses byte array when there is such function in mycomarkup.
+	ctx, _ := mycocontext.ContextFromStringInput(rq.URL.Path[1:3], string(content))
+	ast := mycomarkup.BlockTree(ctx)
+	result := mycomarkup.BlocksToHTML(ctx, ast)
+	// TODO: styled output idk
+	_, _ = io.WriteString(w, result)
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.
