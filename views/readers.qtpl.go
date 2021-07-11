@@ -57,7 +57,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 //line views/readers.qtpl:14
 	qw422016.N().S(`
 <div class="layout">
-<main class="main-width">
+<main class="main-width attachment-tab">
 	<h1>Attachment of `)
 //line views/readers.qtpl:17
 	qw422016.E().S(util.BeautifulName(h.Name))
@@ -68,13 +68,13 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 	if h.BinaryPath == "" {
 //line views/readers.qtpl:18
 		qw422016.N().S(`
-	<p class="warning">This hypha has no attachment, you can upload it here.</p>
+	<p class="explanation">This hypha has no attachment, you can upload it here. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
 	`)
 //line views/readers.qtpl:20
 	} else {
 //line views/readers.qtpl:20
 		qw422016.N().S(`
-	<p class="warning">You can manage the hypha's attachment on this page.</p>
+	<p class="explanation">You can manage the hypha's attachment on this page. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
 	`)
 //line views/readers.qtpl:22
 	}
