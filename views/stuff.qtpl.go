@@ -234,7 +234,7 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`
 <aside class="help-topics layout-card">
 	<h2 class="layout-card__title">Help topics</h2>
-	<ul>
+	<ul class="help-topics__list">
 		<li>
 			<a href="/help/en">Main</a>
 		</li>
