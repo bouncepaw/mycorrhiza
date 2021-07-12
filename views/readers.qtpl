@@ -13,12 +13,12 @@
 {% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
 {%= NavHTML(rq, h.Name, "attachment") %}
 <div class="layout">
-<main class="main-width">
+<main class="main-width attachment-tab">
 	<h1>Attachment of {%s util.BeautifulName(h.Name) %}</h1>
 	{% if h.BinaryPath == "" %}
-	<p class="warning">This hypha has no attachment, you can upload it here.</p>
+	<p class="explanation">This hypha has no attachment, you can upload it here. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
 	{% else %}
-	<p class="warning">You can manage the hypha's attachment on this page.</p>
+	<p class="explanation">You can manage the hypha's attachment on this page. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
 	{% endif %}
 
 	<section class="amnt-grid">

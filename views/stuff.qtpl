@@ -44,6 +44,42 @@
 </html>
 {% endfunc %}
 
+{% func HelpHTML(content string) %}
+<div class="layout">
+<main class="main-width help">
+	<article>
+	{%s= content %}
+	</article>
+</main>
+{%s= helpTopicsHTML() %}
+</div>
+{% endfunc %}
+
+{% func HelpEmptyErrorHTML() %}
+<h1>This entry does not exist!</h1>
+<p>Try finding a different entry that would help you.</p>
+<p>If you want to write this entry by yourself, consider <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">contributing</a> to Mycorrhiza Wiki directly.</p>
+{% endfunc %}
+
+{% func helpTopicsHTML() %}
+<aside class="help-topics layout-card">
+	<h2 class="layout-card__title">Help topics</h2>
+	<ul class="help-topics__list">
+		<li>
+			<a href="/help/en">Main</a>
+		</li>
+		<li>
+			<a href="/help/en/hypha">Hypha</a>
+			<ul>
+				<li>
+					<a href="/help/en/attachment">Attachment</a>
+				</li>
+			</ul
+		</li>
+	</ul>
+</aside>
+{% endfunc %}
+
 {% func UserListHTML() %}
 <div class="layout">
 <main class="main-width user-list">

@@ -2,10 +2,14 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
+	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
+	"github.com/bouncepaw/mycorrhiza/help"
 	"io"
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
@@ -18,6 +22,7 @@ import (
 )
 
 func initStuff() {
+	http.HandleFunc("/help/", handlerHelp)
 	http.HandleFunc("/list/", handlerList)
 	http.HandleFunc("/reindex/", handlerReindex)
 	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
@@ -26,6 +31,48 @@ func initStuff() {
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
+}
+
+// handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
+func handlerHelp(w http.ResponseWriter, rq *http.Request) {
+	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
+		return
+	}
+
+	content, err := help.Get(rq.URL.Path[6:]) // Drop /help/
+	if err != nil && strings.HasPrefix(err.Error(), "open") {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML("Entry not found",
+				views.HelpHTML(views.HelpEmptyErrorHTML()),
+				user.FromRequest(rq)),
+		)
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML(err.Error(),
+				views.HelpHTML(err.Error()),
+				user.FromRequest(rq)),
+		)
+		return
+	}
+
+	// TODO: change for the function that uses byte array when there is such function in mycomarkup.
+	ctx, _ := mycocontext.ContextFromStringInput(rq.URL.Path[1:3], string(content))
+	ast := mycomarkup.BlockTree(ctx)
+	result := mycomarkup.BlocksToHTML(ctx, ast)
+	// TODO: styled output idk
+	w.WriteHeader(http.StatusOK)
+	_, _ = io.WriteString(
+		w,
+		views.BaseHTML("Help",
+			views.HelpHTML(result),
+			user.FromRequest(rq)),
+	)
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.

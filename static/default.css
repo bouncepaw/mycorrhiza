@@ -74,7 +74,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; margin: 0 1rem; row-gap: 1rem; }
 	.main-width { margin: 0; }
 	main { grid-column: 1 / span 1; grid-row: 1 / span 2; }
-	.sister-hyphae, .edit-toolbar { grid-column: 2 / span 1; grid-row: 1 / span 1; }
+	.sister-hyphae, .edit-toolbar, .help-topics { grid-column: 2 / span 1; grid-row: 1 / span 1; }
 	.layout-card { width: 100%; }
 	.edit-toolbar__buttons {display: grid; }
 }
@@ -89,7 +89,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.main-width { margin: 0 auto; }
 	.backlinks { grid-column: 1 / span 1; margin-right: 0; }
 	main { grid-column: 2 / span 1; }
-	.sister-hyphae, .edit-toolbar { grid-column: 3 / span 1; margin-left: 0; }
+	.sister-hyphae, .edit-toolbar, .help-topics { grid-column: 3 / span 1; margin-left: 0; }
 	.edit-toolbar__buttons { grid-template-columns: 1fr; }
 
 	.backlinks__title { text-align: right; }
@@ -129,7 +129,8 @@ blockquote { margin: 0; padding-left: .75rem; }
 .wikilink_mailto::before { content: url("/static/icon/mailto-proto.svg"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
-main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
+main h1 { margin: .5rem 0 0 0; }
+main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
 .heading__link { text-decoration: none; display: inline-block; }
 .heading__link::after { width: 1rem; content: "§"; color: transparent; }
 .heading__link:hover::after, .heading__link:active::after { color: #999; }
@@ -593,4 +594,15 @@ kbd {
 	position: absolute;
 	left: -1.6rem;
 	top: .1rem;
+}
+
+/*
+ * Help topics sidebar
+ */
+.help-topics__list {
+	margin: .5rem 0;
+	padding-left: .5rem;
+}
+.help-topics__list ul {
+	padding-left: 1rem;
 }
