@@ -11,10 +11,10 @@
 .modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
 
-.hypha-list { padding-left: 0; }
-.hypha-list__entry { list-style-type: none; }
-.hypha-list__link { text-decoration: none; display: inline-block; padding: .25rem; }
-.hypha-list__link:hover { text-decoration: underline; }
+.hypha-list, .primitive-search__results { padding-left: 0; }
+.hypha-list__entry, .primitive-search__entry { list-style-type: none; }
+.hypha-list__link, .primitive-search__link { text-decoration: none; display: inline-block; padding: .25rem; }
+.hypha-list__link:hover, .primitive-search__link:hover { text-decoration: underline; }
 .hypha-list__amnt-type { font-size: smaller; color: #999; }
 
 /* General element positions, from small to big */

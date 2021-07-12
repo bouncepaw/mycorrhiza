@@ -160,7 +160,7 @@ func StreamPrimitiveSearchHTML(qw422016 *qt422016.Writer, query string, generato
 //line views/stuff.qtpl:53
 		qw422016.N().S(`">`)
 //line views/stuff.qtpl:53
-		qw422016.E().S(hyphaName)
+		qw422016.E().S(util.BeautifulName(hyphaName))
 //line views/stuff.qtpl:53
 		qw422016.N().S(`</a>
 		</li>
