@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
@@ -39,9 +40,24 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	content, err := help.Get(rq.URL.Path[6:]) // Drop /help/
+	if err != nil && strings.HasPrefix(err.Error(), "open") {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML("Entry not found",
+				views.HelpHTML(views.HelpEmptyErrorHTML()),
+				user.FromRequest(rq)),
+		)
+		return
+	}
 	if err != nil {
-		// TODO: proper error reporting that makes sense
-		httpErr(w, http.StatusForbidden, cfg.HomeHypha, err.Error(), err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML(err.Error(),
+				views.HelpHTML(err.Error()),
+				user.FromRequest(rq)),
+		)
 		return
 	}
 
@@ -50,7 +66,13 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
 	// TODO: styled output idk
-	_, _ = io.WriteString(w, result)
+	w.WriteHeader(http.StatusOK)
+	_, _ = io.WriteString(
+		w,
+		views.BaseHTML("Help",
+			views.HelpHTML(result),
+			user.FromRequest(rq)),
+	)
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.
