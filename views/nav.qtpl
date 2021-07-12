@@ -64,10 +64,10 @@ var navEntries = []navEntry{
 {% endif %}
 {% endfunc %}
 
-{% func sisterHyphaeHTML(sisters string) %}
-<aside class="sister-hyphae layout-card">
-	<h2 class="sister-hyphae__title layout-card__title">Sister hyphae</h2>
-	{%s= sisters %}
+{% func siblingHyphaeHTML(siblings string) %}
+<aside class="sibling-hyphae layout-card">
+	<h2 class="sibling-hyphae__title layout-card__title">Sibling hyphae</h2>
+	{%s= siblings %}
 </aside>
 {% endfunc %}
 
