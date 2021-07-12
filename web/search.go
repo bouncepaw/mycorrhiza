@@ -23,6 +23,10 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 		query = rq.FormValue("q")
 		u     = user.FromRequest(rq)
 	)
+	if shown := u.ShowLockMaybe(w, rq); shown {
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
 		views.BaseHTML(
@@ -38,7 +42,12 @@ func handlerTitleSearchJSON(w http.ResponseWriter, rq *http.Request) {
 	_ = rq.ParseForm()
 	var (
 		query = rq.FormValue("q")
+		u     = user.FromRequest(rq)
 	)
+	if shown := u.ShowLockMaybe(w, rq); shown {
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
 		views.TitleSearchJSON(query, shroom.YieldHyphaNamesContainingString),
