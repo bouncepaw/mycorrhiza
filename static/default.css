@@ -24,7 +24,8 @@ header { width: 100%; margin-bottom: 1rem; }
 .header-links__list, .hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
 .header-links__entry, .hypha-tabs__tab { list-style-type: none; }
 
-.header-links__entry { margin-right: .5rem; }
+.header-links__entry { margin-right: .5rem; line-height: 1.25rem; }
+.header-links__search-bar { margin: 0; }
 .header-links__entry_user, .header-links__entry_register { font-style:italic; }
 .header-links__link { display: inline-block; padding: .25rem; text-decoration: none; }
 

@@ -23,9 +23,11 @@
 					{%- for _, link := range cfg.HeaderLinks -%}
 					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
 					{%- endfor -%}
-					<form class="header-links__entry header-links__search" method="GET" action="/title-search">
-						<input type="text" name="q" placeholder="Title search" class="header-links__search-bar">
-					</form>
+					<li class="header-links__entry header-links__entry_search">
+						<form class="header-links__search" method="GET" action="/title-search">
+							<input type="text" name="q" placeholder="Title search" class="header-links__search-bar">
+						</form>
+					</li>
 					{%s= UserMenuHTML(u) %}
 				</ul>
 			</nav>
