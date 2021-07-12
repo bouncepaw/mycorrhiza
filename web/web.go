@@ -80,6 +80,7 @@ func Init() {
 	initAuth()
 	initHistory()
 	initStuff()
+	initSearch()
 
 	// Miscellaneous
 	http.HandleFunc("/user-list/", handlerUserList)

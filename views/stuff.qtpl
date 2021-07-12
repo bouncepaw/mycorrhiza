@@ -44,6 +44,19 @@
 </html>
 {% endfunc %}
 
+{% func PrimitiveSearchHTML(query string, generator func(string) <-chan string) %}
+<div class="layout">
+<main class="main-width primitive-search">
+	<ul class="primitive-search__results">
+	{% for hyphaName := range generator(query) %}
+		<li class="primitive-search__entry">
+			<a class="primitive-search__link wikilink" href="/hypha/{%s hyphaName %}">{%s hyphaName %}</a>
+		</li>
+	{% endfor %}
+</main>
+</div>
+{% endfunc %}
+
 {% func HelpHTML(content string) %}
 <div class="layout">
 <main class="main-width help">
