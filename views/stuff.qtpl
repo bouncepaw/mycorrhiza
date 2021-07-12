@@ -23,7 +23,7 @@
 					{%- for _, link := range cfg.HeaderLinks -%}
 					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
 					{%- endfor -%}
-					<form class="header-links__entry header-links__search" method="GET" action="/primitive-search">
+					<form class="header-links__entry header-links__search" method="GET" action="/title-search">
 						<input type="text" name="q" placeholder="Title search" class="header-links__search-bar">
 					</form>
 					{%s= UserMenuHTML(u) %}
@@ -47,15 +47,15 @@
 </html>
 {% endfunc %}
 
-{% func PrimitiveSearchHTML(query string, generator func(string) <-chan string) %}
+{% func TitleSearchHTML(query string, generator func(string) <-chan string) %}
 <div class="layout">
-<main class="main-width primitive-search">
+<main class="main-width title-search">
 	<h1>Search results for ‘{%s query %}’</h1>
 	<p>Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.</p>
-	<ul class="primitive-search__results">
+	<ul class="title-search__results">
 	{% for hyphaName := range generator(query) %}
-		<li class="primitive-search__entry">
-			<a class="primitive-search__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
+		<li class="title-search__entry">
+			<a class="title-search__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
 		</li>
 	{% endfor %}
 </main>

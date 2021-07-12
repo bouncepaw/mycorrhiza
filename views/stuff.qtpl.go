@@ -80,8 +80,8 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 //line views/stuff.qtpl:25
 	}
 //line views/stuff.qtpl:25
-	qw422016.N().S(`					<form class="header-links__entry header-links__search" method="GET" action="/primitive-search">
-						<input type="text" name="q" placeholder="Title search">
+	qw422016.N().S(`					<form class="header-links__entry header-links__search" method="GET" action="/title-search">
+						<input type="text" name="q" placeholder="Title search" class="header-links__search-bar">
 					</form>
 					`)
 //line views/stuff.qtpl:29
@@ -145,25 +145,25 @@ func BaseHTML(title, body string, u *user.User, headElements ...string) string {
 }
 
 //line views/stuff.qtpl:50
-func StreamPrimitiveSearchHTML(qw422016 *qt422016.Writer, query string, generator func(string) <-chan string) {
+func StreamTitleSearchHTML(qw422016 *qt422016.Writer, query string, generator func(string) <-chan string) {
 //line views/stuff.qtpl:50
 	qw422016.N().S(`
 <div class="layout">
-<main class="main-width primitive-search">
+<main class="main-width title-search">
 	<h1>Search results for ‘`)
 //line views/stuff.qtpl:53
 	qw422016.E().S(query)
 //line views/stuff.qtpl:53
 	qw422016.N().S(`’</h1>
 	<p>Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.</p>
-	<ul class="primitive-search__results">
+	<ul class="title-search__results">
 	`)
 //line views/stuff.qtpl:56
 	for hyphaName := range generator(query) {
 //line views/stuff.qtpl:56
 		qw422016.N().S(`
-		<li class="primitive-search__entry">
-			<a class="primitive-search__link wikilink" href="/hypha/`)
+		<li class="title-search__entry">
+			<a class="title-search__link wikilink" href="/hypha/`)
 //line views/stuff.qtpl:58
 		qw422016.E().S(hyphaName)
 //line views/stuff.qtpl:58
@@ -185,22 +185,22 @@ func StreamPrimitiveSearchHTML(qw422016 *qt422016.Writer, query string, generato
 }
 
 //line views/stuff.qtpl:63
-func WritePrimitiveSearchHTML(qq422016 qtio422016.Writer, query string, generator func(string) <-chan string) {
+func WriteTitleSearchHTML(qq422016 qtio422016.Writer, query string, generator func(string) <-chan string) {
 //line views/stuff.qtpl:63
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:63
-	StreamPrimitiveSearchHTML(qw422016, query, generator)
+	StreamTitleSearchHTML(qw422016, query, generator)
 //line views/stuff.qtpl:63
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:63
 }
 
 //line views/stuff.qtpl:63
-func PrimitiveSearchHTML(query string, generator func(string) <-chan string) string {
+func TitleSearchHTML(query string, generator func(string) <-chan string) string {
 //line views/stuff.qtpl:63
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:63
-	WritePrimitiveSearchHTML(qb422016, query, generator)
+	WriteTitleSearchHTML(qb422016, query, generator)
 //line views/stuff.qtpl:63
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:63

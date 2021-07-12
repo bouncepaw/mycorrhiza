@@ -11,10 +11,10 @@ import (
 )
 
 func initSearch() {
-	http.HandleFunc("/primitive-search/", handlerPrimitiveSearch)
+	http.HandleFunc("/title-search/", handlerTitleSearch)
 }
 
-func handlerPrimitiveSearch(w http.ResponseWriter, rq *http.Request) {
+func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	_ = rq.ParseForm()
 	var (
@@ -25,7 +25,7 @@ func handlerPrimitiveSearch(w http.ResponseWriter, rq *http.Request) {
 		w,
 		views.BaseHTML(
 			"Search: "+query,
-			views.PrimitiveSearchHTML(query, shroom.YieldHyphaNamesContainingString),
+			views.TitleSearchHTML(query, shroom.YieldHyphaNamesContainingString),
 			u,
 		),
 	)
