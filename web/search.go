@@ -16,9 +16,9 @@ func initSearch() {
 
 func handlerPrimitiveSearch(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	_ = rq.ParseForm()
 	var (
-		// It just so happened that this function does what we need! Sorry for party rocking.
-		query = util.HyphaNameFromRq(rq, "primitive-search")
+		query = rq.FormValue("q")
 		u     = user.FromRequest(rq)
 	)
 	_, _ = io.WriteString(

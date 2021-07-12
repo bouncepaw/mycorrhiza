@@ -66,6 +66,7 @@ header { width: 100%; margin-bottom: 1rem; }
 	.hypha-tabs__selection, .hypha-tabs__link { padding: .25rem .5rem; }
 
 	.header-links__entry:nth-of-type(1), .hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
+	.header-links__search { margin: 0; }
 }
 
 
