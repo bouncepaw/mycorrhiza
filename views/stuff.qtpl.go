@@ -236,7 +236,7 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer) {
 	<h2 class="layout-card__title">Help topics</h2>
 	<ul>
 		<li>
-			<a href="/help/en/index">Main</a>
+			<a href="/help/en">Main</a>
 		</li>
 		<li>
 			<a href="/help/en/hypha">Hypha</a>
