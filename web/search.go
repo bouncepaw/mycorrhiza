@@ -12,6 +12,8 @@ import (
 
 func initSearch() {
 	http.HandleFunc("/title-search/", handlerTitleSearch)
+	http.HandleFunc("/title-search-json/", handlerTitleSearchJSON) // we get a little shroomy
+
 }
 
 func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
@@ -28,5 +30,17 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 			views.TitleSearchHTML(query, shroom.YieldHyphaNamesContainingString),
 			u,
 		),
+	)
+}
+
+func handlerTitleSearchJSON(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	_ = rq.ParseForm()
+	var (
+		query = rq.FormValue("q")
+	)
+	_, _ = io.WriteString(
+		w,
+		views.TitleSearchJSON(query, shroom.YieldHyphaNamesContainingString),
 	)
 }
