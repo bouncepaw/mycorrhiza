@@ -25,7 +25,7 @@ A **subhypha** is a hypha that has a name starting with a name of a different hy
 
 Thus, a **superhypha** is a reverse of subhypha: //Fruit// is the superhypha of //Fruit/Apple//. There can be only one superhypha.
 
-**Sister hyphae** are hyphae that are subhyphae of the same hypha. For example, //Fruit/Apple// and //Fruit/Pear// are sister hyphae.
+**Sibling hyphae** are hyphae that are subhyphae of the same hypha. For example, //Fruit/Apple// and //Fruit/Pear// are sibling hyphae.
 
 ## Word
 Read the word //hypha// as /ˈhaɪfə/. The plural form is //hyphae//. Read it as /ˈhaɪfi/.
