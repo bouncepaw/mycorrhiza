@@ -47,6 +47,8 @@
 {% func PrimitiveSearchHTML(query string, generator func(string) <-chan string) %}
 <div class="layout">
 <main class="main-width primitive-search">
+	<h1>Search results for ‘{%s query %}’</h1>
+	<p>Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.</p>
 	<ul class="primitive-search__results">
 	{% for hyphaName := range generator(query) %}
 		<li class="primitive-search__entry">
