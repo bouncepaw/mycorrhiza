@@ -129,7 +129,8 @@ blockquote { margin: 0; padding-left: .75rem; }
 .wikilink_mailto::before { content: url("/static/icon/mailto-proto.svg"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
-main h1, main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
+main h1 { margin: .5rem 0 0 0; }
+main h2, main h3, main h4, main h5, main h6 { margin: 1.5rem 0 0 0; }
 .heading__link { text-decoration: none; display: inline-block; }
 .heading__link::after { width: 1rem; content: "§"; color: transparent; }
 .heading__link:hover::after, .heading__link:active::after { color: #999; }
