@@ -118,6 +118,7 @@
 {% endfunc %}
 
 {% func editScripts() %}
+<script src="/static/editor.js"></script>
 {% for _, scriptPath := range cfg.EditScripts %}
 <script src="{%s scriptPath %}"></script>
 {% endfor %}

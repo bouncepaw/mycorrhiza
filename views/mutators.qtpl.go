@@ -359,47 +359,48 @@ func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning str
 func streameditScripts(qw422016 *qt422016.Writer) {
 //line views/mutators.qtpl:120
 	qw422016.N().S(`
+<script src="/static/editor.js"></script>
 `)
-//line views/mutators.qtpl:121
+//line views/mutators.qtpl:122
 	for _, scriptPath := range cfg.EditScripts {
-//line views/mutators.qtpl:121
+//line views/mutators.qtpl:122
 		qw422016.N().S(`
 <script src="`)
-//line views/mutators.qtpl:122
+//line views/mutators.qtpl:123
 		qw422016.E().S(scriptPath)
-//line views/mutators.qtpl:122
+//line views/mutators.qtpl:123
 		qw422016.N().S(`"></script>
 `)
-//line views/mutators.qtpl:123
+//line views/mutators.qtpl:124
 	}
-//line views/mutators.qtpl:123
+//line views/mutators.qtpl:124
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 }
 
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 func writeeditScripts(qq422016 qtio422016.Writer) {
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	streameditScripts(qw422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 }
 
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 func editScripts() string {
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	writeeditScripts(qb422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 	return qs422016
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:125
 }
