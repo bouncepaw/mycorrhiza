@@ -21,14 +21,9 @@
 /* Phones and whatnot */
 .layout { display: grid; row-gap: 1rem; }
 header { width: 100%; margin-bottom: 1rem; }
-.header-links__list, .hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
-.header-links__entry, .hypha-tabs__tab { list-style-type: none; }
 
-.header-links__entry { margin-right: .5rem; line-height: 1.25rem; }
-.header-links__search-bar { margin: 0; }
-.header-links__entry_user, .header-links__entry_register { font-style:italic; }
-.header-links__link { display: inline-block; padding: .25rem; text-decoration: none; }
-
+.hypha-tabs__flex { margin: 0; padding: 0; display: flex; flex-wrap: wrap; }
+.hypha-tabs__tab { list-style-type: none; }
 .hypha-tabs { padding: 0; margin: 0; }
 .hypha-tabs__tab { margin-right: .5rem; padding: 0; }
 .hypha-tabs__link { display: inline-block; padding: .25rem; text-decoration: none; }
@@ -57,17 +52,10 @@ header { width: 100%; margin-bottom: 1rem; }
 	main { border-radius: .25rem; }
 	.layout-card { width: 800px; margin: 0 auto; }
 
-	.header-links { padding: 0; }
-	.header-links__entry { margin-right: 1.5rem; }
-	.header-links__entry_user { margin: 0 2rem 0 auto; }
-	.header-links__entry:nth-of-type(1),
-
 	.hypha-tabs { padding: 0; }
 	.hypha-tabs__tab { border-radius: .25rem .25rem 0 0; margin-right: 0; }
 	.hypha-tabs__selection, .hypha-tabs__link { padding: .25rem .5rem; }
-
-	.header-links__entry:nth-of-type(1), .hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
-	.header-links__search { margin: 0; }
+	.hypha-tabs__tab:nth-of-type(1) { margin-left: 2rem; }
 }
 
 
@@ -243,8 +231,6 @@ table,
 html { background-color: #eee;
 }
 header { background-color: #ddd; }
-.header-links__link { color: black; }
-.header-links__link:hover { background-color: #eee; }
 main { background-color: white; }
 .shy-link { color: black; }
 
@@ -269,9 +255,7 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
 .subhyphae__link:hover, .sibling-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
 
-.header-links__link, .header-links__link:visited,
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
-.header-links__link:hover { background-color: #444; }
 
 .hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
 .layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
@@ -607,4 +591,54 @@ kbd {
 }
 .help-topics__list ul {
 	padding-left: 1rem;
+}
+
+/*
+ * Top bar
+ */
+@media screen and (min-width: 800px) {
+	.top-bar {
+		padding: 0;
+	}
+	.top-bar ul {
+		padding: 0;
+		margin: 0;
+	}
+	ul.top-bar__wrapper {
+		display: grid;
+		margin: 0 2rem;
+	}
+	.top-bar__section {
+		display: block;
+	}
+	.top-bar__section_home {
+		grid-column: 1 / span 1;
+	}
+	.top-bar__section_search {
+		grid-column: 2 / span 1;
+	}
+	.top-bar__section_auth {
+		grid-column: 3 / span 1;
+	}
+	.top-bar__section_highlights {
+		grid-column: 1 / span 3;
+	}
+
+	.top-bar__search-bar {
+		width: 100%;
+	}
+
+	.auth-links {
+		display: flex;
+		justify-content: flex-end;
+	}
+	.auth-links__box {
+		display: block;
+	}
+	.top-bar__highlights {
+		display: flex;
+	}
+	.top-bar__highlight {
+		display: block;
+	}
 }

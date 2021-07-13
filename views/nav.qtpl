@@ -1,8 +1,6 @@
 {% import "net/http" %}
 {% import "strings" %}
-{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 This is the <nav> seen on top of many pages.
 {% code
@@ -45,23 +43,6 @@ var navEntries = []navEntry{
 		{%- endfor -%}
 		</ul>
 	</nav>
-{% endfunc %}
-
-{% func UserMenuHTML(u *user.User) %}
-{% if cfg.UseAuth %}
-	<li class="header-links__entry header-links__entry_user">
-		{% if u.Group == "anon" %}
-		<a href="/login" class="header-links__link">Login</a>
-		{% else %}
-		<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="header-links__link">{%s util.BeautifulName(u.Name) %}</a>
-		{% endif %}
-	</li>
-{% endif %}
-{% if cfg.UseAuth && cfg.AllowRegistration && u.Group == "anon" %}
-	<li class="header-links__entry header-links__entry_register">
-		<a href="/register" class="header-links__link">Register</a>
-	</li>
-{% endif %}
 {% endfunc %}
 
 {% func siblingHyphaeHTML(siblings string) %}

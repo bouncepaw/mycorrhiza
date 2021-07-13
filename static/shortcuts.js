@@ -308,11 +308,11 @@
 
         // Common shortcuts
         pageShortcuts.group('Common', function () {
-            this.bindCollection('g', '.header-links__link', 'First 9 header links', 'Header link');
+            this.bindCollection('g', '.top-bar__highlight-link', 'First 9 header links', 'Header link');
             this.bindLink('g h', '/', 'Home');
             this.bindLink('g l', '/list/', 'List of hyphae');
             this.bindLink('g r', '/recent-changes/', 'Recent changes');
-            this.bindElement('g u', '.header-links__entry_user .header-links__link', 'Your profile′s hypha');
+            this.bindElement('g u', '.auth-links__user-link', 'Your profile′s hypha');
         });
 
         if (!onEditPage) {

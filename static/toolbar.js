@@ -70,7 +70,7 @@ function insertTimeUTC() {
 }
 
 function insertUserlink() {
-    const userlink = document.querySelector('.header-links__entry_user a')
+    const userlink = document.querySelector('.auth-links__user-link')
     const userHypha = userlink.getAttribute('href').substring(7) // no /hypha/
     textInserter('[[' + userHypha + ']]')()
 }

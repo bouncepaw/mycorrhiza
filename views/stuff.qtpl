@@ -18,17 +18,50 @@
 	</head>
 	<body>
 		<header>
-			<nav class="header-links main-width">
-				<ul class="header-links__list">
-					{%- for _, link := range cfg.HeaderLinks -%}
-					<li class="header-links__entry"><a class="header-links__link" href="{%s link.Href %}">{%s link.Display %}</a></li>
-					{%- endfor -%}
-					<li class="header-links__entry header-links__entry_search">
-						<form class="header-links__search" method="GET" action="/title-search">
-							<input type="text" name="q" placeholder="Title search" class="header-links__search-bar">
+			<nav class="main-width top-bar">
+				<ul class="top-bar__wrapper">
+					<li class="top-bar__section top-bar__section_home">
+						<a class="top-bar__home-link" href="/">{%s cfg.WikiName %}</a>
+					</li>
+					<li class="top-bar__section top-bar__section_search">
+						<form class="top-bar__search" method="GET" action="/title-search">
+							<input type="text" name="q" placeholder="Title search" class="top-bar__search-bar">
 						</form>
 					</li>
-					{%s= UserMenuHTML(u) %}
+					{% if cfg.UseAuth %}
+					<li class="top-bar__section top-bar__section_auth">
+						<ul class="top-bar__auth auth-links">
+							<li class="auth-links__box auth-links__user-box">
+								{% if u.Group == "anon" %}
+								<a href="/login" class="auth-links__login-link">Login</a>
+								{% else %}
+								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__user-link">{%s util.BeautifulName(u.Name) %}</a>
+								{% endif %}
+							</li>
+							{% if cfg.AllowRegistration && u.Group == "anon" %}
+							<li class="auth-links__box auth-links__register-box">
+								<a href="/register" class="auth-links__register-link">Register</a>
+							</li>
+							{% endif %}
+							{% if u.Group == "admin" %}
+							<li class="auth-links__box auth-links__admin-box">
+								<a href="/admin" class="auth-links__admin-link">Admin panel</a>
+							</li>
+							{% endif %}
+						</ul>
+					</li>
+					{% endif %}
+					<li class="top-bar__section top-bar__section_highlights">
+						<ul class="top-bar__highlights">
+						{%- for _, link := range cfg.HeaderLinks -%}
+						{% if link.Href != "/" %}
+							<li class="top-bar__highlight">
+								<a class="top-bar__highlight-link" href="{%s link.Href %}">{%s link.Display %}</a>
+							</li>
+						{% endif %}
+						{%- endfor -%}
+						</ul>
+					</li>
 				</ul>
 			</nav>
 		</header>
