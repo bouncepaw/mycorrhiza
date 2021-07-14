@@ -1,11 +1,13 @@
 package web
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"mime"
 	"net/http"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -20,6 +22,9 @@ func initAuth() {
 	}
 	if cfg.AllowRegistration {
 		http.HandleFunc("/register", handlerRegister)
+	}
+	if cfg.TelegramEnabled {
+		http.HandleFunc("/telegram-login", handlerTelegramLogin)
 	}
 	http.HandleFunc("/login", handlerLogin)
 	http.HandleFunc("/login-data", handlerLoginData)
@@ -116,6 +121,68 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	w.Write([]byte(views.BaseHTML("Login", views.LoginHTML(), user.EmptyUser())))
+}
+
+func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
+	// Note there is no lock here.
+	w.Header().Set("Content-Type", "text/plain;charset=utf-8")
+	rq.ParseForm()
+	var (
+		values = rq.URL.Query()
+		username = strings.ToLower(values.Get("username"))
+		seemsValid = user.TelegramAuthParamsAreValid(values)
+		err = user.Register(
+			username,
+			"", // Password matters not
+			"telegram",
+			false,
+		)
+	)
+	if user.HasUsername(username) && user.UserByName(username).Group == "telegram" {
+		// Problems is something we put blankets on.
+		err = nil
+	}
+
+	if !seemsValid {
+		err = errors.New("Wrong parameters")
+	}
+
+	if err != nil {
+		log.Printf("Failed to register ‘%s’ using Telegram: %s", username, err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(
+			w,
+			views.BaseHTML(
+				"Error",
+				fmt.Sprintf(
+					`<main class="main-width"><p>Could not authorize using Telegram.</p><p>%s</p><p><a href="/login">Go to the login page<a></p></main>`,
+					err.Error(),
+				),
+				user.FromRequest(rq),
+			),
+		)
+		return
+	}
+
+	errmsg := user.LoginDataHTTP(w, rq, username, "")
+	if errmsg != "" {
+		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(
+			w,
+			views.BaseHTML(
+				"Error",
+				fmt.Sprintf(
+					`<main class="main-width"><p>Could not authorize using Telegram.</p><p>%s</p><p><a href="/login">Go to the login page<a></p></main>`,
+					err.Error(),
+				),
+				user.FromRequest(rq),
+			),
+		)
+		return
+	}
+	log.Printf("Authorize ‘%s’ from Telegram", username)
+	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
 // handlerLoginData logs the user in.

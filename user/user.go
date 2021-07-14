@@ -44,6 +44,7 @@ var groups = []string{
 	"anon",
 	"editor",
 	"trusted",
+	"telegram",
 	"moderator",
 	"admin",
 }
@@ -53,6 +54,7 @@ var groupRight = map[string]int{
 	"anon":      0,
 	"editor":    1,
 	"trusted":   2,
+	"telegram":  2,
 	"moderator": 3,
 	"admin":     4,
 }

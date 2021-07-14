@@ -34,6 +34,11 @@ var (
 	CommonScripts []string
 	ViewScripts   []string
 	EditScripts   []string
+
+	// TelegramEnabled if both TelegramBotToken and TelegramBotName are not empty strings.
+	TelegramEnabled bool
+	TelegramBotToken string
+	TelegramBotName string
 )
 
 // WikiDir is a full path to the wiki storage directory, which also must be a
@@ -49,6 +54,7 @@ type Config struct {
 	Network
 	Authorization
 	CustomScripts `comment:"You can specify additional scripts to load on different kinds of pages, delimited by a comma ',' sign."`
+	Telegram `comment:"You can enable Telegram authorization. Follow these instructions: https://core.telegram.org/widgets/login#setting-up-a-bot"`
 }
 
 // Hyphae is a section of Config which has fields related to special hyphae.
@@ -85,6 +91,12 @@ type Authorization struct {
 	Locked            bool   `comment:"Set if users have to authorize to see anything on the wiki."`
 }
 
+// Telegram is the section of Config that sets Telegram authorization.
+type Telegram struct {
+	TelegramBotToken string `comment:"Token of your bot.`
+	TelegramBotName string `comment:"Username of your bot, sans @.`
+}
+
 // ReadConfigFile reads a config on the given path and stores the
 // configuration. Call it sometime during the initialization.
 func ReadConfigFile(path string) error {
@@ -110,6 +122,10 @@ func ReadConfigFile(path string) error {
 			CommonScripts: []string{},
 			ViewScripts:   []string{},
 			EditScripts:   []string{},
+		},
+		Telegram: Telegram{
+			TelegramBotToken: "",
+			TelegramBotName: "",
 		},
 	}
 
@@ -158,6 +174,9 @@ func ReadConfigFile(path string) error {
 	CommonScripts = cfg.CommonScripts
 	ViewScripts = cfg.ViewScripts
 	EditScripts = cfg.EditScripts
+	TelegramBotToken = cfg.TelegramBotToken
+	TelegramBotName = cfg.TelegramBotName
+	TelegramEnabled = (TelegramBotToken != "") && (TelegramBotName != "")
 
 	// This URL makes much more sense.
 	if URL == "" {

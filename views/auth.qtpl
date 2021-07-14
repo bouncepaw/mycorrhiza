@@ -23,6 +23,7 @@
 				<a class="btn btn_weak" href="/{%s rq.URL.RawQuery %}">Cancel</a>
 			</fieldset>
 		</form>
+		{%= telegramWidgetHTML() %}
 	{% elseif cfg.UseAuth %}
 		<p>Registrations are currently closed. Administrators can make an account for you by hand; contact them.</p>
 		<p><a href="/{%s rq.URL.RawQuery %}">← Go back</a></p>
@@ -55,6 +56,7 @@
 				<a class="btn btn_weak" href="/">Cancel</a>
 			</fieldset>
 		</form>
+		{%= telegramWidgetHTML() %}
 	{% else %}
 		<p>Authentication is disabled. You can make edits anonymously.</p>
 		<p><a class="btn btn_weak" href="/">← Go home</a></p>
@@ -62,6 +64,13 @@
 	</section>
 </main>
 </div>
+{% endfunc %}
+
+Telegram auth widget was requested by Yogurt. As you can see, we don't offer user administrators control over it. Of course we don't.
+{% func telegramWidgetHTML() %}
+{% if cfg.TelegramEnabled %}
+<script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="{%s cfg.TelegramBotName %}" data-size="medium" data-userpic="false" data-auth-url="{%s cfg.URL %}/telegram-login"></script>
+{% endif %}
 {% endfunc %}
 
 {% func LoginErrorHTML(err string) %}

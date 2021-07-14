@@ -5,6 +5,11 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"sort"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -65,6 +70,8 @@ func Register(username, password, group string, force bool) error {
 }
 
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.
+//
+// The HTTP parameters are used for setting header status (bad request, if it is bad) and saving a cookie.
 func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password string) string {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if !HasUsername(username) {
@@ -105,4 +112,36 @@ func cookie(name_suffix, val string, t time.Time) *http.Cookie {
 		Expires: t,
 		Path:    "/",
 	}
+}
+
+// TelegramAuthParamsAreValid is true if the given params are ok.
+func TelegramAuthParamsAreValid(params map[string][]string) bool {
+	// According to the Telegram documentation,
+	// > You can verify the authentication and the integrity of the data received by comparing the received hash parameter with the hexadecimal representation of the HMAC-SHA-256 signature of the data-check-string with the SHA256 hash of the bot's token used as a secret key.
+	tokenHash := sha256.New()
+	tokenHash.Write([]byte(cfg.TelegramBotToken))
+	secretKey := tokenHash.Sum(nil)
+
+	hash := hmac.New(sha256.New, secretKey)
+	hash.Write([]byte(telegramDataCheckString(params)))
+	hexHash := hex.EncodeToString(hash.Sum(nil))
+
+	passedHash := params["hash"][0]
+	return passedHash == hexHash
+}
+
+// According to the Telegram documentation,
+// > Data-check-string is a concatenation of all received fields, sorted in alphabetical order, in the format key=<value> with a line feed character ('\n', 0x0A) used as separator – e.g., 'auth_date=<auth_date>\nfirst_name=<first_name>\nid=<id>\nusername=<username>'.
+//
+// Note that hash is not used here.
+func telegramDataCheckString(params map[string][]string) string {
+	var lines []string
+	for key, value := range params {
+		if key == "hash" {
+			continue
+		}
+		lines = append(lines, fmt.Sprintf("%s=%s", key, value[0]))
+	}
+	sort.Strings(lines)
+	return strings.Join(lines, "\n")
 }
