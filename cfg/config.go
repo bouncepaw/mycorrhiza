@@ -30,6 +30,8 @@ var (
 	AllowRegistration bool
 	RegistrationLimit uint64
 	Locked            bool
+	UseWhiteList bool
+	WhiteList []string
 
 	CommonScripts []string
 	ViewScripts   []string
@@ -89,6 +91,8 @@ type Authorization struct {
 	AllowRegistration bool
 	RegistrationLimit uint64 `comment:"This field controls the maximum amount of allowed registrations."`
 	Locked            bool   `comment:"Set if users have to authorize to see anything on the wiki."`
+	UseWhiteList bool `comment:"If true, WhiteList is used. Else it is not used."`
+	WhiteList []string `delim:"," comment:"Usernames of people who can log in to your wiki separated by comma."`
 }
 
 // Telegram is the section of Config that sets Telegram authorization.
@@ -117,6 +121,8 @@ func ReadConfigFile(path string) error {
 			AllowRegistration: false,
 			RegistrationLimit: 0,
 			Locked:            false,
+			UseWhiteList: false,
+			WhiteList: []string{},
 		},
 		CustomScripts: CustomScripts{
 			CommonScripts: []string{},
@@ -171,6 +177,8 @@ func ReadConfigFile(path string) error {
 	AllowRegistration = cfg.AllowRegistration
 	RegistrationLimit = cfg.RegistrationLimit
 	Locked = cfg.Locked && cfg.UseAuth // Makes no sense to have the lock but no auth
+	UseWhiteList = cfg.UseWhiteList
+	WhiteList = cfg.WhiteList
 	CommonScripts = cfg.CommonScripts
 	ViewScripts = cfg.ViewScripts
 	EditScripts = cfg.EditScripts

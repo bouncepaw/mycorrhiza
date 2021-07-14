@@ -77,7 +77,19 @@ func IsCanonicalName(name string) bool {
 
 // IsPossibleUsername is true if the given username is ok. Same as IsCanonicalName, but cannot have / in it and cannot be equal to "anon" or "wikimind"
 func IsPossibleUsername(username string) bool {
-	return username != "anon" && username != "wikimind" && usernamePattern.MatchString(strings.TrimSpace(username))
+	return username != "anon" && username != "wikimind" && usernameIsWhiteListed(username) && usernamePattern.MatchString(strings.TrimSpace(username))
+}
+
+func usernameIsWhiteListed(username string) bool {
+	if !cfg.UseWhiteList {
+		return true
+	}
+	for _, allowedUsername := range cfg.WhiteList {
+		if allowedUsername == username {
+			return true
+		}
+	}
+	return false
 }
 
 // HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
