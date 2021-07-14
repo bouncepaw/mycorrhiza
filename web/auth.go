@@ -125,7 +125,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 
 func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	// Note there is no lock here.
-	w.Header().Set("Content-Type", "text/plain;charset=utf-8")
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	rq.ParseForm()
 	var (
 		values = rq.URL.Query()

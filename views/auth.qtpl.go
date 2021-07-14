@@ -221,184 +221,185 @@ func streamtelegramWidgetHTML(qw422016 *qt422016.Writer) {
 	if cfg.TelegramEnabled {
 //line views/auth.qtpl:71
 		qw422016.N().S(`
+<p>You can log in using Telegram. It only works if you have set your @username in Telegram and this username is free on this wiki.</p>
 <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="`)
-//line views/auth.qtpl:72
+//line views/auth.qtpl:73
 		qw422016.E().S(cfg.TelegramBotName)
-//line views/auth.qtpl:72
+//line views/auth.qtpl:73
 		qw422016.N().S(`" data-size="medium" data-userpic="false" data-auth-url="`)
-//line views/auth.qtpl:72
+//line views/auth.qtpl:73
 		qw422016.E().S(cfg.URL)
-//line views/auth.qtpl:72
+//line views/auth.qtpl:73
 		qw422016.N().S(`/telegram-login"></script>
 `)
-//line views/auth.qtpl:73
+//line views/auth.qtpl:74
 	}
-//line views/auth.qtpl:73
+//line views/auth.qtpl:74
 	qw422016.N().S(`
 `)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 }
 
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 func writetelegramWidgetHTML(qq422016 qtio422016.Writer) {
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	streamtelegramWidgetHTML(qw422016)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 }
 
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 func telegramWidgetHTML() string {
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	writetelegramWidgetHTML(qb422016)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 	return qs422016
-//line views/auth.qtpl:74
+//line views/auth.qtpl:75
 }
 
-//line views/auth.qtpl:76
+//line views/auth.qtpl:77
 func StreamLoginErrorHTML(qw422016 *qt422016.Writer, err string) {
-//line views/auth.qtpl:76
+//line views/auth.qtpl:77
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<section>
 	`)
-//line views/auth.qtpl:80
+//line views/auth.qtpl:81
 	switch err {
-//line views/auth.qtpl:81
+//line views/auth.qtpl:82
 	case "unknown username":
-//line views/auth.qtpl:81
+//line views/auth.qtpl:82
 		qw422016.N().S(`
 		<p class="error">Unknown username.</p>
 	`)
-//line views/auth.qtpl:83
+//line views/auth.qtpl:84
 	case "wrong password":
-//line views/auth.qtpl:83
+//line views/auth.qtpl:84
 		qw422016.N().S(`
 		<p class="error">Wrong password.</p>
 	`)
-//line views/auth.qtpl:85
+//line views/auth.qtpl:86
 	default:
-//line views/auth.qtpl:85
+//line views/auth.qtpl:86
 		qw422016.N().S(`
 		<p class="error">`)
-//line views/auth.qtpl:86
+//line views/auth.qtpl:87
 		qw422016.E().S(err)
-//line views/auth.qtpl:86
+//line views/auth.qtpl:87
 		qw422016.N().S(`</p>
 	`)
-//line views/auth.qtpl:87
+//line views/auth.qtpl:88
 	}
-//line views/auth.qtpl:87
+//line views/auth.qtpl:88
 	qw422016.N().S(`
 		<p><a href="/login">← Try again</a></p>
 	</section>
 </main>
 </div>
 `)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 }
 
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 func WriteLoginErrorHTML(qq422016 qtio422016.Writer, err string) {
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	StreamLoginErrorHTML(qw422016, err)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 }
 
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 func LoginErrorHTML(err string) string {
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	WriteLoginErrorHTML(qb422016, err)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 	return qs422016
-//line views/auth.qtpl:92
+//line views/auth.qtpl:93
 }
 
-//line views/auth.qtpl:94
+//line views/auth.qtpl:95
 func StreamLogoutHTML(qw422016 *qt422016.Writer, can bool) {
-//line views/auth.qtpl:94
+//line views/auth.qtpl:95
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<section>
 	`)
-//line views/auth.qtpl:98
+//line views/auth.qtpl:99
 	if can {
-//line views/auth.qtpl:98
+//line views/auth.qtpl:99
 		qw422016.N().S(`
 		<h1>Log out?</h1>
 		<p><a href="/logout-confirm"><strong>Confirm</strong></a></p>
 		<p><a href="/">Cancel</a></p>
 	`)
-//line views/auth.qtpl:102
+//line views/auth.qtpl:103
 	} else {
-//line views/auth.qtpl:102
+//line views/auth.qtpl:103
 		qw422016.N().S(`
 		<p>You cannot log out because you are not logged in.</p>
 		<p><a href="/login">Login</a></p>
 		<p><a href="/login">← Home</a></p>
 	`)
-//line views/auth.qtpl:106
+//line views/auth.qtpl:107
 	}
-//line views/auth.qtpl:106
+//line views/auth.qtpl:107
 	qw422016.N().S(`
 	</section>
 </main>
 </div>
 `)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 }
 
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 func WriteLogoutHTML(qq422016 qtio422016.Writer, can bool) {
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	StreamLogoutHTML(qw422016, can)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 }
 
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 func LogoutHTML(can bool) string {
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	WriteLogoutHTML(qb422016, can)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 	return qs422016
-//line views/auth.qtpl:110
+//line views/auth.qtpl:111
 }
 
-//line views/auth.qtpl:112
+//line views/auth.qtpl:113
 func StreamLockHTML(qw422016 *qt422016.Writer) {
-//line views/auth.qtpl:112
+//line views/auth.qtpl:113
 	qw422016.N().S(`
 <!doctype html>
 <html>
@@ -430,31 +431,31 @@ func StreamLockHTML(qw422016 *qt422016.Writer) {
 </body>
 </html>
 `)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 }
 
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 func WriteLockHTML(qq422016 qtio422016.Writer) {
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	StreamLockHTML(qw422016)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 }
 
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 func LockHTML() string {
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	WriteLockHTML(qb422016)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 	return qs422016
-//line views/auth.qtpl:142
+//line views/auth.qtpl:143
 }
