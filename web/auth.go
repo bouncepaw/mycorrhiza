@@ -58,7 +58,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		var (
 			username = rq.PostFormValue("username")
 			password = rq.PostFormValue("password")
-			err      = user.Register(username, password, "editor", false)
+			err      = user.Register(username, password, "editor", "local", false)
 		)
 		if err != nil {
 			log.Printf("Failed to register \"%s\": %s", username, err.Error())
@@ -134,11 +134,12 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		err = user.Register(
 			username,
 			"", // Password matters not
+			"editor",
 			"telegram",
 			false,
 		)
 	)
-	if user.HasUsername(username) && user.UserByName(username).Group == "telegram" {
+	if user.HasUsername(username) && user.UserByName(username).Source == "telegram" {
 		// Problems is something we put blankets on.
 		err = nil
 	}

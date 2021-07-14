@@ -88,7 +88,7 @@ func createAdminCommand(name string) {
 	password := string(passwordBytes)
 
 	log.SetOutput(io.Discard)
-	err = user.Register(name, password, "admin", true)
+	err = user.Register(name, password, "admin", "local", true)
 	log.SetOutput(wr)
 
 	if err != nil {

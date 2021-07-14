@@ -40,6 +40,9 @@ func usersFromFile() []*User {
 	}
 	for _, u := range users {
 		u.Name = util.CanonicalName(u.Name)
+		if u.Source == "" {
+			u.Source = "local"
+		}
 	}
 	log.Println("Found", len(users), "users")
 	return users

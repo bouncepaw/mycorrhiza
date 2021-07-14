@@ -16,6 +16,8 @@ type User struct {
 	Group        string    `json:"group"`
 	Password     string    `json:"hashed_password"`
 	RegisteredAt time.Time `json:"registered_on"`
+	// Source is where the user from. Valid values: valid, telegram.
+	Source       string    `json:"source"`
 	sync.RWMutex
 
 	// A note about why HashedPassword is string and not []byte. The reason is
@@ -44,17 +46,15 @@ var groups = []string{
 	"anon",
 	"editor",
 	"trusted",
-	"telegram",
 	"moderator",
 	"admin",
 }
 
-// Group — Right
+// Group — Right level
 var groupRight = map[string]int{
 	"anon":      0,
 	"editor":    1,
 	"trusted":   2,
-	"telegram":  2,
 	"moderator": 3,
 	"admin":     4,
 }
@@ -68,11 +68,16 @@ func ValidGroup(group string) bool {
 	return false
 }
 
+func ValidSource(source string) bool {
+	return source == "local" || source == "telegram"
+}
+
 func EmptyUser() *User {
 	return &User{
 		Name:     "anon",
 		Group:    "anon",
 		Password: "",
+		Source: "local",
 	}
 }
 

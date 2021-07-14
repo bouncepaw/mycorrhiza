@@ -382,65 +382,54 @@ func StreamAdminUserEditHTML(qw422016 *qt422016.Writer, u *user.User, f util.For
 //line views/admin.qtpl:143
 	qw422016.N().S(`
 
-	`)
-//line views/admin.qtpl:145
-	if f.Get("group") == "telegram" {
-//line views/admin.qtpl:145
-		qw422016.N().S(`
-	<p>This user is authorized using Telegram, they have the same rights as <i>trusted</i> editors. You cannot change their group.</p>
-	`)
-//line views/admin.qtpl:147
-	} else {
-//line views/admin.qtpl:147
-		qw422016.N().S(`
 	<form action="" method="post">
 		<div class="form-field">
 			<select id="group" name="group" aria-label="Group">
 				<option`)
+//line views/admin.qtpl:148
+	if f.Get("group") == "anon" {
+//line views/admin.qtpl:148
+		qw422016.N().S(` selected`)
+//line views/admin.qtpl:148
+	}
+//line views/admin.qtpl:148
+	qw422016.N().S(`>anon</option>
+				<option`)
+//line views/admin.qtpl:149
+	if f.Get("group") == "editor" {
+//line views/admin.qtpl:149
+		qw422016.N().S(` selected`)
+//line views/admin.qtpl:149
+	}
+//line views/admin.qtpl:149
+	qw422016.N().S(`>editor</option>
+				<option`)
+//line views/admin.qtpl:150
+	if f.Get("group") == "trusted" {
+//line views/admin.qtpl:150
+		qw422016.N().S(` selected`)
+//line views/admin.qtpl:150
+	}
+//line views/admin.qtpl:150
+	qw422016.N().S(`>trusted</option>
+				<option`)
 //line views/admin.qtpl:151
-		if f.Get("group") == "anon" {
+	if f.Get("group") == "moderator" {
 //line views/admin.qtpl:151
-			qw422016.N().S(` selected`)
+		qw422016.N().S(` selected`)
 //line views/admin.qtpl:151
-		}
+	}
 //line views/admin.qtpl:151
-		qw422016.N().S(`>anon</option>
+	qw422016.N().S(`>moderator</option>
 				<option`)
 //line views/admin.qtpl:152
-		if f.Get("group") == "editor" {
+	if f.Get("group") == "admin" {
 //line views/admin.qtpl:152
-			qw422016.N().S(` selected`)
+		qw422016.N().S(` selected`)
 //line views/admin.qtpl:152
-		}
+	}
 //line views/admin.qtpl:152
-		qw422016.N().S(`>editor</option>
-				<option`)
-//line views/admin.qtpl:153
-		if f.Get("group") == "trusted" {
-//line views/admin.qtpl:153
-			qw422016.N().S(` selected`)
-//line views/admin.qtpl:153
-		}
-//line views/admin.qtpl:153
-		qw422016.N().S(`>trusted</option>
-				<option`)
-//line views/admin.qtpl:154
-		if f.Get("group") == "moderator" {
-//line views/admin.qtpl:154
-			qw422016.N().S(` selected`)
-//line views/admin.qtpl:154
-		}
-//line views/admin.qtpl:154
-		qw422016.N().S(`>moderator</option>
-				<option`)
-//line views/admin.qtpl:155
-		if f.Get("group") == "admin" {
-//line views/admin.qtpl:155
-			qw422016.N().S(` selected`)
-//line views/admin.qtpl:155
-		}
-//line views/admin.qtpl:155
-		qw422016.N().S(`>admin</option>
+	qw422016.N().S(`>admin</option>
 			</select>
 		</div>
 
@@ -448,122 +437,117 @@ func StreamAdminUserEditHTML(qw422016 *qt422016.Writer, u *user.User, f util.For
 			<button class="btn" type="submit">Update</button>
 		</div>
 	</form>
-	`)
-//line views/admin.qtpl:163
-	}
-//line views/admin.qtpl:163
-	qw422016.N().S(`
 
 	<h2>Delete user</h2>
 	<p>Remove the user from the database. Changes made by the user will
 	be preserved. It will be possible to take this username later.</p>
 	<a class="btn btn_destructive" href="/admin/users/`)
-//line views/admin.qtpl:168
+//line views/admin.qtpl:164
 	qw422016.N().U(u.Name)
-//line views/admin.qtpl:168
+//line views/admin.qtpl:164
 	qw422016.N().S(`/delete">Delete</a>
 </main>
 </div>
 `)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 }
 
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 func WriteAdminUserEditHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData) {
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	StreamAdminUserEditHTML(qw422016, u, f)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	qt422016.ReleaseWriter(qw422016)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 }
 
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 func AdminUserEditHTML(u *user.User, f util.FormData) string {
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	WriteAdminUserEditHTML(qb422016, u, f)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	qs422016 := string(qb422016.B)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 	return qs422016
-//line views/admin.qtpl:171
+//line views/admin.qtpl:167
 }
 
-//line views/admin.qtpl:173
+//line views/admin.qtpl:169
 func StreamAdminUserDeleteHTML(qw422016 *qt422016.Writer, u *user.User, f util.FormData) {
-//line views/admin.qtpl:173
+//line views/admin.qtpl:169
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width form-wrap">
 	<h1>Delete user</h1>
 
 	`)
-//line views/admin.qtpl:178
+//line views/admin.qtpl:174
 	if f.HasError() {
-//line views/admin.qtpl:178
+//line views/admin.qtpl:174
 		qw422016.N().S(`
 	<div class="notice notice--error">
 		<strong>Error:</strong>
 		`)
-//line views/admin.qtpl:181
+//line views/admin.qtpl:177
 		qw422016.E().S(f.Error())
-//line views/admin.qtpl:181
+//line views/admin.qtpl:177
 		qw422016.N().S(`
 	</div>
 	`)
-//line views/admin.qtpl:183
+//line views/admin.qtpl:179
 	}
-//line views/admin.qtpl:183
+//line views/admin.qtpl:179
 	qw422016.N().S(`
 
 	<p>Are you sure you want to delete <strong>`)
-//line views/admin.qtpl:185
+//line views/admin.qtpl:181
 	qw422016.E().S(u.Name)
-//line views/admin.qtpl:185
+//line views/admin.qtpl:181
 	qw422016.N().S(`</strong>
 	from the database? This action is irreversible.</p>
 
 	<form action="" method="post">
 		<button class="btn btn_destructive" type="submit">Delete</button>
 		<a class="btn btn_weak" href="/admin/users/`)
-//line views/admin.qtpl:190
+//line views/admin.qtpl:186
 	qw422016.N().U(u.Name)
-//line views/admin.qtpl:190
+//line views/admin.qtpl:186
 	qw422016.N().S(`/edit">Cancel</a>
 	</form>
 </main>
 </div>
 `)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 }
 
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 func WriteAdminUserDeleteHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData) {
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	StreamAdminUserDeleteHTML(qw422016, u, f)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	qt422016.ReleaseWriter(qw422016)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 }
 
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 func AdminUserDeleteHTML(u *user.User, f util.FormData) string {
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	WriteAdminUserDeleteHTML(qb422016, u, f)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	qs422016 := string(qb422016.B)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 	return qs422016
-//line views/admin.qtpl:194
+//line views/admin.qtpl:190
 }

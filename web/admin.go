@@ -192,7 +192,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 			// Create a user
 			f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
 
-			err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), true)
+			err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
 
 			if err != nil {
 				html := views.AdminUserNewHTML(f.WithError(err))

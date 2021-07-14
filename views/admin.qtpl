@@ -142,9 +142,6 @@
 	</div>
 	{% endif %}
 
-	{% if f.Get("group") == "telegram" %}
-	<p>This user is authorized using Telegram, they have the same rights as <i>trusted</i> editors. You cannot change their group.</p>
-	{% else %}
 	<form action="" method="post">
 		<div class="form-field">
 			<select id="group" name="group" aria-label="Group">
@@ -160,7 +157,6 @@
 			<button class="btn" type="submit">Update</button>
 		</div>
 	</form>
-	{% endif %}
 
 	<h2>Delete user</h2>
 	<p>Remove the user from the database. Changes made by the user will
