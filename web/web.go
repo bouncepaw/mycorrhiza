@@ -65,8 +65,7 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	file, err := static.FS.Open("robots.txt")
-	if err != nil {
-		return
+	if err != nil { return
 	}
 	io.Copy(w, file)
 	file.Close()
@@ -75,22 +74,21 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 func Handler() http.Handler {
 	router := mux.NewRouter()
 	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Do stuff here
-			log.Println(r.RequestURI)
-			// Call the next handler, which can be another middleware in the chain, or the final handler.
-			next.ServeHTTP(w, r)
+		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
+			util.PrepareRq(rq)
+			next.ServeHTTP(w, rq)
 		})
 	})
+	router.StrictSlash(true)
 
-	// Public routes
+	// Public routes. They're always accessible regardless of the user status.
 	initAuth(router)
 	router.HandleFunc("/robots.txt", handlerRobotsTxt)
 	router.HandleFunc("/static/style.css", handlerStyle)
 	router.PathPrefix("/static/").
 		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 
-	// Wiki routes. They may be locked or restricted
+	// Wiki routes. They may be locked or restricted.
 	wikiRouter := router.PathPrefix("").Subrouter()
 	wikiRouter.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
@@ -103,10 +101,16 @@ func Handler() http.Handler {
 
 	initReaders(wikiRouter)
 	initMutators(wikiRouter)
-	initAdmin(wikiRouter)
 	initHistory(wikiRouter)
 	initStuff(wikiRouter)
 	initSearch(wikiRouter)
+
+	// Admin routes.
+	if cfg.UseAuth {
+		adminRouter := wikiRouter.PathPrefix("/admin").Subrouter()
+		adminRouter.Use(groupMiddleware("admin"))
+		initAdmin(adminRouter)
+	}
 
 	// Miscellaneous
 	wikiRouter.HandleFunc("/user-list", handlerUserList)
@@ -120,4 +124,21 @@ func Handler() http.Handler {
 	})
 
 	return router
+}
+
+func groupMiddleware(group string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
+			if cfg.UseAuth && user.CanProceed(rq, group) {
+				next.ServeHTTP(w, rq)
+				return
+			}
+
+			// TODO: handle this better. Merge this code with all other
+			// authorization code in this project.
+
+			w.WriteHeader(http.StatusForbidden)
+			io.WriteString(w, "403 forbidden")
+		})
+	}
 }
