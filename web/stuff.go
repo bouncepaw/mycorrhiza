@@ -2,33 +2,35 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
-	"github.com/bouncepaw/mycomarkup"
-	"github.com/bouncepaw/mycomarkup/mycocontext"
-	"github.com/bouncepaw/mycorrhiza/help"
 	"io"
 	"log"
 	"math/rand"
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
-
+	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
+
+	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
 )
 
-func initStuff() {
-	http.HandleFunc("/help/", handlerHelp)
-	http.HandleFunc("/list/", handlerList)
-	http.HandleFunc("/reindex/", handlerReindex)
-	http.HandleFunc("/update-header-links/", handlerUpdateHeaderLinks)
-	http.HandleFunc("/random/", handlerRandom)
-	http.HandleFunc("/about/", handlerAbout)
-	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+func initStuff(r *mux.Router) {
+	r.PathPrefix("/help/").HandlerFunc(handlerHelp)
+	r.HandleFunc("/list", handlerList)
+	r.HandleFunc("/reindex", handlerReindex)
+	r.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
+	r.HandleFunc("/random", handlerRandom)
+	r.HandleFunc("/about", handlerAbout)
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
 }

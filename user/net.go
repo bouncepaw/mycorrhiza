@@ -1,15 +1,15 @@
 package user
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"time"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
+	"log"
+	"net/http"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -64,7 +64,7 @@ func Register(username, password, group, source string, force bool) error {
 	u := User{
 		Name:         username,
 		Group:        group,
-		Source: source,
+		Source:       source,
 		Password:     string(hash),
 		RegisteredAt: time.Now(),
 	}

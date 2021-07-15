@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -16,14 +18,14 @@ import (
 )
 
 // initAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
-func initAdmin() {
+func initAdmin(r *mux.Router) {
 	if cfg.UseAuth {
-		http.HandleFunc("/admin/", handlerAdmin)
-		http.HandleFunc("/admin/shutdown/", handlerAdminShutdown)
-		http.HandleFunc("/admin/reindex-users/", handlerAdminReindexUsers)
+		r.HandleFunc("/admin/shutdown", handlerAdminShutdown)
+		r.HandleFunc("/admin/reindex-users", handlerAdminReindexUsers)
 
-		http.HandleFunc("/admin/users/", handlerAdminUsers)
-		http.HandleFunc("/admin/user/new", handlerAdminUserNew)
+		r.PathPrefix("/admin/users/").HandlerFunc(handlerAdminUsers)
+		r.HandleFunc("/admin/user/new", handlerAdminUserNew)
+		r.HandleFunc("/admin", handlerAdmin)
 	}
 }
 

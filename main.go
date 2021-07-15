@@ -45,7 +45,5 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
-	// Network:
-	web.Init()
-	serveHTTP()
+	serveHTTP(web.Handler())
 }

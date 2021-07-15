@@ -7,18 +7,21 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func initHistory() {
-	http.HandleFunc("/history/", handlerHistory)
-	http.HandleFunc("/recent-changes/", handlerRecentChanges)
-	http.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
-	http.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
-	http.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
+func initHistory(r *mux.Router) {
+	r.PathPrefix("/history/").HandlerFunc(handlerHistory)
+
+	r.PathPrefix("/recent-changes/").HandlerFunc(handlerRecentChanges)
+	r.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
+	r.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
+	r.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 }
 
 // handlerHistory lists all revisions of a hypha.

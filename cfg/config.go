@@ -30,17 +30,17 @@ var (
 	AllowRegistration bool
 	RegistrationLimit uint64
 	Locked            bool
-	UseWhiteList bool
-	WhiteList []string
+	UseWhiteList      bool
+	WhiteList         []string
 
 	CommonScripts []string
 	ViewScripts   []string
 	EditScripts   []string
 
 	// TelegramEnabled if both TelegramBotToken and TelegramBotName are not empty strings.
-	TelegramEnabled bool
+	TelegramEnabled  bool
 	TelegramBotToken string
-	TelegramBotName string
+	TelegramBotName  string
 )
 
 // WikiDir is a full path to the wiki storage directory, which also must be a
@@ -56,7 +56,7 @@ type Config struct {
 	Network
 	Authorization
 	CustomScripts `comment:"You can specify additional scripts to load on different kinds of pages, delimited by a comma ',' sign."`
-	Telegram `comment:"You can enable Telegram authorization. Follow these instructions: https://core.telegram.org/widgets/login#setting-up-a-bot"`
+	Telegram      `comment:"You can enable Telegram authorization. Follow these instructions: https://core.telegram.org/widgets/login#setting-up-a-bot"`
 }
 
 // Hyphae is a section of Config which has fields related to special hyphae.
@@ -89,16 +89,16 @@ type CustomScripts struct {
 type Authorization struct {
 	UseAuth           bool
 	AllowRegistration bool
-	RegistrationLimit uint64 `comment:"This field controls the maximum amount of allowed registrations."`
-	Locked            bool   `comment:"Set if users have to authorize to see anything on the wiki."`
-	UseWhiteList bool `comment:"If true, WhiteList is used. Else it is not used."`
-	WhiteList []string `delim:"," comment:"Usernames of people who can log in to your wiki separated by comma."`
+	RegistrationLimit uint64   `comment:"This field controls the maximum amount of allowed registrations."`
+	Locked            bool     `comment:"Set if users have to authorize to see anything on the wiki."`
+	UseWhiteList      bool     `comment:"If true, WhiteList is used. Else it is not used."`
+	WhiteList         []string `delim:"," comment:"Usernames of people who can log in to your wiki separated by comma."`
 }
 
 // Telegram is the section of Config that sets Telegram authorization.
 type Telegram struct {
 	TelegramBotToken string `comment:"Token of your bot.`
-	TelegramBotName string `comment:"Username of your bot, sans @.`
+	TelegramBotName  string `comment:"Username of your bot, sans @.`
 }
 
 // ReadConfigFile reads a config on the given path and stores the
@@ -121,8 +121,8 @@ func ReadConfigFile(path string) error {
 			AllowRegistration: false,
 			RegistrationLimit: 0,
 			Locked:            false,
-			UseWhiteList: false,
-			WhiteList: []string{},
+			UseWhiteList:      false,
+			WhiteList:         []string{},
 		},
 		CustomScripts: CustomScripts{
 			CommonScripts: []string{},
@@ -131,7 +131,7 @@ func ReadConfigFile(path string) error {
 		},
 		Telegram: Telegram{
 			TelegramBotToken: "",
-			TelegramBotName: "",
+			TelegramBotName:  "",
 		},
 	}
 

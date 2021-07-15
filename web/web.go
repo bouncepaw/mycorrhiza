@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -73,27 +75,43 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	file.Close()
 }
 
-func Init() {
-	initAdmin()
-	initReaders()
-	initMutators()
-	initAuth()
-	initHistory()
-	initStuff()
-	initSearch()
+func Handler() http.Handler {
+	r := mux.NewRouter()
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Do stuff here
+			log.Println(r.RequestURI)
+			// Call the next handler, which can be another middleware in the chain, or the final handler.
+			next.ServeHTTP(w, r)
+		})
+	})
+
+	// Available all the time
+	initAuth(r)
+
+	initReaders(r)
+	initMutators(r)
+
+	initAdmin(r)
+	initHistory(r)
+	initStuff(r)
+	initSearch(r)
 
 	// Miscellaneous
-	http.HandleFunc("/user-list/", handlerUserList)
-	http.HandleFunc("/robots.txt", handlerRobotsTxt)
+	r.HandleFunc("/user-list", handlerUserList)
+	r.HandleFunc("/robots.txt", handlerRobotsTxt)
 
 	// Static assets
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
-	http.HandleFunc("/static/style.css", handlerStyle)
+	r.HandleFunc("/static/style.css", handlerStyle)
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 
 	// Index page
-	http.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {
-		addr, _ := url.Parse("/hypha/" + cfg.HomeHypha) // Let's pray it never fails
-		rq.URL = addr
-		handlerHypha(w, rq)
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Let's pray it never fails
+		addr, _ := url.Parse("/hypha/" + cfg.HomeHypha)
+		r.URL = addr
+		handlerHypha(w, r)
 	})
+
+	return r
 }

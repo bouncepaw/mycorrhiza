@@ -9,27 +9,29 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func initAuth() {
-	http.HandleFunc("/lock", handlerLock)
+func initAuth(r *mux.Router) {
+	r.HandleFunc("/lock", handlerLock)
 	if !cfg.UseAuth {
 		return
 	}
 	if cfg.AllowRegistration {
-		http.HandleFunc("/register", handlerRegister)
+		r.HandleFunc("/register", handlerRegister)
 	}
 	if cfg.TelegramEnabled {
-		http.HandleFunc("/telegram-login", handlerTelegramLogin)
+		r.HandleFunc("/telegram-login", handlerTelegramLogin)
 	}
-	http.HandleFunc("/login", handlerLogin)
-	http.HandleFunc("/login-data", handlerLoginData)
-	http.HandleFunc("/logout", handlerLogout)
-	http.HandleFunc("/logout-confirm", handlerLogoutConfirm)
+	r.HandleFunc("/login", handlerLogin)
+	r.HandleFunc("/login-data", handlerLoginData)
+	r.HandleFunc("/logout", handlerLogout)
+	r.HandleFunc("/logout-confirm", handlerLogoutConfirm)
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
@@ -128,10 +130,10 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	rq.ParseForm()
 	var (
-		values = rq.URL.Query()
-		username = strings.ToLower(values.Get("username"))
+		values     = rq.URL.Query()
+		username   = strings.ToLower(values.Get("username"))
 		seemsValid = user.TelegramAuthParamsAreValid(values)
-		err = user.Register(
+		err        = user.Register(
 			username,
 			"", // Password matters not
 			"editor",

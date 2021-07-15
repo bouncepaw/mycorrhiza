@@ -17,7 +17,7 @@ type User struct {
 	Password     string    `json:"hashed_password"`
 	RegisteredAt time.Time `json:"registered_on"`
 	// Source is where the user from. Valid values: valid, telegram.
-	Source       string    `json:"source"`
+	Source string `json:"source"`
 	sync.RWMutex
 
 	// A note about why HashedPassword is string and not []byte. The reason is
@@ -77,7 +77,7 @@ func EmptyUser() *User {
 		Name:     "anon",
 		Group:    "anon",
 		Password: "",
-		Source: "local",
+		Source:   "local",
 	}
 }
 

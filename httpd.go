@@ -11,12 +11,12 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
-func serveHTTP() {
+func serveHTTP(handler http.Handler) {
 	server := &http.Server{
 		ReadTimeout:  300 * time.Second,
 		WriteTimeout: 300 * time.Second,
 		IdleTimeout:  300 * time.Second,
-		Handler:      http.DefaultServeMux,
+		Handler:      handler,
 	}
 
 	if strings.HasPrefix(cfg.ListenAddr, "/") {

@@ -1,19 +1,20 @@
 package web
 
 import (
-	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/views"
 	"io"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
+	"github.com/bouncepaw/mycorrhiza/shroom"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func initSearch() {
-	http.HandleFunc("/title-search/", handlerTitleSearch)
-	http.HandleFunc("/title-search-json/", handlerTitleSearchJSON) // we get a little shroomy
-
+func initSearch(r *mux.Router) {
+	r.PathPrefix("/title-search/").HandlerFunc(handlerTitleSearch)
+	r.PathPrefix("/title-search-json/").HandlerFunc(handlerTitleSearchJSON)
 }
 
 func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {

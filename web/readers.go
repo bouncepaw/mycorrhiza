@@ -2,13 +2,13 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup/mycocontext"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -18,16 +18,18 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 
 	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
-func initReaders() {
-	http.HandleFunc("/page/", handlerHypha)
-	http.HandleFunc("/hypha/", handlerHypha)
-	http.HandleFunc("/text/", handlerText)
-	http.HandleFunc("/binary/", handlerBinary)
-	http.HandleFunc("/rev/", handlerRevision)
-	http.HandleFunc("/primitive-diff/", handlerPrimitiveDiff)
-	http.HandleFunc("/attachment/", handlerAttachment)
+func initReaders(r *mux.Router) {
+	r.PathPrefix("/page/").HandlerFunc(handlerHypha)
+	r.PathPrefix("/hypha/").HandlerFunc(handlerHypha)
+	r.PathPrefix("/text/").HandlerFunc(handlerText)
+	r.PathPrefix("/binary/").HandlerFunc(handlerBinary)
+	r.PathPrefix("/rev/").HandlerFunc(handlerRevision)
+	r.PathPrefix("/primitive-diff/").HandlerFunc(handlerPrimitiveDiff)
+	r.PathPrefix("/attachment/").HandlerFunc(handlerAttachment)
 }
 
 func handlerAttachment(w http.ResponseWriter, rq *http.Request) {

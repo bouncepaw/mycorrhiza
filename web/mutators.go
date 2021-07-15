@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -15,18 +17,18 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func initMutators() {
+func initMutators(r *mux.Router) {
 	// Those that do not actually mutate anything:
-	http.HandleFunc("/edit/", handlerEdit)
-	http.HandleFunc("/delete-ask/", handlerDeleteAsk)
-	http.HandleFunc("/rename-ask/", handlerRenameAsk)
-	http.HandleFunc("/unattach-ask/", handlerUnattachAsk)
+	r.PathPrefix("/edit/").HandlerFunc(handlerEdit)
+	r.PathPrefix("/delete-ask/").HandlerFunc(handlerDeleteAsk)
+	r.PathPrefix("/rename-ask/").HandlerFunc(handlerRenameAsk)
+	r.PathPrefix("/unattach-ask/").HandlerFunc(handlerUnattachAsk)
 	// And those that do mutate something:
-	http.HandleFunc("/upload-binary/", handlerUploadBinary)
-	http.HandleFunc("/upload-text/", handlerUploadText)
-	http.HandleFunc("/delete-confirm/", handlerDeleteConfirm)
-	http.HandleFunc("/rename-confirm/", handlerRenameConfirm)
-	http.HandleFunc("/unattach-confirm/", handlerUnattachConfirm)
+	r.PathPrefix("/upload-binary/").HandlerFunc(handlerUploadBinary)
+	r.PathPrefix("/upload-text/").HandlerFunc(handlerUploadText)
+	r.PathPrefix("/delete-confirm/").HandlerFunc(handlerDeleteConfirm)
+	r.PathPrefix("/rename-confirm/").HandlerFunc(handlerRenameConfirm)
+	r.PathPrefix("/unattach-confirm/").HandlerFunc(handlerUnattachConfirm)
 }
 
 func factoryHandlerAsker(
