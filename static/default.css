@@ -248,7 +248,7 @@ td { border: #ddd 1px solid; }
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
 html { background: #222; color: #ddd; }
-main,  article, .hypha-tabs__tab, header, .layout-card { background-color: #343434; color: #ddd; }
+main, article, header, .layout-card, .hypha-tabs__flex { background-color: #343434; color: #ddd; }
 
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
@@ -257,7 +257,7 @@ a:visited, .wikilink_external:visited { color: #ffb86c; }
 
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
 
-.hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; background-color: #232323; border: 0; }
+.hypha-tabs__tab a, .hypha-tabs__tab { color: #ddd; border: 0; background-color: transparent; }
 .layout-card__title, .hypha-tabs__tab_active { background-color: #343434; }
 
 .transclusion .transclusion__link, a.shy-link { color: #ddd; }
