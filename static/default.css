@@ -600,6 +600,24 @@ kbd {
 	color: black;
 	text-decoration: none;
 }
+
+.top-bar__home-link:hover,
+.auth-links__link:hover,
+.top-bar__highlight-link:hover {
+	background-color: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+	.top-bar a {
+		color: #ddd;
+	}
+	.top-bar__home-link:hover,
+	.auth-links__link:hover,
+	.top-bar__highlight-link:hover {
+		background-color: #444;
+	}
+}
+
 @media screen and (min-width: 800px) {
 	.top-bar {
 		padding: 0;
@@ -660,10 +678,5 @@ kbd {
 	.top-bar__highlight-link {
 		display: block;
 		padding: 0 .5rem;
-	}
-	.top-bar__home-link:hover,
-	.auth-links__link:hover,
-	.top-bar__highlight-link:hover {
-		background-color: #eee;
 	}
 }
