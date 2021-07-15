@@ -280,7 +280,8 @@ table { border: 0; background-color: #444444; color: #ddd; }
 .transclusion .codeblock { background-color: #454545; }
 mark { background: rgba(130, 80, 30, 5); color: inherit; }
 @media screen and (max-width: 800px) {
-	.hypha-tabs { background-color: #232323; }
+	.hypha-tabs a,
+	.hypha-tabs { background-color: #343434; }
 }
 }
 
