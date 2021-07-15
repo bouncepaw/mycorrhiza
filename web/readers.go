@@ -39,9 +39,6 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 		h         = hyphae.ByName(hyphaName)
 		u         = user.FromRequest(rq)
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
@@ -59,9 +56,6 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		h               = hyphae.ByName(hyphaName)
 		u               = user.FromRequest(rq)
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			fmt.Sprintf("Diff of %s at %s", hyphaName, revHash),
@@ -82,9 +76,6 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		textContents, err = history.FileAtRevision(h.TextPath, revHash)
 		u                 = user.FromRequest(rq)
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if err == nil {
 		ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textContents)
 		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
@@ -103,9 +94,6 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 // handlerText serves raw source text of the hypha.
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	hyphaName := util.HyphaNameFromRq(rq, "text")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.TextPath)
@@ -117,9 +105,6 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 // handlerBinary serves binary part of the hypha.
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	if h := hyphae.ByName(hyphaName); h.Exists {
 		log.Println("Serving", h.BinaryPath)
@@ -138,9 +123,6 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		openGraph string
 		u         = user.FromRequest(rq)
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if h.Exists {
 		fileContentsT, errT := os.ReadFile(h.TextPath)
 		_, errB := os.Stat(h.BinaryPath)

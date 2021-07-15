@@ -32,9 +32,6 @@ func initAdmin(r *mux.Router) {
 // handlerAdmin provides the admin panel.
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if user.CanProceed(rq, "admin") {
 		w.Header().Set("Content-Type", "text/html;charset=utf-8")
 		w.WriteHeader(http.StatusOK)
@@ -48,9 +45,6 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 // handlerAdminShutdown kills the wiki.
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if user.CanProceed(rq, "admin/shutdown") && rq.Method == "POST" {
 		log.Fatal("An admin commanded the wiki to shutdown")
 	}
@@ -59,9 +53,6 @@ func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 // handlerAdminReindexUsers reinitialises the user system.
 func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if user.CanProceed(rq, "admin") && rq.Method == "POST" {
 		user.ReadUsersFromFilesystem()
 		redirectTo := rq.Referer()
@@ -74,9 +65,6 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 
 func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if user.CanProceed(rq, "admin") {
 		path := strings.TrimPrefix(rq.URL.Path, "/admin/users")
 		parts := strings.Split(path, "/")[1:]
@@ -178,9 +166,6 @@ func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 
 func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if user.CanProceed(rq, "admin") {
 		if rq.Method == http.MethodGet {
 			// New user form

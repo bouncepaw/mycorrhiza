@@ -27,9 +27,6 @@ func initHistory(r *mux.Router) {
 // handlerHistory lists all revisions of a hypha.
 func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	hyphaName := util.HyphaNameFromRq(rq, "history")
 	var list string
 
@@ -47,9 +44,6 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 // handlerRecentChanges displays the /recent-changes/ page.
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	var (
 		noPrefix = strings.TrimPrefix(rq.URL.String(), "/recent-changes/")
 		n, err   = strconv.Atoi(noPrefix)
@@ -64,9 +58,6 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
 func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string) {
 	util.PrepareRq(rq)
-	if shown := user.FromRequest(rq).ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if content, err := f(); err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)

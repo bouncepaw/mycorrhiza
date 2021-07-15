@@ -44,9 +44,6 @@ func factoryHandlerAsker(
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)
-		if shown := u.ShowLockMaybe(w, rq); shown {
-			return
-		}
 		if err, errtitle := asker(u, h); err != nil {
 			httpErr(
 				w,
@@ -97,9 +94,6 @@ func factoryHandlerConfirmer(
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
 		)
-		if shown := u.ShowLockMaybe(w, rq); shown {
-			return
-		}
 		if hop, errtitle := confirmer(h, u, rq); hop.HasErrors() {
 			httpErr(w, http.StatusInternalServerError, hyphaName,
 				errtitle,
@@ -147,9 +141,6 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		err          error
 		u            = user.FromRequest(rq)
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if err, errtitle := shroom.CanEdit(u, h); err != nil {
 		httpErr(w, http.StatusInternalServerError, hyphaName,
 			errtitle,
@@ -189,9 +180,6 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		hop       *history.HistoryOp
 		errtitle  string
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 
 	if action != "Preview" {
 		hop, errtitle = shroom.UploadText(h, []byte(textData), message, u)
@@ -233,9 +221,6 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		u                  = user.FromRequest(rq)
 		file, handler, err = rq.FormFile("binary")
 	)
-	if shown := u.ShowLockMaybe(w, rq); shown {
-		return
-	}
 	if err != nil {
 		httpErr(w, http.StatusInternalServerError, hyphaName,
 			"Error",
