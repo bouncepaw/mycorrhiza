@@ -21,7 +21,9 @@
 			<nav class="main-width top-bar">
 				<ul class="top-bar__wrapper">
 					<li class="top-bar__section top-bar__section_home">
-						<a class="top-bar__home-link" href="/">{%s cfg.WikiName %}</a>
+						<div class="top-bar__home-link-wrapper">
+							<a class="top-bar__home-link" href="/">{%s cfg.WikiName %}</a>
+						</div>
 					</li>
 					<li class="top-bar__section top-bar__section_search">
 						<form class="top-bar__search" method="GET" action="/title-search">
@@ -33,19 +35,19 @@
 						<ul class="top-bar__auth auth-links">
 							<li class="auth-links__box auth-links__user-box">
 								{% if u.Group == "anon" %}
-								<a href="/login" class="auth-links__login-link">Login</a>
+								<a href="/login" class="auth-links__link auth-links__login-link">Login</a>
 								{% else %}
-								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__user-link">{%s util.BeautifulName(u.Name) %}</a>
+								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__link auth-links__user-link">{%s util.BeautifulName(u.Name) %}</a>
 								{% endif %}
 							</li>
 							{% if cfg.AllowRegistration && u.Group == "anon" %}
 							<li class="auth-links__box auth-links__register-box">
-								<a href="/register" class="auth-links__register-link">Register</a>
+								<a href="/register" class="auth-links__link auth-links__register-link">Register</a>
 							</li>
 							{% endif %}
 							{% if u.Group == "admin" %}
 							<li class="auth-links__box auth-links__admin-box">
-								<a href="/admin" class="auth-links__admin-link">Admin panel</a>
+								<a href="/admin" class="auth-links__link auth-links__admin-link">Admin panel</a>
 							</li>
 							{% endif %}
 						</ul>
