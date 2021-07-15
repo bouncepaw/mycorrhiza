@@ -82,7 +82,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 	if cfg.UseAuth {
 //line views/stuff.qtpl:33
 		qw422016.N().S(`
-					<li class="top-bar__section top-bar__section_auth top-bar__section_hidden-on-mobile">
+					<li class="top-bar__section top-bar__section_auth">
 						<ul class="top-bar__auth auth-links">
 							<li class="auth-links__box auth-links__user-box">
 								`)
@@ -148,7 +148,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 	}
 //line views/stuff.qtpl:55
 	qw422016.N().S(`
-					<li class="top-bar__section top-bar__section_highlights top-bar__section_hidden-on-mobile">
+					<li class="top-bar__section top-bar__section_highlights">
 						<ul class="top-bar__highlights">
 `)
 //line views/stuff.qtpl:58

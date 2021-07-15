@@ -31,7 +31,7 @@
 						</form>
 					</li>
 					{% if cfg.UseAuth %}
-					<li class="top-bar__section top-bar__section_auth top-bar__section_hidden-on-mobile">
+					<li class="top-bar__section top-bar__section_auth">
 						<ul class="top-bar__auth auth-links">
 							<li class="auth-links__box auth-links__user-box">
 								{% if u.Group == "anon" %}
@@ -53,7 +53,7 @@
 						</ul>
 					</li>
 					{% endif %}
-					<li class="top-bar__section top-bar__section_highlights top-bar__section_hidden-on-mobile">
+					<li class="top-bar__section top-bar__section_highlights">
 						<ul class="top-bar__highlights">
 						{%- for _, link := range cfg.HeaderLinks -%}
 						{% if link.Href != "/" %}

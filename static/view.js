@@ -3,6 +3,8 @@ let wrapper = document.getElementsByClassName("top-bar__wrapper")[0],
     highlights = document.getElementsByClassName("top-bar__section_highlights")[0]
 
 const toggleElement = el => el.classList.toggle("top-bar__section_hidden-on-mobile")
+toggleElement(auth)
+toggleElement(highlights)
 
 let hamburger = document.createElement("button")
 hamburger.classList.add("top-bar__hamburger")
