@@ -550,6 +550,9 @@ kbd {
 	display: flex;
 	justify-content: center;
 }
+.locked-notice .telegram-notice {
+	display: none;
+}
 
 .locked-notice__message {
 	max-width: 30rem;
