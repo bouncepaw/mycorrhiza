@@ -12,8 +12,12 @@ hamburger.onclick = _ => {
 }
 hamburger.innerText = "Menu"
 
+let hamburgerWrapper = document.createElement("div")
+hamburgerWrapper.classList.add("top-bar__hamburger-wrapper")
+
 let hamburgerSection = document.createElement("li")
 hamburgerSection.classList.add("top-bar__section", "top-bar__section_hamburger")
 
-hamburgerSection.appendChild(hamburger)
+hamburgerWrapper.appendChild(hamburger)
+hamburgerSection.appendChild(hamburgerWrapper)
 wrapper.appendChild(hamburgerSection)
