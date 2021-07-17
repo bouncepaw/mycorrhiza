@@ -13,8 +13,8 @@ import (
 )
 
 func initSearch(r *mux.Router) {
-	r.PathPrefix("/title-search/").HandlerFunc(handlerTitleSearch)
-	r.PathPrefix("/title-search-json/").HandlerFunc(handlerTitleSearchJSON)
+	r.HandleFunc("/title-search/", handlerTitleSearch)
+	r.HandleFunc("/title-search-json/", handlerTitleSearchJSON)
 }
 
 func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
