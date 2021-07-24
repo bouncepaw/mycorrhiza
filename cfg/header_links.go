@@ -12,10 +12,10 @@ var HeaderLinks []HeaderLink
 // SetDefaultHeaderLinks sets the header links to the default list of: home hypha, recent changes, hyphae list, random hypha.
 func SetDefaultHeaderLinks() {
 	HeaderLinks = []HeaderLink{
-		{"/", WikiName},
 		{"/recent-changes", "Recent changes"},
 		{"/list", "All hyphae"},
 		{"/random", "Random"},
+		{"/help", "Help"},
 	}
 }
 
