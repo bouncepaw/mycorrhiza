@@ -661,7 +661,9 @@ kbd {
 }
 
 .top-bar__search-bar {
-	vertical-align: text-top;
+	border: 0;
+	vertical-align: -webkit-baseline-middle; /* You have no idea how sorry I am. This is a non-standard value. Seems to work in Safari, Opera and mobile Chrome. We need a jedi and a knight in shiny armor to replace it with something more standard. */
+	width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -723,7 +725,7 @@ kbd {
 	}
 	.top-bar__wrapper {
 		margin: 0;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: 2fr 1.3fr .7fr;
 	}
 	.top-bar__section_home {
 		grid-column: 1 / span 1;
@@ -732,6 +734,7 @@ kbd {
 	.top-bar__section_search {
 		grid-column: 2 / span 1;
 		text-align: center;
+		width: 100%;
 	}
 	.top-bar__section_hamburger {
 		grid-column: 3 / span 1;
