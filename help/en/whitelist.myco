@@ -1,4 +1,6 @@
 # Whitelist
+//This article is intended for wiki administrators.//
+
 If you want to limit what people can authorize to your wiki, you may want to use the **whitelist**.
 
 In `config.ini`, in the `[Authorization]` section, enable the white list in `UseWhiteList` and list all allowed usernames in the `WhiteList` field separated by comma:
