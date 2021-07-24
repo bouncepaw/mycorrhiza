@@ -126,18 +126,18 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">Locked</h1>
 			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
-                <label for="login-form__username">Username</label>
-                <br>
-                <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
-                <br>
-                <label for="login-form__password">Password</label>
-                <br>
-                <input type="password" required name="password" autocomplete="current-password">
-                <br>
-                <input class="btn" type="submit" value="Log in">
-            </form>
+				<label for="login-form__username">Username</label>
+				<br>
+				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+				<br>
+				<label for="login-form__password">Password</label>
+				<br>
+				<input type="password" required name="password" autocomplete="current-password">
+				<br>
+				<input class="btn" type="submit" value="Log in">
+			</form>
+			{%= telegramWidgetHTML() %}
 		</section>
-		{%= telegramWidgetHTML() %}
 	</main>
 </body>
 </html>

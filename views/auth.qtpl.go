@@ -221,7 +221,7 @@ func streamtelegramWidgetHTML(qw422016 *qt422016.Writer) {
 	if cfg.TelegramEnabled {
 //line views/auth.qtpl:71
 		qw422016.N().S(`
-<p>You can log in using Telegram. It only works if you have set your @username in Telegram and this username is free on this wiki.</p>
+<p class="telegram-notice">You can log in using Telegram. It only works if you have set your @username in Telegram and this username is free on this wiki.</p>
 <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="`)
 //line views/auth.qtpl:73
 		qw422016.E().S(cfg.TelegramBotName)
@@ -427,35 +427,40 @@ func StreamLockHTML(qw422016 *qt422016.Writer) {
                 <input class="btn" type="submit" value="Log in">
             </form>
 		</section>
+		`)
+//line views/auth.qtpl:140
+	streamtelegramWidgetHTML(qw422016)
+//line views/auth.qtpl:140
+	qw422016.N().S(`
 	</main>
 </body>
 </html>
 `)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 }
 
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 func WriteLockHTML(qq422016 qtio422016.Writer) {
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	StreamLockHTML(qw422016)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 }
 
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 func LockHTML() string {
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	WriteLockHTML(qb422016)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 	return qs422016
-//line views/auth.qtpl:143
+//line views/auth.qtpl:144
 }
