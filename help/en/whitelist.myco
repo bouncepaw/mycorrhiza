@@ -1,0 +1,15 @@
+# Whitelist
+If you want to limit what people can authorize to your wiki, you may want to use the **whitelist**.
+
+In `config.ini`, in the `[Authorization]` section, enable the white list in `UseWhiteList` and list all allowed usernames in the `WhiteList` field separated by comma:
+```
+...
+[Authorization]
+UseWhiteList = true
+WhiteList = fish,pesce,рыба
+...
+```
+
+Reload the wiki.
+
+From now on, only these usernames can be used, ie you can only register and log in with these names. Others will be rejected.

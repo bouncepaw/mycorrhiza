@@ -24,7 +24,7 @@ import (
 )
 
 func initStuff(r *mux.Router) {
-	r.PathPrefix("/help/").HandlerFunc(handlerHelp)
+	r.PathPrefix("/help").HandlerFunc(handlerHelp)
 	r.HandleFunc("/list", handlerList)
 	r.HandleFunc("/reindex", handlerReindex)
 	r.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
@@ -37,7 +37,11 @@ func initStuff(r *mux.Router) {
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
-	content, err := help.Get(rq.URL.Path[6:]) // Drop /help/
+	articlePath := strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
+	if articlePath == "" {
+		articlePath = "en"
+	}
+	content, err := help.Get(articlePath)
 	if err != nil && strings.HasPrefix(err.Error(), "open") {
 		w.WriteHeader(http.StatusNotFound)
 		_, _ = io.WriteString(
@@ -60,10 +64,9 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	// TODO: change for the function that uses byte array when there is such function in mycomarkup.
-	ctx, _ := mycocontext.ContextFromStringInput(rq.URL.Path[1:3], string(content))
+	ctx, _ := mycocontext.ContextFromStringInput(articlePath, string(content))
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
-	// TODO: styled output idk
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,

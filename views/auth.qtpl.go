@@ -416,22 +416,22 @@ func StreamLockHTML(qw422016 *qt422016.Writer) {
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">Locked</h1>
 			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
-                <label for="login-form__username">Username</label>
-                <br>
-                <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
-                <br>
-                <label for="login-form__password">Password</label>
-                <br>
-                <input type="password" required name="password" autocomplete="current-password">
-                <br>
-                <input class="btn" type="submit" value="Log in">
-            </form>
-		</section>
-		`)
-//line views/auth.qtpl:140
+				<label for="login-form__username">Username</label>
+				<br>
+				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+				<br>
+				<label for="login-form__password">Password</label>
+				<br>
+				<input type="password" required name="password" autocomplete="current-password">
+				<br>
+				<input class="btn" type="submit" value="Log in">
+			</form>
+			`)
+//line views/auth.qtpl:139
 	streamtelegramWidgetHTML(qw422016)
-//line views/auth.qtpl:140
+//line views/auth.qtpl:139
 	qw422016.N().S(`
+		</section>
 	</main>
 </body>
 </html>

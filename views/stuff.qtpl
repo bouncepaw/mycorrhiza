@@ -152,6 +152,14 @@ It outputs a poorly formatted JSON, but it works and is valid.
 				</li>
 			</ul
 		</li>
+		<li>
+			Configuration
+			<ul>
+				<li>
+					<a href="/help/en/whitelist">Whitelist</a>
+				</li>
+			</ul>
+		</li>
 	</ul>
 </aside>
 {% endfunc %}
