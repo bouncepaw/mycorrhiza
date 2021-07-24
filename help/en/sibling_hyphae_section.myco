@@ -1,0 +1,13 @@
+# Sibling hyphae section
+On the right (or below on smaller devices) of hypha pages there is a special section that lists **sibling hyphae**.
+
+> **Sibling hyphae** are hyphae that are subhyphae of the same hypha. For example, //Fruit/Apple// and //Fruit/Pear// are sibling hyphae to each other.
+
+The sibling hyphae are listed alphabetically. The name of the hypha you are currently viewing is also part of the list. The rest are links that lead you to the hyphae.
+
+Sometimes, there are numbers beside the links:
+* **No number.** The hypha has no subhyphae.
+* **One number.** The number indicates how many direct subhyphae it has.
+* **Two numbers.** The first number is the number of direct subhyphae. The second number in parentheses is the number of indirect subhyphae.
+
+For hypha //Fruit//, hyphae //Fruit/Apple// and //Fruit/Pear// would be direct subhyphae, and hyphae //Fruit/Apple/Red// and //Fruit/Apple/Green// would be indirect subhyphae.
