@@ -1,0 +1,54 @@
+# Top bar
+The **top bar** is present on every single page of the wiki. It is the primary navigation means.
+
+On big screens, the top bar is spread onto two lines.
+* First line
+** Link to the [[/ | home page]]
+** Search bar
+** //If authorization is enabled,//
+*** //If logged in,//
+**** Link to your user hypha
+**** //For admins,// link to the admin panel
+*** //If not logged in,//
+**** Login link
+**** Register link
+* Second line, most used links. These are the defaults:
+** Recent changes
+** All hyphae
+** Random
+** Help
+
+On small screens, the authorization section and the most-used-links section are hidden behind a menu. Click the button to see them. If your browser does not support JavaScript, they are always shown.
+
+## Using the top bar
+Wiki administrators are meant to configure the top bar links. Here is what you should put there:
+* Popular articles
+* Lists of something
+* Recent changes
+* Whatever you want, but not too much, of course. The space is limited
+
+## Configuring the links
+//This section is for administrators only.//
+
+To change the default link, you first have to choose a hypha where you will store the configuration. A good choice would be to store as a subhypha of an administrator's profile hypha. In `config.ini`, in the `[Hyphae]` section set the hypha:
+```ini
+...
+[Hyphae]
+HeaderLinksHypha = u/admin/header_links
+...
+```
+
+Reload the wiki.
+
+----
+
+Edit the hypha. You can put any markup there. Rocket links will be used for generating the top bar:
+
+```myco
+=> /recent-changes Recent changes
+=> Highlights
+=> Philosophy Our views on life
+=> Essays
+```
+
+Now, for changes to take effect, a moderator or an administrator has to visit [[/update-header-links]].
