@@ -42,8 +42,6 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 }
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-
 	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
@@ -65,7 +63,8 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	file, err := static.FS.Open("robots.txt")
-	if err != nil { return
+	if err != nil {
+		return
 	}
 	io.Copy(w, file)
 	file.Close()
