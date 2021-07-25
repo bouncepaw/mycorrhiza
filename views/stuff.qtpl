@@ -147,6 +147,7 @@ It outputs a poorly formatted JSON, but it works and is valid.
 				<li><a href="/help/en/attachment">Attachment</a></li>
 			</ul>
 		</li>
+		<li><a href="/help/en/mycomarkup">Mycomarkup</a></li>
 		<li>Interface
 			<ul>
 				<li><a href="/help/en/top_bar">Top bar</a>, new in 1.3</li>

@@ -1,0 +1,101 @@
+# Mycomarkup
+**Mycomarkup** is Mycorrhiza Wiki's own markup language.
+
+It is the only supported markup, there is no support for Markdown, Creole, etc.
+
+A Mycomarkup document (which is most often a hypha's text part) consists of //blocks//. There are different blocks for different purposes.
+
+## Table of contents
+=> /help/en/mycomarkup#Paragraph Paragraph
+=> /help/en/mycomarkup#Heading Heading
+=> /help/en/mycomarkup#Codeblock Codeblock
+=> /help/en/mycomarkup#Horizontal_line Horizontal line
+
+## Paragraph
+**Paragraphs** are the most ubiquitous blocks. You will use them a lot.
+
+To create a paragraph, just write text. Paragraphs are separated by empty lines.
+
+* {```
+Paragraph 1
+
+Paragraph 2
+Second line of paragraph 2
+```}
+* {
+Paragraph 1
+
+Paragraph 2
+Second line of paragraph 2
+}
+
+You can apply styling to paragraph content.
+* {```
+You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted&^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
+```}
+* You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
+
+Use the backslash to prevent the styling.
+* {```
+This is not \//italic\//
+```}
+* This is not \//italic\//
+
+You do not have to close the stylings, they will span until the end of line.
+* {```
+This is //italic
+This is not
+```}
+* {
+This is //italic
+This is not
+}
+
+You can include inline links.
+* {```
+Just a paragraph with a couple of [[https://example.org | links]] leading [[nowhere]].
+```}
+* Just a paragraph with a couple of [[https://example.org | links]] leading [[nowhere]].
+
+=> /help/en/link Read more about links
+
+## Heading
+There are six levels of **headings**. They consist of some hash signs followed by a space and the heading itself. You can format the heading like a paragraph. You should probably not use level 1 because the hypha name title is already level 1.
+
+```
+# level 1
+## level 2
+### level 3
+#### level 4
+##### level 5
+###### level 6
+```
+
+There is an invisible link denoted by the § sign near every heading. You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
+
+## Codeblock
+Use **codeblocks** to show code or any other preformatted text. Codeblocks start with triple backticks on column 1 and end similarly. You can write any text after the backticks, it is ignored. Put the preformatted text between them.
+
+Like that, but without leading spaces:
+```
+ ```
+ this is preformatted
+    see
+ ```
+```
+
+```
+this is preformatted
+   see
+```
+
+## Horizontal line
+Write four hyphens to insert a **horizontal line**.
+
+* {```
+----
+```}
+* ----
+
+## See also
+=> https://mycorrhiza.wiki/hypha/essay/why_mycomarkup Why it was created
