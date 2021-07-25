@@ -101,7 +101,7 @@ func (h *Hypha) MergeIn(oh *Hypha) {
 	}
 	if oh.BinaryPath != "" {
 		if h.BinaryPath != "" {
-			log.Println("There is a file collision for binary part of a hypha:", h.BinaryPath, "and", oh.BinaryPath, "-- going on with the latter")
+			log.Println("There is a file collision for attachment of a hypha:", h.BinaryPath, "and", oh.BinaryPath, "-- going on with the latter")
 		}
 		h.BinaryPath = oh.BinaryPath
 	}

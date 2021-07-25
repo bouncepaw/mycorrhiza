@@ -383,7 +383,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.H
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
+		<p>Please note that viewing attachments of hyphae is not supported in history for now.</p>
 		`)
 //line views/readers.qtpl:118
 	qw422016.N().S(NaviTitleHTML(h))

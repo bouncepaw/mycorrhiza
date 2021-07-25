@@ -114,7 +114,7 @@ If `contents` == "", a helpful message is shown instead.
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>Please note that viewing binary parts of hyphae is not supported in history for now.</p>
+		<p>Please note that viewing attachments of hyphae is not supported in history for now.</p>
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
 	</article>

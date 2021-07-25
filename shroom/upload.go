@@ -44,7 +44,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 
 func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User) (*history.HistoryOp, string) {
 	var (
-		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload binary part for ‘%s’ with type ‘%s’", h.Name, mime))
+		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.Name, mime))
 		data, err = io.ReadAll(file)
 	)
 

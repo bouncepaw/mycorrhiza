@@ -102,7 +102,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-// handlerBinary serves binary part of the hypha.
+// handlerBinary serves attachment of the hypha.
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
