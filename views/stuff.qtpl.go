@@ -77,12 +77,12 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 							<input type="text" name="q" placeholder="Title search" class="top-bar__search-bar">
 						</form>
 					</li>
-					`)
-//line views/stuff.qtpl:33
-	if cfg.UseAuth {
-//line views/stuff.qtpl:33
-		qw422016.N().S(`
 					<li class="top-bar__section top-bar__section_auth">
+					`)
+//line views/stuff.qtpl:34
+	if cfg.UseAuth {
+//line views/stuff.qtpl:34
+		qw422016.N().S(`
 						<ul class="top-bar__auth auth-links">
 							<li class="auth-links__box auth-links__user-box">
 								`)
@@ -142,12 +142,12 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 //line views/stuff.qtpl:52
 		qw422016.N().S(`
 						</ul>
-					</li>
 					`)
-//line views/stuff.qtpl:55
+//line views/stuff.qtpl:54
 	}
-//line views/stuff.qtpl:55
+//line views/stuff.qtpl:54
 	qw422016.N().S(`
+					</li>
 					<li class="top-bar__section top-bar__section_highlights">
 						<ul class="top-bar__highlights">
 `)
