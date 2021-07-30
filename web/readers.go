@@ -73,7 +73,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
 		h                 = hyphae.ByName(hyphaName)
 		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
-		textContents, err = history.FileAtRevision(h.TextPath, revHash)
+		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
 		u                 = user.FromRequest(rq)
 	)
 	if err == nil {

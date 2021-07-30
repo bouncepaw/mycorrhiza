@@ -2,7 +2,9 @@
 package hyphae
 
 import (
+	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
+	"path/filepath"
 	"regexp"
 	"sync"
 )
@@ -17,6 +19,14 @@ type Hypha struct {
 	Exists     bool
 	TextPath   string // == "" => no text part
 	BinaryPath string // == "" => no attachment
+}
+
+// TextPartPath returns rooted path to the file where the text part should be.
+func (h *Hypha) TextPartPath() string {
+	if h.TextPath == "" {
+		return filepath.Join(files.HyphaeDir(), h.Name+".myco")
+	}
+	return h.TextPath
 }
 
 var byNames = make(map[string]*Hypha)
