@@ -10,6 +10,8 @@ A Mycomarkup document (which is most often a hypha's text part) consists of //bl
 => /help/en/mycomarkup#Heading Heading
 => /help/en/mycomarkup#Codeblock Codeblock
 => /help/en/mycomarkup#Horizontal_line Horizontal line
+=> /help/en/mycomarkup#Image_gallery Image gallery
+=> /help/en/mycomarkup#List List
 
 ## Paragraph
 **Paragraphs** are the most ubiquitous blocks. You will use them a lot.
@@ -96,6 +98,103 @@ Write four hyphens to insert a **horizontal line**.
 ----
 ```}
 * ----
+
+## Image gallery
+Use **image galleries** to embed images to the page. Images can be either hyphae or external files. In the example below you can replace the URL with a hypha's name. If that hypha is an image, the image will be shown.
+
+You can write a description for the image and specify its size.
+
+* {```
+img {
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg {
+	Description //here//
+}
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 100 { Size }
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 50*50
+}
+```}
+* {
+img {
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg {
+	Description //here//
+}
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 100 { Size }
+https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 50*50 { Square }
+}
+}
+
+If you were embedding a hypha called //an image hypha//, it would look like this:
+* {```
+img {
+an image hypha
+}
+```}
+
+If you put just one image, it will be displayed with no decorations:
+* {```
+img { https://mycorrhiza.wiki/static/favicon.ico }
+```}
+* {img { https://mycorrhiza.wiki/static/favicon.ico }}
+
+## List
+**Lists** are used for sequential or tree data. They are quite popular.
+
+Mark each list entry with an asterisk and a space:
+* {```
+* one
+* two
+* three
+```}
+* {
+* one
+* two
+* three
+}
+
+If you place dots after the asterisks, the list becomes numbered:
+* {```
+*. one
+*. two
+*. three
+```}
+* {
+*. one
+*. two
+*. three
+}
+
+If you place `x` or `v`, you make the entries unfinished and finished T\ODO entries respectively.
+* {```
+*v Done
+*x Not done
+**v Super done
+** Cool
+```}
+* {
+*v Done
+*x Not done
+**v Super done
+** Cool
+}
+
+All of Mycomarkup is supported in list entries. If you want to have multi-line entries, wrap the contents in curly braces.
+
+* {```
+* {
+## Heading
+Text
+}
+* Not multiline
+```}
+* {
+* {
+## Heading
+Text
+}
+* Not multiline
+}
 
 ## See also
 => https://mycorrhiza.wiki/hypha/essay/why_mycomarkup Why it was created
