@@ -47,7 +47,7 @@ func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyp
 	qw422016.N().S(`
 `)
 //line views/history.qtpl:14
-	text, err := history.PrimitiveDiffAtRevision(h.TextPath, hash)
+	text, err := history.PrimitiveDiffAtRevision(h.TextPartPath(), hash)
 	if err != nil {
 		text = err.Error()
 	}

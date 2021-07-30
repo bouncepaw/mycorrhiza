@@ -11,7 +11,7 @@
 
 {% func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) %}
 {% code
-text, err := history.PrimitiveDiffAtRevision(h.TextPath, hash)
+text, err := history.PrimitiveDiffAtRevision(h.TextPartPath(), hash)
 if err != nil {
 	text = err.Error()
 }
