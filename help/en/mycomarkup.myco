@@ -7,11 +7,15 @@ A Mycomarkup document (which is most often a hypha's text part) consists of //bl
 
 ## Table of contents
 => /help/en/mycomarkup#Paragraph Paragraph
+=> /help/en/mycomarkup#Inline_link Inline link
+=> /help/en/mycomarkup#Rocket_link Rocket link
 => /help/en/mycomarkup#Heading Heading
 => /help/en/mycomarkup#Codeblock Codeblock
 => /help/en/mycomarkup#Horizontal_line Horizontal line
 => /help/en/mycomarkup#Image_gallery Image gallery
 => /help/en/mycomarkup#List List
+=> /help/en/mycomarkup#Quote Quote
+=> /help/en/mycomarkup#Table Table
 
 ## Paragraph
 **Paragraphs** are the most ubiquitous blocks. You will use them a lot.
@@ -59,7 +63,44 @@ Just a paragraph with a couple of [[https://example.org | links]] leading [[nowh
 ```}
 * Just a paragraph with a couple of [[https://example.org | links]] leading [[nowhere]].
 
-=> /help/en/link Read more about links
+### Inline link
+External links can be placed verbatim if they have protocol specified. These links are called autolinks. It may not work as expected sometimes. Supported protocols for autolinks are https, http, gemini, gopher, ftp.
+* {```
+https://example.org
+```}
+* https://example.org
+
+Wrap links to hyphae and external links with `[\[` and `]]`.
+* {```
+Links to a [[hypha]] and [[https://example.org]].
+```}
+* Links to a [[hypha]] and [[https://example.org]].
+
+If you want to change the displayed text of the link, write it after `|`.
+* {```
+Links to [[hypha | a Hypha]] and [[https://example.org | some website]].
+```}
+* Links to [[hypha | a Hypha]] and [[https://example.org | some website]].
+
+Since hypha names are case-insensitive, these links are basically the same: `[[hypha]]`, `[[Hypha]]`, `[[HYPHA]]`.
+
+## Rocket link
+**Rocket links** are special links. They take up a whole line. They are not consistent with usual inline links.
+
+The display text is written after the first space, not `|`. If you want to link a hypha with spaces in it, replace the spaces with _.
+
+* {```
+=> hypha
+=> hypha_with_spaces
+=> https://example.org
+=> https://example.org Display text
+```}
+* {
+=> hypha
+=> hypha_with_spaces
+=> https://example.org
+=> https://example.org Display text
+}
 
 ## Heading
 There are six levels of **headings**. They consist of some hash signs followed by a space and the heading itself. You can format the heading like a paragraph. You should probably not use level 1 because the hypha name title is already level 1.
@@ -194,6 +235,108 @@ Text
 Text
 }
 * Not multiline
+}
+
+## Quote
+Prepend lines with `>` to quote them.
+
+* {```
+> ## A heading
+>
+> A paragraph
+> > A nested quote
+```}
+* {
+> ## A heading
+>
+> A paragraph
+> > A nested quote
+}
+
+## Table
+**Tables** are delimited by `table {...}`. Both delimeters have to be on their own lines. You can write table's caption on the first line.
+
+```
+Empty table:
+table {
+}
+```
+Empty table:
+table {
+}
+
+```
+table { Empty table but with proper caption
+}
+```
+table { Empty table but with proper caption
+}
+
+Heading cells start with !, normal cells start with |. Table rows are separated with line breaks:
+
+```
+table {
+! Monday  ! Friday
+| sad day | happy day
+}
+```
+table {
+! Monday  ! Friday
+| sad day | happy day
+}
+
+Table cells support all paragraph styling:
+
+```
+table {
+! Monday ! Friday
+| sad day | //happy day//
+}
+```
+table {
+! Monday ! Friday
+| sad day | //happy day//
+}
+
+If you a cell to span several columns, write cell starting character that many times without spaces:
+
+```
+table {
+! Monday ! Friday
+|| ok day
+}
+```
+table {
+! Monday ! Friday
+|| ok day
+}
+
+Currently cells spanning several rows are not supported.
+
+If want to write a multiline cell, wrap its contents in `{}` and continue the table:
+```
+table {
+| a | b
+| { there are
+//two// paragraphs in this cell! } | d
+}
+```
+table {
+| a | b
+| { there are
+//two// paragraphs in this cell! } | d
+}
+
+You can omit the initial pipe characters. They will be inserted automatically:
+```
+table {
+a | b
+c | d
+}
+```
+table {
+a | b
+c | d
 }
 
 ## See also

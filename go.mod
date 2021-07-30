@@ -16,4 +16,4 @@ require (
 )
 
 // Use this trick for testing of mycomarkup:
-// replace github.com/bouncepaw/mycomarkup v0.5.8 => "/Users/bouncepaw/GolandProjects/mycomarkup"
+// replace github.com/bouncepaw/mycomarkup v0.5.9 => "/Users/bouncepaw/GolandProjects/mycomarkup"
