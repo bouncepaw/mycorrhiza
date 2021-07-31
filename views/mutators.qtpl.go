@@ -88,7 +88,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User) {
 //line views/mutators.qtpl:41
 	qw422016.N().S(`
 	</section>
-	<p class="edit-toolbar__ad"><a href="https://mycorrhiza.wiki/hypha/mycomarkup" target="_blank" class="shy-link">Learn more</a> about mycomarkup</p>
+	<p class="edit-toolbar__ad"><a href="/help/en/mycomarkup" target="_blank" class="shy-link">Learn more</a> about mycomarkup</p>
 	<h2 class="edit-toolbar__title layout-card__title">Actions</h2>
 	<section class="edit-toolbar__buttons">
 	`)
