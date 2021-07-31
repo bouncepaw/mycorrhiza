@@ -1,4 +1,5 @@
 User-agent: *
+Allow: /help/
 Allow: /page/
 Allow: /hypha/
 Allow: /recent-changes
