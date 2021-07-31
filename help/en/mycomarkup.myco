@@ -365,7 +365,7 @@ To include a hypha named `yoghurt`, write a line like that:
 <= yoghurt
 ```
 
-In 1,2, the transclusion semantics and syntax were changed. If you were using transclusion before that release, please update your hyphae. For time being, the engine will report transclusion using the old syntax with colon.
+In the 1.2 Release, the transclusion semantics and syntax were changed. If you were using transclusion before that release, please update your hyphae. For time being, the engine will report transclusion using the old syntax with colon.
 
 Transclusion lines start with a reverse-rocket symbol (`<=`) followed by zero or more spaces. The text on the line before a line break or a pipe character (`|`) is called //target// or //target hypha//. If there is a pipe, the text after it is called //selector//. If there is no pipe, the //selector// is empty. Both //target// and //selector// are stripped of left-side and right-side whitespace before further processing.
 

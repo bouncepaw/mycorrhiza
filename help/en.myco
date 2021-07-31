@@ -1,12 +1,14 @@
 # Help
-This is Mycorrhiza Wiki built-in documentation.
+This is Mycorrhiza Wiki 1.3 built-in documentation.
 
-Hope you are doing well ☺️
+**Mycorrhiza Wiki** is a wiki engine. See the [[https://mycorrhiza.wiki | official wiki]].
 
-See the section on the right (if you are on computer) or below (if you are on mobile) to see what topics are covered by the documentation.
+Hope you are doing well ☺️ Currently, the documentation does not cover everything there is to cover, but it will probably change in the future.
+
+See the section on the right or below (depending on the screen size)) to see what topics are covered by the documentation.
 
 Thanks for reading!
 
 ----
 
-You might want to contribute to the documentation. Open a pull-request on [[https://github.com/bouncepaw/mycorrhiza | GitHub]] if you know how to.
+You might want to contribute to the documentation. Open a pull-request or an issue on [[https://github.com/bouncepaw/mycorrhiza | GitHub]] if you know how to.

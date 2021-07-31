@@ -1,15 +1,15 @@
 # 🍄 Mycorrhiza Wiki
-<img src="https://mycorrhiza.wiki/binary/release/1.2/screenshot" alt="A screenshot of Mycorrhiza Wiki's home page in the Safari browser" width="500">
+<img src="https://mycorrhiza.wiki/binary/release/1.3/screenshot" alt="A screenshot of Mycorrhiza Wiki's home page in the Safari browser" width="600">
 
 **Mycorrhiza Wiki** is a filesystem-backed wiki engine that uses Git for
 keeping history.
 
-[⇒ Main wiki](https://mycorrhiza.wiki)
+[👉nMain wiki](https://mycorrhiza.wiki)
 
 ## Features
 
-* **No database required.** Everything is stored as simple files. It makes installation super easy, and you can modify the content with other means such as direct file editing.
-* **Everything is hyphae.** A [hypha][feature-hypha] is a unit of content such as a picture, video or a text article. Hyphae can [transclude][feature-transclusion] and [link][mycomarkup-link] each other resulting in a tight network of hypertext pages.
+* **No database required.** Everything is stored as simple files. It makes installation super easy, and you can modify the content directly.
+* **Everything is hyphae.** A [hypha][feature-hypha] is a unit of content such as a picture, video or a text article. Hyphae can [transclude][feature-transclusion] and link each other resulting in a tight network of hypertext pages.
 * **Hyphae are authored in [Mycomarkup][mycomarkup],** a custom markup language that's designed to be unambigious and easy to use.
 * **Nesting of hyphae** is supported. A tree of related hyphae is shown on every page.
 * **History of changes** for textual parts of hyphae. Every change is safely stored in [Git][integration-git]. Web feeds for recent changes included!
@@ -21,7 +21,6 @@ keeping history.
 [feature-transclusion]: https://mycorrhiza.wiki/hypha/feature/transclusion
 [feature-authorization]: https://mycorrhiza.wiki/hypha/feature/authorization
 [mycomarkup]: https://mycorrhiza.wiki/hypha/mycomarkup
-[mycomarkup-link]: https://mycorrhiza.wiki/hypha/mycomarkup/link
 [integration-git]: https://mycorrhiza.wiki/hypha/integration/git
 [standard-og]: https://mycorrhiza.wiki/hypha/standard/opengraph
 
