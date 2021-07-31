@@ -4,7 +4,7 @@
 **Mycorrhiza Wiki** is a filesystem-backed wiki engine that uses Git for
 keeping history.
 
-[👉nMain wiki](https://mycorrhiza.wiki)
+[👉 Main wiki](https://mycorrhiza.wiki)
 
 ## Features
 
