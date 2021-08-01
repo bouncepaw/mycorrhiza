@@ -16,13 +16,15 @@ keeping history.
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
 * **Support for [authorization][feature-authorization].**
 * **[Opengraph][standard-og] support.**
+* **Optional [Telegram][telegram] integraion.**
 
 [feature-hypha]: https://mycorrhiza.wiki/hypha/feature/hypha
 [feature-transclusion]: https://mycorrhiza.wiki/hypha/feature/transclusion
 [feature-authorization]: https://mycorrhiza.wiki/hypha/feature/authorization
-[mycomarkup]: https://mycorrhiza.wiki/hypha/mycomarkup
+[mycomarkup]: https://mycorrhiza.wiki/help/en/mycomarkup
 [integration-git]: https://mycorrhiza.wiki/hypha/integration/git
 [standard-og]: https://mycorrhiza.wiki/hypha/standard/opengraph
+[telegram]: https://mycorrhiza.wiki/help/en/telegram
 
 ## Installing
 
@@ -47,3 +49,5 @@ list][mlist]. Feel free to open an issue on GitHub or contact us directly.
 
 You can view the list of planned features on [our GitHub project kanban
 board](https://github.com/bouncepaw/mycorrhiza/projects/1).
+
+Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatrix.org/show/mycorrhiza).
