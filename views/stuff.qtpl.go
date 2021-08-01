@@ -499,16 +499,16 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer) {
 		<li><a href="/help/en/mycomarkup">Mycomarkup</a></li>
 		<li>Interface
 			<ul>
-				<li><a href="/help/en/top_bar">Top bar</a>, new in 1.3</li>
+				<li><a href="/help/en/top_bar">Top bar</a></li>
 				<li><a href="/help/en/sibling_hyphae_section">Sibling hyphae</a></li>
 				<li>...</li>
 			</ul>
 		</li>
 		<li>Configuration (for administrators)
 			<ul>
-				<li><a href="/help/en/lock">Lock</a>, new in 1.3</li>
-				<li><a href="/help/en/whitelist">Whitelist</a>, new in 1.3</li>
-				<li><a href="/help/en/telegram">Telegram authorization</a>, new in 1.3</li>
+				<li><a href="/help/en/lock">Lock</a></li>
+				<li><a href="/help/en/whitelist">Whitelist</a></li>
+				<li><a href="/help/en/telegram">Telegram authorization</a></li>
 				<li>...</li>
 			</ul>
 		</li>
@@ -776,7 +776,7 @@ func StreamAboutHTML(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:236
 	qw422016.N().S(`</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.3.0</li>
+			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.4.0</li>
 `)
 //line views/stuff.qtpl:239
 	if cfg.UseAuth {

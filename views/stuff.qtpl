@@ -150,16 +150,16 @@ It outputs a poorly formatted JSON, but it works and is valid.
 		<li><a href="/help/en/mycomarkup">Mycomarkup</a></li>
 		<li>Interface
 			<ul>
-				<li><a href="/help/en/top_bar">Top bar</a>, new in 1.3</li>
+				<li><a href="/help/en/top_bar">Top bar</a></li>
 				<li><a href="/help/en/sibling_hyphae_section">Sibling hyphae</a></li>
 				<li>...</li>
 			</ul>
 		</li>
 		<li>Configuration (for administrators)
 			<ul>
-				<li><a href="/help/en/lock">Lock</a>, new in 1.3</li>
-				<li><a href="/help/en/whitelist">Whitelist</a>, new in 1.3</li>
-				<li><a href="/help/en/telegram">Telegram authorization</a>, new in 1.3</li>
+				<li><a href="/help/en/lock">Lock</a></li>
+				<li><a href="/help/en/whitelist">Whitelist</a></li>
+				<li><a href="/help/en/telegram">Telegram authorization</a></li>
 				<li>...</li>
 			</ul>
 		</li>
@@ -235,7 +235,7 @@ for u := range user.YieldUsers() {
 	<section>
 		<h1>About {%s cfg.WikiName %}</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.3.0</li>
+			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.4.0</li>
 		{%- if cfg.UseAuth -%}
 			<li><b>User count:</b> {%dul user.Count() %}</li>
 			<li><b>Home page:</b> <a href="/">{%s cfg.HomeHypha %}</a></li>
