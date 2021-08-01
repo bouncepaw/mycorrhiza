@@ -8,12 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # build and publish in parallel: linux/386, linux/amd64, windows/386, windows/amd64, darwin/amd64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64]
+        # build and publish in parallel a lot of binaries
+        # https://golang.org/doc/install/source#environment See supported Go OS/Arch pairs here
+        goos: [linux, windows, darwin, freebsd, openbsd]
+        goarch: ["386", amd64, arm64]
         exclude:
           - goarch: "386"
             goos: darwin
+          - goarch: arm64
+            goos: freebsd
     steps:
     - uses: actions/checkout@v2
     - uses: wangyoucao577/go-release-action@v1.17
