@@ -762,3 +762,19 @@ kbd {
 		display: none;
 	}
 }
+
+/*
+ * Help badge
+ */
+.help-topic-badge {
+	display: block;
+	float: right;
+	line-height: 2rem;
+	height: 2rem;
+	width: 2rem;
+	text-align: center;
+	color: inherit;
+	text-decoration: none;
+	border: 1px solid #999;
+	border-radius: 1rem;
+}

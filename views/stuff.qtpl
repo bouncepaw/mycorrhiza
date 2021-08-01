@@ -155,6 +155,11 @@ It outputs a poorly formatted JSON, but it works and is valid.
 				<li>...</li>
 			</ul>
 		</li>
+		<li>Special pages
+			<ul>
+				<li><a href="/help/en/recent_changes">Recent changes</a></li>
+			</ul>
+		</li>
 		<li>Configuration (for administrators)
 			<ul>
 				<li><a href="/help/en/lock">Lock</a></li>
@@ -165,6 +170,10 @@ It outputs a poorly formatted JSON, but it works and is valid.
 		</li>
 	</ul>
 </aside>
+{% endfunc %}
+
+{% func helpTopicBadgeHTML(lang, topic string) %}
+<a class="help-topic-badge" href="/help/{%s lang %}/{%s topic %}">?</a>
 {% endfunc %}
 
 {% func UserListHTML() %}

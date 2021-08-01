@@ -82,6 +82,7 @@ if err != nil {
 
 		{% endfor %}
 	{% endif %}
+	{%s= helpTopicBadgeHTML("en", "recent_changes") %}
 	</section>
 </main>
 </div>

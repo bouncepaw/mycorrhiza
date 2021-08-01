@@ -1,0 +1,20 @@
+# Recent changes
+**Recent changes** is a special page that lists all latest changes on the wiki. There is a link to it by default in the [[/help/en/top_bar | top bar]]. You can also jump to it quickly by pressing the `g r` hotkey.
+
+Engaged wiki editors usually visit this page quite often.
+
+=> /recent-changes See this wiki's recent changes
+
+By default, it lists 20 recent changes. On the page, you can choose other number: 50 or 100.
+
+The changes are grouped by date.
+
+Each edit has these properties:
+* **UTC time.**
+* **Commit hash.** It functions as edit's id.
+* **Editor,** if any.
+* **Affected hyphae.** Most actions affect one hypha (such as actual editing), but some affect more (recursive editing, for example).
+* **Message.** This message tells you what the edit is about. The message format is quite regular and parseable.
+
+## See also
+=> /help/en/feeds Feeds
