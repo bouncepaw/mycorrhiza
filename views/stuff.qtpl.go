@@ -74,7 +74,7 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, u *user.User,
 					</li>
 					<li class="top-bar__section top-bar__section_search">
 						<form class="top-bar__search" method="GET" action="/title-search">
-							<input type="text" name="q" placeholder="Title search" class="top-bar__search-bar">
+							<input type="text" name="q" placeholder="Search by title" class="top-bar__search-bar">
 						</form>
 					</li>
 					<li class="top-bar__section top-bar__section_auth">
