@@ -85,9 +85,9 @@ If `contents` == "", a helpful message is shown instead.
 		<div class="jump-btn">
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
-		<div class="btn edit-btn">
+		{% if u.CanProceed("edit") %}<div class="btn edit-btn">
 			<a class="edit-btn__link" href="/edit/{%s h.Name %}">Edit text</a>
-		</div>
+		</div>{% endif %}
 		{%s= NaviTitleHTML(h) %}
 		{% if h.Exists %}
 			{%s= contents %}

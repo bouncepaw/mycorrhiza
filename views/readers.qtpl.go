@@ -240,13 +240,21 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 		<div class="jump-btn">
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
-		<div class="btn edit-btn">
+		`)
+//line views/readers.qtpl:88
+	if u.CanProceed("edit") {
+//line views/readers.qtpl:88
+		qw422016.N().S(`<div class="btn edit-btn">
 			<a class="edit-btn__link" href="/edit/`)
 //line views/readers.qtpl:89
-	qw422016.E().S(h.Name)
+		qw422016.E().S(h.Name)
 //line views/readers.qtpl:89
-	qw422016.N().S(`">Edit text</a>
-		</div>
+		qw422016.N().S(`">Edit text</a>
+		</div>`)
+//line views/readers.qtpl:90
+	}
+//line views/readers.qtpl:90
+	qw422016.N().S(`
 		`)
 //line views/readers.qtpl:91
 	qw422016.N().S(NaviTitleHTML(h))
