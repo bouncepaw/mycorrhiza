@@ -13,7 +13,7 @@
 {% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
 <div class="layout">
 <main class="main-width attachment-tab">
-	<h1>Attachment of {%s util.BeautifulName(h.Name) %}</h1>
+	<h1>Attachment of {%s= beautifulLink(h.Name) %}</h1>
 	{% if h.BinaryPath == "" %}
 	<p class="explanation">This hypha has no attachment, you can upload it here. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
 	{% else %}

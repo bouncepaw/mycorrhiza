@@ -1,7 +1,6 @@
 {% import "net/http" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 
 {% func Toolbar(u *user.User) %}
@@ -72,7 +71,7 @@
 {% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
 <div class="layout">
 <main class="main-width edit edit_no-preview">
-	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
+	<h1 class="edit__title">Edit {%s= beautifulLink(hyphaName) %}</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
@@ -94,7 +93,7 @@
 {% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) %}
 <div class="layout">
 <main class="main-width edit edit_with-preview">
-	<h1 class="edit__title">Edit {%s util.BeautifulName(hyphaName) %}</h1>
+	<h1 class="edit__title">Edit {%s= beautifulLink(hyphaName) %}</h1>
 	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">

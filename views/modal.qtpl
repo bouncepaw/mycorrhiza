@@ -1,12 +1,11 @@
 {% import "net/http" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
 {%= modalBegin(
 	"delete-confirm",
 	hyphaName,
 	"",
-	"Delete "+util.BeautifulName(hyphaName)+"?") %}
+	"Delete "+beautifulLink(hyphaName)+"?") %}
 {%= modalReallyWant(hyphaName, "unattach") %}
 		<p>In this version of Mycorrhiza Wiki you cannot undelete a deleted hypha but the history can still be accessed.</p>
 {%= modalEnd(hyphaName, true) %}
@@ -17,7 +16,7 @@
 	"unattach",
 	hyphaName,
 	"",
-	"Unattach "+util.BeautifulName(hyphaName)+"?") %}
+	"Unattach "+beautifulLink(hyphaName)+"?") %}
 {%= modalReallyWant(hyphaName, "unattach") %}
 {%= modalEnd(hyphaName, true) %}
 {% endfunc %}
@@ -27,7 +26,7 @@
 	"rename-confirm",
 	hyphaName,
 	` method="post" enctype="multipart/form-data"`,
-	"Rename "+util.BeautifulName(hyphaName)) %}
+	"Rename "+beautifulLink(hyphaName)) %}
 			<label for="new-name">New name</label>
 			<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
 

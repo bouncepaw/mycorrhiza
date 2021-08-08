@@ -6,6 +6,9 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
+{% func beautifulLink(hyphaName string) %}
+<a href="/hypha/{%s= hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>{% endfunc %}
+
 {% func nonExistentHyphaNotice(h *hyphae.Hypha, u *user.User) %}
 <section class="non-existent-hypha">
 	<h2 class="non-existent-hypha__title">This hypha does not exist</h2>

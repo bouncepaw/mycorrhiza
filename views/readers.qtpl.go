@@ -55,7 +55,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 <main class="main-width attachment-tab">
 	<h1>Attachment of `)
 //line views/readers.qtpl:16
-	qw422016.E().S(util.BeautifulName(h.Name))
+	qw422016.N().S(beautifulLink(h.Name))
 //line views/readers.qtpl:16
 	qw422016.N().S(`</h1>
 	`)
