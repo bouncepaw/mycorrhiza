@@ -13,7 +13,8 @@ import "strings"
 //line views/nav.qtpl:3
 import "github.com/bouncepaw/mycorrhiza/user"
 
-// This is the <nav> seen on top of many pages.
+//line views/nav.qtpl:4
+import "github.com/bouncepaw/mycorrhiza/hyphae"
 
 //line views/nav.qtpl:6
 import (
@@ -28,210 +29,236 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/nav.qtpl:7
-type navEntry struct {
-	path  string
-	title string
-}
-
-var navEntries = []navEntry{
-	{"hypha", "Hypha"},
-	{"edit", "Edit"},
-	{"attachment", "Attachment"},
-	{"history", "History"},
-	{"revision", "NOT REACHED"},
-	{"rename-ask", "Rename"},
-	{"delete-ask", "Delete"},
-	{"text", "Raw text"},
-}
-
-//line views/nav.qtpl:23
-func StreamNavHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, navType string, revisionHash ...string) {
-//line views/nav.qtpl:23
+//line views/nav.qtpl:6
+func streamhyphaInfoEntry(qw422016 *qt422016.Writer, h *hyphae.Hypha, u *user.User, action, displayText string) {
+//line views/nav.qtpl:6
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:25
+//line views/nav.qtpl:7
+	if u.CanProceed(action) {
+//line views/nav.qtpl:7
+		qw422016.N().S(`
+<li class="hypha-info__entry hypha-info__entry_`)
+//line views/nav.qtpl:8
+		qw422016.E().S(action)
+//line views/nav.qtpl:8
+		qw422016.N().S(`">
+	<a class="hypha-info__link" href="/`)
+//line views/nav.qtpl:9
+		qw422016.E().S(action)
+//line views/nav.qtpl:9
+		qw422016.N().S(`/`)
+//line views/nav.qtpl:9
+		qw422016.E().S(h.Name)
+//line views/nav.qtpl:9
+		qw422016.N().S(`">`)
+//line views/nav.qtpl:9
+		qw422016.E().S(displayText)
+//line views/nav.qtpl:9
+		qw422016.N().S(`</a>
+</li>
+`)
+//line views/nav.qtpl:11
+	}
+//line views/nav.qtpl:11
+	qw422016.N().S(`
+`)
+//line views/nav.qtpl:12
+}
+
+//line views/nav.qtpl:12
+func writehyphaInfoEntry(qq422016 qtio422016.Writer, h *hyphae.Hypha, u *user.User, action, displayText string) {
+//line views/nav.qtpl:12
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/nav.qtpl:12
+	streamhyphaInfoEntry(qw422016, h, u, action, displayText)
+//line views/nav.qtpl:12
+	qt422016.ReleaseWriter(qw422016)
+//line views/nav.qtpl:12
+}
+
+//line views/nav.qtpl:12
+func hyphaInfoEntry(h *hyphae.Hypha, u *user.User, action, displayText string) string {
+//line views/nav.qtpl:12
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/nav.qtpl:12
+	writehyphaInfoEntry(qb422016, h, u, action, displayText)
+//line views/nav.qtpl:12
+	qs422016 := string(qb422016.B)
+//line views/nav.qtpl:12
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/nav.qtpl:12
+	return qs422016
+//line views/nav.qtpl:12
+}
+
+//line views/nav.qtpl:14
+func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hypha) {
+//line views/nav.qtpl:14
+	qw422016.N().S(`
+`)
+//line views/nav.qtpl:16
 	u := user.FromRequest(rq)
 
-//line views/nav.qtpl:26
+//line views/nav.qtpl:17
 	qw422016.N().S(`
-	<nav class="hypha-tabs main-width">
-		<ul class="hypha-tabs__flex">
-`)
-//line views/nav.qtpl:29
-	for _, entry := range navEntries {
-//line views/nav.qtpl:30
-		if navType == "revision" && entry.path == "revision" {
-//line views/nav.qtpl:30
-			qw422016.N().S(`			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				<span class="hypha-tabs__selection">`)
-//line views/nav.qtpl:32
-			qw422016.E().S(revisionHash[0])
-//line views/nav.qtpl:32
-			qw422016.N().S(`</span>
-			</li>
-`)
-//line views/nav.qtpl:34
-		} else if navType == entry.path {
-//line views/nav.qtpl:34
-			qw422016.N().S(`			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				<span class="hypha-tabs__selection">`)
-//line views/nav.qtpl:36
-			qw422016.E().S(entry.title)
-//line views/nav.qtpl:36
-			qw422016.N().S(`</span>
-			</li>
-`)
-//line views/nav.qtpl:38
-		} else if entry.path != "revision" && u.CanProceed(entry.path) {
-//line views/nav.qtpl:38
-			qw422016.N().S(`			<li class="hypha-tabs__tab">
-				<a class="hypha-tabs__link" href="/`)
-//line views/nav.qtpl:40
-			qw422016.E().S(entry.path)
-//line views/nav.qtpl:40
-			qw422016.N().S(`/`)
-//line views/nav.qtpl:40
-			qw422016.E().S(hyphaName)
-//line views/nav.qtpl:40
-			qw422016.N().S(`">`)
-//line views/nav.qtpl:40
-			qw422016.E().S(entry.title)
-//line views/nav.qtpl:40
-			qw422016.N().S(`</a>
-			</li>
-`)
-//line views/nav.qtpl:42
-		}
-//line views/nav.qtpl:43
+<nav class="hypha-info">
+	<ul class="hypha-info__list">
+		`)
+//line views/nav.qtpl:20
+	if h.HasAttachment() {
+//line views/nav.qtpl:20
+		streamhyphaInfoEntry(qw422016, h, u, "attachment", "manage the attachment")
+//line views/nav.qtpl:20
 	}
-//line views/nav.qtpl:43
-	qw422016.N().S(`		</ul>
-	</nav>
+//line views/nav.qtpl:20
+	qw422016.N().S(`
+		`)
+//line views/nav.qtpl:21
+	streamhyphaInfoEntry(qw422016, h, u, "history", "view history")
+//line views/nav.qtpl:21
+	qw422016.N().S(`
+		`)
+//line views/nav.qtpl:22
+	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", "rename")
+//line views/nav.qtpl:22
+	qw422016.N().S(`
+		`)
+//line views/nav.qtpl:23
+	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", "delete")
+//line views/nav.qtpl:23
+	qw422016.N().S(`
+		`)
+//line views/nav.qtpl:24
+	streamhyphaInfoEntry(qw422016, h, u, "text", "view markup")
+//line views/nav.qtpl:24
+	qw422016.N().S(`
+	</ul>
+</nav>
 `)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
 }
 
-//line views/nav.qtpl:46
-func WriteNavHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, navType string, revisionHash ...string) {
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
+func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha) {
+//line views/nav.qtpl:27
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:46
-	StreamNavHTML(qw422016, rq, hyphaName, navType, revisionHash...)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
+	streamhyphaInfo(qw422016, rq, h)
+//line views/nav.qtpl:27
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
 }
 
-//line views/nav.qtpl:46
-func NavHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) string {
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
+func hyphaInfo(rq *http.Request, h *hyphae.Hypha) string {
+//line views/nav.qtpl:27
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:46
-	WriteNavHTML(qb422016, rq, hyphaName, navType, revisionHash...)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
+	writehyphaInfo(qb422016, rq, h)
+//line views/nav.qtpl:27
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
 	return qs422016
-//line views/nav.qtpl:46
+//line views/nav.qtpl:27
 }
 
-//line views/nav.qtpl:48
+//line views/nav.qtpl:29
 func streamsiblingHyphaeHTML(qw422016 *qt422016.Writer, siblings string) {
-//line views/nav.qtpl:48
+//line views/nav.qtpl:29
 	qw422016.N().S(`
 <aside class="sibling-hyphae layout-card">
 	<h2 class="sibling-hyphae__title layout-card__title">Sibling hyphae</h2>
 	`)
-//line views/nav.qtpl:51
+//line views/nav.qtpl:32
 	qw422016.N().S(siblings)
-//line views/nav.qtpl:51
+//line views/nav.qtpl:32
 	qw422016.N().S(`
 </aside>
 `)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 }
 
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 func writesiblingHyphaeHTML(qq422016 qtio422016.Writer, siblings string) {
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	streamsiblingHyphaeHTML(qw422016, siblings)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 }
 
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 func siblingHyphaeHTML(siblings string) string {
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	writesiblingHyphaeHTML(qb422016, siblings)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 	return qs422016
-//line views/nav.qtpl:53
+//line views/nav.qtpl:34
 }
 
-//line views/nav.qtpl:55
+//line views/nav.qtpl:36
 func StreamSubhyphaeHTML(qw422016 *qt422016.Writer, subhyphae string) {
-//line views/nav.qtpl:55
+//line views/nav.qtpl:36
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:56
+//line views/nav.qtpl:37
 	if strings.TrimSpace(subhyphae) != "" {
-//line views/nav.qtpl:56
+//line views/nav.qtpl:37
 		qw422016.N().S(`
 <section class="subhyphae">
 	<h2 class="subhyphae__title">Subhyphae</h2>
 	<nav class="subhyphae__nav">
 		<ul class="subhyphae__list">
 		`)
-//line views/nav.qtpl:61
+//line views/nav.qtpl:42
 		qw422016.N().S(subhyphae)
-//line views/nav.qtpl:61
+//line views/nav.qtpl:42
 		qw422016.N().S(`
 		</ul>
 	</nav>
 </section>
 `)
-//line views/nav.qtpl:65
+//line views/nav.qtpl:46
 	}
-//line views/nav.qtpl:65
+//line views/nav.qtpl:46
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 }
 
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 func WriteSubhyphaeHTML(qq422016 qtio422016.Writer, subhyphae string) {
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	StreamSubhyphaeHTML(qw422016, subhyphae)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 }
 
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 func SubhyphaeHTML(subhyphae string) string {
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	WriteSubhyphaeHTML(qb422016, subhyphae)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 	return qs422016
-//line views/nav.qtpl:66
+//line views/nav.qtpl:47
 }

@@ -2,7 +2,6 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
-{%= NavHTML(rq, hyphaName, "delete-ask") %}
 {%= modalBegin(
 	"delete-confirm",
 	hyphaName,
@@ -14,7 +13,6 @@
 {% endfunc %}
 
 {% func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
-{%= NavHTML(rq, hyphaName, "unattach-ask") %}
 {%= modalBegin(
 	"unattach",
 	hyphaName,
@@ -25,7 +23,6 @@
 {% endfunc %}
 
 {% func RenameAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
-{%= NavHTML(rq, hyphaName, "rename-ask") %}
 {%= modalBegin(
 	"rename-confirm",
 	hyphaName,

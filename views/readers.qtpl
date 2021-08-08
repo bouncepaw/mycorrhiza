@@ -11,7 +11,6 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
-{%= NavHTML(rq, h.Name, "attachment") %}
 <div class="layout">
 <main class="main-width attachment-tab">
 	<h1>Attachment of {%s util.BeautifulName(h.Name) %}</h1>
@@ -80,10 +79,15 @@ If `contents` == "", a helpful message is shown instead.
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
 	u := user.FromRequest(rq)
 %}
-{%= NavHTML(rq, h.Name, "hypha") %}
 <div class="layout">
 <main class="main-width">
-	<article>
+	<article id="hypha">
+		<div class="jump-btn">
+			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
+		</div>
+		<div class="btn edit-btn">
+			<a class="edit-btn__link" href="/edit/{%s h.Name %}">Edit text</a>
+		</div>
 		{%s= NaviTitleHTML(h) %}
 		{% if h.Exists %}
 			{%s= contents %}
@@ -100,6 +104,12 @@ If `contents` == "", a helpful message is shown instead.
 		{% endif %}
 	</section>
 {%= SubhyphaeHTML(subhyphae) %}
+	<section id="hypha-bottom">
+		<div class="jump-btn">
+    		<a class="jump-btn__link" href="#hypha">↑</a>
+   		</div>
+   		{%= hyphaInfo(rq, h) %}
+	</section>
 </main>
 {%= siblingHyphaeHTML(siblings) %}
 </div>
@@ -110,7 +120,6 @@ If `contents` == "", a helpful message is shown instead.
 {% code
 	siblings, subhyphae, _, _ := tree.Tree(h.Name)
 %}
-{%= NavHTML(rq, h.Name, "revision", revHash) %}
 <div class="layout">
 <main class="main-width">
 	<article>

@@ -16,7 +16,6 @@ if err != nil {
 	text = err.Error()
 }
 %}
-{%= NavHTML(rq, h.Name, "history") %}
 <div class="layout">
 <main class="main-width">
 	<article>
@@ -112,7 +111,6 @@ if err != nil {
 {% endfunc %}
 
 {% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
-{%= NavHTML(rq, hyphaName, "history") %}
 <div class="layout">
 <main class="main-width">
 	<article class="history">

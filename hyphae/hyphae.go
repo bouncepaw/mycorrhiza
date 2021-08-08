@@ -29,6 +29,11 @@ func (h *Hypha) TextPartPath() string {
 	return h.TextPath
 }
 
+// HasAttachment is true if the hypha has an attachment.
+func (h *Hypha) HasAttachment() bool {
+	return h.BinaryPath != ""
+}
+
 var byNames = make(map[string]*Hypha)
 var byNamesMutex = sync.Mutex{}
 

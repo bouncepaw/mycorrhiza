@@ -1,48 +1,29 @@
 {% import "net/http" %}
 {% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 
-This is the <nav> seen on top of many pages.
+{% func hyphaInfoEntry(h *hyphae.Hypha, u *user.User, action, displayText string) %}
+{% if u.CanProceed(action) %}
+<li class="hypha-info__entry hypha-info__entry_{%s action %}">
+	<a class="hypha-info__link" href="/{%s action %}/{%s h.Name %}">{%s displayText %}</a>
+</li>
+{% endif %}
+{% endfunc %}
+
+{% func hyphaInfo(rq *http.Request, h *hyphae.Hypha) %}
 {% code
-type navEntry struct {
-	path string
-	title string
-}
-var navEntries = []navEntry{
-	{"hypha", "Hypha"},
-	{"edit", "Edit"},
-	{"attachment", "Attachment"},
-	{"history", "History"},
-	{"revision", "NOT REACHED"},
-	{"rename-ask", "Rename"},
-	{"delete-ask", "Delete"},
-	{"text", "Raw text"},
-}
-%}
-
-{% func NavHTML(rq *http.Request, hyphaName, navType string, revisionHash ...string) %}
-{% code 
 	u := user.FromRequest(rq)
 %}
-	<nav class="hypha-tabs main-width">
-		<ul class="hypha-tabs__flex">
-		{%- for _, entry := range navEntries -%}
-		{%- if navType == "revision" && entry.path == "revision" -%}
-			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				<span class="hypha-tabs__selection">{%s revisionHash[0] %}</span>
-			</li>
-		{%- elseif navType == entry.path -%}
-			<li class="hypha-tabs__tab hypha-tabs__tab_active">
-				<span class="hypha-tabs__selection">{%s entry.title %}</span>
-			</li>
-		{%- elseif entry.path != "revision" && u.CanProceed(entry.path) -%}
-			<li class="hypha-tabs__tab">
-				<a class="hypha-tabs__link" href="/{%s entry.path %}/{%s hyphaName %}">{%s entry.title %}</a>
-			</li>
-		{%- endif -%}
-		{%- endfor -%}
-		</ul>
-	</nav>
+<nav class="hypha-info">
+	<ul class="hypha-info__list">
+		{% if h.HasAttachment() %}{%= hyphaInfoEntry(h, u, "attachment", "manage the attachment") %}{% endif %}
+		{%= hyphaInfoEntry(h, u, "history", "view history") %}
+		{%= hyphaInfoEntry(h, u, "rename-ask", "rename") %}
+		{%= hyphaInfoEntry(h, u, "delete-ask", "delete") %}
+		{%= hyphaInfoEntry(h, u, "text", "view markup") %}
+	</ul>
+</nav>
 {% endfunc %}
 
 {% func siblingHyphaeHTML(siblings string) %}
