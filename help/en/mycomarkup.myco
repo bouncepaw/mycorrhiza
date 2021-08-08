@@ -38,7 +38,7 @@ Second line of paragraph 2
 
 You can apply styling to paragraph content.
 * {```
-You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted&^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
+You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
 ```}
 * You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
 
