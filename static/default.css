@@ -794,6 +794,8 @@ kbd {
 }
 .hypha-info__link:after {
 	content: ", ";
+	text-decoration: none;
+	display: inline-block;
 }
 .hypha-info__entry:last-of-type a:after {
 	content: none;
