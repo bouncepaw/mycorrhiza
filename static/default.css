@@ -786,20 +786,16 @@ kbd {
 	display: inline;
 }
 .hypha-info__link {
-	display: inline-block;
 	color: #999;
 }
 .hypha-info__link:hover {
 	color: inherit;
 }
-.hypha-info__link:after {
+.hypha-info__entry + .hypha-info__entry {
+	text-transform: lowercase;
+}
+.hypha-info__entry:not(:last-child) a::after {
 	content: ", ";
-	text-decoration: none;
 	display: inline-block;
-}
-.hypha-info__entry:last-of-type a:after {
-	content: none;
-}
-.hypha-info__entry:first-of-type a:first-letter {
-	text-transform: uppercase;
+	text-decoration: none;
 }

@@ -39,8 +39,10 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	}
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
-	util.HTTP200Page(w,
-		views.BaseHTML(hyphaName, views.HistoryHTML(rq, hyphaName, list), user.FromRequest(rq)))
+	util.HTTP200Page(w, views.BaseHTML(
+		fmt.Sprintf("History of \"%s\"", util.BeautifulName(hyphaName)),
+		views.HistoryHTML(rq, hyphaName, list),
+		user.FromRequest(rq)))
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.

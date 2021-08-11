@@ -41,7 +41,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 	)
 	util.HTTP200Page(w,
 		views.BaseHTML(
-			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
+			fmt.Sprintf("Attachment of \"%s\"", util.BeautifulName(hyphaName)),
 			views.AttachmentMenuHTML(rq, h, u),
 			u))
 }
@@ -58,7 +58,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	)
 	util.HTTP200Page(w,
 		views.BaseHTML(
-			fmt.Sprintf("Diff of %s at %s", hyphaName, revHash),
+			fmt.Sprintf("Diff of \"%s\" at %s", util.BeautifulName(hyphaName), revHash),
 			views.PrimitiveDiffHTML(rq, h, u, revHash),
 			u))
 }

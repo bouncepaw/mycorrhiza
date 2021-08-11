@@ -106,31 +106,27 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 	<ul class="hypha-info__list">
 		`)
 //line views/nav.qtpl:20
-	if h.HasAttachment() {
-//line views/nav.qtpl:20
-		streamhyphaInfoEntry(qw422016, h, u, "attachment", "manage the attachment")
-//line views/nav.qtpl:20
-	}
+	streamhyphaInfoEntry(qw422016, h, u, "history", "View history")
 //line views/nav.qtpl:20
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:21
-	streamhyphaInfoEntry(qw422016, h, u, "history", "view history")
+	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", "Rename")
 //line views/nav.qtpl:21
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:22
-	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", "rename")
+	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", "Delete")
 //line views/nav.qtpl:22
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:23
-	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", "delete")
+	streamhyphaInfoEntry(qw422016, h, u, "text", "View markup")
 //line views/nav.qtpl:23
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:24
-	streamhyphaInfoEntry(qw422016, h, u, "text", "view markup")
+	streamhyphaInfoEntry(qw422016, h, u, "attachment", "Manage attachment")
 //line views/nav.qtpl:24
 	qw422016.N().S(`
 	</ul>

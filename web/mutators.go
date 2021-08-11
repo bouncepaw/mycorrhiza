@@ -2,10 +2,11 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup"
-	"github.com/bouncepaw/mycomarkup/mycocontext"
 	"log"
 	"net/http"
+
+	"github.com/bouncepaw/mycomarkup"
+	"github.com/bouncepaw/mycomarkup/mycocontext"
 
 	"github.com/gorilla/mux"
 
@@ -162,7 +163,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(
 		w,
 		views.BaseHTML(
-			"Edit "+hyphaName,
+			fmt.Sprintf("Edit \"%s\"", util.BeautifulName(hyphaName)),
 			views.EditHTML(rq, hyphaName, textAreaFill, warning),
 			u))
 }
@@ -197,7 +198,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				"Preview "+hyphaName,
+				fmt.Sprintf("Preview of \"%s\"", util.BeautifulName(hyphaName)),
 				views.PreviewHTML(
 					rq,
 					hyphaName,

@@ -17,11 +17,11 @@
 %}
 <nav class="hypha-info">
 	<ul class="hypha-info__list">
-		{% if h.HasAttachment() %}{%= hyphaInfoEntry(h, u, "attachment", "manage the attachment") %}{% endif %}
-		{%= hyphaInfoEntry(h, u, "history", "view history") %}
-		{%= hyphaInfoEntry(h, u, "rename-ask", "rename") %}
-		{%= hyphaInfoEntry(h, u, "delete-ask", "delete") %}
-		{%= hyphaInfoEntry(h, u, "text", "view markup") %}
+		{%= hyphaInfoEntry(h, u, "history", "View history") %}
+		{%= hyphaInfoEntry(h, u, "rename-ask", "Rename") %}
+		{%= hyphaInfoEntry(h, u, "delete-ask", "Delete") %}
+		{%= hyphaInfoEntry(h, u, "text", "View markup") %}
+		{%= hyphaInfoEntry(h, u, "attachment", "Manage attachment") %}
 	</ul>
 </nav>
 {% endfunc %}
