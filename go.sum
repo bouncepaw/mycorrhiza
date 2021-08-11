@@ -1,6 +1,6 @@
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
-github.com/bouncepaw/mycomarkup v0.5.11 h1:Jp3xM0r/uh/qILTdzoRqfNtV0J6BpWOFZoXSAVYxyA4=
-github.com/bouncepaw/mycomarkup v0.5.11/go.mod h1:0n6thlGGgrx2Y/2NaaUH4qHW4v1xJ+EpW7yMFUxNRIg=
+github.com/bouncepaw/mycomarkup v1.0.1 h1:6GEpc49KtoCoP9XMn4hLq4FJrGK8r2NJ3yXHmS0qTRs=
+github.com/bouncepaw/mycomarkup v1.0.1/go.mod h1:0n6thlGGgrx2Y/2NaaUH4qHW4v1xJ+EpW7yMFUxNRIg=
 github.com/go-ini/ini v1.62.0 h1:7VJT/ZXjzqSrvtraFp4ONq80hTcRQth1c9ZnQ3uNQvU=
 github.com/go-ini/ini v1.62.0/go.mod h1:ByCAeIL28uOIIG0E3PJtZPDL8WnHpFKFOtgjp+3Ies8=
 github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 h1:EGx4pi6eqNxGaHF6qqu48+N2wcFQ5qg5FXgOdqsJ5d8=
