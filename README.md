@@ -22,7 +22,7 @@ Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatri
 
 ## Installing
 
-See [the deployment guide][https://mycorrhiza.wiki/hypha/guide/deployment] on the wiki.
+See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on the wiki.
 
 ## Contributing
 
