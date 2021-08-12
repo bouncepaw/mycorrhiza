@@ -45,13 +45,13 @@ func Register(username, password, group, source string, force bool) error {
 
 	switch {
 	case !util.IsPossibleUsername(username):
-		return fmt.Errorf("illegal username \"%s\"", username)
+		return fmt.Errorf("illegal username ‘%s’", username)
 	case !ValidGroup(group):
-		return fmt.Errorf("invalid group \"%s\"", group)
+		return fmt.Errorf("invalid group ‘%s’", group)
 	case !ValidSource(source):
-		return fmt.Errorf("invalid source \"%s\"", source)
+		return fmt.Errorf("invalid source ‘%s’", source)
 	case HasUsername(username):
-		return fmt.Errorf("username \"%s\" is already taken", username)
+		return fmt.Errorf("username ‘%s’ is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
 	}

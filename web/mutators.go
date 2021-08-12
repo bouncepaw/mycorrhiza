@@ -57,7 +57,7 @@ func factoryHandlerAsker(
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				fmt.Sprintf(succTitleTemplate, hyphaName),
+				fmt.Sprintf(succTitleTemplate, util.BeautifulName(hyphaName)),
 				succPageTemplate(rq, hyphaName, h.Exists),
 				u))
 	}
@@ -163,7 +163,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(
 		w,
 		views.BaseHTML(
-			fmt.Sprintf("Edit \"%s\"", util.BeautifulName(hyphaName)),
+			fmt.Sprintf("Edit %s", util.BeautifulName(hyphaName)),
 			views.EditHTML(rq, hyphaName, textAreaFill, warning),
 			u))
 }
@@ -198,7 +198,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				fmt.Sprintf("Preview of \"%s\"", util.BeautifulName(hyphaName)),
+				fmt.Sprintf("Preview of %s", util.BeautifulName(hyphaName)),
 				views.PreviewHTML(
 					rq,
 					hyphaName,

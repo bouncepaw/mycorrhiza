@@ -2,11 +2,11 @@ package web
 
 import (
 	"fmt"
-	"os"
 	"io"
 	"log"
 	"mime"
 	"net/http"
+	"os"
 	"sort"
 
 	"github.com/gorilla/mux"
@@ -99,7 +99,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 				return
 			}
 		} else {
-			f = f.WithError(fmt.Errorf("invalid group \"%s\"", newGroup))
+			f = f.WithError(fmt.Errorf("invalid group ‘%s’", newGroup))
 		}
 	}
 
