@@ -80,18 +80,23 @@ header { width: 100%; margin-bottom: 1rem; }
 
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
-body { margin: 0; font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif; color: black; }
+body { margin: 0; font-size:16px; font-family: 'Helvetica', 'Liberation Sans', sans-serif; color: black; }
 input, kbd { font: inherit; color: inherit; }
-textarea {font-size:16px; font-family: 'PT Sans', 'Liberation Sans', sans-serif;}
+textarea {font-size:16px; font-family: 'Helvetica', 'Liberation Sans', sans-serif;}
 
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; }
-.edit-form { height: calc(100vh - 12rem); }
 .edit-form__textarea { width: 100%; height: calc(100% - 8rem); min-height: 4rem; }
 .edit-form__message { width: 100%; margin: 0.25em 0; }
 .edit-form__save { font-weight: bold; }
 .edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
+@media screen and (max-height: 500px) {
+	.edit-form { height: 90vh; }
+}
+@media screen and (min-height: 501px) {
+	.edit-form { height: 80vh; }
+}
 
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
