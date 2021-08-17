@@ -80,9 +80,9 @@ header { width: 100%; margin-bottom: 1rem; }
 
 *, *::before, *::after {box-sizing: border-box;}
 html { height:100%; padding:0; }
-body { margin: 0; font-size:16px; font-family: 'Helvetica', 'Liberation Sans', sans-serif; color: black; }
+body { margin: 0; font-size:16px; font-family: sans-serif; color: black; }
 input, kbd { font: inherit; color: inherit; }
-textarea {font-size:16px; font-family: 'Helvetica', 'Liberation Sans', sans-serif;}
+textarea {font-size:16px; font-family: inherit;}
 
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
