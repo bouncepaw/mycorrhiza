@@ -82,7 +82,7 @@ header { width: 100%; margin-bottom: 1rem; }
 html { height:100%; padding:0; }
 body { margin: 0; font-size:16px; font-family: sans-serif; color: black; }
 input, kbd { font: inherit; color: inherit; }
-textarea {font-size:16px; font-family: inherit;}
+textarea {font-size:16px; font-family: inherit; line-height: 150%; }
 
 .edit { min-height: 80vh; }
 .edit__title { margin-top: 0; }
