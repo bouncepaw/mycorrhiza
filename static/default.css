@@ -758,11 +758,13 @@ kbd {
 .edit-btn {
 	float: right;
 	margin: -0.25rem 0;
+	padding: 0;
 }
 .edit-btn__link {
 	display: block;
 	text-decoration: none;
 	color: inherit;
+	padding: .25rem .5rem;
 }
 
 .jump-btn {
