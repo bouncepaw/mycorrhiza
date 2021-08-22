@@ -13,6 +13,7 @@ function getSelectedText(el = editTextarea) {
 
 function textInserter(text, cursorPosition = null, el = editTextarea) {
     return function() {
+        window.hyphaChanged = true;
         const [start, end] = [el.selectionStart, el.selectionEnd]
         el.setRangeText(text, start, end, 'select')
         el.focus()
@@ -26,6 +27,7 @@ function textInserter(text, cursorPosition = null, el = editTextarea) {
 
 function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTextarea) {
     return function() {
+        window.hyphaChanged = true;
         const [start, end] = [el.selectionStart, el.selectionEnd]
         if (postfix == null) {
             postfix = prefix
