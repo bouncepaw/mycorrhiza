@@ -3,7 +3,7 @@ module github.com/bouncepaw/mycorrhiza
 go 1.16
 
 require (
-	github.com/bouncepaw/mycomarkup v1.0.1
+	github.com/bouncepaw/mycomarkup v1.0.3
 	github.com/go-ini/ini v1.62.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
@@ -17,4 +17,4 @@ require (
 )
 
 // Use this trick to test mycomarkup:
-// replace github.com/bouncepaw/mycomarkup v1.0.1 => "/Users/bouncepaw/GolandProjects/mycomarkup"
+// replace github.com/bouncepaw/mycomarkup v1.0.3 => "/Users/bouncepaw/GolandProjects/mycomarkup"

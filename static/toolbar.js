@@ -5,6 +5,11 @@ function placeCursor(position, el = editTextarea) {
     el.selectionStart = el.selectionEnd
 }
 
+function selectRange(left, right, el = editTextarea) {
+    el.selectionEnd = right
+    el.selectionStart = left
+}
+
 function getSelectedText(el = editTextarea) {
     const [start, end] = [el.selectionStart, el.selectionEnd]
     const text = el.value
@@ -13,7 +18,7 @@ function getSelectedText(el = editTextarea) {
 
 function textInserter(text, cursorPosition = null, el = editTextarea) {
     return function() {
-        window.hyphaChanged = true;
+        window.hyphaChanged = true
         const [start, end] = [el.selectionStart, el.selectionEnd]
         el.setRangeText(text, start, end, 'select')
         el.focus()
@@ -27,16 +32,36 @@ function textInserter(text, cursorPosition = null, el = editTextarea) {
 
 function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTextarea) {
     return function() {
-        window.hyphaChanged = true;
-        const [start, end] = [el.selectionStart, el.selectionEnd]
+        window.hyphaChanged = true
+        let [start, end] = [el.selectionStart, el.selectionEnd]
         if (postfix == null) {
             postfix = prefix
         }
         let text = getSelectedText(el)
-        let result = prefix + text + postfix
+        let removing = false
+        let result
+        if (text.startsWith(prefix) && text.endsWith(postfix)) {
+            // selection is decorated, so we just cut it
+            removing = true
+            result = text.substring(cursorPosition, text.length - cursorPosition)
+        } else if ( (prefix == el.value.slice(start-cursorPosition, start)) &&
+                    (postfix == el.value.slice(end, end+cursorPosition)) ) {
+            // selection is surrounded by decorations
+            removing = true
+            result = text
+            start -= cursorPosition
+            end += cursorPosition
+        } else {
+            // no decorations, so we add them
+            result = prefix + text + postfix
+        }
         el.setRangeText(result, start, end, 'select')
         el.focus()
-        placeCursor(end + cursorPosition)
+        if (removing) {
+            selectRange(start, end-cursorPosition*2)
+        } else {
+            selectRange(start+cursorPosition, end+cursorPosition)
+        }
     }
 }
 
