@@ -119,17 +119,26 @@ var handlerDeleteConfirm = factoryHandlerConfirmer(
 	},
 )
 
-var handlerRenameConfirm = factoryHandlerConfirmer(
-	"rename-confirm",
-	func(oldHypha *hyphae.Hypha, u *user.User, rq *http.Request) (*history.HistoryOp, string) {
-		var (
-			newName   = util.CanonicalName(rq.PostFormValue("new-name"))
-			recursive = rq.PostFormValue("recursive") == "true"
-			newHypha  = hyphae.ByName(newName)
-		)
-		return shroom.RenameHypha(oldHypha, newHypha, recursive, u)
-	},
-)
+// handlerRenameConfirm should redirect to the new hypha, thus it's out of factory
+func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	var (
+		u         = user.FromRequest(rq)
+		hyphaName = util.HyphaNameFromRq(rq, "rename-confirm")
+		oldHypha  = hyphae.ByName(hyphaName)
+		newName   = util.CanonicalName(rq.PostFormValue("new-name"))
+		newHypha  = hyphae.ByName(newName)
+		recursive = rq.PostFormValue("recursive") == "true"
+	)
+	hop, errtitle := shroom.RenameHypha(oldHypha, newHypha, recursive, u)
+	if hop.HasErrors() {
+		httpErr(w, http.StatusInternalServerError, hyphaName,
+			errtitle,
+			hop.FirstErrorText())
+		return
+	}
+	http.Redirect(w, rq, "/hypha/"+newName, http.StatusSeeOther)
+}
 
 // handlerEdit shows the edit form. It doesn't edit anything actually.
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
