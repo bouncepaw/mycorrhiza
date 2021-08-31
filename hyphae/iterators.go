@@ -3,6 +3,7 @@ package hyphae
 
 import (
 	"strings"
+	"sort"
 )
 
 // YieldExistingHyphae iterates over all hyphae and yields all existing ones.
@@ -31,6 +32,40 @@ func FilterTextHyphae(src chan *Hypha) chan *Hypha {
 		close(sink)
 	}()
 	return sink
+}
+
+// PathographicSort sorts paths inside the source channel, preserving the path tree structure
+func PathographicSort(src chan string) <-chan string {
+	out := make(chan string)
+	go func() {
+		// To make it unicode-friendly and lean, we cast every string into rune slices, sort, and only then cast them back
+		raw := make([][]rune, 0)
+		for h := range src {
+			raw = append(raw, []rune(h))
+		}
+		sort.Slice(raw, func(i, j int) bool {
+			const slash rune = 47 // == '/'
+			// Classic lexicographical sort with a twist
+			c := 0
+			for {
+				if c == len(raw[i]) { return true }
+				if c == len(raw[j]) { return false }
+				if raw[i][c] == raw[j][c] {
+					c++
+				} else {
+					// The twist: subhyphae-awareness is about pushing slash upwards
+					if raw[i][c] == slash { return true }
+					if raw[j][c] == slash { return false }
+					return raw[i][c] < raw[j][c]
+				}
+			}
+		})
+		for _, name := range raw {
+			out <- string(name)
+		}
+		close(out)
+	}()
+	return out
 }
 
 // Subhyphae returns slice of subhyphae.
