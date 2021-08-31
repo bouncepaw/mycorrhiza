@@ -67,11 +67,13 @@ func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *use
 		Apply()
 	if len(hop.Errs) == 0 {
 		for _, h := range hyphaeToRename {
+			oldName := h.Name
 			h.RenameTo(replaceName(h.Name))
 			h.Lock()
 			h.TextPath = replaceName(h.TextPath)
 			h.BinaryPath = replaceName(h.BinaryPath)
 			h.Unlock()
+			hyphae.BacklinksOnRename(h, oldName)
 		}
 	}
 	return hop, ""

@@ -66,6 +66,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 	var (
 		fullPath         = filepath.Join(files.HyphaeDir(), h.Name+ext)
 		originalFullPath = &h.TextPath
+		originalText     = "" // for backlink update
 	)
 	// Reject if the path is outside the hyphae dir
 	if !strings.HasPrefix(fullPath, files.HyphaeDir()) {
@@ -78,6 +79,10 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
 		return hop.WithErrAbort(err), err.Error()
+	}
+
+	if hop.Type == history.TypeEditText {
+		originalText, _ = FetchTextPart(h)
 	}
 
 	if err := os.WriteFile(fullPath, data, 0666); err != nil {
@@ -96,5 +101,8 @@ func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte
 		return hop.Abort(), "No changes"
 	}
 	*originalFullPath = fullPath
+	if hop.Type == history.TypeEditText {
+		hyphae.BacklinksOnEdit(h, originalText)
+	}
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }
