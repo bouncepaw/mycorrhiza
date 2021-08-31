@@ -17,12 +17,14 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errtitl
 		return hop, errtitle
 	}
 
+	originalText, _ := FetchTextPart(h)
 	hop.
 		WithFilesRemoved(h.TextPath, h.BinaryPath).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", h.Name)).
 		WithUser(u).
 		Apply()
 	if !hop.HasErrors() {
+		hyphae.BacklinksOnDelete(h, originalText)
 		h.Delete()
 	}
 	return hop, ""

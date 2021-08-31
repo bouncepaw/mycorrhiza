@@ -15,6 +15,25 @@ import (
 // Using set here seems like the most appropriate solution
 type linkSet map[string]struct{}
 
+func toLinkSet(xs []string) linkSet {
+	result := make(linkSet)
+	for _, x := range xs {
+		result[x] = struct{}{}
+	}
+	return result
+}
+
+func fetchText(h *Hypha) string {
+	if h.TextPath == "" {
+		return ""
+	}
+	text, err := os.ReadFile(h.TextPath)
+	if err == nil {
+		return string(text)
+	}
+	return ""
+}
+
 var backlinkIndex = make(map[string]linkSet)
 var backlinkIndexMutex = sync.Mutex{}
 
@@ -23,41 +42,85 @@ func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
 	src := FilterTextHyphae(YieldExistingHyphae())
 	for h := range src {
-		fileContentsT, errT := os.ReadFile(h.TextPath)
-		if errT == nil {
-			links := ExtractHyphaLinksFromContent(h.Name, string(fileContentsT))
-			for _, link := range links {
-				if _, exists := backlinkIndex[link]; !exists {
-					backlinkIndex[link] = make(linkSet)
-				}
-				backlinkIndex[link][h.Name] = struct{}{}
+		links := ExtractHyphaLinksFromContent(h.Name, fetchText(h))
+		for _, link := range links {
+			if _, exists := backlinkIndex[link]; !exists {
+				backlinkIndex[link] = make(linkSet)
 			}
+			backlinkIndex[link][h.Name] = struct{}{}
 		}
 	}
 }
 
+func BacklinksOnEdit(h *Hypha, oldText string) {
+	backlinkIndexMutex.Lock()
+	newLinks := toLinkSet(ExtractHyphaLinks(h))
+	oldLinks := toLinkSet(ExtractHyphaLinksFromContent(h.Name, oldText))
+	for link := range oldLinks {
+		if _, exists := newLinks[link]; !exists {
+			delete(backlinkIndex[link], h.Name)
+		}
+	}
+	for link := range newLinks {
+		if _, exists := oldLinks[link]; !exists {
+			if _, exists := backlinkIndex[link]; !exists {
+				backlinkIndex[link] = make(linkSet)
+			}
+			backlinkIndex[link][h.Name] = struct{}{}
+		}
+	}
+	backlinkIndexMutex.Unlock()
+}
+
+func BacklinksOnDelete(h *Hypha, oldText string) {
+	backlinkIndexMutex.Lock()
+	oldLinks := ExtractHyphaLinksFromContent(h.Name, oldText)
+	for _, link := range oldLinks {
+		if lSet, exists := backlinkIndex[link]; exists {
+			delete(lSet, h.Name)
+		}
+	}
+	backlinkIndexMutex.Unlock()
+}
+
+func BacklinksOnRename(h *Hypha, oldName string) {
+	backlinkIndexMutex.Lock()
+	actualLinks := ExtractHyphaLinks(h)
+	for _, link := range actualLinks {
+		if lSet, exists := backlinkIndex[link]; exists {
+			delete(lSet, oldName)
+			backlinkIndex[link][h.Name] = struct{}{}
+		}
+	}
+	backlinkIndexMutex.Unlock()
+}
+
+// YieldHyphaBacklinks gets backlinks for a desired hypha, sorts and iterates over them
 func YieldHyphaBacklinks(query string) <-chan string {
 	hyphaName := util.CanonicalName(query)
 	out := make(chan string)
 	sorted := PathographicSort(out)
 	go func() {
-		links := backlinkIndex[hyphaName]
-		for link := range links {
-			out <- link
+		links, exists := backlinkIndex[hyphaName]
+		if exists {
+			for link := range links {
+				out <- link
+			}
 		}
 		close(out)
 	}()
 	return sorted
 }
 
-// YieldHyphaLinks extracts hypha links from a desired hypha and iterates over them
+// YieldHyphaLinks extracts hypha links from a desired hypha, sorts and iterates over them
 func YieldHyphaLinks(query string) <-chan string {
 	// That is merely a debug function, but it could be useful.
 	// Should we extract them into link-specific subfile? -- chekoopa
 	hyphaName := util.CanonicalName(query)
 	out := make(chan string)
 	go func() {
-		links := ExtractHyphaLinks(hyphaName)
+		var h = ByName(hyphaName)
+		links := ExtractHyphaLinks(h)
 		for _, link := range links {
 			out <- link
 		}
@@ -67,15 +130,8 @@ func YieldHyphaLinks(query string) <-chan string {
 }
 
 // ExtractHyphaLinks extracts hypha links from a desired hypha
-func ExtractHyphaLinks(hyphaName string) []string {
-	var h = ByName(hyphaName)
-	if h.Exists {
-		fileContentsT, errT := os.ReadFile(h.TextPath)
-		if errT == nil {
-			return ExtractHyphaLinksFromContent(hyphaName, string(fileContentsT))
-		}
-	}
-	return make([]string, 0)
+func ExtractHyphaLinks(h *Hypha) []string {
+	return ExtractHyphaLinksFromContent(h.Name, fetchText(h))
 }
 
 // ExtractHyphaLinksFromContent extracts hypha links from a provided text
