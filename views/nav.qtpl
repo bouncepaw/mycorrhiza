@@ -1,4 +1,5 @@
 {% import "net/http" %}
+{% import "fmt" %}
 {% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
@@ -11,6 +12,17 @@
 {% endif %}
 {% endfunc %}
 
+{% code
+func backlinksDisplay(h *hyphae.Hypha) string {
+  n := hyphae.BacklinksCount(h)
+	suffix := "s"
+	if n % 10 == 1 {
+		suffix = ""
+	}
+	return fmt.Sprintf("%d backlink%s", n, suffix)
+}
+%}
+
 {% func hyphaInfo(rq *http.Request, h *hyphae.Hypha) %}
 {% code
 	u := user.FromRequest(rq)
@@ -22,7 +34,7 @@
 		{%= hyphaInfoEntry(h, u, "delete-ask", "Delete") %}
 		{%= hyphaInfoEntry(h, u, "text", "View markup") %}
 		{%= hyphaInfoEntry(h, u, "attachment", "Manage attachment") %}
-		{%= hyphaInfoEntry(h, u, "backlinks", "Backlinks") %}
+		{%= hyphaInfoEntry(h, u, "backlinks", backlinksDisplay(h)) %}
 	</ul>
 </nav>
 {% endfunc %}
