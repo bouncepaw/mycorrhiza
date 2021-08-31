@@ -120,6 +120,21 @@ It outputs a poorly formatted JSON, but it works and is valid.
 }
 {% endfunc %}
 
+{% func BacklinksHTML(query string, generator func(string) <-chan string) %}
+<div class="layout">
+<main class="main-width backlinks">
+	<h1>Backlinks to ‘{%s query %}’</h1>
+	<p>Hyphae which have a link to the selected hypha are listed below.</p>
+	<ul class="backlinks__list">
+	{% for hyphaName := range generator(query) %}
+		<li class="backlinks__entry">
+			<a class="backlinks__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
+		</li>
+	{% endfor %}
+</main>
+</div>
+{% endfunc %}
+
 {% func HelpHTML(content string) %}
 <div class="layout">
 <main class="main-width help">

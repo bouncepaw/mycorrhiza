@@ -103,6 +103,7 @@ func Handler() http.Handler {
 	initHistory(wikiRouter)
 	initStuff(wikiRouter)
 	initSearch(wikiRouter)
+	initBacklinks(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {

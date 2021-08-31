@@ -129,132 +129,137 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hyph
 	streamhyphaInfoEntry(qw422016, h, u, "attachment", "Manage attachment")
 //line views/nav.qtpl:24
 	qw422016.N().S(`
+		`)
+//line views/nav.qtpl:25
+	streamhyphaInfoEntry(qw422016, h, u, "backlinks", "Backlinks")
+//line views/nav.qtpl:25
+	qw422016.N().S(`
 	</ul>
 </nav>
 `)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 }
 
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha) {
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	streamhyphaInfo(qw422016, rq, h)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 }
 
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 func hyphaInfo(rq *http.Request, h *hyphae.Hypha) string {
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	writehyphaInfo(qb422016, rq, h)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 	return qs422016
-//line views/nav.qtpl:27
+//line views/nav.qtpl:28
 }
 
-//line views/nav.qtpl:29
+//line views/nav.qtpl:30
 func streamsiblingHyphaeHTML(qw422016 *qt422016.Writer, siblings string) {
-//line views/nav.qtpl:29
+//line views/nav.qtpl:30
 	qw422016.N().S(`
 <aside class="sibling-hyphae layout-card">
 	<h2 class="sibling-hyphae__title layout-card__title">Sibling hyphae</h2>
 	`)
-//line views/nav.qtpl:32
+//line views/nav.qtpl:33
 	qw422016.N().S(siblings)
-//line views/nav.qtpl:32
+//line views/nav.qtpl:33
 	qw422016.N().S(`
 </aside>
 `)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 }
 
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 func writesiblingHyphaeHTML(qq422016 qtio422016.Writer, siblings string) {
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	streamsiblingHyphaeHTML(qw422016, siblings)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 }
 
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 func siblingHyphaeHTML(siblings string) string {
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	writesiblingHyphaeHTML(qb422016, siblings)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 	return qs422016
-//line views/nav.qtpl:34
+//line views/nav.qtpl:35
 }
 
-//line views/nav.qtpl:36
+//line views/nav.qtpl:37
 func StreamSubhyphaeHTML(qw422016 *qt422016.Writer, subhyphae string) {
-//line views/nav.qtpl:36
+//line views/nav.qtpl:37
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:37
+//line views/nav.qtpl:38
 	if strings.TrimSpace(subhyphae) != "" {
-//line views/nav.qtpl:37
+//line views/nav.qtpl:38
 		qw422016.N().S(`
 <section class="subhyphae">
 	<h2 class="subhyphae__title">Subhyphae</h2>
 	<nav class="subhyphae__nav">
 		<ul class="subhyphae__list">
 		`)
-//line views/nav.qtpl:42
+//line views/nav.qtpl:43
 		qw422016.N().S(subhyphae)
-//line views/nav.qtpl:42
+//line views/nav.qtpl:43
 		qw422016.N().S(`
 		</ul>
 	</nav>
 </section>
 `)
-//line views/nav.qtpl:46
+//line views/nav.qtpl:47
 	}
-//line views/nav.qtpl:46
+//line views/nav.qtpl:47
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 }
 
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 func WriteSubhyphaeHTML(qq422016 qtio422016.Writer, subhyphae string) {
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	StreamSubhyphaeHTML(qw422016, subhyphae)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 }
 
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 func SubhyphaeHTML(subhyphae string) string {
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	WriteSubhyphaeHTML(qb422016, subhyphae)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 	return qs422016
-//line views/nav.qtpl:47
+//line views/nav.qtpl:48
 }

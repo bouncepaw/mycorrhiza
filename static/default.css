@@ -11,10 +11,10 @@
 .modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
 
-.hypha-list, .title-search__results { padding-left: 0; }
-.hypha-list__entry, .title-search__entry { list-style-type: none; }
-.hypha-list__link, .title-search__link { text-decoration: none; display: inline-block; padding: .25rem; }
-.hypha-list__link:hover, .title-search__link:hover { text-decoration: underline; }
+.hypha-list, .title-search__results, .backlinks__list { padding-left: 0; }
+.hypha-list__entry, .title-search__entry, .backlinks__entry { list-style-type: none; }
+.hypha-list__link, .title-search__link, .backlinks__link { text-decoration: none; display: inline-block; padding: .25rem; }
+.hypha-list__link:hover, .title-search__link:hover, .backlinks__link:hover { text-decoration: underline; }
 .hypha-list__amnt-type { font-size: smaller; color: #999; }
 
 /* General element positions, from small to big */
@@ -23,8 +23,6 @@
 header { width: 100%; margin-bottom: 1rem; }
 
 .layout-card li { list-style-type: none; }
-.backlinks__list { padding: 0; margin: 0; }
-.backlinks__link { text-decoration: none; display: block; padding: .25rem; padding-left: 1.25rem; }
 
 @media screen and (max-width: 800px) {
 	.amnt-grid { grid-template-columns: 1fr; }
@@ -65,13 +63,9 @@ header { width: 100%; margin-bottom: 1rem; }
 	.layout { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
 	.layout-card {max-width: 18rem;}
 	.main-width { margin: 0 auto; }
-	.backlinks { grid-column: 1 / span 1; margin-right: 0; }
 	main { grid-column: 2 / span 1; }
 	.sibling-hyphae, .edit-toolbar, .help-topics { grid-column: 3 / span 1; margin-left: 0; }
 	.edit-toolbar__buttons { grid-template-columns: 1fr; }
-
-	.backlinks__title { text-align: right; }
-	.backlinks__link { text-align: right; padding-right: 1.25rem; padding-left: .25rem; }
 }
 
 @media screen and (min-width: 1400px) {
@@ -221,7 +215,7 @@ blockquote { border-left: 2px #999 solid; }
 .upload-amnt { border: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
-.sibling-hyphae__link:hover, .backlinks__link:hover { background-color: #eee; }
+.sibling-hyphae__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {
@@ -231,7 +225,7 @@ main,  article, header, .layout-card { background-color: #343434; color: #ddd; }
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.subhyphae__link:hover, .sibling-hyphae__link:hover, .backlinks__link:hover { background-color: #444; }
+.subhyphae__link:hover, .sibling-hyphae__link:hover { background-color: #444; }
 
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
 
