@@ -37,6 +37,7 @@ func main() {
 
 	// Init the subsystems:
 	hyphae.Index(files.HyphaeDir())
+	hyphae.IndexBacklinks()
 	user.InitUserDatabase()
 	history.Start()
 	history.InitGitRepo()

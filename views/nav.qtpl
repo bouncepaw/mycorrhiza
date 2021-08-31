@@ -22,6 +22,7 @@
 		{%= hyphaInfoEntry(h, u, "delete-ask", "Delete") %}
 		{%= hyphaInfoEntry(h, u, "text", "View markup") %}
 		{%= hyphaInfoEntry(h, u, "attachment", "Manage attachment") %}
+		{%= hyphaInfoEntry(h, u, "backlinks", "Backlinks") %}
 	</ul>
 </nav>
 {% endfunc %}
