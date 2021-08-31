@@ -52,6 +52,13 @@ func IndexBacklinks() {
 	}
 }
 
+func BacklinksCount(h *Hypha) int {
+	if _, exists := backlinkIndex[h.Name]; exists {
+		return len(backlinkIndex[h.Name])
+	}
+	return 0
+}
+
 func BacklinksOnEdit(h *Hypha, oldText string) {
 	backlinkIndexMutex.Lock()
 	newLinks := toLinkSet(ExtractHyphaLinks(h))
