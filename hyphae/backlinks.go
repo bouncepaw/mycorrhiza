@@ -2,7 +2,6 @@ package hyphae
 
 import (
 	"os"
-	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/util"
 
@@ -34,8 +33,66 @@ func fetchText(h *Hypha) string {
 	return ""
 }
 
+// We'll use a quasi-union type for proper async changes
+type BackIndexOperation interface {
+	Apply()
+}
+
+type BackIndexEditing struct {
+	Name     string
+	OldLinks []string
+	NewLinks []string
+}
+
+func (op BackIndexEditing) Apply() {
+	oldLinks := toLinkSet(op.OldLinks)
+	newLinks := toLinkSet(op.NewLinks)
+	for link := range oldLinks {
+		if _, exists := newLinks[link]; !exists {
+			delete(backlinkIndex[link], op.Name)
+		}
+	}
+	for link := range newLinks {
+		if _, exists := oldLinks[link]; !exists {
+			if _, exists := backlinkIndex[link]; !exists {
+				backlinkIndex[link] = make(linkSet)
+			}
+			backlinkIndex[link][op.Name] = struct{}{}
+		}
+	}
+}
+
+type BackIndexDeletion struct {
+	Name  string
+	Links []string
+}
+
+func (op BackIndexDeletion) Apply() {
+	for _, link := range op.Links {
+		if lSet, exists := backlinkIndex[link]; exists {
+			delete(lSet, op.Name)
+		}
+	}
+}
+
+type BackIndexRenaming struct {
+	OldName string
+	NewName string
+	Links   []string
+}
+
+func (op BackIndexRenaming) Apply() {
+	for _, link := range op.Links {
+		if lSet, exists := backlinkIndex[link]; exists {
+			delete(lSet, op.OldName)
+			backlinkIndex[link][op.NewName] = struct{}{}
+		}
+	}
+}
+
 var backlinkIndex = make(map[string]linkSet)
-var backlinkIndexMutex = sync.Mutex{}
+var backlinkConveyor = make(chan BackIndexOperation, 64)
+// I hope, the buffer size is enough -- chekoopa
 
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index
 func IndexBacklinks() {
@@ -52,6 +109,16 @@ func IndexBacklinks() {
 	}
 }
 
+// RunBacklinksConveyor runs an index operation processing loop
+func RunBacklinksConveyor() {
+	// It is supposed to run as a goroutine for all the time. So, don't blame the infinite loop.
+	defer close(backlinkConveyor)
+	for {
+		(<-backlinkConveyor).Apply()
+	}
+}
+
+// BacklinksCount return an amount of backlinks for a provided hypha
 func BacklinksCount(h *Hypha) int {
 	if _, exists := backlinkIndex[h.Name]; exists {
 		return len(backlinkIndex[h.Name])
@@ -59,47 +126,23 @@ func BacklinksCount(h *Hypha) int {
 	return 0
 }
 
+// BacklinksOnEdit is a creation/editing hook for backlinks index
 func BacklinksOnEdit(h *Hypha, oldText string) {
-	backlinkIndexMutex.Lock()
-	newLinks := toLinkSet(ExtractHyphaLinks(h))
-	oldLinks := toLinkSet(ExtractHyphaLinksFromContent(h.Name, oldText))
-	for link := range oldLinks {
-		if _, exists := newLinks[link]; !exists {
-			delete(backlinkIndex[link], h.Name)
-		}
-	}
-	for link := range newLinks {
-		if _, exists := oldLinks[link]; !exists {
-			if _, exists := backlinkIndex[link]; !exists {
-				backlinkIndex[link] = make(linkSet)
-			}
-			backlinkIndex[link][h.Name] = struct{}{}
-		}
-	}
-	backlinkIndexMutex.Unlock()
-}
-
-func BacklinksOnDelete(h *Hypha, oldText string) {
-	backlinkIndexMutex.Lock()
 	oldLinks := ExtractHyphaLinksFromContent(h.Name, oldText)
-	for _, link := range oldLinks {
-		if lSet, exists := backlinkIndex[link]; exists {
-			delete(lSet, h.Name)
-		}
-	}
-	backlinkIndexMutex.Unlock()
+	newLinks := ExtractHyphaLinks(h)
+	backlinkConveyor <- BackIndexEditing{h.Name, oldLinks, newLinks}
 }
 
+// BacklinksOnDelete is a deletion hook for backlinks index
+func BacklinksOnDelete(h *Hypha, oldText string) {
+	oldLinks := ExtractHyphaLinksFromContent(h.Name, oldText)
+	backlinkConveyor <- BackIndexDeletion{h.Name, oldLinks}
+}
+
+// BacklinksOnRename is a renaming hook for backlinks index
 func BacklinksOnRename(h *Hypha, oldName string) {
-	backlinkIndexMutex.Lock()
 	actualLinks := ExtractHyphaLinks(h)
-	for _, link := range actualLinks {
-		if lSet, exists := backlinkIndex[link]; exists {
-			delete(lSet, oldName)
-			backlinkIndex[link][h.Name] = struct{}{}
-		}
-	}
-	backlinkIndexMutex.Unlock()
+	backlinkConveyor <- BackIndexRenaming{oldName, h.Name, actualLinks}
 }
 
 // YieldHyphaBacklinks gets backlinks for a desired hypha, sorts and iterates over them
