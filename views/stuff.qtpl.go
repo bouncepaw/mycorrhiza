@@ -824,7 +824,7 @@ func StreamAboutHTML(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:245
 	qw422016.N().S(`</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.4.0</li>
+			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.5.0</li>
 `)
 //line views/stuff.qtpl:248
 	if cfg.UseAuth {

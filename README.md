@@ -1,6 +1,6 @@
 # 🍄 Mycorrhiza Wiki
 
-<img src="https://mycorrhiza.wiki/binary/release/1.3/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
+<img src="https://mycorrhiza.wiki/binary/release/1.4/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
 
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history.
 
