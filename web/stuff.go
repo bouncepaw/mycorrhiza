@@ -94,7 +94,6 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	hyphae.ResetCount()
 	log.Println("Reindexing hyphae in", files.HyphaeDir())
 	hyphae.Index(files.HyphaeDir())
-	log.Println("Indexed", hyphae.Count(), "hyphae")
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
