@@ -28,6 +28,7 @@ func Index(path string) {
 		}
 	}
 
+	IndexBacklinks()
 	log.Println("Indexed", Count(), "hyphae")
 }
 
