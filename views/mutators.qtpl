@@ -12,25 +12,25 @@
 			onclick string
 			display string
 		}{
-			{"link", "wrapLink()", "[[link]]"},
-			{"heading2", "insertHeading2()", "## heading"},
-			{"heading3", "insertHeading3()", "### heading"},
+			{"link", "wrapLink()", "[[Link]]"},
+			{"heading2", "insertHeading2()", "## Heading"},
+			{"heading3", "insertHeading3()", "### Heading"},
 			{"bold", "wrapBold()", "<b>**Bold**</b>"},
 			{"italic", "wrapItalic()", "<i>//Italic//</i>"},
 			{"highlighted", "wrapHighlighted()", "<mark>++Highlight++</mark>"},
 			{"underline", "wrapUnderline()", "<u>__Underline__</u>"},
 			{"monospace", "wrapMonospace()", "<code>`Monospace`</code>"},
-			{"lifted", "wrapLifted()", "<sup>^^Lifted^^</sup>"},
-			{"lowered", "wrapLowered()", "<sub>,,Lowered,,</sub>"},
+			{"lifted", "wrapLifted()", "<sup>^^Supertext^^</sup>"}, // inconsistent names: lifted, supertext. How cute ❤️
+			{"lowered", "wrapLowered()", "<sub>,,Subtext,,</sub>"},
 			{"strikethrough", "wrapStrikethrough()", "<strike>~~Strikethrough~~</strike>"},
-			{"rocket", "insertRocket()", "=> rocketlink"},
-			{"xcl", "insertXcl()", "<= transclusion"}, 
+			{"rocket", "insertRocket()", "=> Rocketlink"},
+			{"xcl", "insertXcl()", "<= Transclusion"},
 			{"img", "insertImgBlock()", "<code>img {}</code>"},
 			{"table", "insertTableBlock()", "<code>table {}</code>"},
 			{"hr", "insertHorizontalBar()", "Horizontal bar"},
 			{"codeblock", "insertCodeblock()", "Code block"},
-			{"bulletedlist", "insertBulletedList()", "* bullet list"},
-			{"numberedlist", "insertNumberedList()", "*. number list"},
+			{"bulletedlist", "insertBulletedList()", "* Bullet list"},
+			{"numberedlist", "insertNumberedList()", "*. Number list"},
 		} %}
 		<button
 			class="btn edit-toolbar__btn edit-toolbar__{%s el.class %}"
