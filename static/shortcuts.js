@@ -344,7 +344,9 @@
                 ['Ctrl+.',      'Meta+.',            wrapLifted,         'Format: Superscript'],
                 ['Ctrl+Comma',  'Meta+Comma',        wrapLowered,        'Format: Subscript'],
                 ['Ctrl+X',      'Meta+Shift+x',      wrapStrikethrough,  'Format: Strikethrough'],
-                ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Link'],
+                ['Ctrl+k',      'Meta+k',            wrapLink,           'Format: Inline link'],
+                // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
+                ['Ctrl+;',      'Meta+;',            insertDate,         'Insert date UTC'],
             ];
 
             editorShortcuts.group('Editor', function () {
