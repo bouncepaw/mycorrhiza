@@ -33,18 +33,18 @@ func fetchText(h *Hypha) string {
 	return ""
 }
 
-// We'll use a quasi-union type for proper async changes
-type BackIndexOperation interface {
+// BacklinkIndexOperation is an operation for the backlink index. This operation is executed async-safe.
+type BacklinkIndexOperation interface {
 	Apply()
 }
 
-type BackIndexEditing struct {
+type BacklinkIndexEdit struct {
 	Name     string
 	OldLinks []string
 	NewLinks []string
 }
 
-func (op BackIndexEditing) Apply() {
+func (op BacklinkIndexEdit) Apply() {
 	oldLinks := toLinkSet(op.OldLinks)
 	newLinks := toLinkSet(op.NewLinks)
 	for link := range oldLinks {
@@ -62,12 +62,12 @@ func (op BackIndexEditing) Apply() {
 	}
 }
 
-type BackIndexDeletion struct {
+type BacklinkIndexDeletion struct {
 	Name  string
 	Links []string
 }
 
-func (op BackIndexDeletion) Apply() {
+func (op BacklinkIndexDeletion) Apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
 			delete(lSet, op.Name)
@@ -75,13 +75,13 @@ func (op BackIndexDeletion) Apply() {
 	}
 }
 
-type BackIndexRenaming struct {
+type BacklinkIndexRenaming struct {
 	OldName string
 	NewName string
 	Links   []string
 }
 
-func (op BackIndexRenaming) Apply() {
+func (op BacklinkIndexRenaming) Apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
 			delete(lSet, op.OldName)
@@ -91,16 +91,18 @@ func (op BackIndexRenaming) Apply() {
 }
 
 var backlinkIndex = make(map[string]linkSet)
-var backlinkConveyor = make(chan BackIndexOperation, 64)
+var backlinkConveyor = make(chan BacklinkIndexOperation, 64)
+
 // I hope, the buffer size is enough -- chekoopa
+//   Do we really need the buffer though? Dunno -- bouncepaw
 
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
 	src := FilterTextHyphae(YieldExistingHyphae())
 	for h := range src {
-		links := ExtractHyphaLinksFromContent(h.Name, fetchText(h))
-		for _, link := range links {
+		foundLinks := extractHyphaLinksFromContent(h.Name, fetchText(h))
+		for _, link := range foundLinks {
 			if _, exists := backlinkIndex[link]; !exists {
 				backlinkIndex[link] = make(linkSet)
 			}
@@ -118,7 +120,7 @@ func RunBacklinksConveyor() {
 	}
 }
 
-// BacklinksCount return an amount of backlinks for a provided hypha
+// BacklinksCount returns the amount of backlinks to the hypha.
 func BacklinksCount(h *Hypha) int {
 	if _, exists := backlinkIndex[h.Name]; exists {
 		return len(backlinkIndex[h.Name])
@@ -128,21 +130,21 @@ func BacklinksCount(h *Hypha) int {
 
 // BacklinksOnEdit is a creation/editing hook for backlinks index
 func BacklinksOnEdit(h *Hypha, oldText string) {
-	oldLinks := ExtractHyphaLinksFromContent(h.Name, oldText)
-	newLinks := ExtractHyphaLinks(h)
-	backlinkConveyor <- BackIndexEditing{h.Name, oldLinks, newLinks}
+	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
+	newLinks := extractHyphaLinks(h)
+	backlinkConveyor <- BacklinkIndexEdit{h.Name, oldLinks, newLinks}
 }
 
 // BacklinksOnDelete is a deletion hook for backlinks index
 func BacklinksOnDelete(h *Hypha, oldText string) {
-	oldLinks := ExtractHyphaLinksFromContent(h.Name, oldText)
-	backlinkConveyor <- BackIndexDeletion{h.Name, oldLinks}
+	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
+	backlinkConveyor <- BacklinkIndexDeletion{h.Name, oldLinks}
 }
 
 // BacklinksOnRename is a renaming hook for backlinks index
 func BacklinksOnRename(h *Hypha, oldName string) {
-	actualLinks := ExtractHyphaLinks(h)
-	backlinkConveyor <- BackIndexRenaming{oldName, h.Name, actualLinks}
+	actualLinks := extractHyphaLinks(h)
+	backlinkConveyor <- BacklinkIndexRenaming{oldName, h.Name, actualLinks}
 }
 
 // YieldHyphaBacklinks gets backlinks for a desired hypha, sorts and iterates over them
@@ -151,9 +153,9 @@ func YieldHyphaBacklinks(query string) <-chan string {
 	out := make(chan string)
 	sorted := PathographicSort(out)
 	go func() {
-		links, exists := backlinkIndex[hyphaName]
+		backlinks, exists := backlinkIndex[hyphaName]
 		if exists {
-			for link := range links {
+			for link := range backlinks {
 				out <- link
 			}
 		}
@@ -162,33 +164,17 @@ func YieldHyphaBacklinks(query string) <-chan string {
 	return sorted
 }
 
-// YieldHyphaLinks extracts hypha links from a desired hypha, sorts and iterates over them
-func YieldHyphaLinks(query string) <-chan string {
-	// That is merely a debug function, but it could be useful.
-	// Should we extract them into link-specific subfile? -- chekoopa
-	hyphaName := util.CanonicalName(query)
-	out := make(chan string)
-	go func() {
-		var h = ByName(hyphaName)
-		links := ExtractHyphaLinks(h)
-		for _, link := range links {
-			out <- link
-		}
-		close(out)
-	}()
-	return out
+// extractHyphaLinks extracts hypha links from a desired hypha
+func extractHyphaLinks(h *Hypha) []string {
+	return extractHyphaLinksFromContent(h.Name, fetchText(h))
 }
 
-// ExtractHyphaLinks extracts hypha links from a desired hypha
-func ExtractHyphaLinks(h *Hypha) []string {
-	return ExtractHyphaLinksFromContent(h.Name, fetchText(h))
-}
-
-// ExtractHyphaLinksFromContent extracts hypha links from a provided text
-func ExtractHyphaLinksFromContent(hyphaName string, contents string) []string {
+// extractHyphaLinksFromContent extracts local hypha links from the provided text.
+func extractHyphaLinksFromContent(hyphaName string, contents string) []string {
 	ctx, _ := mycocontext.ContextFromStringInput(hyphaName, contents)
 	linkVisitor, getLinks := LinkVisitor(ctx)
-	mycomarkup.BlockTree(ctx, linkVisitor)
+	// Ignore the result of BlockTree because we call it for linkVisitor.
+	_ = mycomarkup.BlockTree(ctx, linkVisitor)
 	foundLinks := getLinks()
 	var result []string
 	for _, link := range foundLinks {
@@ -200,18 +186,22 @@ func ExtractHyphaLinksFromContent(hyphaName string, contents string) []string {
 }
 
 // LinkVisitor creates a visitor which extracts all the links
+//
+// We consider inline link, rocket link, image gallery and transclusion targets to be links.
+// TODO: replace with the one in Mycomarkup.
 func LinkVisitor(ctx mycocontext.Context) (
 	visitor func(block blocks.Block),
 	result func() []links.Link,
 ) {
 	var (
-		collected []links.Link
+		collected    []links.Link
+		extractBlock func(block blocks.Block)
 	)
-	var extractBlock func(block blocks.Block)
 	extractBlock = func(block blocks.Block) {
 		// fmt.Println(reflect.TypeOf(block))
 		switch b := block.(type) {
 		case blocks.Paragraph:
+			// What a wonderful recursion technique you have! I like it.
 			extractBlock(b.Formatted)
 		case blocks.Heading:
 			extractBlock(b.GetContents())
