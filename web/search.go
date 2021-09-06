@@ -9,6 +9,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
 
@@ -23,13 +24,15 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 	var (
 		query = rq.FormValue("q")
 		u     = user.FromRequest(rq)
+		lc    = l18n.FromRequest(rq)
 	)
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
 		views.BaseHTML(
-			"Search: "+query,
-			views.TitleSearchHTML(query, shroom.YieldHyphaNamesContainingString),
+			lc.Get("ui.title_search_title", &l18n.Replacements{"query": query}),
+			views.TitleSearchHTML(query, shroom.YieldHyphaNamesContainingString, lc),
+			lc,
 			u,
 		),
 	)

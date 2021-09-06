@@ -1,0 +1,38 @@
+{
+	"title": "Edit %s",
+  
+  "new_hypha": "You are creating a new hypha.",
+	"tag": "Describe your changes:",
+	"save": "Save",
+	"preview": "Preview",
+	"preview_title": "Preview of %s",
+	"preview_tip": "Note that the hypha hasn't been saved yet. Here's the preview:",
+
+  "markup": "Markup",
+	"actions": "Actions",
+
+	"link": "Link",
+	"link_title": "Title",
+	"heading": "Heading",
+  "bold": "Bold",
+  "italic": "Italic",
+  "highlight": "Highlight",
+  "underline": "Underline",
+  "mono": "Monospace",
+  "super": "Supertext",
+  "sub": "Subtext",
+  "strike": "Strikethrough",
+  "rocket": "Rocketlink",
+  "transclude": "Transclusion",
+  "hr": "Horizontal bar",
+  "code": "Code block",
+  "bullets": "Bullet list",
+  "numbers": "Number list",
+
+  "help": "{{.link}} about mycomarkup",
+  "help_link": "Learn more",
+  
+  "selflink": "Link yourself",
+  "date": "Insert current date",
+  "time": "Insert current time"
+}

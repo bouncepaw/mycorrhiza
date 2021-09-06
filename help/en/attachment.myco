@@ -11,10 +11,10 @@ You can upload any file, but only those listed below will be displayed on the we
 ## How to add an attachment?
 For non-existent hyphae, upload a file in the //Upload a media// section.
 
-For any hyphae, upload a file in the //Attachment// tab.
+For any hyphae, upload a file in the //Manage attachment// tab.
 
-## Attachment tab
-Every hypha has the //Attachment// tab. Click it to see what is out there.
+## Attachment management
+Every hypha has the //Manage attachment// section. Click it to see what is out there.
 
 You can upload a new file, you can //delete// the attachment (it is called //unattaching//) and see some file stats (size and type).
 
@@ -31,4 +31,4 @@ If a hypha has an attachment, here is what the text part might be about:
 * Some meta data.
 * Things above combined.
 
-The attachment //should not// be an illustration.
+The attachment //should not// be an illustration of the text part. In this case it is better to put it into a subhypha and embed it into the markup.

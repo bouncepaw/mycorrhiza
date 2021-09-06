@@ -17,7 +17,8 @@ func init() {
 		if h := hyphae.ByName(hyphaName); h.Exists {
 			rawText, err = FetchTextPart(h)
 			if h.BinaryPath != "" {
-				binaryBlock = views.AttachmentHTML(h)
+				// the view is localized, but we can't pass it, so...
+				binaryBlock = views.AttachmentHTMLRaw(h)
 			}
 		} else {
 			err = errors.New("Hypha " + hyphaName + " does not exist")

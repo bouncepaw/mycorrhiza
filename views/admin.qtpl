@@ -1,31 +1,33 @@
+{% import "fmt" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
+{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AdminPanelHTML() %}
+{% func AdminPanelHTML(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
-	<h1>Administrative functions</h1>
+	<h1>{%s lc.Get("admin.panel_title") %}</h1>
 	<section>
-		<h2>Safe things</h2>
+		<h2>{%s lc.Get("admin.panel_safe") %}</h2>
 		<ul>
-			<li><a href="/about">About this wiki</a></li>
-			<li><a href="/user-list">User list</a></li>
-			<li><a href="/update-header-links">Update header links</a></li>
-			<li><a href="/admin/users/">Manage users</a></li>
+			<li><a href="/about">{%s lc.Get("admin.panel_about") %}</a></li>
+			<li><a href="/user-list">{%s lc.Get("admin.panel_userlist") %}</a></li>
+			<li><a href="/update-header-links">{%s lc.Get("admin.panel_updateheader") %}</a></li>
+			<li><a href="/admin/users/">{%s lc.Get("admin.panel_users") %}</a></li>
 		</ul>
 	</section>
 	<section>
-		<h2>Dangerous things</h2>
+		<h2>{%s lc.Get("admin.panel_unsafe") %}</h2>
 		<form action="/admin/shutdown" method="POST" style="float:left">
 			<fieldset>
-				<legend>Shutdown wiki</legend>
+				<legend>{%s lc.Get("admin.panel_shutdown") %}</legend>
 				<input type="submit" class="btn">
 			</fieldset>
 		</form>
 		<form action="/reindex" method="GET" style="float:left">
 			<fieldset>
-				<legend>Reindex hyphae</legend>
+				<legend>{%s lc.Get("admin.panel_reindex") %}</legend>
 				<input type="submit" class="btn">
 			</fieldset>
 		</form>
@@ -34,14 +36,14 @@
 </div>
 {% endfunc %}
 
-{% func AdminUsersPanelHTML(userList []*user.User) %}
+{% func AdminUsersPanelHTML(userList []*user.User, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
-	<h1>Manage users</h1>
+	<h1>{%s lc.Get("admin.users_title") %}</h1>
 
 	<form action="/admin/reindex-users" method="post">
-		<a class="btn" href="/admin/user/new">Create a new user</a>
-		<button class="btn" type="submit">Reindex users</button>
+		<a class="btn" href="/admin/user/new">{%s lc.Get("admin.users_create") %}</a>
+		<button class="btn" type="submit">{%s lc.Get("admin.users_reindex") %}</button>
 	</form>
 
 	<br>
@@ -49,10 +51,10 @@
 	<table class="users-table">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Group</th>
-			<th>Registered at</th>
-			<th aria-label="Actions"></th>
+			<th>{%s lc.Get("admin.users_name") %}</th>
+			<th>{%s lc.Get("admin.users_group") %}</th>
+			<th>{%s lc.Get("admin.users_registered") %}</th>
+			<th aria-label="{%s lc.Get("admin.users_actions") %}"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -64,13 +66,13 @@
 			<td>{%s u.Group %}</td>
 			<td>
 				{% if u.RegisteredAt.IsZero() %}
-					unknown
+					{%s lc.Get("admin.users_notime") %}
 				{% else %}
 					{%s u.RegisteredAt.UTC().Format("2006-01-02 15:04") %}
 				{% endif %}
 			</td>
 			<td>
-				<a href="/admin/users/{%u u.Name %}/edit">Edit</a>
+				<a href="/admin/users/{%u u.Name %}/edit">{%s lc.Get("admin.users_edit") %}</a>
 			</td>
 		</tr>
 	{% endfor %}
@@ -80,31 +82,31 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserNewHTML(f util.FormData) %}
+{% func AdminUserNewHTML(f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
-	<h1>New user</h1>
+	<h1>{%s lc.Get("admin.newuser_title") %}</h1>
 
 	{% if f.HasError() %}
 	<div class="notice notice--error">
-		<strong>Error:</strong>
+		<strong>{%s lc.Get("ui.error") %}:</strong>
 		{%s f.Error() %}
 	</div>
 	{% endif %}
 
 	<form class="form--double" action="" method="post">
 		<div class="form-field">
-			<label for="name">Name:</label>
+			<label for="name">{%s lc.Get("admin.users_name") %}:</label>
 			<input type="text" name="name" id="name" value="{%s f.Get("name") %}" autofocus>
 		</div>
 
 		<div class="form-field">
-			<label for="password">Password:</label>
+			<label for="password">{%s lc.Get("admin.users_password") %}:</label>
 			<input type="password" name="password" id="password" value="{%s f.Get("password") %}">
 		</div>
 
 		<div class="form-field">
-			<label for="group">Group:</label>
+			<label for="group">{%s lc.Get("admin.users_group") %}:</label>
 			<select id="group" name="group">
 				<option{% if f.Get("group") == "anon" %} selected{% endif %}>anon</option>
 				<option{% if f.Get("group") == "editor" %} selected{% endif %}>editor</option>
@@ -116,8 +118,8 @@
 
 		<div class="form-field">
 			<div class="form-field__input">
-				<button class="btn" type="submit">Create</button>
-				<a class="btn btn_weak" href="/admin/users/">Cancel</a>
+				<button class="btn" type="submit">{%s lc.Get("admin.newuser_create") %}</button>
+				<a class="btn btn_weak" href="/admin/users/">{%s lc.Get("ui.cancel") %}</a>
 			</div>
 		</div>
 	</form>
@@ -125,7 +127,7 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserEditHTML(u *user.User, f util.FormData) %}
+{% func AdminUserEditHTML(u *user.User, f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
 	<h1>
@@ -133,18 +135,18 @@
 		{%s u.Name %}
 	</h1>
 
-	<h2>Change group</h2>
+	<h2>{%s lc.Get("admin.user_group_heading") %}</h2>
 
 	{% if f.HasError() %}
 	<div class="notice notice--error">
-		<strong>Error:</strong>
+		<strong>{%s lc.Get("ui.error") %}:</strong>
 		{%s f.Error() %}
 	</div>
 	{% endif %}
 
 	<form action="" method="post">
 		<div class="form-field">
-			<select id="group" name="group" aria-label="Group">
+			<select id="group" name="group" aria-label="{%s lc.Get("admin.users_group") %}">
 				<option{% if f.Get("group") == "anon" %} selected{% endif %}>anon</option>
 				<option{% if f.Get("group") == "editor" %} selected{% endif %}>editor</option>
 				<option{% if f.Get("group") == "trusted" %} selected{% endif %}>trusted</option>
@@ -154,36 +156,34 @@
 		</div>
 
 		<div class="form-field">
-			<button class="btn" type="submit">Update</button>
+			<button class="btn" type="submit">{%s lc.Get("admin.user_update") %}</button>
 		</div>
 	</form>
 
-	<h2>Delete user</h2>
-	<p>Remove the user from the database. Changes made by the user will
-	be preserved. It will be possible to take this username later.</p>
-	<a class="btn btn_destructive" href="/admin/users/{%u u.Name %}/delete">Delete</a>
+	<h2>{%s lc.Get("admin.user_delete_heading") %}</h2>
+	<p>{%s lc.Get("admin.user_delete_tip") %}</p>
+	<a class="btn btn_destructive" href="/admin/users/{%u u.Name %}/delete">{%s lc.Get("admin.user_delete") %}</a>
 </main>
 </div>
 {% endfunc %}
 
-{% func AdminUserDeleteHTML(u *user.User, f util.FormData) %}
+{% func AdminUserDeleteHTML(u *user.User, f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
-	<h1>Delete user</h1>
+	<h1>{%s lc.Get("admin.user_delete_heading") %}</h1>
 
 	{% if f.HasError() %}
 	<div class="notice notice--error">
-		<strong>Error:</strong>
+		<strong>{%s lc.Get("ui.error") %}:</strong>
 		{%s f.Error() %}
 	</div>
 	{% endif %}
 
-	<p>Are you sure you want to delete <strong>{%s u.Name %}</strong>
-	from the database? This action is irreversible.</p>
+	<p>{%s= lc.Get("admin.user_delete_warn", &l18n.Replacements{"name": fmt.Sprintf("<strong>%s</strong>", u.Name)}) %}</p>
 
 	<form action="" method="post">
-		<button class="btn btn_destructive" type="submit">Delete</button>
-		<a class="btn btn_weak" href="/admin/users/{%u u.Name %}/edit">Cancel</a>
+		<button class="btn btn_destructive" type="submit">{%s lc.Get("admin.user_delete") %}</button>
+		<a class="btn btn_weak" href="/admin/users/{%u u.Name %}/edit">{%s lc.Get("ui.cancel") %}</a>
 	</form>
 </main>
 </div>

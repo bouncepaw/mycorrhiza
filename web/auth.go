@@ -1,3 +1,4 @@
+// TODO: l18n
 package web
 
 import (
@@ -12,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -35,11 +37,12 @@ func initAuth(r *mux.Router) {
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	io.WriteString(w, views.LockHTML())
+	io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
 }
 
 // handlerRegister both displays the register form (GET) and registers users (POST).
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
+	lc := l18n.FromRequest(rq)
 	util.PrepareRq(rq)
 	if !cfg.AllowRegistration {
 		w.WriteHeader(http.StatusForbidden)
@@ -48,8 +51,9 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		io.WriteString(
 			w,
 			views.BaseHTML(
-				"Register",
+				lc.Get("auth.register_title"),
 				views.RegisterHTML(rq),
+				lc,
 				user.FromRequest(rq),
 			),
 		)
@@ -66,11 +70,13 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			fmt.Fprint(
 				w,
 				views.BaseHTML(
-					"Register",
+					lc.Get("auth.register_title"),
 					fmt.Sprintf(
-						`<main class="main-width"><p>%s</p><p><a href="/register">Try again<a></p></main>`,
+						`<main class="main-width"><p>%s</p><p><a href="/register">%s<a></p></main>`,
 						err.Error(),
+						lc.Get("auth.try_again"),
 					),
+					lc,
 					user.FromRequest(rq),
 				),
 			)
@@ -87,6 +93,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u   = user.FromRequest(rq)
 		can = u != nil
+		lc = l18n.FromRequest(rq)
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if can {
@@ -96,7 +103,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Unknown user tries to log out")
 		w.WriteHeader(http.StatusForbidden)
 	}
-	w.Write([]byte(views.BaseHTML("Logout?", views.LogoutHTML(can), u)))
+	w.Write([]byte(views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u)))
 }
 
 // handlerLogoutConfirm logs the user out.
@@ -116,11 +123,13 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusForbidden)
 	}
-	w.Write([]byte(views.BaseHTML("Login", views.LoginHTML(), user.EmptyUser())))
+	lc := l18n.FromRequest(rq)
+	w.Write([]byte(views.BaseHTML(lc.Get("auth.login_title"), views.LoginHTML(lc), lc, user.EmptyUser())))
 }
 
 func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	// Note there is no lock here.
+	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	rq.ParseForm()
 	var (
@@ -150,11 +159,14 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		fmt.Fprint(
 			w,
 			views.BaseHTML(
-				"Error",
+				lc.Get("ui.error"),
 				fmt.Sprintf(
-					`<main class="main-width"><p>Could not authorize using Telegram.</p><p>%s</p><p><a href="/login">Go to the login page<a></p></main>`,
+					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
+					lc.Get("auth.error_telegram"),
 					err.Error(),
+					lc.Get("auth.go_login"),
 				),
+				lc,
 				user.FromRequest(rq),
 			),
 		)
@@ -170,9 +182,12 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 			views.BaseHTML(
 				"Error",
 				fmt.Sprintf(
-					`<main class="main-width"><p>Could not authorize using Telegram.</p><p>%s</p><p><a href="/login">Go to the login page<a></p></main>`,
+					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
+					lc.Get("auth.error_telegram"),
 					err.Error(),
+					lc.Get("auth.go_login"),
 				),
+				lc,
 				user.FromRequest(rq),
 			),
 		)
@@ -186,6 +201,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 //
 // TODO: merge into handlerLogin as POST method.
 func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
+	lc := l18n.FromRequest(rq)
 	util.PrepareRq(rq)
 	var (
 		username = util.CanonicalName(rq.PostFormValue("username"))
@@ -193,7 +209,7 @@ func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 		err      = user.LoginDataHTTP(w, rq, username, password)
 	)
 	if err != "" {
-		w.Write([]byte(views.BaseHTML(err, views.LoginErrorHTML(err), user.EmptyUser())))
+		w.Write([]byte(views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser())))
 	} else {
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
 	}

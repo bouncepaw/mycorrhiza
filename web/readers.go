@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -39,11 +40,13 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = util.HyphaNameFromRq(rq, "attachment")
 		h         = hyphae.ByName(hyphaName)
 		u         = user.FromRequest(rq)
+		lc        = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
 		views.BaseHTML(
-			fmt.Sprintf("Attachment of %s", util.BeautifulName(hyphaName)),
+			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
 			views.AttachmentMenuHTML(rq, h, u),
+			lc,
 			u))
 }
 
@@ -56,11 +59,13 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		hyphaName       = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
 		h               = hyphae.ByName(hyphaName)
 		u               = user.FromRequest(rq)
+		lc              = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
 		views.BaseHTML(
-			fmt.Sprintf("Diff of %s at %s", util.BeautifulName(hyphaName), revHash),
+			lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			views.PrimitiveDiffHTML(rq, h, u, revHash),
+			lc,
 			u))
 }
 
@@ -68,12 +73,13 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
+		lc                = l18n.FromRequest(rq)
 		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
 		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
 		revHash           = shorterUrl[:firstSlashIndex]
 		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
 		h                 = hyphae.ByName(hyphaName)
-		contents          = fmt.Sprintf(`<p>This hypha had no text at this revision.</p>`)
+		contents          = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
 		u                 = user.FromRequest(rq)
 	)
@@ -83,6 +89,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	}
 	page := views.RevisionHTML(
 		rq,
+		lc,
 		h,
 		contents,
 		revHash,
@@ -92,8 +99,9 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	_, _ = fmt.Fprint(
 		w,
 		views.BaseHTML(
-			fmt.Sprintf(`%s at %s`, util.BeautifulName(hyphaName), revHash),
+			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
+			lc,
 			u,
 		),
 	)
@@ -130,6 +138,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		contents  string
 		openGraph string
 		u         = user.FromRequest(rq)
+		lc        = l18n.FromRequest(rq)
 	)
 	if h.Exists {
 		fileContentsT, errT := os.ReadFile(h.TextPath)
@@ -143,21 +152,23 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = getOpenGraph()
 		}
 		if !os.IsNotExist(errB) {
-			contents = views.AttachmentHTML(h) + contents
+			contents = views.AttachmentHTML(h, lc) + contents
 		}
 	}
 	if contents == "" {
 		util.HTTP404Page(w,
 			views.BaseHTML(
 				util.BeautifulName(hyphaName),
-				views.HyphaHTML(rq, h, contents),
+				views.HyphaHTML(rq, lc, h, contents),
+				lc,
 				u,
 				openGraph))
 	} else {
 		util.HTTP200Page(w,
 			views.BaseHTML(
 				util.BeautifulName(hyphaName),
-				views.HyphaHTML(rq, h, contents),
+				views.HyphaHTML(rq, lc, h, contents),
+				lc,
 				u,
 				openGraph))
 	}

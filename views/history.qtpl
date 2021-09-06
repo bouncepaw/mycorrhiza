@@ -1,8 +1,10 @@
+// TODO: l18n
 {% import "fmt" %}
 {% import "net/http" %}
 {% import "time" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
+{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/history" %}
@@ -10,6 +12,7 @@
 
 {% func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) %}
 {% code
+lc := l18n.FromRequest(rq)
 text, err := history.PrimitiveDiffAtRevision(h.TextPartPath(), hash)
 if err != nil {
 	text = err.Error()
@@ -18,20 +21,20 @@ if err != nil {
 <div class="layout">
 <main class="main-width">
 	<article>
-		<h1>Diff {%s= beautifulLink(h.Name) %} at {%s hash %}</h1>
+		<h1>{%s= lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.Name), "rev": hash}) %}</h1>
 		<pre class="codeblock"><code>{%s text %}</code></pre>
 	</article>
 </main>
 </div>
 {% endfunc %}
 
-{% func RecentChangesHTML(n int) %}
+{% func RecentChangesHTML(n int, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width recent-changes">
-	<h1>Recent Changes</h1>
+	<h1>{%s lc.Get("ui.recent_heading") %}</h1>
 
 	<nav class="recent-changes__count">
-		See 
+		{%s lc.Get("ui.recent_count_pre") %}
 	{% for i, m := range []int{20, 50, 100} %}
 	{% if i > 0 %}
 		<span aria-hidden="true">|</span>
@@ -42,10 +45,10 @@ if err != nil {
 		<a href="/recent-changes/{%d m %}">{%d m %}</a>
 	{% endif %}
 	{% endfor %}
-		recent changes
+		{%s lc.Get("ui.recent_count_post") %}
 	</nav>
 
-	<p><img class="icon" width="20" height="20" src="/static/icon/feed.svg">Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.</p>
+	<p><img class="icon" width="20" height="20" src="/static/icon/feed.svg">{%s= lc.Get("ui.recent_subscribe", &l18n.Replacements{"rss": "<a href=\"/recent-changes-rss\">RSS</a>", "atom": "<a href=\"/recent-changes-atom\">Atom</a>", "json": fmt.Sprintf("<a href=\"/recent-changes-json\">%s</a>", lc.Get("ui.recent_subscribe_json"))}) %}</p>
 
 	{% comment %}
 		Here I am, willing to add some accessibility using ARIA. Turns out,
@@ -61,7 +64,7 @@ if err != nil {
 	%}
 	<section class="recent-changes__list" role="feed">
 	{% if len(changes) == 0 %}
-		<p>Could not find any recent changes.</p>
+		<p>{%s lc.Get("ui.recent_empty") %}</p>
 	{% else %}
 		{% for i, entry := range changes %}
 
@@ -80,7 +83,7 @@ if err != nil {
 
 		{% endfor %}
 	{% endif %}
-	{%s= helpTopicBadgeHTML("en", "recent_changes") %}
+	{%s= helpTopicBadgeHTML(lc.Locale, "recent_changes") %}
 	</section>
 </main>
 </div>
@@ -109,11 +112,11 @@ if err != nil {
 </div>
 {% endfunc %}
 
-{% func HistoryHTML(rq *http.Request, hyphaName, list string) %}
+{% func HistoryHTML(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<article class="history">
-		<h1>History of {%s= beautifulLink(hyphaName) %}</h1>
+		<h1>{%s= fmt.Sprintf(lc.Get("ui.history_title"), beautifulLink(hyphaName)) %}</h1>
 		{%s= list %}
 	</article>
 </main>

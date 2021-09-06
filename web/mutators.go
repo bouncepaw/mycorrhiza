@@ -12,6 +12,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -35,7 +36,7 @@ func initMutators(r *mux.Router) {
 func factoryHandlerAsker(
 	actionPath string,
 	asker func(*user.User, *hyphae.Hypha) (error, string),
-	succTitleTemplate string,
+	succTitleKey string,
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
@@ -44,10 +45,12 @@ func factoryHandlerAsker(
 			hyphaName = util.HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
+			lc        = l18n.FromRequest(rq)
 		)
 		if err, errtitle := asker(u, h); err != nil {
 			httpErr(
 				w,
+				lc,
 				http.StatusInternalServerError,
 				hyphaName,
 				errtitle,
@@ -57,8 +60,9 @@ func factoryHandlerAsker(
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				fmt.Sprintf(succTitleTemplate, util.BeautifulName(hyphaName)),
+				fmt.Sprintf(lc.Get(succTitleKey), util.BeautifulName(hyphaName)),
 				succPageTemplate(rq, hyphaName, h.Exists),
+				lc,
 				u))
 	}
 }
@@ -66,21 +70,21 @@ func factoryHandlerAsker(
 var handlerUnattachAsk = factoryHandlerAsker(
 	"unattach-ask",
 	shroom.CanUnattach,
-	"Unattach %s?",
+	"ui.ask_unattach",
 	views.UnattachAskHTML,
 )
 
 var handlerDeleteAsk = factoryHandlerAsker(
 	"delete-ask",
 	shroom.CanDelete,
-	"Delete %s?",
+	"ui.ask_delete",
 	views.DeleteAskHTML,
 )
 
 var handlerRenameAsk = factoryHandlerAsker(
 	"rename-ask",
 	shroom.CanRename,
-	"Rename %s?",
+	"ui.ask_rename",
 	views.RenameAskHTML,
 )
 
@@ -94,9 +98,10 @@ func factoryHandlerConfirmer(
 			hyphaName = util.HyphaNameFromRq(rq, actionPath)
 			h         = hyphae.ByName(hyphaName)
 			u         = user.FromRequest(rq)
+			lc        = l18n.FromRequest(rq)
 		)
 		if hop, errtitle := confirmer(h, u, rq); hop.HasErrors() {
-			httpErr(w, http.StatusInternalServerError, hyphaName,
+			httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 				errtitle,
 				hop.FirstErrorText())
 			return
@@ -124,6 +129,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u         = user.FromRequest(rq)
+		lc        = l18n.FromRequest(rq)
 		hyphaName = util.HyphaNameFromRq(rq, "rename-confirm")
 		oldHypha  = hyphae.ByName(hyphaName)
 		newName   = util.CanonicalName(rq.PostFormValue("new-name"))
@@ -132,7 +138,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 	)
 	hop, errtitle := shroom.RenameHypha(oldHypha, newHypha, recursive, u)
 	if hop.HasErrors() {
-		httpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			hop.FirstErrorText())
 		return
@@ -150,9 +156,10 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		textAreaFill string
 		err          error
 		u            = user.FromRequest(rq)
+		lc           = l18n.FromRequest(rq)
 	)
 	if err, errtitle := shroom.CanEdit(u, h); err != nil {
-		httpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
 		return
@@ -161,19 +168,20 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		textAreaFill, err = shroom.FetchTextPart(h)
 		if err != nil {
 			log.Println(err)
-			httpErr(w, http.StatusInternalServerError, hyphaName,
-				"Error",
-				"Could not fetch text data")
+			httpErr(w, lc, http.StatusInternalServerError, hyphaName,
+				lc.Get("ui.error"),
+				lc.Get("ui.error_text_fetch"))
 			return
 		}
 	} else {
-		warning = `<p class="warning warning_new-hypha">You are creating a new hypha.</p>`
+		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("ui.edit_new_hypha"))
 	}
 	util.HTTP200Page(
 		w,
 		views.BaseHTML(
-			fmt.Sprintf("Edit %s", util.BeautifulName(hyphaName)),
+			fmt.Sprintf(lc.Get("edit.title"), util.BeautifulName(hyphaName)),
 			views.EditHTML(rq, hyphaName, textAreaFill, warning),
+			lc,
 			u))
 }
 
@@ -187,6 +195,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		action    = rq.PostFormValue("action")
 		message   = rq.PostFormValue("message")
 		u         = user.FromRequest(rq)
+		lc        = l18n.FromRequest(rq)
 		hop       *history.HistoryOp
 		errtitle  string
 	)
@@ -194,7 +203,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	if action != "Preview" {
 		hop, errtitle = shroom.UploadText(h, []byte(textData), message, u)
 		if hop.HasErrors() {
-			httpErr(w, http.StatusForbidden, hyphaName,
+			httpErr(w, lc, http.StatusForbidden, hyphaName,
 				errtitle,
 				hop.FirstErrorText())
 			return
@@ -207,7 +216,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				fmt.Sprintf("Preview of %s", util.BeautifulName(hyphaName)),
+				fmt.Sprintf(lc.Get("edit.preview_title"), util.BeautifulName(hyphaName)),
 				views.PreviewHTML(
 					rq,
 					hyphaName,
@@ -215,6 +224,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					message,
 					"",
 					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
+				lc,
 				u))
 	} else {
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
@@ -229,15 +239,16 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		hyphaName          = util.HyphaNameFromRq(rq, "upload-binary")
 		h                  = hyphae.ByName(hyphaName)
 		u                  = user.FromRequest(rq)
+		lc                 = l18n.FromRequest(rq)
 		file, handler, err = rq.FormFile("binary")
 	)
 	if err != nil {
-		httpErr(w, http.StatusInternalServerError, hyphaName,
-			"Error",
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
+			lc.Get("ui.error"),
 			err.Error())
 	}
 	if err, errtitle := shroom.CanAttach(u, h); err != nil {
-		httpErr(w, http.StatusInternalServerError, hyphaName,
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
 	}
@@ -257,7 +268,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if hop.HasErrors() {
-		httpErr(w, http.StatusInternalServerError, hyphaName, errtitle, hop.FirstErrorText())
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName, errtitle, hop.FirstErrorText())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)

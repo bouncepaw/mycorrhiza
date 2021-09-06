@@ -1,0 +1,33 @@
+{
+  "panel_title": "Administrative functions",
+  "panel_safe": "Safe things",
+  "panel_unsafe": "Dangerous things",
+  "panel_about": "About this wiki",
+  "panel_userlist": "User list",
+  "panel_updateheader": "Update header links",
+  "panel_users": "Manage users",
+  "panel_shutdown": "Shutdown wiki",
+  "panel_reindex": "Reindex hyphae",
+
+  "users_title": "Manage users",
+  "users_create": "Create a new user",
+  "users_reindex": "Reindex users",
+  "users_name": "Name",
+  "users_password": "Password",
+  "users_group": "Group",
+  "users_registered": "Registered at",
+  "users_actions": "Actions",
+  "users_notime": "unknown",
+  "users_edit": "Edit",
+
+  "user_title": "User %s",
+  "user_group_heading": "Change group",
+  "user_update": "Update",
+  "user_delete_heading": "Delete user",
+  "user_delete_tip": "Remove the user from the database. Changes made by the user will be preserved. It will be possible to take this username later.",
+  "user_delete_warn": "Are you sure you want to delete {{.name}} from the database? This action is irreversible.",
+  "user_delete": "Delete",
+  
+  "newuser_title": "New user",
+  "newuser_create": "Create"
+}
