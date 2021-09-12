@@ -2,7 +2,7 @@ package cfg
 
 // See https://mycorrhiza.wiki/hypha/configuration/header
 import (
-	"github.com/bouncepaw/mycomarkup/blocks"
+	"github.com/bouncepaw/mycomarkup/v2/blocks"
 	"strings"
 )
 

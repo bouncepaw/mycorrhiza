@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
@@ -17,9 +18,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup"
-	"github.com/bouncepaw/mycomarkup/mycocontext"
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycomarkup/v2"
+	"github.com/bouncepaw/mycomarkup/v2/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v2/tools"
 )
 
 func initReaders(r *mux.Router) {
@@ -136,7 +137,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
 			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
-			getOpenGraph, descVisitor, imgVisitor := mycomarkup.OpenGraphVisitors(ctx)
+			getOpenGraph, descVisitor, imgVisitor := tools.OpenGraphVisitors(ctx)
 			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
 			contents = mycomarkup.BlocksToHTML(ctx, ast)
 			openGraph = getOpenGraph()

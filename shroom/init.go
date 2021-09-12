@@ -6,7 +6,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup/globals"
+	"github.com/bouncepaw/mycomarkup/v2/globals"
 )
 
 func init() {

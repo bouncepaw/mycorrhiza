@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bouncepaw/mycomarkup"
-	"github.com/bouncepaw/mycomarkup/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v2"
+	"github.com/bouncepaw/mycomarkup/v2/mycocontext"
 
 	"github.com/gorilla/mux"
 
