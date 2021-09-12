@@ -13,6 +13,7 @@
 			display string
 		}{
 			{"link", "wrapLink()", "[[Link]]"},
+			{"titlelink", "wrapTitleLink()", "[[Link | Title]]"},
 			{"heading2", "insertHeading2()", "## Heading"},
 			{"heading3", "insertHeading3()", "### Heading"},
 			{"bold", "wrapBold()", "<b>**Bold**</b>"},

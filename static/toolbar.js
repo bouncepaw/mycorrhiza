@@ -73,7 +73,8 @@ const wrapBold = selectionWrapper(2, '**'),
     wrapLowered = selectionWrapper(2, ',,'),
     wrapStrikethrough = selectionWrapper(2, '~~'),
     wrapUnderline = selectionWrapper(2, '__'),
-    wrapLink = selectionWrapper(2, '[[', ']]')
+    wrapLink = selectionWrapper(2, '[[', ']]'),
+    wrapTitleLink = selectionWrapper(2, '[[', ' | ]]')
 
 const insertHorizontalBar = textInserter('\n----\n'),
     insertImgBlock = textInserter('\nimg {\n   \n}\n', 10),
