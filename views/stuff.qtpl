@@ -165,6 +165,7 @@ It outputs a poorly formatted JSON, but it works and is valid.
 		<li><a href="/help/en/mycomarkup">Mycomarkup</a></li>
 		<li>Interface
 			<ul>
+				<li><a href="/help/en/prevnext">Previous/next</a></li>
 				<li><a href="/help/en/top_bar">Top bar</a></li>
 				<li><a href="/help/en/sibling_hyphae_section">Sibling hyphae</a></li>
 				<li>...</li>

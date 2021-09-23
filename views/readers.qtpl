@@ -74,6 +74,8 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
+
+If you rename .prevnext, change the docs too.
 {% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
