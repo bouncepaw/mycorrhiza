@@ -398,7 +398,15 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.H
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>Please note that viewing attachments of hyphae is not supported in history for now.</p>
+		<p>Please note that viewing attachments of hyphae is not supported in history for now. <a href="/rev-text/`)
+//line views/readers.qtpl:128
+	qw422016.E().S(revHash)
+//line views/readers.qtpl:128
+	qw422016.N().S(`/`)
+//line views/readers.qtpl:128
+	qw422016.E().S(h.Name)
+//line views/readers.qtpl:128
+	qw422016.N().S(`">Get Mycomarkup source of this revision</a></p>
 		`)
 //line views/readers.qtpl:129
 	qw422016.N().S(NaviTitleHTML(h))

@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -29,6 +30,7 @@ func initReaders(r *mux.Router) {
 	r.PathPrefix("/text/").HandlerFunc(handlerText)
 	r.PathPrefix("/binary/").HandlerFunc(handlerBinary)
 	r.PathPrefix("/rev/").HandlerFunc(handlerRevision)
+	r.PathPrefix("/rev-text/").HandlerFunc(handlerRevisionText)
 	r.PathPrefix("/primitive-diff/").HandlerFunc(handlerPrimitiveDiff)
 	r.PathPrefix("/attachment/").HandlerFunc(handlerAttachment)
 }
@@ -64,7 +66,32 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 			u))
 }
 
-// handlerRevision displays a specific revision of text part a page
+// handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
+//
+// /rev-text/<revHash>/<hyphaName>
+func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	var (
+		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
+		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
+		revHash           = shorterUrl[:firstSlashIndex]
+		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		h                 = hyphae.ByName(hyphaName)
+		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
+	)
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+		_, _ = io.WriteString(w, "Error: "+err.Error())
+		return
+	}
+	log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, h.TextPartPath(), revHash)
+	w.WriteHeader(http.StatusOK)
+	_, _ = io.WriteString(w, textContents)
+}
+
+// handlerRevision displays a specific revision of the text part the hypha
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (

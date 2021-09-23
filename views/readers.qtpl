@@ -125,7 +125,7 @@ If you rename .prevnext, change the docs too.
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>Please note that viewing attachments of hyphae is not supported in history for now.</p>
+		<p>Please note that viewing attachments of hyphae is not supported in history for now. <a href="/rev-text/{%s revHash %}/{%s h.Name %}">Get Mycomarkup source of this revision</a></p>
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
 	</article>
