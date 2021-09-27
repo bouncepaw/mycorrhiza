@@ -8,7 +8,6 @@ require (
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/m1/go-localize v0.0.0-20210411165534-07d5b914f3cd // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/valyala/quicktemplate v1.6.3
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
