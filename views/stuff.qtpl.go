@@ -664,72 +664,81 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer, lang string, lc *l18n.Local
 //line views/stuff.qtpl:169
 	qw422016.E().S(lang)
 //line views/stuff.qtpl:169
-	qw422016.N().S(`/top_bar">`)
+	qw422016.N().S(`/prevnext">`)
 //line views/stuff.qtpl:169
-	qw422016.E().S(lc.GetWithLocale(lang, "help.top_bar"))
+	qw422016.E().S(lc.GetWithLocale(lang, "help.prevnext"))
 //line views/stuff.qtpl:169
 	qw422016.N().S(`</a></li>
 				<li><a href="/help/`)
 //line views/stuff.qtpl:170
 	qw422016.E().S(lang)
 //line views/stuff.qtpl:170
+	qw422016.N().S(`/top_bar">`)
+//line views/stuff.qtpl:170
+	qw422016.E().S(lc.GetWithLocale(lang, "help.top_bar"))
+//line views/stuff.qtpl:170
+	qw422016.N().S(`</a></li>
+				<li><a href="/help/`)
+//line views/stuff.qtpl:171
+	qw422016.E().S(lang)
+//line views/stuff.qtpl:171
 	qw422016.N().S(`/sibling_hyphae_section">`)
-//line views/stuff.qtpl:170
+//line views/stuff.qtpl:171
 	qw422016.E().S(lc.GetWithLocale(lang, "help.sibling_hyphae"))
-//line views/stuff.qtpl:170
+//line views/stuff.qtpl:171
 	qw422016.N().S(`</a></li>
 				<li>...</li>
 			</ul>
 		</li>
 		<li>`)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:175
 	qw422016.E().S(lc.GetWithLocale(lang, "help.special_pages"))
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:175
 	qw422016.N().S(`
 			<ul>
 				<li><a href="/help/`)
-//line views/stuff.qtpl:176
+//line views/stuff.qtpl:177
 	qw422016.E().S(lang)
-//line views/stuff.qtpl:176
+//line views/stuff.qtpl:177
 	qw422016.N().S(`/recent_changes">`)
-//line views/stuff.qtpl:176
+//line views/stuff.qtpl:177
 	qw422016.E().S(lc.GetWithLocale(lang, "help.recent_changes"))
-//line views/stuff.qtpl:176
+//line views/stuff.qtpl:177
 	qw422016.N().S(`</a></li>
 			</ul>
 		</li>
 		<li>`)
-//line views/stuff.qtpl:179
+//line views/stuff.qtpl:180
 	qw422016.E().S(lc.GetWithLocale(lang, "help.configuration"))
-//line views/stuff.qtpl:179
+//line views/stuff.qtpl:180
 	qw422016.N().S(`
 			<ul>
 				<li><a href="/help/`)
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:182
 	qw422016.E().S(lang)
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:182
 	qw422016.N().S(`/lock">`)
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:182
 	qw422016.E().S(lc.GetWithLocale(lang, "help.lock"))
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:182
 	qw422016.N().S(`</a></li>
 				<li><a href="/help/`)
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:183
 	qw422016.E().S(lang)
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:183
 	qw422016.N().S(`/whitelist">`)
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:183
 	qw422016.E().S(lc.GetWithLocale(lang, "help.whitelist"))
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:183
 	qw422016.N().S(`</a></li>
 				<li><a href="/help/`)
-//line views/stuff.qtpl:183
+//line views/stuff.qtpl:184
 	qw422016.E().S(lang)
-//line views/stuff.qtpl:183
+//line views/stuff.qtpl:184
 	qw422016.N().S(`/telegram">`)
-//line views/stuff.qtpl:183
+//line views/stuff.qtpl:184
 	qw422016.E().S(lc.GetWithLocale(lang, "help.telegram"))
-//line views/stuff.qtpl:183
+//line views/stuff.qtpl:184
 	qw422016.N().S(`</a></li>
 				<li>...</li>
 			</ul>
@@ -737,91 +746,91 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer, lang string, lc *l18n.Local
 	</ul>
 </aside>
 `)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 }
 
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 func writehelpTopicsHTML(qq422016 qtio422016.Writer, lang string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	streamhelpTopicsHTML(qw422016, lang, lc)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 }
 
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 func helpTopicsHTML(lang string, lc *l18n.Localizer) string {
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	writehelpTopicsHTML(qb422016, lang, lc)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 	return qs422016
-//line views/stuff.qtpl:189
+//line views/stuff.qtpl:190
 }
 
-//line views/stuff.qtpl:191
+//line views/stuff.qtpl:192
 func streamhelpTopicBadgeHTML(qw422016 *qt422016.Writer, lang, topic string) {
-//line views/stuff.qtpl:191
+//line views/stuff.qtpl:192
 	qw422016.N().S(`
 <a class="help-topic-badge" href="/help/`)
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:193
 	qw422016.E().S(lang)
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:193
 	qw422016.N().S(`/`)
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:193
 	qw422016.E().S(topic)
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:193
 	qw422016.N().S(`">?</a>
 `)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 func writehelpTopicBadgeHTML(qq422016 qtio422016.Writer, lang, topic string) {
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	streamhelpTopicBadgeHTML(qw422016, lang, topic)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 func helpTopicBadgeHTML(lang, topic string) string {
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	writehelpTopicBadgeHTML(qb422016, lang, topic)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 	return qs422016
-//line views/stuff.qtpl:193
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:195
+//line views/stuff.qtpl:196
 func StreamUserListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:195
+//line views/stuff.qtpl:196
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width user-list">
 	<h1>`)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:199
 	qw422016.E().S(lc.Get("ui.users_heading"))
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:199
 	qw422016.N().S(`</h1>
 `)
-//line views/stuff.qtpl:200
+//line views/stuff.qtpl:201
 	var (
 		admins     = make([]string, 0)
 		moderators = make([]string, 0)
@@ -838,385 +847,385 @@ func StreamUserListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		}
 	}
 
-//line views/stuff.qtpl:215
+//line views/stuff.qtpl:216
 	qw422016.N().S(`
 	<section>
 		<h2>`)
-//line views/stuff.qtpl:217
+//line views/stuff.qtpl:218
 	qw422016.E().S(lc.Get("ui.users_admins"))
-//line views/stuff.qtpl:217
+//line views/stuff.qtpl:218
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/stuff.qtpl:218
+//line views/stuff.qtpl:219
 	for _, name := range admins {
-//line views/stuff.qtpl:218
+//line views/stuff.qtpl:219
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.E().S(cfg.UserHypha)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.N().S(`/`)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.E().S(name)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.N().S(`">`)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.E().S(name)
-//line views/stuff.qtpl:219
+//line views/stuff.qtpl:220
 		qw422016.N().S(`</a></li>
 		`)
-//line views/stuff.qtpl:220
+//line views/stuff.qtpl:221
 	}
-//line views/stuff.qtpl:220
+//line views/stuff.qtpl:221
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line views/stuff.qtpl:223
+//line views/stuff.qtpl:224
 	qw422016.E().S(lc.Get("ui.users_moderators"))
-//line views/stuff.qtpl:223
+//line views/stuff.qtpl:224
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/stuff.qtpl:224
+//line views/stuff.qtpl:225
 	for _, name := range moderators {
-//line views/stuff.qtpl:224
+//line views/stuff.qtpl:225
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.E().S(cfg.UserHypha)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.N().S(`/`)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.E().S(name)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.N().S(`">`)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.E().S(name)
-//line views/stuff.qtpl:225
+//line views/stuff.qtpl:226
 		qw422016.N().S(`</a></li>
 		`)
-//line views/stuff.qtpl:226
+//line views/stuff.qtpl:227
 	}
-//line views/stuff.qtpl:226
+//line views/stuff.qtpl:227
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line views/stuff.qtpl:229
+//line views/stuff.qtpl:230
 	qw422016.E().S(lc.Get("ui.users_editors"))
-//line views/stuff.qtpl:229
+//line views/stuff.qtpl:230
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/stuff.qtpl:230
+//line views/stuff.qtpl:231
 	for _, name := range editors {
-//line views/stuff.qtpl:230
+//line views/stuff.qtpl:231
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.E().S(cfg.UserHypha)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.N().S(`/`)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.E().S(name)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.N().S(`">`)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.E().S(name)
-//line views/stuff.qtpl:231
+//line views/stuff.qtpl:232
 		qw422016.N().S(`</a></li>
 		`)
-//line views/stuff.qtpl:232
+//line views/stuff.qtpl:233
 	}
-//line views/stuff.qtpl:232
+//line views/stuff.qtpl:233
 	qw422016.N().S(`</ol>
 	</section>
 </main>
 </div>
 `)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 }
 
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 func WriteUserListHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	StreamUserListHTML(qw422016, lc)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 }
 
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 func UserListHTML(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	WriteUserListHTML(qb422016, lc)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 	return qs422016
-//line views/stuff.qtpl:236
+//line views/stuff.qtpl:237
 }
 
-//line views/stuff.qtpl:238
+//line views/stuff.qtpl:239
 func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:238
+//line views/stuff.qtpl:239
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<h1>`)
-//line views/stuff.qtpl:241
+//line views/stuff.qtpl:242
 	qw422016.E().S(lc.Get("ui.list_heading"))
-//line views/stuff.qtpl:241
+//line views/stuff.qtpl:242
 	qw422016.N().S(`</h1>
 	<p>`)
-//line views/stuff.qtpl:242
+//line views/stuff.qtpl:243
 	qw422016.E().S(lc.GetPlural("ui.list_desc", hyphae.Count()))
-//line views/stuff.qtpl:242
+//line views/stuff.qtpl:243
 	qw422016.N().S(`</p>
 	<ul class="hypha-list">
 		`)
-//line views/stuff.qtpl:244
+//line views/stuff.qtpl:245
 	for h := range hyphae.YieldExistingHyphae() {
-//line views/stuff.qtpl:244
+//line views/stuff.qtpl:245
 		qw422016.N().S(`
 		<li class="hypha-list__entry">
 			<a class="hypha-list__link" href="/hypha/`)
-//line views/stuff.qtpl:246
+//line views/stuff.qtpl:247
 		qw422016.E().S(h.Name)
-//line views/stuff.qtpl:246
+//line views/stuff.qtpl:247
 		qw422016.N().S(`">`)
-//line views/stuff.qtpl:246
+//line views/stuff.qtpl:247
 		qw422016.E().S(util.BeautifulName(h.Name))
-//line views/stuff.qtpl:246
+//line views/stuff.qtpl:247
 		qw422016.N().S(`</a>
 			`)
-//line views/stuff.qtpl:247
+//line views/stuff.qtpl:248
 		if h.BinaryPath != "" {
-//line views/stuff.qtpl:247
+//line views/stuff.qtpl:248
 			qw422016.N().S(`
 			<span class="hypha-list__amnt-type">`)
-//line views/stuff.qtpl:248
+//line views/stuff.qtpl:249
 			qw422016.E().S(filepath.Ext(h.BinaryPath)[1:])
-//line views/stuff.qtpl:248
+//line views/stuff.qtpl:249
 			qw422016.N().S(`</span>
 			`)
-//line views/stuff.qtpl:249
+//line views/stuff.qtpl:250
 		}
-//line views/stuff.qtpl:249
+//line views/stuff.qtpl:250
 		qw422016.N().S(`
 		</li>
 		`)
-//line views/stuff.qtpl:251
+//line views/stuff.qtpl:252
 	}
-//line views/stuff.qtpl:251
+//line views/stuff.qtpl:252
 	qw422016.N().S(`
 	</ul>
 </main>
 </div>
 `)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 }
 
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 func WriteHyphaListHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	StreamHyphaListHTML(qw422016, lc)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 }
 
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 func HyphaListHTML(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	WriteHyphaListHTML(qb422016, lc)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 	return qs422016
-//line views/stuff.qtpl:255
+//line views/stuff.qtpl:256
 }
 
-//line views/stuff.qtpl:257
+//line views/stuff.qtpl:258
 func StreamAboutHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:257
+//line views/stuff.qtpl:258
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<section>
 		<h1>`)
-//line views/stuff.qtpl:261
+//line views/stuff.qtpl:262
 	qw422016.E().S(lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName}))
-//line views/stuff.qtpl:261
+//line views/stuff.qtpl:262
 	qw422016.N().S(`</h1>
 		<ul>
 			<li><b>`)
-//line views/stuff.qtpl:263
+//line views/stuff.qtpl:264
 	qw422016.N().S(lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}))
-//line views/stuff.qtpl:263
+//line views/stuff.qtpl:264
 	qw422016.N().S(`</b> 1.5.0</li>
 `)
-//line views/stuff.qtpl:264
+//line views/stuff.qtpl:265
 	if cfg.UseAuth {
-//line views/stuff.qtpl:264
+//line views/stuff.qtpl:265
 		qw422016.N().S(`			<li><b>`)
-//line views/stuff.qtpl:265
+//line views/stuff.qtpl:266
 		qw422016.E().S(lc.Get("ui.about_usercount"))
-//line views/stuff.qtpl:265
+//line views/stuff.qtpl:266
 		qw422016.N().S(`</b> `)
-//line views/stuff.qtpl:265
+//line views/stuff.qtpl:266
 		qw422016.N().DUL(user.Count())
-//line views/stuff.qtpl:265
+//line views/stuff.qtpl:266
 		qw422016.N().S(`</li>
 			<li><b>`)
-//line views/stuff.qtpl:266
+//line views/stuff.qtpl:267
 		qw422016.E().S(lc.Get("ui.about_homepage"))
-//line views/stuff.qtpl:266
+//line views/stuff.qtpl:267
 		qw422016.N().S(`</b> <a href="/">`)
-//line views/stuff.qtpl:266
+//line views/stuff.qtpl:267
 		qw422016.E().S(cfg.HomeHypha)
-//line views/stuff.qtpl:266
+//line views/stuff.qtpl:267
 		qw422016.N().S(`</a></li>
 			<li><b>`)
-//line views/stuff.qtpl:267
+//line views/stuff.qtpl:268
 		qw422016.E().S(lc.Get("ui.about_admins"))
-//line views/stuff.qtpl:267
+//line views/stuff.qtpl:268
 		qw422016.N().S(`</b>`)
-//line views/stuff.qtpl:267
+//line views/stuff.qtpl:268
 		for i, username := range user.ListUsersWithGroup("admin") {
-//line views/stuff.qtpl:268
+//line views/stuff.qtpl:269
 			if i > 0 {
-//line views/stuff.qtpl:268
+//line views/stuff.qtpl:269
 				qw422016.N().S(`<span aria-hidden="true">, </span>
 `)
-//line views/stuff.qtpl:269
+//line views/stuff.qtpl:270
 			}
-//line views/stuff.qtpl:269
+//line views/stuff.qtpl:270
 			qw422016.N().S(`				<a href="/hypha/`)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.E().S(cfg.UserHypha)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.N().S(`/`)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.E().S(username)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.N().S(`">`)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.E().S(username)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 			qw422016.N().S(`</a>`)
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 		}
-//line views/stuff.qtpl:270
+//line views/stuff.qtpl:271
 		qw422016.N().S(`</li>
 `)
-//line views/stuff.qtpl:271
+//line views/stuff.qtpl:272
 	} else {
-//line views/stuff.qtpl:271
+//line views/stuff.qtpl:272
 		qw422016.N().S(`			<li>`)
-//line views/stuff.qtpl:272
+//line views/stuff.qtpl:273
 		qw422016.E().S(lc.Get("ui.about_noauth"))
-//line views/stuff.qtpl:272
+//line views/stuff.qtpl:273
 		qw422016.N().S(`</li>
 `)
-//line views/stuff.qtpl:273
+//line views/stuff.qtpl:274
 	}
-//line views/stuff.qtpl:273
+//line views/stuff.qtpl:274
 	qw422016.N().S(`		</ul>
 		<p>`)
-//line views/stuff.qtpl:275
+//line views/stuff.qtpl:276
 	qw422016.N().S(lc.Get("ui.about_hyphae", &l18n.Replacements{"link": "<a href=\"/list\">/list</a>"}))
-//line views/stuff.qtpl:275
+//line views/stuff.qtpl:276
 	qw422016.N().S(`</p>
 	</section>
 </main>
 </div>
 `)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 }
 
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 func WriteAboutHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	StreamAboutHTML(qw422016, lc)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 }
 
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 func AboutHTML(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	WriteAboutHTML(qb422016, lc)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 	return qs422016
-//line views/stuff.qtpl:279
+//line views/stuff.qtpl:280
 }
 
-//line views/stuff.qtpl:281
+//line views/stuff.qtpl:282
 func StreamCommonScripts(qw422016 *qt422016.Writer) {
-//line views/stuff.qtpl:281
+//line views/stuff.qtpl:282
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:282
+//line views/stuff.qtpl:283
 	for _, scriptPath := range cfg.CommonScripts {
-//line views/stuff.qtpl:282
+//line views/stuff.qtpl:283
 		qw422016.N().S(`
 <script src="`)
-//line views/stuff.qtpl:283
+//line views/stuff.qtpl:284
 		qw422016.E().S(scriptPath)
-//line views/stuff.qtpl:283
+//line views/stuff.qtpl:284
 		qw422016.N().S(`"></script>
 `)
-//line views/stuff.qtpl:284
+//line views/stuff.qtpl:285
 	}
-//line views/stuff.qtpl:284
+//line views/stuff.qtpl:285
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 }
 
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 func WriteCommonScripts(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	StreamCommonScripts(qw422016)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 }
 
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 func CommonScripts() string {
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	WriteCommonScripts(qb422016)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 	return qs422016
-//line views/stuff.qtpl:285
+//line views/stuff.qtpl:286
 }

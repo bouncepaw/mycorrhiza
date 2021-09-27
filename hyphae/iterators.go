@@ -2,8 +2,8 @@
 package hyphae
 
 import (
-	"strings"
 	"sort"
+	"strings"
 )
 
 // YieldExistingHyphae iterates over all hyphae and yields all existing ones.
@@ -48,14 +48,22 @@ func PathographicSort(src chan string) <-chan string {
 			// Classic lexicographical sort with a twist
 			c := 0
 			for {
-				if c == len(raw[i]) { return true }
-				if c == len(raw[j]) { return false }
+				if c == len(raw[i]) {
+					return true
+				}
+				if c == len(raw[j]) {
+					return false
+				}
 				if raw[i][c] == raw[j][c] {
 					c++
 				} else {
 					// The twist: subhyphae-awareness is about pushing slash upwards
-					if raw[i][c] == slash { return true }
-					if raw[j][c] == slash { return false }
+					if raw[i][c] == slash {
+						return true
+					}
+					if raw[j][c] == slash {
+						return false
+					}
 					return raw[i][c] < raw[j][c]
 				}
 			}

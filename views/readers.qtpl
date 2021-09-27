@@ -78,6 +78,8 @@
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
+
+If you rename .prevnext, change the docs too.
 {% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
@@ -127,7 +129,7 @@ If `contents` == "", a helpful message is shown instead.
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>{%s lc.Get("ui.revision_warning") %}</p>
+		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.Name %}">{%s lc.Get("ui.revision_link") %}</a></p>
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
 	</article>

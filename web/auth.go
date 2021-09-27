@@ -1,4 +1,3 @@
-// TODO: l18n
 package web
 
 import (

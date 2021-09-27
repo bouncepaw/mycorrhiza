@@ -67,6 +67,7 @@
 	
 	"revision_title": "{{.name}} at {{.rev}}",
 	"revision_warning": "Please note that viewing attachments of hyphae is not supported in history for now.",
+	"revision_link": "Get Mycomarkup source of this revision",
 	"revision_no_text": "This hypha had no text at this revision.",
 
 	"about_title": "About {{.name}}",

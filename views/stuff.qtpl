@@ -166,6 +166,7 @@ It outputs a poorly formatted JSON, but it works and is valid.
 		<li><a href="/help/{%s lang %}/mycomarkup">{%s lc.GetWithLocale(lang, "help.mycomarkup") %}</a></li>
 		<li>{%s lc.GetWithLocale(lang, "help.interface") %}
 			<ul>
+				<li><a href="/help/{%s lang %}/prevnext">{%s lc.GetWithLocale(lang, "help.prevnext") %}</a></li>
 				<li><a href="/help/{%s lang %}/top_bar">{%s lc.GetWithLocale(lang, "help.top_bar") %}</a></li>
 				<li><a href="/help/{%s lang %}/sibling_hyphae_section">{%s lc.GetWithLocale(lang, "help.sibling_hyphae") %}</a></li>
 				<li>...</li>

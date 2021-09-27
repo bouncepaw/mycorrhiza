@@ -1,4 +1,3 @@
-// TODO: l18n
 {% import "fmt" %}
 {% import "net/http" %}
 {% import "time" %}
