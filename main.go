@@ -1,5 +1,6 @@
 //go:generate qtc -dir=views
 //go:generate qtc -dir=tree
+//go:generate go-localize -input l18n_src -output l18n
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 package main
 

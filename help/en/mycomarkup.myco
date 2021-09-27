@@ -38,9 +38,9 @@ Second line of paragraph 2
 
 You can apply styling to paragraph content.
 * {```
-You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
+You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++**//combine//**++ them!
 ```}
-* You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++//combine//++ them!
+* You can use //italic//, **bold**, `monospace`, ++highlighted++, ^^lifted^^, __underscored__, ,,lowered,, or ~~striked-through~~ text. You can also ++**//combine//**++ them!
 
 Use the backslash to prevent the styling.
 * {```
@@ -111,7 +111,7 @@ You don't have to write the full hypha name in every link, you can use **relativ
 
 Consider you are editing a hypha called //fruit/apple//.
 
-To link //fruit/pear// (a sister hypha) you can write `[\[../pear]]`. To link //fruit/apple/red// (a subhypha) you can write `[\[./red]]`. You can do the same in rocket links, image galleries, transclusion and everywhere else you write hypha names.
+To link //fruit/pear// (a sibling hypha) you can write `[\[../pear]]`. To link //fruit/apple/red// (a subhypha) you can write `[\[./red]]`. You can do the same in rocket links, image galleries, transclusion and everywhere else you write hypha names.
 
 There is also a way to link the wiki's non-hypha pages. For example, to link the Recent changes page, you can write `[\[/recent-changes]]`. You should use that rather than write the site's full URL because it may change in the future.
 
@@ -132,7 +132,7 @@ There are six levels of **headings**. They consist of some hash signs followed b
 ###### level 6
 ```
 
-There is an invisible link denoted by the § sign near every heading. You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
+There is an invisible link denoted by the § sign near every heading (right after the heading text). You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
 
 ## Codeblock
 Use **codeblocks** to show code or any other preformatted text. Codeblocks start with triple backticks on column 1 and end similarly. You can write any text after the backticks, it is ignored. Put the preformatted text between them.

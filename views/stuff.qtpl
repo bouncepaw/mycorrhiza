@@ -3,10 +3,11 @@
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
-{% func BaseHTML(title, body string, u *user.User, headElements ...string) %}
+{% func BaseHTML(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) %}
 <!doctype html>
-<html>
+<html lang="{%s lc.Locale %}">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +28,7 @@
 					</li>
 					<li class="top-bar__section top-bar__section_search">
 						<form class="top-bar__search" method="GET" action="/title-search">
-							<input type="text" name="q" placeholder="Search by title" class="top-bar__search-bar">
+							<input type="text" name="q" placeholder="{%s lc.Get("ui.title_search") %}" class="top-bar__search-bar">
 						</form>
 					</li>
 					<li class="top-bar__section top-bar__section_auth">
@@ -35,19 +36,19 @@
 						<ul class="top-bar__auth auth-links">
 							<li class="auth-links__box auth-links__user-box">
 								{% if u.Group == "anon" %}
-								<a href="/login" class="auth-links__link auth-links__login-link">Login</a>
+								<a href="/login" class="auth-links__link auth-links__login-link">{%s lc.Get("ui.login") %}</a>
 								{% else %}
 								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__link auth-links__user-link">{%s util.BeautifulName(u.Name) %}</a>
 								{% endif %}
 							</li>
 							{% if cfg.AllowRegistration && u.Group == "anon" %}
 							<li class="auth-links__box auth-links__register-box">
-								<a href="/register" class="auth-links__link auth-links__register-link">Register</a>
+								<a href="/register" class="auth-links__link auth-links__register-link">{%s lc.Get("ui.register") %}</a>
 							</li>
 							{% endif %}
 							{% if u.Group == "admin" %}
 							<li class="auth-links__box auth-links__admin-box">
-								<a href="/admin" class="auth-links__link auth-links__admin-link">Admin panel</a>
+								<a href="/admin" class="auth-links__link auth-links__admin-link">{%s lc.Get("ui.admin_panel") %}</a>
 							</li>
 							{% endif %}
 						</ul>
@@ -73,7 +74,7 @@
 			<div class="dialog" tabindex="0">
 				<div class="dialog__header">
 					<h1 class="dialog__title"></h1>
-					<button class="dialog__close-button" aria-label="Close this dialog"></button>
+					<button class="dialog__close-button" aria-label="{%s lc.Get("ui.close_dialog") %}"></button>
 				</div>
 
 				<div class="dialog__content"></div>
@@ -85,11 +86,11 @@
 </html>
 {% endfunc %}
 
-{% func TitleSearchHTML(query string, generator func(string) <-chan string) %}
+{% func TitleSearchHTML(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width title-search">
-	<h1>Search results for ‘{%s query %}’</h1>
-	<p>Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.</p>
+	<h1>{%s lc.Get("ui.search_results_query", &l18n.Replacements{"query": query})%}</h1>
+	<p>{%s lc.Get("ui.search_results_desc")%}</p>
 	<ul class="title-search__results">
 	{% for hyphaName := range generator(query) %}
 		<li class="title-search__entry">
@@ -120,11 +121,11 @@ It outputs a poorly formatted JSON, but it works and is valid.
 }
 {% endfunc %}
 
-{% func BacklinksHTML(query string, generator func(string) <-chan string) %}
+{% func BacklinksHTML(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">
-	<h1>Backlinks to ‘{%s query %}’</h1>
-	<p>Hyphae which have a link to the selected hypha are listed below.</p>
+	<h1>{%s lc.Get("ui.backlinks_query", &l18n.Replacements{"query": query})%}</h1>
+	<p>{%s lc.Get("ui.backlinks_desc")%}</p>
 	<ul class="backlinks__list">
 	{% for hyphaName := range generator(query) %}
 		<li class="backlinks__entry">
@@ -135,52 +136,52 @@ It outputs a poorly formatted JSON, but it works and is valid.
 </div>
 {% endfunc %}
 
-{% func HelpHTML(content string) %}
+{% func HelpHTML(content, lang string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width help">
 	<article>
 	{%s= content %}
 	</article>
 </main>
-{%s= helpTopicsHTML() %}
+{%s= helpTopicsHTML(lang, lc) %}
 </div>
 {% endfunc %}
 
-{% func HelpEmptyErrorHTML() %}
-<h1>This entry does not exist!</h1>
-<p>Try finding a different entry that would help you.</p>
-<p>If you want to write this entry by yourself, consider <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">contributing</a> to Mycorrhiza Wiki directly.</p>
+{% func HelpEmptyErrorHTML(lc *l18n.Localizer) %}
+<h1>{%s lc.Get("help.empty_error_title") %}</h1>
+<p>{%s lc.Get("help.empty_error_line_1") %}</p>
+<p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
 {% endfunc %}
 
-{% func helpTopicsHTML() %}
+{% func helpTopicsHTML(lang string, lc *l18n.Localizer) %}
 <aside class="help-topics layout-card">
-	<h2 class="layout-card__title">Help topics</h2>
+	<h2 class="layout-card__title">{%s lc.GetWithLocale(lang, "help.topics") %}</h2>
 	<ul class="help-topics__list">
-		<li><a href="/help/en">Main</a></li>
-		<li><a href="/help/en/hypha">Hypha</a>
+		<li><a href="/help/{%s lang %}">{%s lc.GetWithLocale(lang, "help.main") %}</a></li>
+		<li><a href="/help/{%s lang %}/hypha">{%s lc.GetWithLocale(lang, "help.hypha") %}</a>
 			<ul>
-				<li><a href="/help/en/attachment">Attachment</a></li>
+				<li><a href="/help/{%s lang %}/attachment">{%s lc.GetWithLocale(lang, "help.attachment") %}</a></li>
 			</ul>
 		</li>
-		<li><a href="/help/en/mycomarkup">Mycomarkup</a></li>
-		<li>Interface
+		<li><a href="/help/{%s lang %}/mycomarkup">{%s lc.GetWithLocale(lang, "help.mycomarkup") %}</a></li>
+		<li>{%s lc.GetWithLocale(lang, "help.interface") %}
 			<ul>
-				<li><a href="/help/en/prevnext">Previous/next</a></li>
-				<li><a href="/help/en/top_bar">Top bar</a></li>
-				<li><a href="/help/en/sibling_hyphae_section">Sibling hyphae</a></li>
+				<li><a href="/help/{%s lang %}/prevnext">{%s lc.GetWithLocale(lang, "help.prevnext") %}</a></li>
+				<li><a href="/help/{%s lang %}/top_bar">{%s lc.GetWithLocale(lang, "help.top_bar") %}</a></li>
+				<li><a href="/help/{%s lang %}/sibling_hyphae_section">{%s lc.GetWithLocale(lang, "help.sibling_hyphae") %}</a></li>
 				<li>...</li>
 			</ul>
 		</li>
-		<li>Special pages
+		<li>{%s lc.GetWithLocale(lang, "help.special_pages") %}
 			<ul>
-				<li><a href="/help/en/recent_changes">Recent changes</a></li>
+				<li><a href="/help/{%s lang %}/recent_changes">{%s lc.GetWithLocale(lang, "help.recent_changes") %}</a></li>
 			</ul>
 		</li>
-		<li>Configuration (for administrators)
+		<li>{%s lc.GetWithLocale(lang, "help.configuration") %}
 			<ul>
-				<li><a href="/help/en/lock">Lock</a></li>
-				<li><a href="/help/en/whitelist">Whitelist</a></li>
-				<li><a href="/help/en/telegram">Telegram authorization</a></li>
+				<li><a href="/help/{%s lang %}/lock">{%s lc.GetWithLocale(lang, "help.lock") %}</a></li>
+				<li><a href="/help/{%s lang %}/whitelist">{%s lc.GetWithLocale(lang, "help.whitelist") %}</a></li>
+				<li><a href="/help/{%s lang %}/telegram">{%s lc.GetWithLocale(lang, "help.telegram") %}</a></li>
 				<li>...</li>
 			</ul>
 		</li>
@@ -192,10 +193,10 @@ It outputs a poorly formatted JSON, but it works and is valid.
 <a class="help-topic-badge" href="/help/{%s lang %}/{%s topic %}">?</a>
 {% endfunc %}
 
-{% func UserListHTML() %}
+{% func UserListHTML(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width user-list">
-	<h1>List of users</h1>
+	<h1>{%s lc.Get("ui.users_heading") %}</h1>
 {% code
 var (
 	admins = make([]string, 0)
@@ -214,19 +215,19 @@ for u := range user.YieldUsers() {
 }
 %}
 	<section>
-		<h2>Admins</h2>
+		<h2>{%s lc.Get("ui.users_admins") %}</h2>
 		<ol>{% for _, name := range admins %}
 			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
 	<section>
-		<h2>Moderators</h2>
+		<h2>{%s lc.Get("ui.users_moderators") %}</h2>
 		<ol>{% for _, name := range moderators %}
 			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
 	<section>
-		<h2>Editors</h2>
+		<h2>{%s lc.Get("ui.users_editors") %}</h2>
 		<ol>{% for _, name := range editors %}
 			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
@@ -235,11 +236,11 @@ for u := range user.YieldUsers() {
 </div>
 {% endfunc %}
 
-{% func HyphaListHTML() %}
+{% func HyphaListHTML(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
-	<h1>List of hyphae</h1>
-	<p>This wiki has {%d hyphae.Count() %} hyphae.</p>
+	<h1>{%s lc.Get("ui.list_heading") %}</h1>
+	<p>{%s lc.GetPlural("ui.list_desc", hyphae.Count()) %}</p>
 	<ul class="hypha-list">
 		{% for h := range hyphae.YieldExistingHyphae() %}
 		<li class="hypha-list__entry">
@@ -254,25 +255,25 @@ for u := range user.YieldUsers() {
 </div>
 {% endfunc %}
 
-{% func AboutHTML() %}
+{% func AboutHTML(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<section>
-		<h1>About {%s cfg.WikiName %}</h1>
+		<h1>{%s lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName}) %}</h1>
 		<ul>
-			<li><b><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version:</b> 1.5.0</li>
+			<li><b>{%s= lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}) %}</b> 1.5.0</li>
 		{%- if cfg.UseAuth -%}
-			<li><b>User count:</b> {%dul user.Count() %}</li>
-			<li><b>Home page:</b> <a href="/">{%s cfg.HomeHypha %}</a></li>
-			<li><b>Administrators:</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
+			<li><b>{%s lc.Get("ui.about_usercount") %}</b> {%dul user.Count() %}</li>
+			<li><b>{%s lc.Get("ui.about_homepage") %}</b> <a href="/">{%s cfg.HomeHypha %}</a></li>
+			<li><b>{%s lc.Get("ui.about_admins") %}</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
 				{%- if i > 0 -%}<span aria-hidden="true">, </span>
 				{%- endif -%}
 				<a href="/hypha/{%s cfg.UserHypha %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
 		{%- else -%}
-			<li>This wiki does not use authorization</li>
+			<li>{%s lc.Get("ui.about_noauth") %}</li>
 		{%- endif -%}
 		</ul>
-		<p>See <a href="/list">/list</a> for information about hyphae on this wiki.</p>
+		<p>{%s= lc.Get("ui.about_hyphae", &l18n.Replacements{"link": "<a href=\"/list\">/list</a>"}) %}</p>
 	</section>
 </main>
 </div>

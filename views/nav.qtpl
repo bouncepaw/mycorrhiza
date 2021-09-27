@@ -1,6 +1,6 @@
 {% import "net/http" %}
-{% import "fmt" %}
 {% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 
@@ -12,44 +12,35 @@
 {% endif %}
 {% endfunc %}
 
-{% code
-func backlinksDisplay(h *hyphae.Hypha) string {
-  n := hyphae.BacklinksCount(h)
-	suffix := "s"
-	if n % 10 == 1 {
-		suffix = ""
-	}
-	return fmt.Sprintf("%d backlink%s", n, suffix)
-}
-%}
-
 {% func hyphaInfo(rq *http.Request, h *hyphae.Hypha) %}
 {% code
 	u := user.FromRequest(rq)
+	lc := l18n.FromRequest(rq)
+	backs := hyphae.BacklinksCount(h)
 %}
 <nav class="hypha-info">
 	<ul class="hypha-info__list">
-		{%= hyphaInfoEntry(h, u, "history", "View history") %}
-		{%= hyphaInfoEntry(h, u, "rename-ask", "Rename") %}
-		{%= hyphaInfoEntry(h, u, "delete-ask", "Delete") %}
-		{%= hyphaInfoEntry(h, u, "text", "View markup") %}
-		{%= hyphaInfoEntry(h, u, "attachment", "Manage attachment") %}
-		{%= hyphaInfoEntry(h, u, "backlinks", backlinksDisplay(h)) %}
+		{%= hyphaInfoEntry(h, u, "history", lc.Get("ui.history_link")) %}
+		{%= hyphaInfoEntry(h, u, "rename-ask", lc.Get("ui.rename_link")) %}
+		{%= hyphaInfoEntry(h, u, "delete-ask", lc.Get("ui.delete_link")) %}
+		{%= hyphaInfoEntry(h, u, "text", lc.Get("ui.text_link")) %}
+		{%= hyphaInfoEntry(h, u, "attachment", lc.Get("ui.attachment_link")) %}
+		{%= hyphaInfoEntry(h, u, "backlinks", lc.GetPlural("ui.backlinks_link", backs)) %}
 	</ul>
 </nav>
 {% endfunc %}
 
-{% func siblingHyphaeHTML(siblings string) %}
+{% func siblingHyphaeHTML(siblings string, lc *l18n.Localizer) %}
 <aside class="sibling-hyphae layout-card">
-	<h2 class="sibling-hyphae__title layout-card__title">Sibling hyphae</h2>
+	<h2 class="sibling-hyphae__title layout-card__title">{%s lc.Get("ui.sibling_hyphae") %}</h2>
 	{%s= siblings %}
 </aside>
 {% endfunc %}
 
-{% func SubhyphaeHTML(subhyphae string) %}
+{% func SubhyphaeHTML(subhyphae string, lc *l18n.Localizer) %}
 {% if strings.TrimSpace(subhyphae) != "" %}
 <section class="subhyphae">
-	<h2 class="subhyphae__title">Subhyphae</h2>
+	<h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>
 	<nav class="subhyphae__nav">
 		<ul class="subhyphae__list">
 		{%s= subhyphae %}

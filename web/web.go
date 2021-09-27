@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -23,7 +24,7 @@ import (
 var stylesheets = []string{"default.css", "custom.css"}
 
 // httpErr is used by many handlers to signal errors in a compact way.
-func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
+func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, title, errMsg string) {
 	log.Println(errMsg, "for", name)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(status)
@@ -32,10 +33,12 @@ func httpErr(w http.ResponseWriter, status int, name, title, errMsg string) {
 		views.BaseHTML(
 			title,
 			fmt.Sprintf(
-				`<main class="main-width"><p>%s. <a href="/hypha/%s">Go back to the hypha.<a></p></main>`,
+				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
 				errMsg,
 				name,
+				lc.Get("ui.error_go_back"),
 			),
+			lc, 
 			user.EmptyUser(),
 		),
 	)
@@ -54,9 +57,10 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
+	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.BaseHTML("User list", views.UserListHTML(), user.FromRequest(rq))))
+	w.Write([]byte(views.BaseHTML(lc.Get("ui.users_title"), views.UserListHTML(lc), lc, user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {

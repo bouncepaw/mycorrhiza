@@ -14,6 +14,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -37,17 +38,27 @@ func initStuff(r *mux.Router) {
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
+	lc := l18n.FromRequest(rq)
 	articlePath := strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
+	lang := lc.Locale
 	if articlePath == "" {
-		articlePath = "en"
+		articlePath = lc.Locale
+	} else {
+		var slashIndex = strings.Index(articlePath, "/")
+		if slashIndex == -1 {
+			lang = articlePath
+		} else {
+			lang = articlePath[:slashIndex]
+		}
 	}
 	content, err := help.Get(articlePath)
 	if err != nil && strings.HasPrefix(err.Error(), "open") {
 		w.WriteHeader(http.StatusNotFound)
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML("Entry not found",
-				views.HelpHTML(views.HelpEmptyErrorHTML()),
+			views.BaseHTML(lc.Get("help.entry_not_found"),
+				views.HelpHTML(views.HelpEmptyErrorHTML(lc), lang, lc),
+				lc,
 				user.FromRequest(rq)),
 		)
 		return
@@ -57,7 +68,8 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			views.BaseHTML(err.Error(),
-				views.HelpHTML(err.Error()),
+				views.HelpHTML(err.Error(), lang, lc),
+				lc,
 				user.FromRequest(rq)),
 		)
 		return
@@ -70,8 +82,9 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
-		views.BaseHTML("Help",
-			views.HelpHTML(result),
+		views.BaseHTML(lc.Get("help.title"),
+			views.HelpHTML(result, lang, lc),
+			lc,
 			user.FromRequest(rq)),
 	)
 }
@@ -79,15 +92,17 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	u := user.FromRequest(rq)
+	var lc = l18n.FromRequest(rq)
 	util.PrepareRq(rq)
-	util.HTTP200Page(w, views.BaseHTML("List of pages", views.HyphaListHTML(), u))
+	util.HTTP200Page(w, views.BaseHTML(lc.Get("ui.list_title"), views.HyphaListHTML(lc), lc, u))
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
-		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be an admin to reindex hyphae.")
+		var lc = l18n.FromRequest(rq)
+		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.no_rights"), lc.Get("ui.reindex_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -103,7 +118,8 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
-		httpErr(w, http.StatusForbidden, cfg.HomeHypha, "Not enough rights", "You must be a moderator to update header links.")
+		var lc = l18n.FromRequest(rq)
+		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.no_rights"), lc.Get("ui.header_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -119,8 +135,8 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 		amountOfHyphae  = hyphae.Count()
 	)
 	if amountOfHyphae == 0 {
-		httpErr(w, http.StatusNotFound, cfg.HomeHypha, "There are no hyphae",
-			"It is impossible to display a random hypha because the wiki does not contain any hyphae")
+		var lc = l18n.FromRequest(rq)
+		httpErr(w, lc, http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae"), lc.Get("ui.random_no_hyphae_tip"))
 		return
 	}
 	i := rand.Intn(amountOfHyphae)
@@ -137,7 +153,11 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, err := io.WriteString(w, views.BaseHTML("About "+cfg.WikiName, views.AboutHTML(), user.FromRequest(rq)))
+	var (
+		lc = l18n.FromRequest(rq)
+		title = lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName})
+	)
+	_, err := io.WriteString(w, views.BaseHTML(title, views.AboutHTML(lc), lc, user.FromRequest(rq)))
 	if err != nil {
 		log.Println(err)
 	}

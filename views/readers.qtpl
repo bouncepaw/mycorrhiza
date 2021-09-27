@@ -5,19 +5,23 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
 {% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
+{% code
+	lc := l18n.FromRequest(rq)
+%}
 <div class="layout">
 <main class="main-width attachment-tab">
-	<h1>Attachment of {%s= beautifulLink(h.Name) %}</h1>
+	<h1>{%s= lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.Name)}) %}</h1>
 	{% if h.BinaryPath == "" %}
-	<p class="explanation">This hypha has no attachment, you can upload it here. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
+	<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/{%s lc.Locale %}/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
 	{% else %}
-	<p class="explanation">You can manage the hypha's attachment on this page. <a href="/help/en/attachment" class="shy-link">What are attachments?</a></p>
+	<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/{%s lc.Locale %}/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
 	{% endif %}
 
 	<section class="amnt-grid">
@@ -28,17 +32,17 @@
 			fileinfo, err := os.Stat(h.BinaryPath) %}
 		{% if err == nil %}
 		<fieldset class="amnt-menu-block">
-			<legend class="modal__title modal__title_small">Stat</legend>
-			<p class="modal__confirmation-msg"><b>File size:</b> {%dl fileinfo.Size() %} bytes</p>
-			<p><b>MIME type:</b> {%s mime %}</p>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_stat") %}</legend>
+			<p class="modal__confirmation-msg"><b>{%s lc.Get("ui.attach_stat_size") %}</b> {%s lc.GetPlural64("ui.attach_size_value", fileinfo.Size())%}</p>
+			<p><b>{%s lc.Get("ui.attach_stat_mime") %}</b> {%s mime %}</p>
 		</fieldset>
 		{% endif %}
 
 		{% if strings.HasPrefix(mime, "image/") %}
 		<fieldset class="amnt-menu-block">
-			<legend class="modal__title modal__title_small">Include</legend>
-			<p class="modal__confirmation-msg">This attachment is an image. To include it n a hypha, use a syntax like this:</p>
-			<pre class="codebleck"><code>img { {%s h.Name %} }</code></pre>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_include") %}</legend>
+			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_include_tip") %}</p>
+			<pre class="codeblock"><code>img { {%s h.Name %} }</code></pre>
 		</fieldset>
 		{% endif %}
 	{% endif %}
@@ -48,12 +52,12 @@
 			method="post" enctype="multipart/form-data"
 			class="upload-binary modal amnt-menu-block">
 		<fieldset class="modal__fieldset">
-			<legend class="modal__title modal__title_small">Attach</legend>
-			<p class="modal__confirmation-msg">You can upload a new attachment. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.</p>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_new") %}</legend>
+			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_new_tip") %}</p>
 			<label for="upload-binary__input"></label>
 			<input type="file" id="upload-binary__input" name="binary">
 
-			<input type="submit" class="btn stick-to-bottom" value="Upload">
+			<button type="submit" class="btn stick-to-bottom" value="Upload">{%s lc.Get("ui.attach_upload")%}</button>
 		</fieldset>
 	</form>
 	{% endif %}
@@ -61,9 +65,9 @@
 	{% if h.BinaryPath != "" && u.CanProceed("unattach-confirm") %}
 	<form action="/unattach-confirm/{%s h.Name %}" method="post" class="modal amnt-menu-block">
 		<fieldset class="modal__fieldset">
-			<legend class="modal__title modal__title_small">Unattach</legend>
-			<p class="modal__confirmation-msg">Please note that you don't have to unattach before uploading a new attachment.</p>
-			<input type="submit" class="btn" value="Unattach">
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_remove") %}</legend>
+			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_remove_tip") %}</p>
+			<button type="submit" class="btn" value="Unattach">{%s lc.Get("ui.attach_remove_button") %}</button>
 		</fieldset>
 	</form>
 	{% endif %}
@@ -76,7 +80,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func HyphaHTML(rq *http.Request, h *hyphae.Hypha, contents string) %}
+{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
 	u := user.FromRequest(rq)
@@ -88,13 +92,13 @@ If you rename .prevnext, change the docs too.
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
 		{% if u.CanProceed("edit") %}<div class="btn edit-btn">
-			<a class="edit-btn__link" href="/edit/{%s h.Name %}">Edit text</a>
+			<a class="edit-btn__link" href="/edit/{%s h.Name %}">{%s lc.Get("ui.edit_link") %}</a>
 		</div>{% endif %}
 		{%s= NaviTitleHTML(h) %}
 		{% if h.Exists %}
 			{%s= contents %}
 		{% else %}
-		    {%= nonExistentHyphaNotice(h, u) %}
+		    {%= nonExistentHyphaNotice(h, u, lc) %}
 		{% endif %}
 	</article>
 	<section class="prevnext">
@@ -105,7 +109,7 @@ If you rename .prevnext, change the docs too.
 		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
 		{% endif %}
 	</section>
-{%= SubhyphaeHTML(subhyphae) %}
+{%= SubhyphaeHTML(subhyphae, lc) %}
 	<section id="hypha-bottom">
 		<div class="jump-btn">
     		<a class="jump-btn__link" href="#hypha">↑</a>
@@ -113,25 +117,25 @@ If you rename .prevnext, change the docs too.
    		{%= hyphaInfo(rq, h) %}
 	</section>
 </main>
-{%= siblingHyphaeHTML(siblings) %}
+{%= siblingHyphaeHTML(siblings, lc) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, h *hyphae.Hypha, contents, revHash string) %}
+{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents, revHash string) %}
 {% code
 	siblings, subhyphae, _, _ := tree.Tree(h.Name)
 %}
 <div class="layout">
 <main class="main-width">
 	<article>
-		<p>Please note that viewing attachments of hyphae is not supported in history for now. <a href="/rev-text/{%s revHash %}/{%s h.Name %}">Get Mycomarkup source of this revision</a></p>
+		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.Name %}">{%s lc.Get("ui.revision_link") %}</a></p>
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
 	</article>
-{%= SubhyphaeHTML(subhyphae) %}
+{%= SubhyphaeHTML(subhyphae, lc) %}
 </main>
-{%= siblingHyphaeHTML(siblings) %}
+{%= siblingHyphaeHTML(siblings, lc) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}

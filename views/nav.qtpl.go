@@ -8,10 +8,10 @@ package views
 import "net/http"
 
 //line views/nav.qtpl:2
-import "fmt"
+import "strings"
 
 //line views/nav.qtpl:3
-import "strings"
+import "github.com/bouncepaw/mycorrhiza/l18n"
 
 //line views/nav.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/user"
@@ -95,184 +95,184 @@ func hyphaInfoEntry(h *hyphae.Hypha, u *user.User, action, displayText string) s
 //line views/nav.qtpl:13
 }
 
-//line views/nav.qtpl:16
-func backlinksDisplay(h *hyphae.Hypha) string {
-	n := hyphae.BacklinksCount(h)
-	suffix := "s"
-	if n%10 == 1 {
-		suffix = ""
-	}
-	return fmt.Sprintf("%d backlink%s", n, suffix)
-}
-
-//line views/nav.qtpl:26
+//line views/nav.qtpl:15
 func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hypha) {
-//line views/nav.qtpl:26
+//line views/nav.qtpl:15
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:28
+//line views/nav.qtpl:17
 	u := user.FromRequest(rq)
+	lc := l18n.FromRequest(rq)
+	backs := hyphae.BacklinksCount(h)
 
-//line views/nav.qtpl:29
+//line views/nav.qtpl:20
 	qw422016.N().S(`
 <nav class="hypha-info">
 	<ul class="hypha-info__list">
 		`)
-//line views/nav.qtpl:32
-	streamhyphaInfoEntry(qw422016, h, u, "history", "View history")
-//line views/nav.qtpl:32
+//line views/nav.qtpl:23
+	streamhyphaInfoEntry(qw422016, h, u, "history", lc.Get("ui.history_link"))
+//line views/nav.qtpl:23
 	qw422016.N().S(`
 		`)
-//line views/nav.qtpl:33
-	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", "Rename")
-//line views/nav.qtpl:33
+//line views/nav.qtpl:24
+	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", lc.Get("ui.rename_link"))
+//line views/nav.qtpl:24
 	qw422016.N().S(`
 		`)
-//line views/nav.qtpl:34
-	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", "Delete")
-//line views/nav.qtpl:34
+//line views/nav.qtpl:25
+	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", lc.Get("ui.delete_link"))
+//line views/nav.qtpl:25
 	qw422016.N().S(`
 		`)
-//line views/nav.qtpl:35
-	streamhyphaInfoEntry(qw422016, h, u, "text", "View markup")
-//line views/nav.qtpl:35
+//line views/nav.qtpl:26
+	streamhyphaInfoEntry(qw422016, h, u, "text", lc.Get("ui.text_link"))
+//line views/nav.qtpl:26
 	qw422016.N().S(`
 		`)
-//line views/nav.qtpl:36
-	streamhyphaInfoEntry(qw422016, h, u, "attachment", "Manage attachment")
-//line views/nav.qtpl:36
+//line views/nav.qtpl:27
+	streamhyphaInfoEntry(qw422016, h, u, "attachment", lc.Get("ui.attachment_link"))
+//line views/nav.qtpl:27
 	qw422016.N().S(`
 		`)
-//line views/nav.qtpl:37
-	streamhyphaInfoEntry(qw422016, h, u, "backlinks", backlinksDisplay(h))
-//line views/nav.qtpl:37
+//line views/nav.qtpl:28
+	streamhyphaInfoEntry(qw422016, h, u, "backlinks", lc.GetPlural("ui.backlinks_link", backs))
+//line views/nav.qtpl:28
 	qw422016.N().S(`
 	</ul>
 </nav>
 `)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 }
 
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha) {
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	streamhyphaInfo(qw422016, rq, h)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 }
 
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 func hyphaInfo(rq *http.Request, h *hyphae.Hypha) string {
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	writehyphaInfo(qb422016, rq, h)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 	return qs422016
-//line views/nav.qtpl:40
+//line views/nav.qtpl:31
 }
 
-//line views/nav.qtpl:42
-func streamsiblingHyphaeHTML(qw422016 *qt422016.Writer, siblings string) {
-//line views/nav.qtpl:42
+//line views/nav.qtpl:33
+func streamsiblingHyphaeHTML(qw422016 *qt422016.Writer, siblings string, lc *l18n.Localizer) {
+//line views/nav.qtpl:33
 	qw422016.N().S(`
 <aside class="sibling-hyphae layout-card">
-	<h2 class="sibling-hyphae__title layout-card__title">Sibling hyphae</h2>
+	<h2 class="sibling-hyphae__title layout-card__title">`)
+//line views/nav.qtpl:35
+	qw422016.E().S(lc.Get("ui.sibling_hyphae"))
+//line views/nav.qtpl:35
+	qw422016.N().S(`</h2>
 	`)
-//line views/nav.qtpl:45
+//line views/nav.qtpl:36
 	qw422016.N().S(siblings)
-//line views/nav.qtpl:45
+//line views/nav.qtpl:36
 	qw422016.N().S(`
 </aside>
 `)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
 }
 
-//line views/nav.qtpl:47
-func writesiblingHyphaeHTML(qq422016 qtio422016.Writer, siblings string) {
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
+func writesiblingHyphaeHTML(qq422016 qtio422016.Writer, siblings string, lc *l18n.Localizer) {
+//line views/nav.qtpl:38
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:47
-	streamsiblingHyphaeHTML(qw422016, siblings)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
+	streamsiblingHyphaeHTML(qw422016, siblings, lc)
+//line views/nav.qtpl:38
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
 }
 
-//line views/nav.qtpl:47
-func siblingHyphaeHTML(siblings string) string {
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
+func siblingHyphaeHTML(siblings string, lc *l18n.Localizer) string {
+//line views/nav.qtpl:38
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:47
-	writesiblingHyphaeHTML(qb422016, siblings)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
+	writesiblingHyphaeHTML(qb422016, siblings, lc)
+//line views/nav.qtpl:38
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
 	return qs422016
-//line views/nav.qtpl:47
+//line views/nav.qtpl:38
 }
 
-//line views/nav.qtpl:49
-func StreamSubhyphaeHTML(qw422016 *qt422016.Writer, subhyphae string) {
-//line views/nav.qtpl:49
+//line views/nav.qtpl:40
+func StreamSubhyphaeHTML(qw422016 *qt422016.Writer, subhyphae string, lc *l18n.Localizer) {
+//line views/nav.qtpl:40
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:50
+//line views/nav.qtpl:41
 	if strings.TrimSpace(subhyphae) != "" {
-//line views/nav.qtpl:50
+//line views/nav.qtpl:41
 		qw422016.N().S(`
 <section class="subhyphae">
-	<h2 class="subhyphae__title">Subhyphae</h2>
+	<h2 class="subhyphae__title">`)
+//line views/nav.qtpl:43
+		qw422016.E().S(lc.Get("ui.subhyphae"))
+//line views/nav.qtpl:43
+		qw422016.N().S(`</h2>
 	<nav class="subhyphae__nav">
 		<ul class="subhyphae__list">
 		`)
-//line views/nav.qtpl:55
+//line views/nav.qtpl:46
 		qw422016.N().S(subhyphae)
-//line views/nav.qtpl:55
+//line views/nav.qtpl:46
 		qw422016.N().S(`
 		</ul>
 	</nav>
 </section>
 `)
-//line views/nav.qtpl:59
+//line views/nav.qtpl:50
 	}
-//line views/nav.qtpl:59
+//line views/nav.qtpl:50
 	qw422016.N().S(`
 `)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
 }
 
-//line views/nav.qtpl:60
-func WriteSubhyphaeHTML(qq422016 qtio422016.Writer, subhyphae string) {
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
+func WriteSubhyphaeHTML(qq422016 qtio422016.Writer, subhyphae string, lc *l18n.Localizer) {
+//line views/nav.qtpl:51
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/nav.qtpl:60
-	StreamSubhyphaeHTML(qw422016, subhyphae)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
+	StreamSubhyphaeHTML(qw422016, subhyphae, lc)
+//line views/nav.qtpl:51
 	qt422016.ReleaseWriter(qw422016)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
 }
 
-//line views/nav.qtpl:60
-func SubhyphaeHTML(subhyphae string) string {
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
+func SubhyphaeHTML(subhyphae string, lc *l18n.Localizer) string {
+//line views/nav.qtpl:51
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/nav.qtpl:60
-	WriteSubhyphaeHTML(qb422016, subhyphae)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
+	WriteSubhyphaeHTML(qb422016, subhyphae, lc)
+//line views/nav.qtpl:51
 	qs422016 := string(qb422016.B)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
 	return qs422016
-//line views/nav.qtpl:60
+//line views/nav.qtpl:51
 }

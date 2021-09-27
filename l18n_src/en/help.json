@@ -1,0 +1,25 @@
+{
+	"title": "Help",
+	"entry_not_found": "Entry not found",
+	"empty_error_title": "This entry does not exist!",
+	"empty_error_line_1": "Try finding a different entry that would help you.",
+	"empty_error_line_2a": "If you want to write this entry by yourself, consider",
+	"empty_error_link": "contributing",
+	"empty_error_line_2b": "to Mycorrhiza Wiki directly.",
+	
+	"topics": "Help topics",
+	"main": "Main",
+	"hypha": "Hypha",
+	"attachment": "Attachment",
+	"mycomarkup": "Mycomarkup",
+	"interface": "Interface",
+	"prevnext": "Previous/next",
+	"top_bar": "Top bar",
+	"sibling_hyphae": "Sibling hyphae",
+	"special_pages": "Special pages",
+	"recent_changes": "Recent changes",
+	"configuration": "Configuration (for administrators)",
+	"lock": "Lock",
+	"whitelist": "Whitelist",
+	"telegram": "Telegram authorization"
+}

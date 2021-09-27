@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
@@ -39,9 +40,11 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	}
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
+	var lc = l18n.FromRequest(rq)
 	util.HTTP200Page(w, views.BaseHTML(
-		fmt.Sprintf("History of %s", util.BeautifulName(hyphaName)),
-		views.HistoryHTML(rq, hyphaName, list),
+		fmt.Sprintf(lc.Get("ui.history_title"), util.BeautifulName(hyphaName)),
+		views.HistoryHTML(rq, hyphaName, list, lc),
+		lc,
 		user.FromRequest(rq)))
 }
 
@@ -49,7 +52,12 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	// Error ignored: filtered by regex
 	n, _ := strconv.Atoi(mux.Vars(rq)["count"])
-	util.HTTP200Page(w, views.BaseHTML(strconv.Itoa(n)+" recent changes", views.RecentChangesHTML(n), user.FromRequest(rq)))
+	var lc = l18n.FromRequest(rq)
+	util.HTTP200Page(w, views.BaseHTML(
+		lc.GetPlural("ui.recent_title", n),
+		views.RecentChangesHTML(n, lc), 
+		lc,
+		user.FromRequest(rq)))
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
