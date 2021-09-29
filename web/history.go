@@ -55,7 +55,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	var lc = l18n.FromRequest(rq)
 	util.HTTP200Page(w, views.BaseHTML(
 		lc.GetPlural("ui.recent_title", n),
-		views.RecentChangesHTML(n, lc), 
+		views.RecentChangesHTML(n, lc),
 		lc,
 		user.FromRequest(rq)))
 }

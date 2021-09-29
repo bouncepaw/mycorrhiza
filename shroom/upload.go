@@ -1,11 +1,11 @@
 package shroom
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
 	"log"
-	"bytes"
 	"mime/multipart"
 	"os"
 	"path/filepath"

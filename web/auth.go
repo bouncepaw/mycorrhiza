@@ -92,7 +92,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u   = user.FromRequest(rq)
 		can = u != nil
-		lc = l18n.FromRequest(rq)
+		lc  = l18n.FromRequest(rq)
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if can {

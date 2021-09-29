@@ -38,7 +38,7 @@ func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, title,
 				name,
 				lc.Get("ui.error_go_back"),
 			),
-			lc, 
+			lc,
 			user.EmptyUser(),
 		),
 	)

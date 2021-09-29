@@ -154,7 +154,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	var (
-		lc = l18n.FromRequest(rq)
+		lc    = l18n.FromRequest(rq)
 		title = lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName})
 	)
 	_, err := io.WriteString(w, views.BaseHTML(title, views.AboutHTML(lc), lc, user.FromRequest(rq)))
