@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"bytes"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -35,7 +36,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 	if err, errtitle := CanEdit(u, h); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
-	if len(data) == 0 {
+	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath == "" {
 		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
