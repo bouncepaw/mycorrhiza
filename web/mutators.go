@@ -174,7 +174,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 			return
 		}
 	} else {
-		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("ui.edit_new_hypha"))
+		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
 	}
 	util.HTTP200Page(
 		w,
