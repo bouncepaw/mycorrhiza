@@ -5,6 +5,7 @@ import "sync"
 var users sync.Map
 var tokens sync.Map
 
+// YieldUsers creates a channel which iterates existing users.
 func YieldUsers() chan *User {
 	ch := make(chan *User)
 	go func(ch chan *User) {
@@ -17,6 +18,7 @@ func YieldUsers() chan *User {
 	return ch
 }
 
+// ListUsersWithGroup returns a slice with users of desired group.
 func ListUsersWithGroup(group string) []string {
 	filtered := []string{}
 	for u := range YieldUsers() {
@@ -27,6 +29,7 @@ func ListUsersWithGroup(group string) []string {
 	return filtered
 }
 
+// Count returns total users count
 func Count() (i uint64) {
 	users.Range(func(k, v interface{}) bool {
 		i++
@@ -35,24 +38,29 @@ func Count() (i uint64) {
 	return i
 }
 
+// HasUsername checks whether the desired user exists
 func HasUsername(username string) bool {
 	_, has := users.Load(username)
 	return has
 }
 
+// CredentialsOK checks whether a correct user-password pair is provided
 func CredentialsOK(username, password string) bool {
-	return UserByName(username).isCorrectPassword(password)
+	return ByName(username).isCorrectPassword(password)
 }
 
-func UserByToken(token string) *User {
+// ByToken finds a user by provided session token
+func ByToken(token string) *User {
+	// TODO: Needs more session data -- chekoopa
 	if usernameUntyped, ok := tokens.Load(token); ok {
 		username := usernameUntyped.(string)
-		return UserByName(username)
+		return ByName(username)
 	}
 	return EmptyUser()
 }
 
-func UserByName(username string) *User {
+// ByName finds a user by one's username
+func ByName(username string) *User {
 	if userUntyped, ok := users.Load(username); ok {
 		user := userUntyped.(*User)
 		return user
@@ -60,6 +68,7 @@ func UserByName(username string) *User {
 	return EmptyUser()
 }
 
+// DeleteUser removes a user by one's name and saves user database.
 func DeleteUser(name string) error {
 	user, loaded := users.LoadAndDelete(name)
 	if loaded {

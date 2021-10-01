@@ -1,7 +1,6 @@
 package shroom
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -10,10 +9,10 @@ import (
 )
 
 // UnattachHypha unattaches hypha and makes a history record about that.
-func UnattachHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errtitle string) {
+func UnattachHypha(u *user.User, h *hyphae.Hypha) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeUnattachHypha)
 
-	if err, errtitle := CanUnattach(u, h); errtitle != "" {
+	if errtitle, err := CanUnattach(u, h); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
@@ -27,7 +26,7 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errti
 	if len(hop.Errs) > 0 {
 		rejectUnattachLog(h, u, "fail")
 		// FIXME: something may be wrong here
-		return hop.WithErrAbort(errors.New(fmt.Sprintf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs))), "Error"
+		return hop.WithErrAbort(fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)), "Error"
 	}
 
 	if h.BinaryPath != "" {

@@ -143,7 +143,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 			false,
 		)
 	)
-	if user.HasUsername(username) && user.UserByName(username).Source == "telegram" {
+	if user.HasUsername(username) && user.ByName(username).Source == "telegram" {
 		// Problems is something we put blankets on.
 		err = nil
 	}

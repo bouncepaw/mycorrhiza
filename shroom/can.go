@@ -14,29 +14,30 @@ func canFactory(
 	noRightsMsg string,
 	notExistsMsg string,
 	careAboutExistence bool,
-) func(*user.User, *hyphae.Hypha) (error, string) {
-	return func(u *user.User, h *hyphae.Hypha) (error, string) {
+) func(*user.User, *hyphae.Hypha) (string, error) {
+	return func(u *user.User, h *hyphae.Hypha) (string, error) {
 		if !u.CanProceed(action) {
 			rejectLogger(h, u, "no rights")
-			return errors.New(noRightsMsg), "Not enough rights"
+			return "Not enough rights", errors.New(noRightsMsg)
 		}
 
 		if careAboutExistence && !h.Exists {
 			rejectLogger(h, u, "does not exist")
-			return errors.New(notExistsMsg), "Does not exist"
+			return "Does not exist", errors.New(notExistsMsg)
 		}
 
 		if dispatcher == nil {
-			return nil, ""
+			return "", nil
 		}
 		errmsg, errtitle := dispatcher(h, u)
 		if errtitle == "" {
-			return nil, ""
+			return "", nil
 		}
-		return errors.New(errmsg), errtitle
+		return errtitle, errors.New(errmsg)
 	}
 }
 
+// CanDelete and etc are hyphae operation checkers based on user rights and hyphae existence.
 var (
 	CanDelete = canFactory(
 		rejectDeleteLog,

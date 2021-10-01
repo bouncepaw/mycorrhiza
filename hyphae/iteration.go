@@ -11,6 +11,7 @@ type Iteration struct {
 	checks   []func(h *Hypha) CheckResult
 }
 
+// NewIteration constructs an iteration without checks.
 func NewIteration() *Iteration {
 	return &Iteration{
 		iterator: YieldExistingHyphae,

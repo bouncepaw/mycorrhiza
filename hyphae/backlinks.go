@@ -38,12 +38,14 @@ type BacklinkIndexOperation interface {
 	Apply()
 }
 
+// BacklinkIndexEdit contains data for backlink index update after a hypha edit
 type BacklinkIndexEdit struct {
 	Name     string
 	OldLinks []string
 	NewLinks []string
 }
 
+// Apply changes backlink index respective to the operation data
 func (op BacklinkIndexEdit) Apply() {
 	oldLinks := toLinkSet(op.OldLinks)
 	newLinks := toLinkSet(op.NewLinks)
@@ -62,11 +64,13 @@ func (op BacklinkIndexEdit) Apply() {
 	}
 }
 
+// BacklinkIndexDeletion contains data for backlink index update after a hypha deletion
 type BacklinkIndexDeletion struct {
 	Name  string
 	Links []string
 }
 
+// Apply changes backlink index respective to the operation data
 func (op BacklinkIndexDeletion) Apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
@@ -75,12 +79,14 @@ func (op BacklinkIndexDeletion) Apply() {
 	}
 }
 
+// BacklinkIndexRenaming contains data for backlink index update after a hypha renaming
 type BacklinkIndexRenaming struct {
 	OldName string
 	NewName string
 	Links   []string
 }
 
+// Apply changes backlink index respective to the operation data
 func (op BacklinkIndexRenaming) Apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {

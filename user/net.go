@@ -27,7 +27,7 @@ func FromRequest(rq *http.Request) *User {
 	if err != nil {
 		return EmptyUser()
 	}
-	return UserByToken(cookie.Value)
+	return ByToken(cookie.Value)
 }
 
 // LogoutFromRequest logs the user in `rq` out and rewrites the cookie in `w`.
@@ -108,9 +108,9 @@ func AddSession(username string) (string, error) {
 }
 
 // A handy cookie constructor
-func cookie(name_suffix, val string, t time.Time) *http.Cookie {
+func cookie(nameSuffix, val string, t time.Time) *http.Cookie {
 	return &http.Cookie{
-		Name:    "mycorrhiza_" + name_suffix,
+		Name:    "mycorrhiza_" + nameSuffix,
 		Value:   val,
 		Expires: t,
 		Path:    "/",

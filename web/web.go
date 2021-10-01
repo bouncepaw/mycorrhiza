@@ -74,6 +74,7 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	file.Close()
 }
 
+// Handler initializes 
 func Handler() http.Handler {
 	router := mux.NewRouter()
 	router.Use(func(next http.Handler) http.Handler {

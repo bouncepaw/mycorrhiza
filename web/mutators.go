@@ -35,7 +35,7 @@ func initMutators(r *mux.Router) {
 
 func factoryHandlerAsker(
 	actionPath string,
-	asker func(*user.User, *hyphae.Hypha) (error, string),
+	asker func(*user.User, *hyphae.Hypha) (string, error),
 	succTitleKey string,
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
@@ -47,7 +47,7 @@ func factoryHandlerAsker(
 			u         = user.FromRequest(rq)
 			lc        = l18n.FromRequest(rq)
 		)
-		if err, errtitle := asker(u, h); err != nil {
+		if errtitle, err := asker(u, h); err != nil {
 			httpErr(
 				w,
 				lc,
@@ -90,7 +90,7 @@ var handlerRenameAsk = factoryHandlerAsker(
 
 func factoryHandlerConfirmer(
 	actionPath string,
-	confirmer func(*hyphae.Hypha, *user.User, *http.Request) (*history.HistoryOp, string),
+	confirmer func(*hyphae.Hypha, *user.User, *http.Request) (*history.Op, string),
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
 		util.PrepareRq(rq)
@@ -112,14 +112,14 @@ func factoryHandlerConfirmer(
 
 var handlerUnattachConfirm = factoryHandlerConfirmer(
 	"unattach-confirm",
-	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.HistoryOp, string) {
+	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.Op, string) {
 		return shroom.UnattachHypha(u, h)
 	},
 )
 
 var handlerDeleteConfirm = factoryHandlerConfirmer(
 	"delete-confirm",
-	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.HistoryOp, string) {
+	func(h *hyphae.Hypha, u *user.User, _ *http.Request) (*history.Op, string) {
 		return shroom.DeleteHypha(u, h)
 	},
 )
@@ -158,7 +158,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		u            = user.FromRequest(rq)
 		lc           = l18n.FromRequest(rq)
 	)
-	if err, errtitle := shroom.CanEdit(u, h); err != nil {
+	if errtitle, err := shroom.CanEdit(u, h); err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())
@@ -196,7 +196,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		message   = rq.PostFormValue("message")
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
-		hop       *history.HistoryOp
+		hop       *history.Op
 		errtitle  string
 	)
 
@@ -247,7 +247,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 			lc.Get("ui.error"),
 			err.Error())
 	}
-	if err, errtitle := shroom.CanAttach(u, h); err != nil {
+	if errtitle, err := shroom.CanAttach(u, h); err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
 			errtitle,
 			err.Error())

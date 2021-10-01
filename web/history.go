@@ -36,7 +36,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	// History can be found for files that do not exist anymore.
 	revs, err := history.Revisions(hyphaName)
 	if err == nil {
-		list = history.HistoryWithRevisions(hyphaName, revs)
+		list = history.WithRevisions(hyphaName, revs)
 	}
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 

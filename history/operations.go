@@ -19,16 +19,22 @@ var gitMutex = sync.Mutex{}
 type OpType int
 
 const (
+	// TypeNone represents an empty operation. Not to be used in practice.
 	TypeNone OpType = iota
+	// TypeEditText represents an edit of hypha text part.
 	TypeEditText
+	// TypeEditBinary represents an addition or replacement of hypha attachment.
 	TypeEditBinary
+	// TypeDeleteHypha represents a hypha deletion
 	TypeDeleteHypha
+	// TypeRenameHypha represents a hypha renaming
 	TypeRenameHypha
+	// TypeUnattachHypha represents a hypha attachment deletion
 	TypeUnattachHypha
 )
 
-// HistoryOp is an object representing a history operation.
-type HistoryOp struct {
+// Op is an object representing a history operation.
+type Op struct {
 	// All errors are appended here.
 	Errs    []error
 	Type    OpType
@@ -38,9 +44,9 @@ type HistoryOp struct {
 }
 
 // Operation is a constructor of a history operation.
-func Operation(opType OpType) *HistoryOp {
+func Operation(opType OpType) *Op {
 	gitMutex.Lock()
-	hop := &HistoryOp{
+	hop := &Op{
 		Errs:  []error{},
 		name:  "anon",
 		email: "anon@mycorrhiza",
@@ -50,7 +56,7 @@ func Operation(opType OpType) *HistoryOp {
 }
 
 // git operation maker helper
-func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
+func (hop *Op) gitop(args ...string) *Op {
 	out, err := gitsh(args...)
 	if err != nil {
 		fmt.Println("out:", out.String())
@@ -60,17 +66,18 @@ func (hop *HistoryOp) gitop(args ...string) *HistoryOp {
 }
 
 // WithErr appends the `err` to the list of errors.
-func (hop *HistoryOp) WithErr(err error) *HistoryOp {
+func (hop *Op) WithErr(err error) *Op {
 	hop.Errs = append(hop.Errs, err)
 	return hop
 }
 
-func (hop *HistoryOp) WithErrAbort(err error) *HistoryOp {
+// WithErrAbort appends the `err` to the list of errors and immediately aborts the operation.
+func (hop *Op) WithErrAbort(err error) *Op {
 	return hop.WithErr(err).Abort()
 }
 
 // WithFilesRemoved git-rm-s all passed `paths`. Paths can be rooted or not. Paths that are empty strings are ignored.
-func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
+func (hop *Op) WithFilesRemoved(paths ...string) *Op {
 	args := []string{"rm", "--quiet", "--"}
 	for _, path := range paths {
 		if path != "" {
@@ -81,7 +88,7 @@ func (hop *HistoryOp) WithFilesRemoved(paths ...string) *HistoryOp {
 }
 
 // WithFilesRenamed git-mv-s all passed keys of `pairs` to values of `pairs`. Paths can be rooted ot not. Empty keys are ignored.
-func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
+func (hop *Op) WithFilesRenamed(pairs map[string]string) *Op {
 	for from, to := range pairs {
 		if from != "" {
 			if err := os.MkdirAll(filepath.Dir(to), 0777); err != nil {
@@ -97,7 +104,7 @@ func (hop *HistoryOp) WithFilesRenamed(pairs map[string]string) *HistoryOp {
 }
 
 // WithFiles stages all passed `paths`. Paths can be rooted or not.
-func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
+func (hop *Op) WithFiles(paths ...string) *Op {
 	for i, path := range paths {
 		paths[i] = util.ShorterPath(path)
 	}
@@ -106,7 +113,7 @@ func (hop *HistoryOp) WithFiles(paths ...string) *HistoryOp {
 }
 
 // Apply applies history operation by doing the commit.
-func (hop *HistoryOp) Apply() *HistoryOp {
+func (hop *Op) Apply() *Op {
 	hop.gitop(
 		"commit",
 		"--author='"+hop.name+" <"+hop.email+">'",
@@ -117,13 +124,13 @@ func (hop *HistoryOp) Apply() *HistoryOp {
 }
 
 // Abort aborts the history operation.
-func (hop *HistoryOp) Abort() *HistoryOp {
+func (hop *Op) Abort() *Op {
 	gitMutex.Unlock()
 	return hop
 }
 
 // WithMsg sets what message will be used for the future commit. If user message exceeds one line, it is stripped down.
-func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
+func (hop *Op) WithMsg(userMsg string) *Op {
 	for _, ch := range userMsg {
 		if ch == '\r' || ch == '\n' {
 			break
@@ -134,7 +141,7 @@ func (hop *HistoryOp) WithMsg(userMsg string) *HistoryOp {
 }
 
 // WithUser sets a user for the commit.
-func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
+func (hop *Op) WithUser(u *user.User) *Op {
 	if u.Group != "anon" {
 		hop.name = u.Name
 		hop.email = u.Name + "@mycorrhiza"
@@ -142,10 +149,12 @@ func (hop *HistoryOp) WithUser(u *user.User) *HistoryOp {
 	return hop
 }
 
-func (hop *HistoryOp) HasErrors() bool {
+// HasErrors checks whether operation has errors appended.
+func (hop *Op) HasErrors() bool {
 	return len(hop.Errs) > 0
 }
 
-func (hop *HistoryOp) FirstErrorText() string {
+// FirstErrorText extracts first error appended to the operation.
+func (hop *Op) FirstErrorText() string {
 	return hop.Errs[0].Error()
 }

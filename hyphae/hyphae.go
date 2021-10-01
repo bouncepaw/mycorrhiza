@@ -12,6 +12,7 @@ import (
 // HyphaPattern is a pattern which all hyphae must match.
 var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
 
+// Hypha keeps vital information about a hypha
 type Hypha struct {
 	sync.RWMutex
 
@@ -79,6 +80,7 @@ func (h *Hypha) Insert() (justRecorded bool) {
 	return !recorded
 }
 
+// InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
 func (h *Hypha) InsertIfNew() (justRecorded bool) {
 	if !h.Exists {
 		return h.Insert()
@@ -86,6 +88,7 @@ func (h *Hypha) InsertIfNew() (justRecorded bool) {
 	return false
 }
 
+// Delete removes a hypha from the storage.
 func (h *Hypha) Delete() {
 	byNamesMutex.Lock()
 	h.Lock()
@@ -95,6 +98,7 @@ func (h *Hypha) Delete() {
 	h.Unlock()
 }
 
+// RenameTo renames a hypha and performs respective changes in the storage.
 func (h *Hypha) RenameTo(newName string) {
 	byNamesMutex.Lock()
 	h.Lock()

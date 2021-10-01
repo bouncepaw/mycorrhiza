@@ -76,6 +76,7 @@ func readTokensToUsers() {
 	log.Println("Found", len(tmp), "active sessions")
 }
 
+// SaveUserDatabase stores current user credentials into JSON file by configured path.
 func SaveUserDatabase() error {
 	return dumpUserCredentials()
 }

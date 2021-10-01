@@ -2,6 +2,8 @@
 
 <img src="https://mycorrhiza.wiki/binary/release/1.4/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/bouncepaw/mycorrhiza)](https://goreportcard.com/report/github.com/bouncepaw/mycorrhiza)
+
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history.
 
 [👉 Main wiki](https://mycorrhiza.wiki)

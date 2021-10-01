@@ -18,7 +18,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop *history.HistoryOp, errtitle string) {
+// UploadText edits a hypha' text part and makes a history record about that.
+func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeEditText)
 	var action string
 	if h.Exists {
@@ -33,7 +34,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.Name, message))
 	}
 
-	if err, errtitle := CanEdit(u, h); err != nil {
+	if errtitle, err := CanEdit(u, h); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
 	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath == "" {
@@ -43,7 +44,8 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 	return uploadHelp(h, hop, ".myco", data, u)
 }
 
-func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User) (*history.HistoryOp, string) {
+// UploadBinary edits a hypha' attachment and makes a history record about that.
+func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User) (*history.Op, string) {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.Name, mime))
 		data, err = io.ReadAll(file)
@@ -52,7 +54,7 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 	if err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if err, errtitle := CanAttach(u, h); err != nil {
+	if errtitle, err := CanAttach(u, h); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
 	if len(data) == 0 {
@@ -63,7 +65,7 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 }
 
 // uploadHelp is a helper function for UploadText and UploadBinary
-func uploadHelp(h *hyphae.Hypha, hop *history.HistoryOp, ext string, data []byte, u *user.User) (*history.HistoryOp, string) {
+func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
 	var (
 		fullPath         = filepath.Join(files.HyphaeDir(), h.Name+ext)
 		originalFullPath = &h.TextPath

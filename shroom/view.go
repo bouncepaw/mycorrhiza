@@ -21,6 +21,7 @@ func FetchTextPart(h *hyphae.Hypha) (string, error) {
 	return string(text), nil
 }
 
+// SetHeaderLinks initializes header links by reading the configured hypha, if there is any, or resorting to default values.
 func SetHeaderLinks() {
 	if userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha); !userLinksHypha.Exists {
 		cfg.SetDefaultHeaderLinks()
