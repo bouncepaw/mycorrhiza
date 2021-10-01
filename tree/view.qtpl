@@ -20,7 +20,7 @@ pseudographics:
 	})
 %}
 <li class="subhyphae__entry">
-	<a class="subhyphae__link" href="/hypha/{%s c.name %}">
+	<a class="subhyphae__link {% if !c.exists %}wikilink_new{% endif %}" href="/hypha/{%s c.name %}">
 		{%s util.BeautifulName(path.Base(c.name)) %}
 	</a>
 {% if len(c.children) > 0 %}
@@ -36,7 +36,7 @@ pseudographics:
 
 {% func siblingHTML(s *sibling) %}
 <li class="sibling-hyphae__entry">
-	<a class="sibling-hyphae__link" href="/hypha/{%s s.name %}">
+	<a class="sibling-hyphae__link {% if !s.exists %}wikilink_new{% endif %}" href="/hypha/{%s s.name %}">
 		{%s util.BeautifulName(path.Base(s.name)) %}
 		<span class="sibling-hyphae__count">
 		{% if s.directSubhyphaeCount > 0 %}
