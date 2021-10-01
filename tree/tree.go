@@ -104,7 +104,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 		wg.Done()
 	}()
 	go func() {
-		children = figureOutChildren(hyphaName, descendantsPool).children
+		children = figureOutChildren(hyphaName, descendantsPool, true).children
 		wg.Done()
 	}()
 	wg.Wait()
@@ -128,10 +128,11 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 
 type child struct {
 	name     string
+	exists   bool
 	children []child
 }
 
-func figureOutChildren(hyphaName string, subhyphaePool map[string]bool) child {
+func figureOutChildren(hyphaName string, subhyphaePool map[string]bool, exists bool) child {
 	var (
 		nestLevel = strings.Count(hyphaName, "/")
 		adopted   = make([]child, 0)
@@ -140,10 +141,23 @@ func figureOutChildren(hyphaName string, subhyphaePool map[string]bool) child {
 		subnestLevel := strings.Count(subhyphaName, "/")
 		if subnestLevel-1 == nestLevel && path.Dir(subhyphaName) == hyphaName {
 			delete(subhyphaePool, subhyphaName)
-			adopted = append(adopted, figureOutChildren(subhyphaName, subhyphaePool))
+			adopted = append(adopted, figureOutChildren(subhyphaName, subhyphaePool, true))
 		}
 	}
-	return child{hyphaName, adopted}
+	for descName, _ := range subhyphaePool {
+		if strings.HasPrefix(descName, hyphaName) {
+			var (
+				rawSubPath = strings.TrimPrefix(descName, hyphaName)[1:]
+				slashIdx   = strings.IndexRune(rawSubPath, '/')
+			)
+			if slashIdx > -1 {
+				var sibPath = descName[:slashIdx+len(hyphaName)+1]
+				adopted = append(adopted, figureOutChildren(sibPath, subhyphaePool, false))
+			} // `else` never happens?
+		}
+	}
+
+	return child{hyphaName, exists, adopted}
 }
 
 type sibling struct {

@@ -20,7 +20,7 @@ pseudographics:
 	})
 %}
 <li class="subhyphae__entry">
-	<a class="subhyphae__link" href="/hypha/{%s c.name %}">
+	<a class="subhyphae__link {% if !c.exists %}wikilink_new{% endif %}" href="/hypha/{%s c.name %}">
 		{%s util.BeautifulName(path.Base(c.name)) %}
 	</a>
 {% if len(c.children) > 0 %}

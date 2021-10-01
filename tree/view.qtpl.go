@@ -82,7 +82,15 @@ func streamchildHTML(qw422016 *qt422016.Writer, c *child) {
 //line tree/view.qtpl:21
 	qw422016.N().S(`
 <li class="subhyphae__entry">
-	<a class="subhyphae__link" href="/hypha/`)
+	<a class="subhyphae__link `)
+//line tree/view.qtpl:23
+	if !c.exists {
+//line tree/view.qtpl:23
+		qw422016.N().S(`wikilink_new`)
+//line tree/view.qtpl:23
+	}
+//line tree/view.qtpl:23
+	qw422016.N().S(`" href="/hypha/`)
 //line tree/view.qtpl:23
 	qw422016.E().S(c.name)
 //line tree/view.qtpl:23
