@@ -1,4 +1,5 @@
 {% import "path/filepath" %}
+{% import "sort" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
@@ -213,6 +214,9 @@ for u := range user.YieldUsers() {
 		editors = append(editors, u.Name)
 	}
 }
+sort.Strings(admins)
+sort.Strings(moderators)
+sort.Strings(editors)
 %}
 	<section>
 		<h2>{%s lc.Get("ui.users_admins") %}</h2>
