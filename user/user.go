@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User is a user.
+// User is a user (duh).
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
 	Name         string    `json:"name"`
@@ -59,6 +59,7 @@ var groupRight = map[string]int{
 	"admin":     4,
 }
 
+// ValidGroup checks whether provided user group name exists.
 func ValidGroup(group string) bool {
 	for _, grp := range groups {
 		if grp == group {
@@ -68,10 +69,12 @@ func ValidGroup(group string) bool {
 	return false
 }
 
+// ValidSource checks whether provided user source name exists.
 func ValidSource(source string) bool {
 	return source == "local" || source == "telegram"
 }
 
+// EmptyUser constructs an anonymous user.
 func EmptyUser() *User {
 	return &User{
 		Name:     "anon",
@@ -81,6 +84,7 @@ func EmptyUser() *User {
 	}
 }
 
+// CanProceed checks whether user has rights to visit the provided path (and perform an action).
 func (user *User) CanProceed(route string) bool {
 	if !cfg.UseAuth {
 		return true

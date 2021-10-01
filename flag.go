@@ -28,6 +28,7 @@ func printHelp() {
 	flag.PrintDefaults()
 }
 
+// CreateUserCommand is parameters for admin creation flag. Only a single parameter, though.
 type CreateUserCommand struct {
 	name string
 }

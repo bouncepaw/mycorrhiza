@@ -11,36 +11,36 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User) (err error, errtitle string) {
+func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User) (errtitle string, err error) {
 	if nh.Exists {
 		rejectRenameLog(oh, u, fmt.Sprintf("name ‘%s’ taken already", nh.Name))
-		return errors.New(fmt.Sprintf("Hypha named <a href='/hypha/%[1]s'>%[1]s</a> already exists, cannot rename", nh.Name)), "Name taken"
+		return "Name taken", fmt.Errorf("Hypha named <a href='/hypha/%[1]s'>%[1]s</a> already exists, cannot rename", nh.Name)
 	}
 
 	if nh.Name == "" {
 		rejectRenameLog(oh, u, "no new name given")
-		return errors.New("No new name is given"), "No name given"
+		return "No name given", errors.New("No new name is given")
 	}
 
 	if !hyphae.HyphaPattern.MatchString(nh.Name) {
 		rejectRenameLog(oh, u, fmt.Sprintf("new name ‘%s’ invalid", nh.Name))
-		return errors.New("Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>"), "Invalid name"
+		return "Invalid name", errors.New("Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>") 
 	}
 
-	return nil, ""
+	return "", nil 
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
-func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *user.User) (hop *history.HistoryOp, errtitle string) {
+func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *user.User) (hop *history.Op, errtitle string) {
 	newHypha.Lock()
 	defer newHypha.Unlock()
 	hop = history.Operation(history.TypeRenameHypha)
 
-	if err, errtitle := CanRename(u, h); errtitle != "" {
+	if errtitle, err := CanRename(u, h); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
-	if err, errtitle := canRenameThisToThat(h, newHypha, u); errtitle != "" {
+	if errtitle, err := canRenameThisToThat(h, newHypha, u); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}

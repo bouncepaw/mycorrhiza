@@ -137,14 +137,14 @@ func figureOutChildren(hyphaName string, subhyphaePool map[string]bool, exists b
 		nestLevel = strings.Count(hyphaName, "/")
 		adopted   = make([]child, 0)
 	)
-	for subhyphaName, _ := range subhyphaePool {
+	for subhyphaName := range subhyphaePool {
 		subnestLevel := strings.Count(subhyphaName, "/")
 		if subnestLevel-1 == nestLevel && path.Dir(subhyphaName) == hyphaName {
 			delete(subhyphaePool, subhyphaName)
 			adopted = append(adopted, figureOutChildren(subhyphaName, subhyphaePool, true))
 		}
 	}
-	for descName, _ := range subhyphaePool {
+	for descName := range subhyphaePool {
 		if strings.HasPrefix(descName, hyphaName) {
 			var (
 				rawSubPath = strings.TrimPrefix(descName, hyphaName)[1:]

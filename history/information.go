@@ -52,18 +52,22 @@ func recentChangesFeed() *feeds.Feed {
 	return feed
 }
 
+// RecentChangesRSS creates recent changes feed in RSS format.
 func RecentChangesRSS() (string, error) {
 	return recentChangesFeed().ToRss()
 }
 
+// RecentChangesAtom creates recent changes feed in Atom format.
 func RecentChangesAtom() (string, error) {
 	return recentChangesFeed().ToAtom()
 }
 
+// RecentChangesJSON creates recent changes feed in JSON format.
 func RecentChangesJSON() (string, error) {
 	return recentChangesFeed().ToJSON()
 }
 
+// RecentChanges gathers an arbitrary number of latest changes in form of revisions slice.
 func RecentChanges(n int) []Revision {
 	var (
 		out, err = silentGitsh(
@@ -110,8 +114,8 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	return revs, err
 }
 
-// HistoryWithRevisions returns an html representation of `revs` that is meant to be inserted in a history page.
-func HistoryWithRevisions(hyphaName string, revs []Revision) (html string) {
+// WithRevisions returns an html representation of `revs` that is meant to be inserted in a history page.
+func WithRevisions(hyphaName string, revs []Revision) (html string) {
 	var (
 		currentYear  int
 		currentMonth time.Month

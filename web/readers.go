@@ -55,10 +55,10 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		shorterUrl      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
-		firstSlashIndex = strings.IndexRune(shorterUrl, '/')
-		revHash         = shorterUrl[:firstSlashIndex]
-		hyphaName       = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
+		firstSlashIndex = strings.IndexRune(shorterURL, '/')
+		revHash         = shorterURL[:firstSlashIndex]
+		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
 		h               = hyphae.ByName(hyphaName)
 		u               = user.FromRequest(rq)
 		lc              = l18n.FromRequest(rq)
@@ -77,10 +77,10 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
-		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
-		revHash           = shorterUrl[:firstSlashIndex]
-		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		shorterURL        = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
+		firstSlashIndex   = strings.IndexRune(shorterURL, '/')
+		revHash           = shorterURL[:firstSlashIndex]
+		hyphaName         = util.CanonicalName(shorterURL[firstSlashIndex+1:])
 		h                 = hyphae.ByName(hyphaName)
 		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
 	)
@@ -101,10 +101,10 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		lc                = l18n.FromRequest(rq)
-		shorterUrl        = strings.TrimPrefix(rq.URL.Path, "/rev/")
-		firstSlashIndex   = strings.IndexRune(shorterUrl, '/')
-		revHash           = shorterUrl[:firstSlashIndex]
-		hyphaName         = util.CanonicalName(shorterUrl[firstSlashIndex+1:])
+		shorterURL        = strings.TrimPrefix(rq.URL.Path, "/rev/")
+		firstSlashIndex   = strings.IndexRune(shorterURL, '/')
+		revHash           = shorterURL[:firstSlashIndex]
+		hyphaName         = util.CanonicalName(shorterURL[firstSlashIndex+1:])
 		h                 = hyphae.ByName(hyphaName)
 		contents          = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)

@@ -1,5 +1,6 @@
-// File `iterators.go` contains stuff that iterates over hyphae.
 package hyphae
+
+// File `iterators.go` contains stuff that iterates over hyphae.
 
 import (
 	"sort"

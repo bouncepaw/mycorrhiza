@@ -10,21 +10,21 @@ var count = struct {
 	sync.Mutex
 }{}
 
-// Set the value of hyphae count to zero. Use when reloading hyphae.
+// ResetCount sets the value of hyphae count to zero. Use when reloading hyphae.
 func ResetCount() {
 	count.Lock()
 	count.value = 0
 	count.Unlock()
 }
 
-// Increment the value of the hyphae counter. Use when creating new hyphae or loading hyphae from disk.
+// IncrementCount increments the value of the hyphae counter. Use when creating new hyphae or loading hyphae from disk.
 func IncrementCount() {
 	count.Lock()
 	count.value++
 	count.Unlock()
 }
 
-// Decrement the value of the hyphae counter. Use when deleting existing hyphae.
+// DecrementCount decrements the value of the hyphae counter. Use when deleting existing hyphae.
 func DecrementCount() {
 	count.Lock()
 	count.value--

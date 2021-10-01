@@ -9,10 +9,10 @@ import (
 )
 
 // DeleteHypha deletes hypha and makes a history record about that.
-func DeleteHypha(u *user.User, h *hyphae.Hypha) (hop *history.HistoryOp, errtitle string) {
+func DeleteHypha(u *user.User, h *hyphae.Hypha) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeDeleteHypha)
 
-	if err, errtitle := CanDelete(u, h); errtitle != "" {
+	if errtitle, err := CanDelete(u, h); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}

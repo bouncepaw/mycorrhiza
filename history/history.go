@@ -33,6 +33,7 @@ func Start() {
 	gitpath = path
 }
 
+// InitGitRepo checks a Git repository and initializes it if necessary.
 func InitGitRepo() {
 	// Detect if the Git repo directory is a Git repository
 	isGitRepo := true
@@ -144,7 +145,7 @@ func (rev *Revision) textDiff() (diff string) {
 	for _, filename := range filenames {
 		text, err := PrimitiveDiffAtRevision(filename, rev.Hash)
 		if err != nil {
-			diff += "\nAn error has occured with " + filename + "\n"
+			diff += "\nAn error has occurred with " + filename + "\n"
 		}
 		diff += text + "\n"
 	}

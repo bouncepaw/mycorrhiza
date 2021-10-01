@@ -14,7 +14,7 @@ var locales = language.NewMatcher([]language.Tag{
 	language.Make("ru"),
 })
 
-// GetLocalizer takes a HTTP request and picks the most appropriate localizer (with English fallback)
+// FromRequest takes a HTTP request and picks the most appropriate localizer (with English fallback)
 func FromRequest(r *http.Request) *Localizer {
 	t, _, _ := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	tag, _, _ := locales.Match(t...)
@@ -91,7 +91,7 @@ func getLocalizationKey(locale string, key string) string {
 
 /* chekoopa: Missing translation features:
 - history records (they use Git description, the possible solution is to parse and translate)
-- history dates (HistoryWithRevisions doesn't consider locale, Monday package is bad idea)
+- history dates (history.WithRevisions doesn't consider locale, Monday package is bad idea)
 - probably error messages (which are scattered across the code)
 - default top bar (it is static from one-shot cfg.SetDefaultHeaderLinks, but it is possible to track default-ness in templates)
 	- alt solution is implementing "special" links
