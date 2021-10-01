@@ -12,11 +12,27 @@ import (
 )
 
 func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) {
+	hyphaDir := ""
+	if hyphaRawDir := path.Dir(hyphaName); hyphaRawDir != "." {
+		hyphaDir = hyphaRawDir
+	}
 	var (
-		siblings     = []*sibling{&sibling{hyphaName, 0, 0}}
+		siblingsMap  = make(map[string]bool)
 		siblingCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
-			if path.Dir(hyphaName) == path.Dir(h.Name) && h.Name != hyphaName {
-				siblings = append(siblings, &sibling{h.Name, 0, 0})
+			// I don't like this double comparison, but it is only the way to circumvent some flickups
+			if strings.HasPrefix(h.Name, hyphaDir) && h.Name != hyphaDir && h.Name != hyphaName {
+				var (
+					rawSubPath = strings.TrimPrefix(h.Name, hyphaDir)[1:]
+					slashIdx   = strings.IndexRune(rawSubPath, '/')
+				)
+				if slashIdx > -1 {
+					var sibPath = h.Name[:slashIdx+len(hyphaDir)+1]
+					if _, exists := siblingsMap[sibPath]; !exists {
+						siblingsMap[sibPath] = false
+					}
+				} else { // it is a straight sibling
+					siblingsMap[h.Name] = true
+				}
 			}
 			return hyphae.CheckContinue
 		}
@@ -31,9 +47,18 @@ func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) 
 
 		i7n = hyphae.NewIteration()
 	)
+	siblingsMap[hyphaName] = true
+
 	i7n.AddCheck(siblingCheck)
 	i7n.AddCheck(descendantCheck)
 	i7n.Ignite()
+
+	siblings := make([]*sibling, len(siblingsMap))
+	sibIdx := 0
+	for sibName, exists := range siblingsMap {
+		siblings[sibIdx] = &sibling{sibName, 0, 0, exists}
+		sibIdx++
+	}
 	sort.Slice(siblings, func(i, j int) bool {
 		return siblings[i].name < siblings[j].name
 	})
@@ -125,6 +150,7 @@ type sibling struct {
 	name                   string
 	directSubhyphaeCount   int
 	indirectSubhyphaeCount int
+	exists                 bool
 }
 
 func subhyphaeMatrix(children []child) (html string) {

@@ -156,7 +156,15 @@ func streamsiblingHTML(qw422016 *qt422016.Writer, s *sibling) {
 //line tree/view.qtpl:37
 	qw422016.N().S(`
 <li class="sibling-hyphae__entry">
-	<a class="sibling-hyphae__link" href="/hypha/`)
+	<a class="sibling-hyphae__link `)
+//line tree/view.qtpl:39
+	if !s.exists {
+//line tree/view.qtpl:39
+		qw422016.N().S(`wikilink_new`)
+//line tree/view.qtpl:39
+	}
+//line tree/view.qtpl:39
+	qw422016.N().S(`" href="/hypha/`)
 //line tree/view.qtpl:39
 	qw422016.E().S(s.name)
 //line tree/view.qtpl:39
