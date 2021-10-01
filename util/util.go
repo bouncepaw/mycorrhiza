@@ -152,7 +152,7 @@ func (f FormData) Get(key string) string {
 	return f.fields[key]
 }
 
-// Put writes a form value for provided key 
+// Put writes a form value for provided key
 func (f FormData) Put(key, value string) {
 	f.fields[key] = value
 }

@@ -24,10 +24,10 @@ func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User) (errt
 
 	if !hyphae.HyphaPattern.MatchString(nh.Name) {
 		rejectRenameLog(oh, u, fmt.Sprintf("new name ‘%s’ invalid", nh.Name))
-		return "Invalid name", errors.New("Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>") 
+		return "Invalid name", errors.New("Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>")
 	}
 
-	return "", nil 
+	return "", nil
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
