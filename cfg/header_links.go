@@ -2,7 +2,7 @@ package cfg
 
 // See https://mycorrhiza.wiki/hypha/configuration/header
 import (
-	"github.com/bouncepaw/mycomarkup/v2/blocks"
+	"github.com/bouncepaw/mycomarkup/v3/blocks"
 	"strings"
 )
 
@@ -31,7 +31,7 @@ func ParseHeaderLinks(text string) {
 		//
 		// I do not really care.
 		if strings.HasPrefix(line, "=>") {
-			rl := blocks.MakeRocketLink(line, HeaderLinksHypha)
+			rl := blocks.ParseRocketLink(line, HeaderLinksHypha)
 			href, display := rl.Href(), rl.Display()
 			HeaderLinks = append(HeaderLinks, HeaderLink{
 				Href:    href,

@@ -20,9 +20,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup/v2"
-	"github.com/bouncepaw/mycomarkup/v2/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v2/tools"
+	"github.com/bouncepaw/mycomarkup/v3"
+	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v3/tools"
 )
 
 func initReaders(r *mux.Router) {
