@@ -4,32 +4,33 @@ import (
 	"errors"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
 func canFactory(
 	rejectLogger func(*hyphae.Hypha, *user.User, string),
 	action string,
-	dispatcher func(*hyphae.Hypha, *user.User) (string, string),
+	dispatcher func(*hyphae.Hypha, *user.User, *l18n.Localizer) (string, string),
 	noRightsMsg string,
 	notExistsMsg string,
 	careAboutExistence bool,
-) func(*user.User, *hyphae.Hypha) (string, error) {
-	return func(u *user.User, h *hyphae.Hypha) (string, error) {
+) func(*user.User, *hyphae.Hypha, *l18n.Localizer) (string, error) {
+	return func(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (string, error) {
 		if !u.CanProceed(action) {
 			rejectLogger(h, u, "no rights")
-			return "Not enough rights", errors.New(noRightsMsg)
+			return lc.Get("ui.act_no_rights"), errors.New(lc.Get(noRightsMsg))
 		}
 
 		if careAboutExistence && !h.Exists {
 			rejectLogger(h, u, "does not exist")
-			return "Does not exist", errors.New(notExistsMsg)
+			return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
 		}
 
 		if dispatcher == nil {
 			return "", nil
 		}
-		errmsg, errtitle := dispatcher(h, u)
+		errmsg, errtitle := dispatcher(h, u, lc)
 		if errtitle == "" {
 			return "", nil
 		}
@@ -43,8 +44,8 @@ var (
 		rejectDeleteLog,
 		"delete-confirm",
 		nil,
-		"Not enough rights to delete, you must be a moderator",
-		"Cannot delete this hypha because it does not exist",
+		"ui.act_norights_delete",
+		"ui.act_notexist_delete",
 		true,
 	)
 
@@ -52,24 +53,24 @@ var (
 		rejectRenameLog,
 		"rename-confirm",
 		nil,
-		"Not enough rights to rename, you must be a trusted editor",
-		"Cannot rename this hypha because it does not exist",
+		"ui.act_norights_rename",
+		"ui.act_notexist_rename",
 		true,
 	)
 
 	CanUnattach = canFactory(
 		rejectUnattachLog,
 		"unattach-confirm",
-		func(h *hyphae.Hypha, u *user.User) (errmsg, errtitle string) {
+		func(h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
 			if h.BinaryPath == "" {
 				rejectUnattachLog(h, u, "no amnt")
-				return "Cannot unattach this hypha because it has no attachment", "No attachment"
+				return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
 			}
 
 			return "", ""
 		},
-		"Not enough rights to unattach, you must be a trusted editor",
-		"Cannot unattach this hypha because it does not exist",
+		"ui.act_norights_unattach",
+		"ui.act_notexist_unattach",
 		true,
 	)
 
@@ -77,7 +78,7 @@ var (
 		rejectEditLog,
 		"upload-text",
 		nil,
-		"You must be an editor to edit a hypha",
+		"ui.act_norights_edit",
 		"You cannot edit a hypha that does not exist",
 		false,
 	)
@@ -86,8 +87,10 @@ var (
 		rejectAttachLog,
 		"upload-binary",
 		nil,
-		"You must be an editor to attach a hypha",
+		"ui.act_norights_attach",
 		"You cannot attach a hypha that does not exist",
 		false,
 	)
 )
+
+/* I've left 'not exists' messages for edit and attach out of translation as they are not used -- chekoopa */
