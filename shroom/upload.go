@@ -14,12 +14,13 @@ import (
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
 // UploadText edits a hypha' text part and makes a history record about that.
-func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop *history.Op, errtitle string) {
+func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeEditText)
 	var action string
 	if h.Exists {
@@ -34,7 +35,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.Name, message))
 	}
 
-	if errtitle, err := CanEdit(u, h); err != nil {
+	if errtitle, err := CanEdit(u, h, lc); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
 	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath == "" {
@@ -45,7 +46,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User) (hop
 }
 
 // UploadBinary edits a hypha' attachment and makes a history record about that.
-func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User) (*history.Op, string) {
+func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.Name, mime))
 		data, err = io.ReadAll(file)
@@ -54,7 +55,7 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 	if err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if errtitle, err := CanAttach(u, h); err != nil {
+	if errtitle, err := CanAttach(u, h, lc); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
 	if len(data) == 0 {
