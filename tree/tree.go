@@ -96,7 +96,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 		wg.Done()
 	}()
 	go func() {
-		children = figureOutChildren(hyphaName, true).children
+		children = figureOutChildren(hyphaName).children
 		wg.Done()
 	}()
 	wg.Wait()
@@ -124,10 +124,10 @@ type child struct {
 	children []child
 }
 
-func figureOutChildren(hyphaName string, exists bool) child {
+func figureOutChildren(hyphaName string) child {
 	var (
 		descPrefix = hyphaName + "/"
-		child = child{hyphaName, true, make([]child, 0)}
+		child      = child{hyphaName, true, make([]child, 0)}
 	)
 
 	for desc := range hyphae.YieldExistingHyphae() {
@@ -153,9 +153,9 @@ func addHyphaToChild(hyphaName, subPath string, child *child) {
 	} else {
 		var (
 			firstSlash = strings.IndexRune(subPath, '/')
-			firstDir = subPath[:firstSlash]
-			restOfPath = subPath[firstSlash + 1:]
-			subchild = findOrCreateSubchild(firstDir, child)
+			firstDir   = subPath[:firstSlash]
+			restOfPath = subPath[firstSlash+1:]
+			subchild   = findOrCreateSubchild(firstDir, child)
 		)
 		addHyphaToChild(hyphaName, restOfPath, subchild)
 	}
@@ -172,7 +172,7 @@ func findOrCreateSubchild(name string, baseChild *child) *child {
 		}
 	}
 	baseChild.children = append(baseChild.children, child{fullName, false, make([]child, 0)})
-	return &baseChild.children[len(baseChild.children) - 1]
+	return &baseChild.children[len(baseChild.children)-1]
 }
 
 type sibling struct {
