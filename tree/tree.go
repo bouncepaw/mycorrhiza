@@ -11,7 +11,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) {
+func findSiblings(hyphaName string) []*sibling {
 	hyphaDir := ""
 	if hyphaRawDir := path.Dir(hyphaName); hyphaRawDir != "." {
 		hyphaDir = hyphaRawDir
@@ -37,20 +37,11 @@ func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) 
 			return hyphae.CheckContinue
 		}
 
-		descendantsPool = make(map[string]bool, 0)
-		descendantCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
-			if strings.HasPrefix(h.Name, hyphaName+"/") {
-				descendantsPool[h.Name] = true
-			}
-			return hyphae.CheckContinue
-		}
-
 		i7n = hyphae.NewIteration()
 	)
 	siblingsMap[hyphaName] = true
 
 	i7n.AddCheck(siblingCheck)
-	i7n.AddCheck(descendantCheck)
 	i7n.Ignite()
 
 	siblings := make([]*sibling, len(siblingsMap))
@@ -62,7 +53,7 @@ func findSiblingsAndDescendants(hyphaName string) ([]*sibling, map[string]bool) 
 	sort.Slice(siblings, func(i, j int) bool {
 		return siblings[i].name < siblings[j].name
 	})
-	return siblings, descendantsPool
+	return siblings
 }
 
 func countSubhyphae(siblings []*sibling) {
@@ -90,21 +81,22 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 	children := make([]child, 0)
 	I := 0
 	// The tree is generated in two iterations of hyphae storage:
-	// 1. Find all siblings (sorted) and descendants' names
+	// 1. Find all siblings (sorted)
 	// 2. Count how many subhyphae siblings have
 	//
 	// We also have to figure out what is going on with the descendants: who is a child of whom. We do that in parallel with (2) because we can.
 	// One of the siblings is the hypha with name `hyphaName`
-	siblings, descendantsPool := findSiblingsAndDescendants(hyphaName)
+	var siblings []*sibling
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func() {
+		siblings = findSiblings(hyphaName)
 		countSubhyphae(siblings)
 		wg.Done()
 	}()
 	go func() {
-		children = figureOutChildren(hyphaName, descendantsPool, true).children
+		children = figureOutChildren(hyphaName, true).children
 		wg.Done()
 	}()
 	wg.Wait()
@@ -132,32 +124,55 @@ type child struct {
 	children []child
 }
 
-func figureOutChildren(hyphaName string, subhyphaePool map[string]bool, exists bool) child {
+func figureOutChildren(hyphaName string, exists bool) child {
 	var (
-		nestLevel = strings.Count(hyphaName, "/")
-		adopted   = make([]child, 0)
+		descPrefix = hyphaName + "/"
+		child = child{hyphaName, true, make([]child, 0)}
 	)
-	for subhyphaName := range subhyphaePool {
-		subnestLevel := strings.Count(subhyphaName, "/")
-		if subnestLevel-1 == nestLevel && path.Dir(subhyphaName) == hyphaName {
-			delete(subhyphaePool, subhyphaName)
-			adopted = append(adopted, figureOutChildren(subhyphaName, subhyphaePool, true))
-		}
-	}
-	for descName := range subhyphaePool {
-		if strings.HasPrefix(descName, hyphaName) {
-			var (
-				rawSubPath = strings.TrimPrefix(descName, hyphaName)[1:]
-				slashIdx   = strings.IndexRune(rawSubPath, '/')
-			)
-			if slashIdx > -1 {
-				var sibPath = descName[:slashIdx+len(hyphaName)+1]
-				adopted = append(adopted, figureOutChildren(sibPath, subhyphaePool, false))
-			} // `else` never happens?
+
+	for desc := range hyphae.YieldExistingHyphae() {
+		var descName = desc.Name
+		if strings.HasPrefix(descName, descPrefix) {
+			var subPath = strings.TrimPrefix(descName, descPrefix)
+			addHyphaToChild(descName, subPath, &child)
 		}
 	}
 
-	return child{hyphaName, exists, adopted}
+	return child
+}
+
+func addHyphaToChild(hyphaName, subPath string, child *child) {
+	// when hyphaName = "root/a/b", subPath = "a/b", and child.name = "root"
+	// addHyphaToChild("root/a/b", "b", child{"root/a"})
+	// when hyphaName = "root/a/b", subPath = "b", and child.name = "root/a"
+	// set .exists=true for "root/a/b", and create it if it isn't there already
+	var exists = !strings.Contains(subPath, "/")
+	if exists {
+		var subchild = findOrCreateSubchild(subPath, child)
+		subchild.exists = true
+	} else {
+		var (
+			firstSlash = strings.IndexRune(subPath, '/')
+			firstDir = subPath[:firstSlash]
+			restOfPath = subPath[firstSlash + 1:]
+			subchild = findOrCreateSubchild(firstDir, child)
+		)
+		addHyphaToChild(hyphaName, restOfPath, subchild)
+	}
+}
+
+func findOrCreateSubchild(name string, baseChild *child) *child {
+	// when name = "a", and baseChild.name = "root"
+	// if baseChild.children contains "root/a", return it
+	// else create it and return that
+	var fullName = baseChild.name + "/" + name
+	for i := range baseChild.children {
+		if baseChild.children[i].name == fullName {
+			return &baseChild.children[i]
+		}
+	}
+	baseChild.children = append(baseChild.children, child{fullName, false, make([]child, 0)})
+	return &baseChild.children[len(baseChild.children) - 1]
 }
 
 type sibling struct {
