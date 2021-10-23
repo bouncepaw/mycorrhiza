@@ -95,9 +95,7 @@ func (hop *Op) WithFilesRenamed(pairs map[string]string) *Op {
 				hop.Errs = append(hop.Errs, err)
 				continue
 			}
-			if err := Rename(from, to); err != nil {
-				hop.Errs = append(hop.Errs, err)
-			}
+			hop.gitop("mv", "--force", from, to)
 		}
 	}
 	return hop
