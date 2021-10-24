@@ -3,7 +3,7 @@ module github.com/bouncepaw/mycorrhiza
 go 1.16
 
 require (
-	github.com/bouncepaw/mycomarkup/v3 v3.1.0
+	github.com/bouncepaw/mycomarkup/v3 v3.2.0
 	github.com/go-ini/ini v1.62.0
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
