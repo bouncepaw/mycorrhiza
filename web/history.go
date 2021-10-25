@@ -61,8 +61,14 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
-func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (string, error), name string, contentType string) {
-	if content, err := f(); err != nil {
+func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func(history.FeedOptions) (string, error), name string, contentType string) {
+	opts, err := history.ParseFeedOptions(rq.URL.Query())
+	var content string
+	if err == nil {
+		content, err = f(opts)
+	}
+
+	if err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "An error while generating "+name+": "+err.Error())
