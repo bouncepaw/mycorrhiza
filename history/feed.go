@@ -14,10 +14,9 @@ import (
 
 func recentChangesFeed(opts FeedOptions) *feeds.Feed {
 	feed := &feeds.Feed{
-		Title:       "Recent changes",
+		Title:       cfg.WikiName + " (recent changes)",
 		Link:        &feeds.Link{Href: cfg.URL},
 		Description: "List of 30 recent changes on the wiki",
-		Author:      &feeds.Author{Name: "Wikimind", Email: "wikimind@mycorrhiza"},
 		Updated:     time.Now(),
 	}
 	revs := RecentChanges(30)
@@ -79,12 +78,13 @@ func groupRevisionsByPeriod(revs []Revision, period time.Duration) (res []revisi
 	}
 
 	currTime := revs[0].Time
-	res = append(res, newRevisionGroup(revs[0]))
+	currGroup := newRevisionGroup(revs[0])
 	for _, rev := range revs[1:] {
-		if currTime.Sub(rev.Time) < period {
-			res[len(res)-1].addRevision(rev)
+		if currTime.Sub(rev.Time) < period && currGroup[0].Username == rev.Username {
+			currGroup.addRevision(rev)
 		} else {
-			res = append(res, newRevisionGroup(rev))
+			res = append(res, currGroup)
+			currGroup = newRevisionGroup(rev)
 		}
 		currTime = rev.Time
 	}
@@ -93,8 +93,9 @@ func groupRevisionsByPeriod(revs []Revision, period time.Duration) (res []revisi
 
 func (grp revisionGroup) feedItem(opts FeedOptions) feeds.Item {
 	return feeds.Item{
-		Title:       grp.title(opts.groupOrder),
-		Author:      grp.author(),
+		Title: grp.title(opts.groupOrder),
+		// groups for feeds should have the same author for all revisions
+		Author:      &feeds.Author{Name: grp[0].Username},
 		Id:          grp[len(grp)-1].Hash,
 		Description: grp.descriptionForFeed(opts.groupOrder),
 		Created:     grp[len(grp)-1].Time, // earliest revision
@@ -112,22 +113,12 @@ func (grp revisionGroup) title(order FeedGroupOrder) string {
 		message = grp[len(grp)-1].Message
 	}
 
-	if len(grp) == 1 {
-		return message
-	} else {
-		return fmt.Sprintf("%d edits (%s, ...)", len(grp), message)
-	}
-}
-
-func (grp revisionGroup) author() *feeds.Author {
 	author := grp[0].Username
-	for _, rev := range grp[1:] {
-		// if they don't all have the same author, return nil
-		if rev.Username != author {
-			return nil
-		}
+	if len(grp) == 1 {
+		return fmt.Sprintf("%s by %s", message, author)
+	} else {
+		return fmt.Sprintf("%d edits by %s (%s, ...)", len(grp), author, message)
 	}
-	return &feeds.Author{Name: author}
 }
 
 func (grp revisionGroup) descriptionForFeed(order FeedGroupOrder) string {
@@ -204,10 +195,10 @@ const (
 
 func parseFeedGroupOrder(query url.Values) (FeedGroupOrder, error) {
 	switch query.Get("order") {
-	case "oldtonew":
-		return OldToNew, nil
-	case "newtoold":
+	case "old-to-new":
 	case "":
+		return OldToNew, nil
+	case "new-to-old":
 		return NewToOld, nil
 	}
 	return 0, errors.New("unknown order")

@@ -68,7 +68,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 	return revs, err
 }
 
-// Return time like mm-dd 13:42
+// Return time like dd — 13:42
 func (rev *Revision) timeToDisplay() string {
 	D := rev.Time.Day()
 	h, m, _ := rev.Time.Clock()
