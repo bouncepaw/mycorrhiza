@@ -1,6 +1,9 @@
-.non-existent-hypha { }
-.non-existent-hypha__ways { display: flex; flex-direction: column; width: 100%; margin: 0 0 1rem 0;}
-.non-existent-hypha__way { border: 1px #999 solid; border-radius: .25rem; padding: .25rem; }
+.non-existent-hypha__way {
+	margin-top: 0.5rem;
+	margin-bottom: 2rem;
+	padding-right: .25rem;
+}
+
 .non-existent-hypha__title { margin-bottom: 1rem; }
 .non-existent-hypha__subtitle { margin: 0; }
 
@@ -32,9 +35,16 @@ header { width: 100%; margin-bottom: 1rem; }
 }
 
 @media screen and (min-width: 500px) {
-	.non-existent-hypha__way { flex: 1; margin-right: .5rem; }
-	.non-existent-hypha__ways { flex-direction: row; }
-	.non-existent-hypha__way:last-child { margin-right: 0; }
+	.non-existent-hypha__way {
+		float: left;
+		width: 50%;
+	}
+
+	.non-existent-hypha__ways::after {
+		content: '';
+		display: block;
+		clear: both;
+	}
 }
 
 /* No longer a phone but still small screen: center main */
