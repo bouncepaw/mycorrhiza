@@ -252,6 +252,13 @@ table { border: 0; background-color: #444444; color: #ddd; }
 mark { background: rgba(130, 80, 30, 5); color: inherit; }
 }
 
+/*
+ * Shortcuts
+ */
+template {
+	display: none;
+}
+
 kbd {
 	display: inline-block;
 	min-width: 1.5ch;
