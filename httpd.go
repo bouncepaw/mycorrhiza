@@ -30,7 +30,7 @@ func serveHTTP(handler http.Handler) {
 func startUnixSocketServer(server *http.Server, socketFile string) {
 	err := os.Remove(socketFile)
 	if err != nil {
-		log.Println("Failed to remove the socket file", socketFile)
+		log.Printf("Failed to remove the socket file %s, err: %v\n", socketFile, err)
 	}
 
 	listener, err := net.Listen("unix", socketFile)
