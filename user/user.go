@@ -97,8 +97,8 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right, _ := groupRight[user.Group]
-	minimalRight, _ := minimalRights[route]
+	right := groupRight[user.Group]
+	minimalRight := minimalRights[route]
 	if right >= minimalRight {
 		return true
 	}
