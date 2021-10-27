@@ -23,7 +23,7 @@ func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User, lc *l
 		return lc.Get("ui.rename_noname"), errors.New(lc.Get("ui.rename_noname_tip"))
 	}
 
-	if !hyphae.HyphaPattern.MatchString(nh.Name) {
+	if !hyphae.IsValidName(nh.Name) {
 		rejectRenameLog(oh, u, fmt.Sprintf("new name ‘%s’ invalid", nh.Name))
 		return lc.Get("ui.rename_badname"), errors.New(lc.Get("ui.rename_badname_tip", &l18n.Replacements{"chars": "<code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>"}))
 	}

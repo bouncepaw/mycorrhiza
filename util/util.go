@@ -6,7 +6,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 
 	"github.com/bouncepaw/mycomarkup/v2/util"
@@ -63,33 +62,6 @@ func BeautifulName(uglyName string) string {
 // CanonicalName makes sure the `name` is canonical. A name is canonical if it is lowercase and all spaces are replaced with underscores.
 func CanonicalName(name string) string {
 	return util.CanonicalName(name)
-}
-
-// hyphaPattern is a pattern which all hypha names must match.
-var hyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
-
-var usernamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}/]+`)
-
-// IsCanonicalName checks if the `name` is canonical.
-func IsCanonicalName(name string) bool {
-	return hyphaPattern.MatchString(name)
-}
-
-// IsPossibleUsername is true if the given username is ok. Same as IsCanonicalName, but cannot have / in it and cannot be equal to "anon" or "wikimind"
-func IsPossibleUsername(username string) bool {
-	return username != "anon" && username != "wikimind" && usernameIsWhiteListed(username) && usernamePattern.MatchString(strings.TrimSpace(username))
-}
-
-func usernameIsWhiteListed(username string) bool {
-	if !cfg.UseWhiteList {
-		return true
-	}
-	for _, allowedUsername := range cfg.WhiteList {
-		if allowedUsername == username {
-			return true
-		}
-	}
-	return false
 }
 
 // HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
