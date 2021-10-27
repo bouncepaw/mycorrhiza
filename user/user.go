@@ -99,10 +99,8 @@ func (user *User) CanProceed(route string) bool {
 
 	right := groupRight[user.Group]
 	minimalRight := minimalRights[route]
-	if right >= minimalRight {
-		return true
-	}
-	return false
+
+	return right >= minimalRight
 }
 
 func (user *User) isCorrectPassword(password string) bool {
