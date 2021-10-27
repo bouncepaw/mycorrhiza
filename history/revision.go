@@ -21,51 +21,94 @@ type Revision struct {
 	hyphaeAffectedBuf []string
 }
 
+// gitLog calls `git log` and parses the results.
+func gitLog(args ...string) ([]Revision, error) {
+	args = append([]string{
+		"log", "--abbrev-commit", "--no-merges",
+		"--pretty=format:%h\t%ae\t%at\t%s",
+	}, args...)
+	out, err := silentGitsh(args...)
+	if err != nil {
+		return nil, err
+	}
+
+	outStr := out.String()
+	if outStr == "" {
+		// if there are no commits to return
+		return nil, nil
+	}
+
+	var revs []Revision
+	for _, line := range strings.Split(outStr, "\n") {
+		revs = append(revs, parseRevisionLine(line))
+	}
+	return revs, nil
+}
+
+type recentChangesStream struct {
+	currHash string
+}
+
+func newRecentChangesStream() recentChangesStream {
+	// next returns the next n revisions from the stream, ordered most recent first.
+	// If there are less than n revisions remaining, it will return only those.
+	return recentChangesStream{currHash: ""}
+}
+
+func (stream *recentChangesStream) next(n int) []Revision {
+	args := []string{"--max-count=" + strconv.Itoa(n)}
+	if stream.currHash == "" {
+		args = append(args, "HEAD")
+	} else {
+		// currHash is the last revision from the last call, so skip it
+		args = append(args, "--skip=1", stream.currHash)
+	}
+	// I don't think this can fail, so ignore the error
+	res, _ := gitLog(args...)
+	if len(res) != 0 {
+		stream.currHash = res[len(res)-1].Hash
+	}
+	return res
+}
+
+// recentChangesIterator returns a function that returns successive revisions from the stream.
+// It buffers revisions to avoid calling git every time.
+func (stream recentChangesStream) iterator() func() (Revision, bool) {
+	var buf []Revision
+	return func() (Revision, bool) {
+		if len(buf) == 0 {
+			// no real reason to choose 30, just needs some large number
+			buf = stream.next(30)
+			if len(buf) == 0 {
+				// revs has no revisions left
+				return Revision{}, true
+			}
+		}
+		rev := buf[0]
+		buf = buf[1:]
+		return rev, false
+	}
+}
+
 // RecentChanges gathers an arbitrary number of latest changes in form of revisions slice, ordered most recent first.
 func RecentChanges(n int) []Revision {
-	var (
-		out, err = silentGitsh(
-			"log", "--oneline", "--no-merges",
-			"--pretty=format:%h\t%ae\t%at\t%s",
-			"--max-count="+strconv.Itoa(n),
-		)
-		revs []Revision
-	)
-	if err == nil {
-		for _, line := range strings.Split(out.String(), "\n") {
-			revs = append(revs, parseRevisionLine(line))
-		}
-	}
+	stream := newRecentChangesStream()
+	revs := stream.next(n)
 	log.Printf("Found %d recent changes", len(revs))
 	return revs
+}
+
+// Revisions returns slice of revisions for the given hypha name, ordered most recent first.
+func Revisions(hyphaName string) ([]Revision, error) {
+	revs, err := gitLog("--", hyphaName+".*")
+	log.Printf("Found %d revisions for ‘%s’\n", len(revs), hyphaName)
+	return revs, err
 }
 
 // FileChanged tells you if the file has been changed since the last commit.
 func FileChanged(path string) bool {
 	_, err := gitsh("diff", "--exit-code", path)
 	return err != nil
-}
-
-// Revisions returns slice of revisions for the given hypha name, ordered most recent first.
-func Revisions(hyphaName string) ([]Revision, error) {
-	var (
-		out, err = silentGitsh(
-			"log", "--oneline", "--no-merges",
-			// Hash, author email, author time, commit msg separated by tab
-			"--pretty=format:%h\t%ae\t%at\t%s",
-			"--", hyphaName+".*",
-		)
-		revs []Revision
-	)
-	if err == nil {
-		for _, line := range strings.Split(out.String(), "\n") {
-			if line != "" {
-				revs = append(revs, parseRevisionLine(line))
-			}
-		}
-	}
-	log.Printf("Found %d revisions for ‘%s’\n", len(revs), hyphaName)
-	return revs, err
 }
 
 // Return time like dd — 13:42

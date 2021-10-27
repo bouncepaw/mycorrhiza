@@ -12,14 +12,16 @@ import (
 	"github.com/gorilla/feeds"
 )
 
+const changeGroupMaxSize = 100
+
 func recentChangesFeed(opts FeedOptions) *feeds.Feed {
 	feed := &feeds.Feed{
 		Title:       cfg.WikiName + " (recent changes)",
 		Link:        &feeds.Link{Href: cfg.URL},
-		Description: "List of 30 recent changes on the wiki",
+		Description: fmt.Sprintf("List of %d recent changes on the wiki", changeGroupMaxSize),
 		Updated:     time.Now(),
 	}
-	revs := RecentChanges(30)
+	revs := newRecentChangesStream()
 	groups := opts.grouping.Group(revs)
 	for _, grp := range groups {
 		item := grp.feedItem(opts)
@@ -43,6 +45,7 @@ func RecentChangesJSON(opts FeedOptions) (string, error) {
 	return recentChangesFeed(opts).ToJSON()
 }
 
+// revisionGroup is a slice of revisions, ordered most recent first.
 type revisionGroup []Revision
 
 func newRevisionGroup(rev Revision) revisionGroup {
@@ -70,25 +73,34 @@ func groupRevisionsByMonth(revs []Revision) (res []revisionGroup) {
 	return res
 }
 
-// groupRevisionsByPeriodFromNow groups close-together revisions.
+// groupRevisionsByPeriodFromNow groups close-together revisions and returns the first changeGroupMaxSize (30) groups.
 // If two revisions happened within period of each other, they are put in the same group.
-func groupRevisionsByPeriod(revs []Revision, period time.Duration) (res []revisionGroup) {
-	if len(revs) == 0 {
+func groupRevisionsByPeriod(revs recentChangesStream, period time.Duration) (res []revisionGroup) {
+	nextRev := revs.iterator()
+	rev, empty := nextRev()
+	if empty {
 		return res
 	}
 
-	currTime := revs[0].Time
-	currGroup := newRevisionGroup(revs[0])
-	for _, rev := range revs[1:] {
+	currTime := rev.Time
+	currGroup := newRevisionGroup(rev)
+	for {
+		rev, done := nextRev()
+		if done {
+			return append(res, currGroup)
+		}
+
 		if currTime.Sub(rev.Time) < period && currGroup[0].Username == rev.Username {
 			currGroup.addRevision(rev)
 		} else {
 			res = append(res, currGroup)
+			if len(res) == changeGroupMaxSize {
+				return res
+			}
 			currGroup = newRevisionGroup(rev)
 		}
 		currTime = rev.Time
 	}
-	return res
 }
 
 func (grp revisionGroup) feedItem(opts FeedOptions) feeds.Item {
@@ -154,7 +166,7 @@ func ParseFeedOptions(query url.Values) (FeedOptions, error) {
 }
 
 type FeedGrouping interface {
-	Group([]Revision) []revisionGroup
+	Group(recentChangesStream) []revisionGroup
 }
 
 func parseFeedGrouping(query url.Values) (FeedGrouping, error) {
@@ -171,8 +183,8 @@ func parseFeedGrouping(query url.Values) (FeedGrouping, error) {
 
 type NormalFeedGrouping struct{}
 
-func (NormalFeedGrouping) Group(revs []Revision) (res []revisionGroup) {
-	for _, rev := range revs {
+func (NormalFeedGrouping) Group(revs recentChangesStream) (res []revisionGroup) {
+	for _, rev := range revs.next(changeGroupMaxSize) {
 		res = append(res, newRevisionGroup(rev))
 	}
 	return res
@@ -182,7 +194,7 @@ type PeriodFeedGrouping struct {
 	Period time.Duration
 }
 
-func (g PeriodFeedGrouping) Group(revs []Revision) (res []revisionGroup) {
+func (g PeriodFeedGrouping) Group(revs recentChangesStream) (res []revisionGroup) {
 	return groupRevisionsByPeriod(revs, g.Period)
 }
 
@@ -195,8 +207,7 @@ const (
 
 func parseFeedGroupOrder(query url.Values) (FeedGroupOrder, error) {
 	switch query.Get("order") {
-	case "old-to-new":
-	case "":
+	case "", "old-to-new":
 		return OldToNew, nil
 	case "new-to-old":
 		return NewToOld, nil
