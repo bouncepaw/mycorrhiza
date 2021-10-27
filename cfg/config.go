@@ -97,8 +97,8 @@ type Authorization struct {
 
 // Telegram is the section of Config that sets Telegram authorization.
 type Telegram struct {
-	TelegramBotToken string `comment:"Token of your bot.`
-	TelegramBotName  string `comment:"Username of your bot, sans @.`
+	TelegramBotToken string `comment:"Token of your bot."`
+	TelegramBotName  string `comment:"Username of your bot, sans @."`
 }
 
 // ReadConfigFile reads a config on the given path and stores the
