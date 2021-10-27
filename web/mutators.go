@@ -146,7 +146,7 @@ func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
 	http.Redirect(w, rq, "/hypha/"+newName, http.StatusSeeOther)
 }
 
-// handlerEdit shows the edit form. It doesn't edit anything actually.
+// handlerEdit shows the edit form. It doesn't edit anything, actually.
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (

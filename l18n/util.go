@@ -59,7 +59,7 @@ func (t Localizer) GetPlural(key string, n int, replacements ...*Replacements) s
 		}
 	}
 
-	// As in the original, we skip templating if have nothing to replace (however, it's strange case for plurals)
+	// As in the original, we skip templating if we have nothing to replace (however, it's strange case for plurals)
 	if strings.Index(str, "}}") == -1 {
 		return str
 	}
@@ -77,7 +77,7 @@ func (t Localizer) GetPlural64(key string, n int64, replacements ...*Replacement
 		}
 	}
 
-	// As in the original, we skip templating if have nothing to replace (however, it's strange case for plurals)
+	// As in the original, we skip templating if we have nothing to replace (however, it's strange case for plurals)
 	if strings.Index(str, "}}") == -1 {
 		return str
 	}

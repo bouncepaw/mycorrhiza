@@ -117,7 +117,7 @@ func (rev *Revision) hyphaeAffected() (hyphae []string) {
 	return hyphae
 }
 
-// TimeString returns a human readable time representation.
+// TimeString returns a human-readable time representation.
 func (rev Revision) TimeString() string {
 	return rev.Time.Format(time.RFC822)
 }
