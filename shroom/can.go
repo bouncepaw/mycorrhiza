@@ -14,7 +14,7 @@ func canFactory(
 	dispatcher func(*hyphae.Hypha, *user.User, *l18n.Localizer) (string, string),
 	noRightsMsg string,
 	notExistsMsg string,
-	careAboutExistence bool,
+	mustExist bool,
 ) func(*user.User, *hyphae.Hypha, *l18n.Localizer) (string, error) {
 	return func(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (string, error) {
 		if !u.CanProceed(action) {
@@ -22,7 +22,7 @@ func canFactory(
 			return lc.Get("ui.act_no_rights"), errors.New(lc.Get(noRightsMsg))
 		}
 
-		if careAboutExistence && !h.Exists {
+		if mustExist && !h.Exists {
 			rejectLogger(h, u, "does not exist")
 			return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
 		}
