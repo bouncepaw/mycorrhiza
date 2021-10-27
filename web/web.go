@@ -28,7 +28,7 @@ func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, title,
 	log.Println(errMsg, "for", name)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(status)
-	fmt.Fprint(
+	_, err := fmt.Fprint(
 		w,
 		views.BaseHTML(
 			title,
@@ -42,6 +42,9 @@ func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, title,
 			user.EmptyUser(),
 		),
 	)
+	if err != nil {
+		log.Println("an error occurred in httpErr function:", err)
+	}
 }
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
@@ -49,10 +52,19 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
 		if err != nil {
+			log.Println("an error occurred in handlerStyle function:", err)
 			continue
 		}
-		io.Copy(w, file)
-		file.Close()
+		_, err = io.Copy(w, file)
+		if err != nil {
+			log.Println("an error occurred in handlerStyle function:", err)
+			continue
+		}
+		err = file.Close()
+		if err != nil {
+			log.Println("an error occurred in handlerStyle function:", err)
+			continue
+		}
 	}
 }
 
@@ -60,7 +72,10 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.BaseHTML(lc.Get("ui.users_title"), views.UserListHTML(lc), lc, user.FromRequest(rq))))
+	_, err := w.Write([]byte(views.BaseHTML(lc.Get("ui.users_title"), views.UserListHTML(lc), lc, user.FromRequest(rq))))
+	if err != nil {
+		log.Println("an error occurred in handlerUserList function:", err)
+	}
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
@@ -68,10 +83,19 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 
 	file, err := static.FS.Open("robots.txt")
 	if err != nil {
+		log.Println("an error occurred in handlerRobotsTxt function:", err)
 		return
 	}
-	io.Copy(w, file)
-	file.Close()
+	_, err = io.Copy(w, file)
+	// Even if we failed copying stuff into the response writer we can try close file anyway
+	if err != nil {
+		log.Println("an error occurred in handlerRobotsTxt function:", err)
+	}
+	err = file.Close()
+	if err != nil {
+		log.Println("an error occurred in handlerRobotsTxt function:", err)
+		return
+	}
 }
 
 // Handler initializes and returns the HTTP router based on the configuration.
@@ -143,7 +167,10 @@ func groupMiddleware(group string) func(http.Handler) http.Handler {
 			// authorization code in this project.
 
 			w.WriteHeader(http.StatusForbidden)
-			io.WriteString(w, "403 forbidden")
+			_, err := io.WriteString(w, "403 forbidden")
+			if err != nil {
+				log.Println("an error occurred in groupMiddleware function:", err)
+			}
 		})
 	}
 }

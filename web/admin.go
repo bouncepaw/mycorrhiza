@@ -36,7 +36,10 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	var lc = l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, views.BaseHTML(lc.Get("admin.panel_title"), views.AdminPanelHTML(lc), lc, user.FromRequest(rq)))
+	_, err := io.WriteString(w, views.BaseHTML(lc.Get("admin.panel_title"), views.AdminPanelHTML(lc), lc, user.FromRequest(rq)))
+	if err != nil {
+		log.Println("an error occurred in handlerAdmin function:", err)
+	}
 }
 
 // handlerAdminShutdown kills the wiki.
@@ -74,7 +77,10 @@ func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 	html = views.BaseHTML(lc.Get("admin.users_title"), html, lc, user.FromRequest(rq))
 
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	io.WriteString(w, html)
+	_, err := io.WriteString(w, html)
+	if err != nil {
+		log.Println("an error occurred in handlerAdminUsers function:", err)
+	}
 }
 
 func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
@@ -116,7 +122,10 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	io.WriteString(w, html)
+	_, err := io.WriteString(w, html)
+	if err != nil {
+		log.Println("an error occurred in handlerAdminUserEdit function:", err)
+	}
 }
 
 func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
@@ -146,7 +155,10 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	io.WriteString(w, html)
+	_, err := io.WriteString(w, html)
+	if err != nil {
+		log.Println("an error occurred in handlerAdminUSerDelete function:", err)
+	}
 }
 
 func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
@@ -157,7 +169,10 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		html = views.BaseHTML(lc.Get("admin.newuser_title"), html, lc, user.FromRequest(rq))
 
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-		io.WriteString(w, html)
+		_, err := io.WriteString(w, html)
+		if err != nil {
+			log.Println("an error occurred in handlerAdminUserNew function, in get method:", err)
+		}
 	} else if rq.Method == http.MethodPost {
 		// Create a user
 		f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
@@ -170,7 +185,10 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-			io.WriteString(w, html)
+			_, err := io.WriteString(w, html)
+			if err != nil {
+				log.Println("an error occurred in handlerAdminUSerNew function, in post method:", err)
+			}
 		} else {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		}

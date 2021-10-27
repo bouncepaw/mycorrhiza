@@ -65,11 +65,17 @@ func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func() (st
 	if content, err := f(); err != nil {
 		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "An error while generating "+name+": "+err.Error())
+		_, err := fmt.Fprint(w, "An error while generating "+name+": "+err.Error())
+		if err != nil {
+			log.Println("an error occurred in genericHandlerOfFeeds function:", err)
+		}
 	} else {
 		w.Header().Set("Content-Type", fmt.Sprintf("%s;charset=utf-8", contentType))
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, content)
+		_, err := fmt.Fprint(w, content)
+		if err != nil {
+			log.Println("an error occurred in genericHandlerOfFeeds function:", err)
+		}
 	}
 }
 

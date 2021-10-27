@@ -36,7 +36,10 @@ func initAuth(r *mux.Router) {
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
+	_, err := io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
+	if err != nil {
+		log.Println("an error occurred in handlerLock function:", err)
+	}
 }
 
 // handlerRegister both displays the register form (GET) and registers users (POST).
@@ -47,7 +50,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	if rq.Method == http.MethodGet {
-		io.WriteString(
+		_, err := io.WriteString(
 			w,
 			views.BaseHTML(
 				lc.Get("auth.register_title"),
@@ -56,6 +59,9 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 				user.FromRequest(rq),
 			),
 		)
+		if err != nil {
+			log.Println("an error occurred in handlerRegister function, in get method:", err)
+		}
 	} else if rq.Method == http.MethodPost {
 		var (
 			username = rq.PostFormValue("username")
@@ -66,7 +72,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			log.Printf("Failed to register ‘%s’: %s", username, err.Error())
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(
+			_, err := fmt.Fprint(
 				w,
 				views.BaseHTML(
 					lc.Get("auth.register_title"),
@@ -79,6 +85,9 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 					user.FromRequest(rq),
 				),
 			)
+			if err != nil {
+				log.Println("an error occurred in handlerRegister function, in post method:", err)
+			}
 		} else {
 			log.Printf("Successfully registered ‘%s’", username)
 			user.LoginDataHTTP(w, rq, username, password)
@@ -102,7 +111,10 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		log.Println("Unknown user tries to log out")
 		w.WriteHeader(http.StatusForbidden)
 	}
-	w.Write([]byte(views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u)))
+	_, err := w.Write([]byte(views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u)))
+	if err != nil {
+		log.Println("an error occurred in handlerLogout function:", err)
+	}
 }
 
 // handlerLogoutConfirm logs the user out.
@@ -123,7 +135,10 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 	}
 	lc := l18n.FromRequest(rq)
-	w.Write([]byte(views.BaseHTML(lc.Get("auth.login_title"), views.LoginHTML(lc), lc, user.EmptyUser())))
+	_, err := w.Write([]byte(views.BaseHTML(lc.Get("auth.login_title"), views.LoginHTML(lc), lc, user.EmptyUser())))
+	if err != nil {
+		log.Println("an error occurred in handlerLogin function:", err)
+	}
 }
 
 func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
@@ -155,7 +170,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		log.Printf("Failed to register ‘%s’ using Telegram: %s", username, err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(
+		_, err := fmt.Fprint(
 			w,
 			views.BaseHTML(
 				lc.Get("ui.error"),
@@ -169,6 +184,9 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 				user.FromRequest(rq),
 			),
 		)
+		if err != nil {
+			log.Println("an error occurred in handlerTelegramLogin function:", err)
+		}
 		return
 	}
 
@@ -176,7 +194,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	if errmsg != "" {
 		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, errmsg)
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(
+		_, err := fmt.Fprint(
 			w,
 			views.BaseHTML(
 				"Error",
@@ -190,6 +208,9 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 				user.FromRequest(rq),
 			),
 		)
+		if err != nil {
+			log.Println("an error occurred in handlerTelegramLogin function:", err)
+		}
 		return
 	}
 	log.Printf("Authorize ‘%s’ from Telegram", username)
@@ -208,7 +229,10 @@ func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
 		err      = user.LoginDataHTTP(w, rq, username, password)
 	)
 	if err != "" {
-		w.Write([]byte(views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser())))
+		_, err := w.Write([]byte(views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser())))
+		if err != nil {
+			log.Println("an error occurred in handlerLoginData function:", err)
+		}
 	} else {
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
 	}
