@@ -174,7 +174,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 
 	errmsg := user.LoginDataHTTP(w, rq, username, "")
 	if errmsg != "" {
-		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, err.Error())
+		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, errmsg)
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(
 			w,
@@ -183,7 +183,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
 					lc.Get("auth.error_telegram"),
-					err.Error(),
+					errmsg,
 					lc.Get("auth.go_login"),
 				),
 				lc,
