@@ -82,7 +82,7 @@ func SaveUserDatabase() error {
 }
 
 func dumpUserCredentials() error {
-	userList := []*User{}
+	var userList []*User
 
 	// TODO: lock the map during saving to prevent corruption
 	for u := range YieldUsers() {
