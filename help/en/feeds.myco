@@ -1,0 +1,11 @@
+# Help: Feeds
+Mycorrhiza Wiki has RSS, Atom, and JSON feeds to track the latest changes on the wiki.
+These feeds are linked on the [[/recent-changes | recent changes page]].
+
+These feeds have some customization options:
+* **period** If the period option is set to a length of time (5m, 24h, etc.), edits by the same author that happen within this time of each other will be grouped into one item in the feed.
+* **order** Can be set to `old-to-now` (default) or `new-to-old`. This determines what order edits in groups will be shown in in your feed.
+
+URLs for feeds using these options look like this:
+* `/recent-changes-rss?period=1h`
+* `/recent-changes-atom?period=1h&order=old-to-new`

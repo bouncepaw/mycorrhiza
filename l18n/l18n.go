@@ -102,6 +102,7 @@ var localizations = map[string]string{
 	"en.help.empty_error_link":      "contributing",
 	"en.help.empty_error_title":     "This entry does not exist!",
 	"en.help.entry_not_found":       "Entry not found",
+	"en.help.feeds":                 "Feeds",
 	"en.help.hypha":                 "Hypha",
 	"en.help.interface":             "Interface",
 	"en.help.lock":                  "Lock",
