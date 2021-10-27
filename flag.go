@@ -20,11 +20,14 @@ import (
 
 // printHelp prints the help message.
 func printHelp() {
-	fmt.Fprintf(
+	_, err := fmt.Fprintf(
 		flag.CommandLine.Output(),
 		"Usage: %s WIKI_PATH\n",
 		os.Args[0],
 	)
+	if err != nil {
+		log.Println("an error occurred in printHelp function:", err)
+	}
 	flag.PrintDefaults()
 }
 

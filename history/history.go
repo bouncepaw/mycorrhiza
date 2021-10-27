@@ -49,8 +49,14 @@ func InitGitRepo() {
 	}
 	if !isGitRepo {
 		log.Println("Initializing Git repo at", files.HyphaeDir())
-		gitsh("init")
-		gitsh("config", "core.quotePath", "false")
+		_, err := gitsh("init")
+		if err != nil {
+			log.Println("an error occurred in InitGitRepo function:", err)
+		}
+		_, err = gitsh("config", "core.quotePath", "false")
+		if err != nil {
+			log.Println("an error occurred in InitGitRepo function:", err)
+		}
 	}
 }
 
