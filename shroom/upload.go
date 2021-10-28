@@ -72,8 +72,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		originalFullPath = &h.TextPath
 		originalText     = "" // for backlink update
 	)
-	// Reject if the path is outside the hyphae dir
-	if !strings.HasPrefix(fullPath, files.HyphaeDir()) {
+	if !isValidPath(fullPath) || !hyphae.IsValidName(h.Name) {
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
@@ -109,4 +108,8 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		hyphae.BacklinksOnEdit(h, originalText)
 	}
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
+}
+
+func isValidPath(pathname string) bool {
+	return strings.HasPrefix(pathname, files.HyphaeDir())
 }

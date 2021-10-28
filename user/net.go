@@ -44,7 +44,7 @@ func Register(username, password, group, source string, force bool) error {
 	username = util.CanonicalName(username)
 
 	switch {
-	case !util.IsPossibleUsername(username):
+	case !IsValidUsername(username):
 		return fmt.Errorf("illegal username ‘%s’", username)
 	case !ValidGroup(group):
 		return fmt.Errorf("invalid group ‘%s’", group)
