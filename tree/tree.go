@@ -96,7 +96,7 @@ func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
 		wg.Done()
 	}()
 	go func() {
-		children = figureOutChildren(hyphaName, true).children
+		children = figureOutChildren(hyphaName).children
 		wg.Done()
 	}()
 	wg.Wait()
@@ -124,7 +124,7 @@ type child struct {
 	children []child
 }
 
-func figureOutChildren(hyphaName string, exists bool) child {
+func figureOutChildren(hyphaName string) child {
 	var (
 		descPrefix = hyphaName + "/"
 		child      = child{hyphaName, true, make([]child, 0)}
