@@ -2,10 +2,38 @@
 Mycorrhiza Wiki has RSS, Atom, and JSON feeds to track the latest changes on the wiki.
 These feeds are linked on the [[/recent-changes | recent changes page]].
 
-These feeds have some customization options:
-* **period** If the period option is set to a length of time (5m, 24h, etc.), edits by the same author that happen within this time of each other will be grouped into one item in the feed.
-* **order** Can be set to `old-to-now` (default) or `new-to-old`. This determines what order edits in groups will be shown in in your feed.
+## Options
+These feeds have options to combine related changes into groups:
+* {
+    **period** Can be set to lengths of time like `5m`, `24h`, etc.
+    Edits by the same author that happen within this time of each other can be grouped into one item in the feed.
+}
+* {
+    **same** Can be set to `author`, `message`, or `none`.
+    Edits will only be grouped together if they have the same author or message. By default, edits need to have the same author and message. If it is `none`, all edits can be grouped.
+}
+* {
+    **order** Can be set to `old-to-now` (default) or `new-to-old`.
+    This determines what order edits in groups will be shown in in your feed.
+}
 
+If none of these options are set, changes will never be grouped.
+
+## Examples
 URLs for feeds using these options look like this:
-* `/recent-changes-rss?period=1h`
-* `/recent-changes-atom?period=1h&order=old-to-new`
+* {
+    `/recent-changes-rss?period=1h`
+    Changes within one hour of each other with the same author and message will be grouped together.
+}
+* {
+    `/recent-changes-atom?period=1h&order=new-to-old`
+    Same as the last one, but the groups will be shown in the opposite order.
+}
+* {
+    `/recent-changes-atom?period=1h&same=none`
+    Changes within one hour of each other will be grouped together, even with different authors and messages.
+}
+* {
+    `/recent-changes-atom?same=author&same=message`
+    Changes with the same author and message will be grouped together no matter how much time passes between them.
+}
