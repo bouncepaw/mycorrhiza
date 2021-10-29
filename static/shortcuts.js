@@ -2,7 +2,7 @@
     const $ = document.querySelector.bind(document);
     const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...args));
 
-    const isMac = /Mac/.test(navigator.platform);
+    const isMac = /Macintosh/.test(window.navigator.userAgent);
 
     function keyEventToShortcut(event) {
         let elideShift = event.key.toUpperCase() === event.key && event.shiftKey;
