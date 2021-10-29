@@ -263,7 +263,9 @@
                         listItem.appendChild(shortcutColumn);
                     }
 
-                    shortcutsGroup.appendChild(list);
+                    if (shortcutsGroup) {
+                        shortcutsGroup.appendChild(list);
+                    }
                 }
             }
         }
