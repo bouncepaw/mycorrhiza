@@ -97,12 +97,10 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right, _ := groupRight[user.Group]
-	minimalRight, _ := minimalRights[route]
-	if right >= minimalRight {
-		return true
-	}
-	return false
+	right := groupRight[user.Group]
+	minimalRight := minimalRights[route]
+
+	return right >= minimalRight
 }
 
 func (user *User) isCorrectPassword(password string) bool {
