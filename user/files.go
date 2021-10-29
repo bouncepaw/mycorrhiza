@@ -82,7 +82,7 @@ func SaveUserDatabase() error {
 }
 
 func dumpUserCredentials() error {
-	userList := []*User{}
+	var userList []*User
 
 	// TODO: lock the map during saving to prevent corruption
 	for u := range YieldUsers() {
@@ -119,5 +119,8 @@ func dumpTokens() {
 		log.Println(err)
 		return
 	}
-	os.WriteFile(files.TokensJSON(), blob, 0666)
+	err = os.WriteFile(files.TokensJSON(), blob, 0666)
+	if err != nil {
+		log.Println("an error occurred in dumpTokens function:", err)
+	}
 }
