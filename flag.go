@@ -74,7 +74,7 @@ func createAdminCommand(name string) {
 	user.InitUserDatabase()
 	log.SetOutput(wr)
 
-	handle := int(syscall.Stdin)
+	handle := syscall.Stdin
 	if !term.IsTerminal(handle) {
 		log.Fatal("error: not a terminal")
 	}
