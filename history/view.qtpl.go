@@ -39,11 +39,7 @@ func (rev Revision) StreamHyphaeLinksHTML(qw422016 *qt422016.Writer) {
 //line history/view.qtpl:10
 		}
 //line history/view.qtpl:10
-		qw422016.N().S(`<a href="/primitive-diff/`)
-//line history/view.qtpl:11
-		qw422016.E().S(rev.Hash)
-//line history/view.qtpl:11
-		qw422016.N().S(`/`)
+		qw422016.N().S(`<a href="/hypha/`)
 //line history/view.qtpl:11
 		qw422016.E().S(hyphaName)
 //line history/view.qtpl:11

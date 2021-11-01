@@ -8,7 +8,7 @@ HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by t
 		{% if i > 0 %}
 			<span aria-hidden="true">, </span>
 		{% endif %}
-		<a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s hyphaName %}</a>
+		<a href="/hypha/{%s hyphaName %}">{%s hyphaName %}</a>
 	{% endfor %}
 {% endstripspace %}
 {% endfunc %}

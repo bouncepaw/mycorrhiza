@@ -1,6 +1,6 @@
 .POSIX:
 include config.example.mk
-include config.mk
+-include config.mk
 
 run: build
 	./mycorrhiza ${WIKIPATH}
