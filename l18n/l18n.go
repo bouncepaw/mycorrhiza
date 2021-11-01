@@ -336,6 +336,7 @@ var localizations = map[string]string{
 	"ru.help.empty_error_link":      "репозитории",
 	"ru.help.empty_error_title":     "Этой страницы не существует!",
 	"ru.help.entry_not_found":       "Запись не найдена",
+	"ru.help.feeds":                 "Ленты",
 	"ru.help.hypha":                 "Гифа",
 	"ru.help.interface":             "Интерфейс",
 	"ru.help.lock":                  "Блокировка",
