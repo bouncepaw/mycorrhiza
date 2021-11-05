@@ -125,7 +125,7 @@ article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; font-family: 'Menlo', 'PT Mono', monospace; }
 article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
 .codeblock code {padding:0; font-size:15px;}
-.transclusion { border-radius: .25rem; margin-bottom: .25rem; }
+.transclusion { border-radius: .25rem; margin-bottom: .25rem; clear: both; }
 .transclusion_failed { padding: 0 .5rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
 .transclusion__link {display: block; float: right; text-align: right; font-style: italic; margin-right: .25rem; text-decoration: none;}
@@ -156,8 +156,7 @@ figcaption { padding-bottom: .5rem; }
 
 #new-name {width:100%;}
 
-
-.prevnext__el { display: inline-block; min-width: 40%; padding: .5rem; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; max-width: 49%; }
+.prevnext__el { display: inline-block; min-width: 40%; padding: .5rem 0; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; max-width: 49%; }
 .prevnext__prev { float: left; }
 .prevnext__next { float: right; text-align: right; }
 
@@ -195,7 +194,6 @@ p code,
 article .codeblock,
 .img-gallery_many-images,
 .recent-changes__entry,
-.prevnext__el,
 table,
 .transclusion_stand-out {
 	background-color: rgba(220, 220, 220, 0.5);
@@ -223,6 +221,7 @@ blockquote { border-left: 2px #999 solid; }
 .wikilink_new:visited {color:#a55858;}
 .navi-title { border-bottom: #eee 1px solid; }
 .upload-amnt { border: #eee 1px solid; }
+.prevnext { border-top: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
 .sibling-hyphae__link:hover { background-color: #eee; }
@@ -250,8 +249,7 @@ article code,
 article .codeblock,
 .img-gallery_many-images,
 .recent-changes__entry,
-.history__entry, 
-.prevnext__el, 
+.history__entry,
 .upload-amnt,
 textarea,
 table { border: 0; background-color: #444444; color: #ddd; }
