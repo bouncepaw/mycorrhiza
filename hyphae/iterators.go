@@ -79,7 +79,7 @@ func PathographicSort(src chan string) <-chan string {
 
 // Subhyphae returns slice of subhyphae.
 func (h *Hypha) Subhyphae() []*Hypha {
-	hyphae := []*Hypha{}
+	var hyphae []*Hypha
 	for subh := range YieldExistingHyphae() {
 		if strings.HasPrefix(subh.Name, h.Name+"/") {
 			hyphae = append(hyphae, subh)

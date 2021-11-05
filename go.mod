@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/valyala/quicktemplate v1.6.3
+	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b

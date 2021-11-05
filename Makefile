@@ -1,13 +1,15 @@
-WIKI=~/src/example-wiki
+.POSIX:
+include config.example.mk
+-include config.mk
 
 run: build
-	./mycorrhiza ${WIKI}
+	./mycorrhiza ${WIKIPATH}
 
 config_run: build
-	./mycorrhiza ${WIKI}
+	./mycorrhiza ${WIKIPATH}
 
 devconfig_run: build
-	./mycorrhiza ${WIKI}
+	./mycorrhiza ${WIKIPATH}
 
 build:
 	go generate

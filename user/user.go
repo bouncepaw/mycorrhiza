@@ -2,6 +2,8 @@ package user
 
 import (
 	"net/http"
+	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -9,7 +11,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User is a user (duh).
+var usernamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}/]+`)
+
+// User contains information about a given user required for identification.
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
 	Name         string    `json:"name"`
@@ -93,12 +97,10 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right, _ := groupRight[user.Group]
-	minimalRight, _ := minimalRights[route]
-	if right >= minimalRight {
-		return true
-	}
-	return false
+	right := groupRight[user.Group]
+	minimalRight := minimalRights[route]
+
+	return right >= minimalRight
 }
 
 func (user *User) isCorrectPassword(password string) bool {
@@ -114,6 +116,25 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 	if cfg.Locked && user.Group == "anon" {
 		http.Redirect(w, rq, "/lock", http.StatusSeeOther)
 		return true
+	}
+	return false
+}
+
+// IsValidUsername checks if the given username is valid.
+func IsValidUsername(username string) bool {
+	return username != "anon" && username != "wikimind" &&
+		usernamePattern.MatchString(strings.TrimSpace(username)) &&
+		usernameIsWhiteListed(username)
+}
+
+func usernameIsWhiteListed(username string) bool {
+	if !cfg.UseWhiteList {
+		return true
+	}
+	for _, allowedUsername := range cfg.WhiteList {
+		if allowedUsername == username {
+			return true
+		}
 	}
 	return false
 }

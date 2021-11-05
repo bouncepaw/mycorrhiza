@@ -7,40 +7,41 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User) (errtitle string, err error) {
+func canRenameThisToThat(oh *hyphae.Hypha, nh *hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errtitle string, err error) {
 	if nh.Exists {
 		rejectRenameLog(oh, u, fmt.Sprintf("name ‘%s’ taken already", nh.Name))
-		return "Name taken", fmt.Errorf("Hypha named <a href='/hypha/%[1]s'>%[1]s</a> already exists, cannot rename", nh.Name)
+		return lc.Get("ui.rename_taken"), fmt.Errorf(lc.Get("ui.rename_taken_tip", &l18n.Replacements{"name": "<a href='/hypha/%[1]s'>%[1]s</a>"}), nh.Name)
 	}
 
 	if nh.Name == "" {
 		rejectRenameLog(oh, u, "no new name given")
-		return "No name given", errors.New("No new name is given")
+		return lc.Get("ui.rename_noname"), errors.New(lc.Get("ui.rename_noname_tip"))
 	}
 
-	if !hyphae.HyphaPattern.MatchString(nh.Name) {
+	if !hyphae.IsValidName(nh.Name) {
 		rejectRenameLog(oh, u, fmt.Sprintf("new name ‘%s’ invalid", nh.Name))
-		return "Invalid name", errors.New("Invalid new name. Names cannot contain characters <code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>")
+		return lc.Get("ui.rename_badname"), errors.New(lc.Get("ui.rename_badname_tip", &l18n.Replacements{"chars": "<code>^?!:#@&gt;&lt;*|\"\\'&amp;%</code>"}))
 	}
 
 	return "", nil
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
-func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *user.User) (hop *history.Op, errtitle string) {
+func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	newHypha.Lock()
 	defer newHypha.Unlock()
 	hop = history.Operation(history.TypeRenameHypha)
 
-	if errtitle, err := CanRename(u, h); errtitle != "" {
+	if errtitle, err := CanRename(u, h, lc); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
-	if errtitle, err := canRenameThisToThat(h, newHypha, u); errtitle != "" {
+	if errtitle, err := canRenameThisToThat(h, newHypha, u, lc); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}

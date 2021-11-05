@@ -1,0 +1,55 @@
+{% import "fmt" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
+
+HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
+{% func (rev Revision) HyphaeLinksHTML() %}
+{% stripspace %}
+	{% for i, hyphaName := range rev.hyphaeAffected() %}
+		{% if i > 0 %}
+			<span aria-hidden="true">, </span>
+		{% endif %}
+		<a href="/hypha/{%s hyphaName %}">{%s hyphaName %}</a>
+	{% endfor %}
+{% endstripspace %}
+{% endfunc %}
+
+descriptionForFeed generates a good enough HTML contents for a web feed.
+{% func (rev *Revision) descriptionForFeed() %}
+<p><b>{%s rev.Message %}</b> (by {%s rev.Username %} at {%s rev.TimeString() %})</p>
+<p>Hyphae affected: {%= rev.HyphaeLinksHTML() %}</p>
+<pre><code>{%s rev.textDiff() %}</code></pre>
+{% endfunc %}
+
+WithRevisions returns an html representation of `revs` that is meant to be inserted in a history page.
+{% func WithRevisions(hyphaName string, revs []Revision) %}
+{% for _, grp := range groupRevisionsByMonth(revs) %}
+	{% code
+    currentYear := grp[0].Time.Year()
+    currentMonth := grp[0].Time.Month()
+    sectionId := fmt.Sprintf("%d-%d", currentYear, currentMonth)
+    %}
+<section class="history__month">
+	<a href="#{%s sectionId %}" class="history__month-anchor">
+		<h2 id="{%s sectionId %}" class="history__month-title">{%d currentYear %} {%s currentMonth.String() %}</h2>
+	</a>
+	<ul class="history__entries">
+        {% for _, rev := range grp %}
+            {%= rev.asHistoryEntry(hyphaName) %}
+        {% endfor %}
+	</ul>
+</section>
+{% endfor %}
+{% endfunc %}
+
+{% func (rev *Revision) asHistoryEntry(hyphaName string) %}
+<li class="history__entry">
+	<a class="history-entry" href="/rev/{%s rev.Hash %}/{%s hyphaName %}">
+        <time class="history-entry__time">{%s rev.timeToDisplay() %}</time>
+    </a>
+	<span class="history-entry__hash"><a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}</a></span>
+	<span class="history-entry__msg">{%s rev.Message %}</span>
+	{% if rev.Username != "anon" %}
+        <span class="history-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>
+    {% endif %}
+</li>
+{% endfunc %}

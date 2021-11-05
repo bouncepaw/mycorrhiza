@@ -176,6 +176,7 @@ It outputs a poorly formatted JSON, but it works and is valid.
 		<li>{%s lc.GetWithLocale(lang, "help.special_pages") %}
 			<ul>
 				<li><a href="/help/{%s lang %}/recent_changes">{%s lc.GetWithLocale(lang, "help.recent_changes") %}</a></li>
+				<li><a href="/help/{%s lang %}/feeds">{%s lc.GetWithLocale(lang, "help.feeds") %}</a></li>
 			</ul>
 		</li>
 		<li>{%s lc.GetWithLocale(lang, "help.configuration") %}

@@ -2,9 +2,6 @@
 {% import "path" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func TreeHTML() %}
-{% endfunc %}
-
 Subhyphae links are recursive. It may end up looking like that if drawn with
 pseudographics:
 ╔══════════════╗

@@ -2,15 +2,30 @@
 package hyphae
 
 import (
-	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"sync"
+
+	"github.com/bouncepaw/mycorrhiza/files"
 )
 
-// HyphaPattern is a pattern which all hyphae must match.
+// HyphaPattern is a pattern which all hyphae names must match.
 var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
+
+// IsValidName checks for invalid characters and path traversals.
+func IsValidName(hyphaName string) bool {
+	if !HyphaPattern.MatchString(hyphaName) {
+		return false
+	}
+	for _, segment := range strings.Split(hyphaName, "/") {
+		if segment == ".git" || segment == ".." {
+			return false
+		}
+	}
+	return true
+}
 
 // Hypha keeps vital information about a hypha
 type Hypha struct {

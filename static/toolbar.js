@@ -44,8 +44,8 @@ function selectionWrapper(cursorPosition, prefix, postfix = null, el = editTexta
             // selection is decorated, so we just cut it
             removing = true
             result = text.substring(cursorPosition, text.length - cursorPosition)
-        } else if ( (prefix == el.value.slice(start-cursorPosition, start)) &&
-                    (postfix == el.value.slice(end, end+cursorPosition)) ) {
+        } else if ( (prefix === el.value.slice(start-cursorPosition, start)) &&
+                    (postfix === el.value.slice(end, end+cursorPosition)) ) {
             // selection is surrounded by decorations
             removing = true
             result = text
