@@ -12,21 +12,26 @@ import (
 )
 
 func findSiblings(hyphaName string) []*sibling {
-	hyphaDir := ""
+	parentHyphaName := ""
 	if hyphaRawDir := path.Dir(hyphaName); hyphaRawDir != "." {
-		hyphaDir = hyphaRawDir
+		parentHyphaName = hyphaRawDir
 	}
 	var (
 		siblingsMap  = make(map[string]bool)
 		siblingCheck = func(h *hyphae.Hypha) hyphae.CheckResult {
-			// I don't like this double comparison, but it is only the way to circumvent some flickups
-			if strings.HasPrefix(h.Name, hyphaDir) && h.Name != hyphaDir && h.Name != hyphaName {
+			switch {
+			case h.Name == hyphaName, // Hypha is no sibling of itself
+				h.Name == parentHyphaName: // Parent hypha is no sibling of its child
+				return hyphae.CheckContinue
+			}
+			if (parentHyphaName != "" && strings.HasPrefix(h.Name, parentHyphaName+"/")) ||
+				(parentHyphaName == "") {
 				var (
-					rawSubPath = strings.TrimPrefix(h.Name, hyphaDir)[1:]
+					rawSubPath = strings.TrimPrefix(h.Name, parentHyphaName)[1:]
 					slashIdx   = strings.IndexRune(rawSubPath, '/')
 				)
 				if slashIdx > -1 {
-					var sibPath = h.Name[:slashIdx+len(hyphaDir)+1]
+					var sibPath = h.Name[:slashIdx+len(parentHyphaName)+1]
 					if _, exists := siblingsMap[sibPath]; !exists {
 						siblingsMap[sibPath] = false
 					}
