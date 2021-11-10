@@ -20,7 +20,7 @@ type User struct {
 	Group        string    `json:"group"`
 	Password     string    `json:"hashed_password"`
 	RegisteredAt time.Time `json:"registered_on"`
-	// Source is where the user from. Valid values: valid, telegram.
+	// Source is where the user from. Valid values: local, telegram.
 	Source string `json:"source"`
 	sync.RWMutex
 
