@@ -2,18 +2,14 @@
 include config.example.mk
 -include config.mk
 
-run: build
-	./mycorrhiza ${WIKIPATH}
-
-config_run: build
-	./mycorrhiza ${WIKIPATH}
-
-devconfig_run: build
-	./mycorrhiza ${WIKIPATH}
-
-build:
+mycorrhiza:
 	go generate
 	go build .
 
-test:
+run: mycorrhiza
+	./mycorrhiza ${WIKIPATH}
+
+check:
 	go test .
+
+.PHONY: mycorrhiza run check
