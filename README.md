@@ -13,7 +13,7 @@
 * **History of changes** for textual parts of hyphae. Every change is safely stored in [Git]. Web feeds for recent changes included!
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
 * **Support for [authorization].**
-* **[Opengraph] support.**
+* **[Open Graph] support.**
 * **Optional [Telegram] authentication.**
 
 Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatrix.org/show/mycorrhiza).
@@ -38,7 +38,7 @@ board][kanban] or on the [roadmap page].
 [authorization]: https://mycorrhiza.wiki/hypha/feature/authorization
 [Mycomarkup]: https://mycorrhiza.wiki/help/en/mycomarkup
 [Git]: https://mycorrhiza.wiki/hypha/integration/git
-[Opengraph]: https://mycorrhiza.wiki/hypha/standard/opengraph
+[Open Graph]: https://mycorrhiza.wiki/hypha/standard/opengraph
 [Telegram]: https://mycorrhiza.wiki/help/en/telegram
 
 [#mycorrhiza on irc.libera.chat]: irc://irc.libera.chat/#mycorrhiza
