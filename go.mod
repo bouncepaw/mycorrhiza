@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/bouncepaw/mycomarkup/v3 v3.2.2
-	github.com/chekoopa/go-localize v0.4.0
 	github.com/go-ini/ini v1.63.2
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
@@ -15,12 +14,9 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v0.4.1 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	golang.org/x/sys v0.0.0-20211109184856-51b60fd695b3 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 // Use this trick to test local Mycomarkup changes, replace the path with yours,
