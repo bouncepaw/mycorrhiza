@@ -275,7 +275,7 @@ sort.Strings(editors)
 	<section>
 		<h1>{%s lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName}) %}</h1>
 		<ul>
-			<li><b>{%s= lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}) %}</b> 1.6.0</li>
+			<li><b>{%s= lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}) %}</b> 1.7.0</li>
 		{%- if cfg.UseAuth -%}
 			<li><b>{%s lc.Get("ui.about_usercount") %}</b> {%dul user.Count() %}</li>
 			<li><b>{%s lc.Get("ui.about_homepage") %}</b> <a href="/">{%s cfg.HomeHypha %}</a></li>
