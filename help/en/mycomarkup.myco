@@ -378,15 +378,15 @@ Transclusion lines start with a reverse-rocket symbol (`<=`) followed by zero or
 === Selector
 The //selector// specifies what part of the //target// to transclude. The parser checks for these words:
 
-* **full.** Transclude the whole document.
-* **text.** Transclude all text.
-* **attachment.** Transclude attachment only.
-* **description.** Transclude first paragraph only.
-* **overview.** Short for both **attachment** and **description**.
+* `full` Transclude the whole document.
+* `text` Transclude all text.
+* `attachment` Transclude attachment only.
+* `description` Transclude first paragraph only.
+* `overview` Short for both `attachment` and `description`.
 
-If only one of them is found, the corresponding part is transcluded. If several are found, the bigger transclusion is done. If none are found, **overview** is implicitly considered.
+If only one of them is found, the corresponding part is transcluded. If several are found, the bigger transclusion is done. If none are found, `overview` is implicitly considered.
 
-Additionally, if the word **blend** is present, the transclusion is rendered without the gray box and the link to the //target// by default.
+Additionally, if the word `blend` is present, the transclusion is rendered without the gray box and the link to the //target// by default.
 
 This is an actual transclusion of a hypha below. It will fail if your wiki does not have this hypha.
 <= u
