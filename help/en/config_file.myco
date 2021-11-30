@@ -1,0 +1,63 @@
+= Configuration file
+//This article is intended for wiki administrators.//
+
+The main way to configure your Mycorrhiza instance is through the **configuration file**. It is located at the root of your wiki structure and is called `config.ini`.
+
+The file is generated automatically when you create a new wiki:
+
+```
+# Generate a new wiki
+$ mycorrhiza bestWiki
+...
+# See what's inside
+$ ls bestWiki
+cache		config.ini	static		wiki.git
+```
+
+The file is written in the [[https://en.wikipedia.org/wiki/INI_file | .ini format]].
+
+== Example configuration
+The auto-generated file is the best example (it has comments too).
+
+Here's another example:
+```ini
+WikiName = My wiki
+NaviTitleIcon = 🐑
+
+[Hyphae]
+HomeHypha = home
+UserHypha = u
+HeaderLinksHypha = header-links
+
+[Network]
+HTTPPort = 8080
+URL = https://wiki
+GeminiCertificatePath = /home/wiki/gemcerts
+
+[Authorization]
+UseRegistration = true
+```
+
+== Fields
+=== Root section
+* `WikiName`: //string//. The name your wiki has. It is shown in the header by default and in other places. **Default:** `Mycorrhiza Wiki`.
+* `NaviTitleIcon`: //string//. The icon shown before the colon in the navigational titles above each hypha. You may want to use an emoji or HTML here. **Default:** `🍄` (mushroom emoji).
+
+=== [Hyphae]
+* `HomeHypha`: //string//. The name your home hypha has. **Default:** `home`.
+* `UserHypha`: //string//. The name of the hypha that is parent of all user hyphae. **Default:** `u`.
+* `HeaderLinkHypha`: //string//. The name of the hypha where you can configure the header. There is no default.
+
+=== [Network]
+* `HTTPPort`: //number//. What port is used for serving the web interface of Mycorrhiza. **Default:** `1737`.
+* `URL`: //url//. What URL is used for Opengraph and Web feed in the web interface. There is no default and you really should set it to something.
+
+=== [Authorization]
+* `UseRegistration`: //boolean//. Whether you want unregistered visitors to be able to register themselves using the web form. **Default:** `false`.
+* `LimitRegistration`: //number//. There cannot be more registered users than this number. If the number is zero, there is no limit. Makes sense only when `UseRegistration` is `true`. **Default:** `0`.
+
+=== [CustomScripts]
+You can specify URLs of JavaScript files you want to load.
+* `CommonScripts`: //list of url//. Comma-separated list of unquoted URLs to JS files to load on //all// pages.
+* `ViewScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on //view// pages: `/hypha`, `/rev`.
+* `EditScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on the `/edit` page.

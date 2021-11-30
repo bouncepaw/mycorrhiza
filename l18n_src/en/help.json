@@ -22,5 +22,6 @@
 	"configuration": "Configuration (for administrators)",
 	"lock": "Lock",
 	"whitelist": "Whitelist",
-	"telegram": "Telegram authorization"
+	"telegram": "Telegram authorization",
+	"config_file": "Configuration file"
 }
