@@ -52,8 +52,8 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User, lc *l18n.Localizer) 
 	}{
 		{"link", "wrapLink()", fmt.Sprintf("[[%s]]", lc.Get("edit.link"))},
 		{"titlelink", "wrapTitleLink()", fmt.Sprintf("[[%s | %s]]", lc.Get("edit.link"), lc.Get("edit.link_title"))},
-		{"heading2", "insertHeading2()", fmt.Sprintf("## %s", lc.Get("edit.heading"))},
-		{"heading3", "insertHeading3()", fmt.Sprintf("### %s", lc.Get("edit.heading"))},
+		{"heading1", "insertHeading1()", fmt.Sprintf("= %s", lc.Get("edit.heading"))},
+		{"heading2", "insertHeading2()", fmt.Sprintf("== %s", lc.Get("edit.heading"))},
 		{"bold", "wrapBold()", fmt.Sprintf("<b>**%s**</b>", lc.Get("edit.bold"))},
 		{"italic", "wrapItalic()", fmt.Sprintf("<i>//%s//</i>", lc.Get("edit.italic"))},
 		{"highlighted", "wrapHighlighted()", fmt.Sprintf("<mark>++%s++</mark>", lc.Get("edit.highlight"))},
