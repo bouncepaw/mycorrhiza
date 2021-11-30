@@ -121,18 +121,18 @@ Links come in several colors. Blue links are links to //existing// resources, wh
 Note that visited blue links are colored purple but are still called blue links. Moreover, blue links are yellow in the default dark theme.
 
 ## Heading
-There are six levels of **headings**. They consist of some hash signs followed by a space and the heading itself. You can format the heading like a paragraph. You should probably not use level 1 because the hypha name title is already level 1.
+There are four levels of **headings**. They consist of some equal signs followed by a space and the heading itself. You can format the heading like a paragraph. Feel free to start with `= level 1`, because it actually translates into HTML's `<h2>`, there will be no collisions with the hypha's title.
 
 ```
-# level 1
-## level 2
-### level 3
-#### level 4
-##### level 5
-###### level 6
+= level 1
+== level 2
+=== level 3
+==== level 4
 ```
 
-There is an invisible link denoted by the § sign near every heading (right after the heading text). You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
+There is an invisible link that shows the § sign near every heading right after the heading text. You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
+
+**NB.** There is the legacy syntax for headings: `# ` to `###### `, similar to Markdown. You should not use them.
 
 ## Codeblock
 Use **codeblocks** to show code or any other preformatted text. Codeblocks start with triple backticks on column 1 and end similarly. You can write any text after the backticks, it is ignored. Put the preformatted text between them.
