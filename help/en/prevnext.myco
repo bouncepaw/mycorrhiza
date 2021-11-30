@@ -1,14 +1,14 @@
-# Previous/next
+= Previous/next
 Under every hypha there is a **previous/next** section with quick links to previous and next hyphae alphabetically.
 
 This design encourages you to name your hyphae in such a way that clicking through these links would make sense. For example, if you are storing pages of a book, you should name them //p01//, //p02//, //p03//, etc.
 
 It is impossible to change what hyphae are linked in this section. If you want to provide a different means of sequential navigation, just place some links by yourself.
 
-## Hotkeys
+== Hotkeys
 Press `n` to go to the **n**ext page, press `p` to go to the **p**revious page.
 
-## For administrators: how to remove these links
+== For administrators: how to remove these links
 For some wikis, these links make little or no sense. In this case, it is better to hide them.
 
 In file `your-wiki/static/custom.css` write this:

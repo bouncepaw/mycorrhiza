@@ -1,9 +1,9 @@
-# Lock
+= Lock
 //This article is intended for wiki administrators.//
 
 Sometimes, you may want to let only authorized users to view your wiki. This is when **lock** comes in handy.
 
-## Enabling
+== Enabling
 In `config.ini`, set `Locked` to `true` to enable. `UseAuth` must also be `true`.
 ```ini
 ...
@@ -15,7 +15,7 @@ Locked = true
 
 Restart your wiki.
 
-## Usage
+== Usage
 When unauthorized people visit your wiki, they will see something like this:
 img {
 https://mycorrhiza.wiki/binary/release/1.3/lock_screenshot
@@ -23,5 +23,5 @@ https://mycorrhiza.wiki/binary/release/1.3/lock_screenshot
 
 If they log in, they will be able to navigate the wiki. They are not able to register, though. [[/help/en/telegram | Telegram]] authorization is supported.
 
-## See also
+== See also
 => /help/en/whitelist Whitelist

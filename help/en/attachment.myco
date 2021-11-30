@@ -1,29 +1,29 @@
-# Help: Attachment
+= Help: Attachment
 In hyphae, an **attachment** is some content represented by something that is not [[/help/en/mycomarkup | Mycomarkup]]. Usually, an image, a video, or an audio.
 
-## Supported attachment types
+== Supported attachment types
 You can upload any file, but only those listed below will be displayed on the website. You can download unsupported attachments, though.
 
 * **Images:** jpg, gif, png, webp, svg, ico
 * **Video:** ogg, webm, mp4
 * **Audio:** ogg, webm, mp3
 
-## How to add an attachment?
+== How to add an attachment?
 For non-existent hyphae, upload a file in the //Upload a media// section.
 
 For any hyphae, upload a file in the //Manage attachment// tab.
 
-## Attachment management
+== Attachment management
 Every hypha has the //Manage attachment// section. Click it to see what is out there.
 
 You can upload a new file, you can //delete// the attachment (it is called //unattaching//) and see some file stats (size and type).
 
-## On naming hyphae with attachments
+== On naming hyphae with attachments
 The hypha name should not just copy the file name in most cases. If you are uploading a photo of a rose, do not call it `rose.jpg`, no. Call it `photo of rose` or `rose photo` or whatever. You rarely need to think of file extensions when using Mycorrhiza Wiki.
 
 This is not a rule, of course, just a convention.
 
-## What to put in the text part?
+== What to put in the text part?
 If a hypha has an attachment, here is what the text part might be about:
 * A textual description or representation of the picture.
 * A transcript of the song.

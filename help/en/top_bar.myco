@@ -1,4 +1,4 @@
-# Top bar
+= Top bar
 The **top bar** is present on every single page of the wiki. It is the primary navigation means.
 
 On big screens, the top bar is spread onto two lines.
@@ -20,14 +20,14 @@ On big screens, the top bar is spread onto two lines.
 
 On small screens, the authorization section and the most-used-links section are hidden behind a menu. Click the button to see them. If your browser does not support JavaScript, they are always shown.
 
-## Using the top bar
+== Using the top bar
 Wiki administrators are meant to configure the top bar links. Here is what you should put there:
 * Popular articles
 * Lists of something
 * Recent changes
 * Whatever you want, but not too much, of course. The space is limited
 
-## Configuring the links
+== Configuring the links
 //This section is for administrators only.//
 
 To change the default link, you first have to choose a hypha where you will store the configuration. A good choice would be to store as a subhypha of an administrator's profile hypha. In `config.ini`, in the `[Hyphae]` section set the hypha:

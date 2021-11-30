@@ -1,21 +1,21 @@
-# Telegram authorization
+= Telegram authorization
 //This article is intended for wiki administrators.//
 
 If you want, you can let users log in to your wiki using **Telegram**.
 
 Telegram is a proprietary messaging application used by half a billion people. Learn more at [[https://telegram.org]].
 
-## Setting up Telegram integration
+== Setting up Telegram integration
 In order to enable Telegram authorization, you need to create a Telegram bot and link it with your wiki.
 
-### Creating a bot
+=== Creating a bot
 Open the chat with [[https://t.me/botfather | @BotFather]], the bot for creating other bots. Create a new bot there. You will need the bot username and token later. You can set the bot's userpic. It would be great if it matches your wiki's logo.
 
 After creating the bot, send the `/setdomain` command and then send your wiki's domain.
 
 You do not need to actually //host// the bot. It is enough for it just to be created in BotFather. You can also reuse a previously existing bot.
 
-### Configuring
+=== Configuring
 In `config.ini`, in `[Telegram]` section, fill in the bot's username (without @) and token:
 
 ```
@@ -28,10 +28,10 @@ Reload the wiki.
 
 If both fields are both set, the engine will enable Telegram authorization.
 
-## Using
+== Using
 On login and register pages there is a blue button. If a user clicks it, they are prompted to give the authorization permission to your bot. The user's @username will be used as wiki username. Telegram users are part of the //editor// user group by default. Telegram users can use the wiki just like everyone else.
 
-## Limitations
+== Limitations
 * You should host your wiki using a public IP or domain name. Private-hosted (i.e. localhost or LAN) wikis are not supported, obviously.
 * Telegram does not support HTTP wikis, you //must// use HTTPS.
 ** One way of setting up HTTPS is using [[https://certbot.eff.org | certbot]] and a reverse proxy such as [[https://nginx.org | nginx]].

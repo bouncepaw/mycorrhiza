@@ -1,8 +1,8 @@
-# Help: Feeds
+= Help: Feeds
 Mycorrhiza Wiki has RSS, Atom, and JSON feeds to track the latest changes on the wiki.
 These feeds are linked on the [[/recent-changes | recent changes page]].
 
-## Options
+== Options
 These feeds have options to combine related changes into groups:
 * {
     **period** Can be set to lengths of time like `5m`, `24h`, etc.
@@ -19,7 +19,7 @@ These feeds have options to combine related changes into groups:
 
 If none of these options are set, changes will never be grouped.
 
-## Examples
+== Examples
 URLs for feeds using these options look like this:
 * {
     `/recent-changes-rss?period=1h`

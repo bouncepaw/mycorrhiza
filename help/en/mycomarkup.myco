@@ -1,11 +1,11 @@
-# Mycomarkup
+= Mycomarkup
 **Mycomarkup** is Mycorrhiza Wiki's own markup language.
 
 It is the only supported markup, there is no support for Markdown, Creole, etc.
 
 A Mycomarkup document (which is most often a hypha's text part) consists of //blocks//. There are different blocks for different purposes.
 
-## Table of contents
+== Table of contents
 => /help/en/mycomarkup#Paragraph Paragraph
 => /help/en/mycomarkup#Inline_link Inline link
 => /help/en/mycomarkup#Rocket_link Rocket link
@@ -18,7 +18,7 @@ A Mycomarkup document (which is most often a hypha's text part) consists of //bl
 => /help/en/mycomarkup#Table Table
 => /help/en/mycomarkup#Transclusion Transclusion
 
-## Paragraph
+== Paragraph
 **Paragraphs** are the most ubiquitous blocks. You will use them a lot.
 
 To create a paragraph, just write text. Paragraphs are separated by empty lines.
@@ -64,8 +64,8 @@ Just a paragraph with a couple of [[https://example.org | links]] leading [[nowh
 ```}
 * Just a paragraph with a couple of [[https://example.org | links]] leading [[nowhere]].
 
-## Link
-### Inline link
+== Link
+=== Inline link
 **Inline links** are part of a paragraph.
 
 External links can be placed verbatim if they have protocol specified. These links are called autolinks. It may not work as expected sometimes. Supported protocols for autolinks are https, http, gemini, gopher, ftp.
@@ -88,7 +88,7 @@ Links to [[hypha | a Hypha]] and [[https://example.org | some website]].
 
 Since hypha names are case-insensitive, these links are basically the same: `[[hypha]]`, `[[Hypha]]`, `[[HYPHA]]`.
 
-### Rocket link
+=== Rocket link
 **Rocket links** are special links. They take up a whole line. They are not consistent with usual inline links. They were taken from [[https://gemini.circumlunar.space/docs/gemtext.gmi | gemtext]].
 
 The display text is written after the first space, not `|`. If you want to link a hypha with spaces in it, replace the spaces with _.
@@ -106,7 +106,7 @@ The display text is written after the first space, not `|`. If you want to link 
 => https://example.org Display text
 }
 
-### Relative link addressing
+=== Relative link addressing
 You don't have to write the full hypha name in every link, you can use **relative** links.
 
 Consider you are editing a hypha called //fruit/apple//.
@@ -115,12 +115,12 @@ To link //fruit/pear// (a sibling hypha) you can write `[\[../pear]]`. To link /
 
 There is also a way to link the wiki's non-hypha pages. For example, to link the Recent changes page, you can write `[\[/recent-changes]]`. You should use that rather than write the site's full URL because it may change in the future.
 
-### Link colors
+=== Link colors
 Links come in several colors. Blue links are links to //existing// resources, while red links are links to //non-existent// resources. All external links are considered existing, therefore they are blue. Internal hypha links are always checked for existence.
 
 Note that visited blue links are colored purple but are still called blue links. Moreover, blue links are yellow in the default dark theme.
 
-## Heading
+== Heading
 There are four levels of **headings**. They consist of some equal signs followed by a space and the heading itself. You can format the heading like a paragraph. Feel free to start with `= level 1`, because it actually translates into HTML's `<h2>`, there will be no collisions with the hypha's title.
 
 ```
@@ -134,7 +134,7 @@ There is an invisible link that shows the § sign near every heading right after
 
 **NB.** There is the legacy syntax for headings: `# ` to `###### `, similar to Markdown. You should not use them.
 
-## Codeblock
+== Codeblock
 Use **codeblocks** to show code or any other preformatted text. Codeblocks start with triple backticks on column 1 and end similarly. You can write any text after the backticks, it is ignored. Put the preformatted text between them.
 
 Like that, but without leading spaces:
@@ -150,7 +150,7 @@ this is preformatted
    see
 ```
 
-## Horizontal line
+== Horizontal line
 Write four hyphens to insert a **horizontal line**.
 
 * {```
@@ -158,7 +158,7 @@ Write four hyphens to insert a **horizontal line**.
 ```}
 * ----
 
-## Image gallery
+== Image gallery
 Use **image galleries** to embed images to the page. Images can be either hyphae or external files. In the example below you can replace the URL with a hypha's name. If that hypha is an image, the image will be shown.
 
 You can write a description for the image and specify its size.
@@ -197,7 +197,7 @@ img { https://mycorrhiza.wiki/static/favicon.ico }
 ```}
 * {img { https://mycorrhiza.wiki/static/favicon.ico }}
 
-## List
+== List
 **Lists** are used for sequential or tree data. They are quite popular.
 
 Mark each list entry with an asterisk and a space:
@@ -242,36 +242,36 @@ All of Mycomarkup is supported in list entries. If you want to have multi-line e
 
 * {```
 * {
-## Heading
+== Heading
 Text
 }
 * Not multiline
 ```}
 * {
 * {
-## Heading
+== Heading
 Text
 }
 * Not multiline
 }
 
-## Quote
+== Quote
 Prepend lines with `>` to quote them.
 
 * {```
-> ## A heading
+> == A heading
 >
 > A paragraph
 > > A nested quote
 ```}
 * {
-> ## A heading
+> == A heading
 >
 > A paragraph
 > > A nested quote
 }
 
-## Table
+== Table
 **Tables** are delimited by `table {...}`. Both delimeters have to be on their own lines. You can write table's caption on the first line.
 
 ```
@@ -357,7 +357,7 @@ a | b
 c | d
 }
 
-## Transclusion
+== Transclusion
 **Transclusion** is the mechanism of including contents of other hyphae into one hypha.
 
 To include a hypha named `yoghurt`, write a line like that:
@@ -375,7 +375,7 @@ Transclusion lines start with a reverse-rocket symbol (`<=`) followed by zero or
 <= target hypha | selector
 ```
 
-### Selector
+=== Selector
 The //selector// specifies what part of the //target// to transclude. The parser checks for these words:
 
 * **full.** Transclude the whole document.
@@ -393,5 +393,5 @@ This is an actual transclusion of a hypha below. It will fail if your wiki does 
 
 Recursive transclusion is also supported but it is limited to three iterations.
 
-## See also
+== See also
 => https://mycorrhiza.wiki/hypha/essay/why_mycomarkup Why it was created

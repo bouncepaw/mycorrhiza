@@ -1,4 +1,4 @@
-# Recent changes
+= Recent changes
 **Recent changes** is a special page that lists all latest changes on the wiki. There is a link to it by default in the [[/help/en/top_bar | top bar]]. You can also jump to it quickly by pressing the `g r` hotkey.
 
 Engaged wiki editors usually visit this page quite often.
@@ -16,5 +16,5 @@ Each edit has these properties:
 * **Affected hyphae.** Most actions affect one hypha (such as actual editing), but some affect more (recursive editing, for example).
 * **Message.** This message tells you what the edit is about. The message format is quite regular and parseable.
 
-## See also
+== See also
 => /help/en/feeds Feeds
