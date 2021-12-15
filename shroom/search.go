@@ -9,7 +9,7 @@ import (
 
 // YieldHyphaNamesContainingString picks hyphae with have a string in their title, sorts and iterates over them.
 func YieldHyphaNamesContainingString(query string) <-chan string {
-	query = util.CanonicalName(query)
+	query = util.CanonicalName(strings.TrimSpace(query))
 	out := make(chan string)
 	sorted := hyphae.PathographicSort(out)
 	go func() {
