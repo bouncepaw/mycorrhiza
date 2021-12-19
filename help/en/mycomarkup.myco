@@ -197,6 +197,45 @@ img { https://mycorrhiza.wiki/static/favicon.ico }
 ```}
 * {img { https://mycorrhiza.wiki/static/favicon.ico }}
 
+=== Gallery layout
+
+A **gallery layout** consists of two things: position and arrangement.
+
+* **Position** is about how the gallery is placed in the document. There are three possible positions, listed below. Note that they matter only on big screens. There is no difference on a phone.
+** `end` places the gallery at the end of line. By default, it is the right of the line. The text is wrapped around it.
+** `start` does the same thing, but places the gallery at the start, i/e left side.
+** `stretch` is the default position: the gallery is stretched to fit the document horizontally.
+* **Arrangement** is about how the images are placed in the gallery. There are two possible arrangements:
+** `grid` places the images in a grid.
+** `column` is the default arrangement: the images are in a vertical column.
+
+Specify the layout after `img` and before `{`. Just write the position and arrangement you need. If you do not write any of them, the default value will be used.
+
+```
+img grid {
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+}
+
+img start column {
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+}
+
+This text is wrapped.
+```
+img grid {
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+}
+
+img start column {
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+}
+
+This text is wrapped.
+
 == List
 **Lists** are used for sequential or tree data. They are quite popular.
 
