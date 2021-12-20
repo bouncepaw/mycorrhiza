@@ -33,20 +33,20 @@ func fetchText(h *Hypha) string {
 	return ""
 }
 
-// BacklinkIndexOperation is an operation for the backlink index. This operation is executed async-safe.
-type BacklinkIndexOperation interface {
-	Apply()
+// backlinkIndexOperation is an operation for the backlink index. This operation is executed async-safe.
+type backlinkIndexOperation interface {
+	apply()
 }
 
-// BacklinkIndexEdit contains data for backlink index update after a hypha edit
-type BacklinkIndexEdit struct {
+// backlinkIndexEdit contains data for backlink index update after a hypha edit
+type backlinkIndexEdit struct {
 	Name     string
 	OldLinks []string
 	NewLinks []string
 }
 
 // Apply changes backlink index respective to the operation data
-func (op BacklinkIndexEdit) Apply() {
+func (op backlinkIndexEdit) apply() {
 	oldLinks := toLinkSet(op.OldLinks)
 	newLinks := toLinkSet(op.NewLinks)
 	for link := range oldLinks {
@@ -64,14 +64,14 @@ func (op BacklinkIndexEdit) Apply() {
 	}
 }
 
-// BacklinkIndexDeletion contains data for backlink index update after a hypha deletion
-type BacklinkIndexDeletion struct {
+// backlinkIndexDeletion contains data for backlink index update after a hypha deletion
+type backlinkIndexDeletion struct {
 	Name  string
 	Links []string
 }
 
 // Apply changes backlink index respective to the operation data
-func (op BacklinkIndexDeletion) Apply() {
+func (op backlinkIndexDeletion) apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
 			delete(lSet, op.Name)
@@ -79,15 +79,15 @@ func (op BacklinkIndexDeletion) Apply() {
 	}
 }
 
-// BacklinkIndexRenaming contains data for backlink index update after a hypha renaming
-type BacklinkIndexRenaming struct {
+// backlinkIndexRenaming contains data for backlink index update after a hypha renaming
+type backlinkIndexRenaming struct {
 	OldName string
 	NewName string
 	Links   []string
 }
 
 // Apply changes backlink index respective to the operation data
-func (op BacklinkIndexRenaming) Apply() {
+func (op backlinkIndexRenaming) apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
 			delete(lSet, op.OldName)
@@ -97,7 +97,7 @@ func (op BacklinkIndexRenaming) Apply() {
 }
 
 var backlinkIndex = make(map[string]linkSet)
-var backlinkConveyor = make(chan BacklinkIndexOperation, 64)
+var backlinkConveyor = make(chan backlinkIndexOperation, 64)
 
 // I hope, the buffer size is enough -- chekoopa
 //   Do we really need the buffer though? Dunno -- bouncepaw
@@ -122,7 +122,7 @@ func RunBacklinksConveyor() {
 	// It is supposed to run as a goroutine for all the time. So, don't blame the infinite loop.
 	defer close(backlinkConveyor)
 	for {
-		(<-backlinkConveyor).Apply()
+		(<-backlinkConveyor).apply()
 	}
 }
 
@@ -138,19 +138,19 @@ func BacklinksCount(h *Hypha) int {
 func BacklinksOnEdit(h *Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
 	newLinks := extractHyphaLinks(h)
-	backlinkConveyor <- BacklinkIndexEdit{h.Name, oldLinks, newLinks}
+	backlinkConveyor <- backlinkIndexEdit{h.Name, oldLinks, newLinks}
 }
 
 // BacklinksOnDelete is a deletion hook for backlinks index
 func BacklinksOnDelete(h *Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
-	backlinkConveyor <- BacklinkIndexDeletion{h.Name, oldLinks}
+	backlinkConveyor <- backlinkIndexDeletion{h.Name, oldLinks}
 }
 
 // BacklinksOnRename is a renaming hook for backlinks index
 func BacklinksOnRename(h *Hypha, oldName string) {
 	actualLinks := extractHyphaLinks(h)
-	backlinkConveyor <- BacklinkIndexRenaming{oldName, h.Name, actualLinks}
+	backlinkConveyor <- backlinkIndexRenaming{oldName, h.Name, actualLinks}
 }
 
 // YieldHyphaBacklinks gets backlinks for a desired hypha, sorts and iterates over them

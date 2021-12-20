@@ -82,14 +82,14 @@ func storeHypha(h *Hypha) {
 	h.Unlock()
 }
 
-// Insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
-func (h *Hypha) Insert() (justRecorded bool) {
+// insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
+func (h *Hypha) insert() (justRecorded bool) {
 	hp, recorded := byNames[h.Name]
 	if recorded {
-		hp.MergeIn(h)
+		hp.mergeIn(h)
 	} else {
 		storeHypha(h)
-		IncrementCount()
+		incrementCount()
 	}
 
 	return !recorded
@@ -98,7 +98,7 @@ func (h *Hypha) Insert() (justRecorded bool) {
 // InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
 func (h *Hypha) InsertIfNew() (justRecorded bool) {
 	if !h.Exists {
-		return h.Insert()
+		return h.insert()
 	}
 	return false
 }
@@ -108,7 +108,7 @@ func (h *Hypha) Delete() {
 	byNamesMutex.Lock()
 	h.Lock()
 	delete(byNames, h.Name)
-	DecrementCount()
+	decrementCount()
 	byNamesMutex.Unlock()
 	h.Unlock()
 }
@@ -124,8 +124,8 @@ func (h *Hypha) RenameTo(newName string) {
 	h.Unlock()
 }
 
-// MergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
-func (h *Hypha) MergeIn(oh *Hypha) {
+// mergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
+func (h *Hypha) mergeIn(oh *Hypha) {
 	if h == oh {
 		return
 	}

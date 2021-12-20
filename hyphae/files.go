@@ -21,9 +21,9 @@ func Index(path string) {
 	for h := range ch {
 		// It's safe to ignore the mutex because there is a single worker right now.
 		if oh := ByName(h.Name); oh.Exists {
-			oh.MergeIn(h)
+			oh.mergeIn(h)
 		} else {
-			h.Insert()
+			h.insert()
 		}
 	}
 

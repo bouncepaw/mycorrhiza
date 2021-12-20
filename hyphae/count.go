@@ -17,21 +17,23 @@ func ResetCount() {
 	count.Unlock()
 }
 
-// IncrementCount increments the value of the hyphae counter. Use when creating new hyphae or loading hyphae from disk.
-func IncrementCount() {
+// Count how many hyphae there are.
+func Count() int {
+	count.Lock()
+	defer count.Unlock()
+	return count.value
+}
+
+// incrementCount increments the value of the hyphae counter. Use when creating new hyphae or loading hyphae from disk.
+func incrementCount() {
 	count.Lock()
 	count.value++
 	count.Unlock()
 }
 
-// DecrementCount decrements the value of the hyphae counter. Use when deleting existing hyphae.
-func DecrementCount() {
+// decrementCount decrements the value of the hyphae counter. Use when deleting existing hyphae.
+func decrementCount() {
 	count.Lock()
 	count.value--
 	count.Unlock()
-}
-
-// Count how many hyphae there are.
-func Count() int {
-	return count.value
 }
