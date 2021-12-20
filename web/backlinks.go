@@ -1,12 +1,12 @@
 package web
 
 import (
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
-	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -26,7 +26,7 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 	)
 	util.HTTP200Page(w, views.BaseHTML(
 		lc.Get("ui.backlinks_title", &l18n.Replacements{"query": util.BeautifulName(hyphaName)}),
-		views.BacklinksHTML(hyphaName, hyphae.YieldHyphaBacklinks, lc),
+		views.BacklinksHTML(hyphaName, backlinks.YieldHyphaBacklinks, lc),
 		lc,
 		user.FromRequest(rq)))
 }
@@ -36,6 +36,6 @@ func handlerBacklinksJSON(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
-		views.TitleSearchJSON(hyphaName, hyphae.YieldHyphaBacklinks),
+		views.TitleSearchJSON(hyphaName, backlinks.YieldHyphaBacklinks),
 	)
 }

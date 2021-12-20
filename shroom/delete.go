@@ -2,6 +2,7 @@ package shroom
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -25,7 +26,7 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *histor
 		WithUser(u).
 		Apply()
 	if !hop.HasErrors() {
-		hyphae.BacklinksOnDelete(h, originalText)
+		backlinks.BacklinksOnDelete(h, originalText)
 		h.Delete()
 	}
 	return hop, ""

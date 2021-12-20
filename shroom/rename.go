@@ -3,6 +3,7 @@ package shroom
 import (
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -74,7 +75,7 @@ func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *use
 			h.TextPath = replaceName(h.TextPath)
 			h.BinaryPath = replaceName(h.BinaryPath)
 			h.Unlock()
-			hyphae.BacklinksOnRename(h, oldName)
+			backlinks.BacklinksOnRename(h, oldName)
 		}
 	}
 	return hop, ""

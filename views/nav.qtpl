@@ -1,5 +1,6 @@
 {% import "net/http" %}
 {% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/hyphae/backlinks" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
@@ -16,7 +17,7 @@
 {% code
 	u := user.FromRequest(rq)
 	lc := l18n.FromRequest(rq)
-	backs := hyphae.BacklinksCount(h)
+	backs := backlinks.BacklinksCount(h)
 %}
 <nav class="hypha-info">
 	<ul class="hypha-info__list">

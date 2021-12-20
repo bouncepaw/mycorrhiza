@@ -1,14 +1,15 @@
-package hyphae
+// Package backlinks maintains the index of backlinks and lets you update it and query it.
+package backlinks
 
 import (
-	"github.com/bouncepaw/mycomarkup/v3/tools"
-	"os"
-
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"os"
 
 	"github.com/bouncepaw/mycomarkup/v3"
 	"github.com/bouncepaw/mycomarkup/v3/links"
 	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v3/tools"
 )
 
 // Using set here seems like the most appropriate solution
@@ -22,7 +23,7 @@ func toLinkSet(xs []string) linkSet {
 	return result
 }
 
-func fetchText(h *Hypha) string {
+func fetchText(h *hyphae.Hypha) string {
 	if h.TextPath == "" {
 		return ""
 	}
@@ -70,7 +71,7 @@ type backlinkIndexDeletion struct {
 	Links []string
 }
 
-// Apply changes backlink index respective to the operation data
+// apply changes backlink index respective to the operation data
 func (op backlinkIndexDeletion) apply() {
 	for _, link := range op.Links {
 		if lSet, exists := backlinkIndex[link]; exists {
@@ -105,7 +106,7 @@ var backlinkConveyor = make(chan backlinkIndexOperation, 64)
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
-	src := FilterTextHyphae(YieldExistingHyphae())
+	src := hyphae.FilterTextHyphae(hyphae.YieldExistingHyphae())
 	for h := range src {
 		foundLinks := extractHyphaLinksFromContent(h.Name, fetchText(h))
 		for _, link := range foundLinks {
@@ -127,7 +128,7 @@ func RunBacklinksConveyor() {
 }
 
 // BacklinksCount returns the amount of backlinks to the hypha.
-func BacklinksCount(h *Hypha) int {
+func BacklinksCount(h *hyphae.Hypha) int {
 	if _, exists := backlinkIndex[h.Name]; exists {
 		return len(backlinkIndex[h.Name])
 	}
@@ -135,20 +136,20 @@ func BacklinksCount(h *Hypha) int {
 }
 
 // BacklinksOnEdit is a creation/editing hook for backlinks index
-func BacklinksOnEdit(h *Hypha, oldText string) {
+func BacklinksOnEdit(h *hyphae.Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
 	newLinks := extractHyphaLinks(h)
 	backlinkConveyor <- backlinkIndexEdit{h.Name, oldLinks, newLinks}
 }
 
 // BacklinksOnDelete is a deletion hook for backlinks index
-func BacklinksOnDelete(h *Hypha, oldText string) {
+func BacklinksOnDelete(h *hyphae.Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.Name, oldText)
 	backlinkConveyor <- backlinkIndexDeletion{h.Name, oldLinks}
 }
 
 // BacklinksOnRename is a renaming hook for backlinks index
-func BacklinksOnRename(h *Hypha, oldName string) {
+func BacklinksOnRename(h *hyphae.Hypha, oldName string) {
 	actualLinks := extractHyphaLinks(h)
 	backlinkConveyor <- backlinkIndexRenaming{oldName, h.Name, actualLinks}
 }
@@ -157,7 +158,7 @@ func BacklinksOnRename(h *Hypha, oldName string) {
 func YieldHyphaBacklinks(query string) <-chan string {
 	hyphaName := util.CanonicalName(query)
 	out := make(chan string)
-	sorted := PathographicSort(out)
+	sorted := hyphae.PathographicSort(out)
 	go func() {
 		backlinks, exists := backlinkIndex[hyphaName]
 		if exists {
@@ -171,7 +172,7 @@ func YieldHyphaBacklinks(query string) <-chan string {
 }
 
 // extractHyphaLinks extracts hypha links from a desired hypha
-func extractHyphaLinks(h *Hypha) []string {
+func extractHyphaLinks(h *hyphae.Hypha) []string {
 	return extractHyphaLinksFromContent(h.Name, fetchText(h))
 }
 

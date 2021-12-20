@@ -2,6 +2,7 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"io"
 	"log"
 	"math/rand"
@@ -109,6 +110,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	hyphae.ResetCount()
 	log.Println("Reindexing hyphae in", files.HyphaeDir())
 	hyphae.Index(files.HyphaeDir())
+	backlinks.IndexBacklinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 

@@ -6,6 +6,7 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"log"
 	"os"
 
@@ -39,7 +40,8 @@ func main() {
 
 	// Init the subsystems:
 	hyphae.Index(files.HyphaeDir())
-	go hyphae.RunBacklinksConveyor()
+	backlinks.IndexBacklinks()
+	go backlinks.RunBacklinksConveyor()
 	user.InitUserDatabase()
 	history.Start()
 	history.InitGitRepo()

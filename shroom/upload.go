@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"io"
 	"log"
 	"mime/multipart"
@@ -105,7 +106,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 	}
 	*originalFullPath = fullPath
 	if hop.Type == history.TypeEditText {
-		hyphae.BacklinksOnEdit(h, originalText)
+		backlinks.BacklinksOnEdit(h, originalText)
 	}
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }
