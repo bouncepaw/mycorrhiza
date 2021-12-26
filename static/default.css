@@ -656,10 +656,18 @@ kbd {
 	display: block;
 	padding: 0 .5rem;
 }
+.auth-links__admin-box {
+    flex-shrink: 0
+}
 
+.top-bar__search {
+	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+}
 .top-bar__search-bar {
 	border: 0;
-	vertical-align: -webkit-baseline-middle; /* You have no idea how sorry I am. This is a non-standard value. Seems to work in Safari, Opera and mobile Chrome. We need a jedi and a knight in shiny armor to replace it with something more standard. */
 	width: 100%;
 }
 
