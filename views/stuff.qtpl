@@ -29,7 +29,7 @@
 					</li>
 					<li class="top-bar__section top-bar__section_search">
 						<form class="top-bar__search" method="GET" action="/title-search">
-							<input type="text" name="q" placeholder="{%s lc.Get("ui.title_search") %}" class="top-bar__search-bar">
+							<input type="text" name="q" placeholder="{%s lc.Get("ui.title_search") %}" class="top-bar__search-bar" size="{%s inputSize(lc.Get("ui.title_search")) %}">
 						</form>
 					</li>
 					<li class="top-bar__section top-bar__section_auth">
