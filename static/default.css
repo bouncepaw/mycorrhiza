@@ -656,6 +656,17 @@ kbd {
 	display: block;
 	padding: 0 .5rem;
 }
+.top-bar__highlight-new {
+    display: block;
+}
+.top-bar__highlight-new-input {
+	padding-left: 0.5rem;
+	padding-right: 0;
+
+	margin-top: 0.35rem;
+	max-height: 1.3rem;
+	margin-bottom: 0.35rem;
+}
 .auth-links__admin-box {
     flex-shrink: 0
 }
@@ -758,7 +769,8 @@ kbd {
 		margin-right: 0;
 	}
 	.auth-links__link,
-	.top-bar__highlight-link {
+	.top-bar__highlight-link,
+	.top-bar__highlight-new {
 		padding-left: 1rem;
 	}
 	.top-bar__section_hidden-on-mobile {
