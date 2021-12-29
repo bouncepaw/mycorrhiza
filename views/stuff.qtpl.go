@@ -88,7 +88,11 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, lc *l18n.Loca
 //line views/stuff.qtpl:32
 	qw422016.E().S(lc.Get("ui.title_search"))
 //line views/stuff.qtpl:32
-	qw422016.N().S(`" class="top-bar__search-bar">
+	qw422016.N().S(`" class="top-bar__search-bar" size="`)
+//line views/stuff.qtpl:32
+	qw422016.E().S(inputSize(lc.Get("ui.title_search")))
+//line views/stuff.qtpl:32
+	qw422016.N().S(`">
 						</form>
 					</li>
 					<li class="top-bar__section top-bar__section_auth">
