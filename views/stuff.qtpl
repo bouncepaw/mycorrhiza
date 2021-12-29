@@ -58,7 +58,13 @@
 					<li class="top-bar__section top-bar__section_highlights">
 						<ul class="top-bar__highlights">
 						{%- for _, link := range cfg.HeaderLinks -%}
-						{% if link.Href != "/" %}
+						{% if link.Href == "/new" %}
+							<li class="top-bar__highlight">
+								<form class="top-bar__highlight-new" method="GET" action="/new">
+									<input class="top-bar__highlight-new-input" size="{%s inputSize(link.Display) %}" type="text" name="new-path" placeholder="{%s link.Display %}">
+								</form>
+							</li>
+						{% elseif link.Href != "/" %}
 							<li class="top-bar__highlight">
 								<a class="top-bar__highlight-link" href="{%s link.Href %}">{%s link.Display %}</a>
 							</li>

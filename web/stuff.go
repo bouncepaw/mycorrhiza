@@ -35,6 +35,14 @@ func initStuff(r *mux.Router) {
 	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
+	r.HandleFunc("/new", func(w http.ResponseWriter, rq *http.Request) {
+		new_path := rq.URL.Query().Get("new-path")
+		if new_path != "" {
+			http.Redirect(w, rq, "/hypha/"+new_path, http.StatusSeeOther)
+		} else {
+			w.WriteHeader(http.StatusNoContent)
+		}
+	})
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
