@@ -20,6 +20,7 @@ import (
 
 func initAuth(r *mux.Router) {
 	r.HandleFunc("/lock", handlerLock)
+	// The check below saves a lot of extra checks and lines of codes in other places in this file.
 	if !cfg.UseAuth {
 		return
 	}
@@ -30,24 +31,19 @@ func initAuth(r *mux.Router) {
 		r.HandleFunc("/telegram-login", handlerTelegramLogin)
 	}
 	r.HandleFunc("/login", handlerLogin)
-	r.HandleFunc("/login-data", handlerLoginData)
 	r.HandleFunc("/logout", handlerLogout)
-	r.HandleFunc("/logout-confirm", handlerLogoutConfirm)
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
+	_, _ = io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
 }
 
-// handlerRegister both displays the register form (GET) and registers users (POST).
+// handlerRegister displays the register form (GET) or registers the user (POST).
 func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	util.PrepareRq(rq)
-	if !cfg.AllowRegistration {
-		w.WriteHeader(http.StatusForbidden)
-	}
 	if rq.Method == http.MethodGet {
-		io.WriteString(
+		_, _ = io.WriteString(
 			w,
 			views.BaseHTML(
 				lc.Get("auth.register_title"),
@@ -66,7 +62,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			log.Printf("Failed to register ‘%s’: %s", username, err.Error())
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(
+			_, _ = io.WriteString(
 				w,
 				views.BaseHTML(
 					lc.Get("auth.register_title"),
@@ -87,43 +83,61 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-// handlerLogout shows the logout form.
+// handlerLogout shows the logout form (GET) or logs the user out (POST).
 func handlerLogout(w http.ResponseWriter, rq *http.Request) {
-	var (
-		u   = user.FromRequest(rq)
-		can = u != nil
-		lc  = l18n.FromRequest(rq)
-	)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	if can {
-		log.Println("User", u.Name, "tries to log out")
-		w.WriteHeader(http.StatusOK)
-	} else {
-		log.Println("Unknown user tries to log out")
-		w.WriteHeader(http.StatusForbidden)
+	if rq.Method == http.MethodGet {
+		var (
+			u   = user.FromRequest(rq)
+			can = u != nil
+			lc  = l18n.FromRequest(rq)
+		)
+		w.Header().Set("Content-Type", "text/html;charset=utf-8")
+		if can {
+			log.Println("User", u.Name, "tries to log out")
+			w.WriteHeader(http.StatusOK)
+		} else {
+			log.Println("Unknown user tries to log out")
+			w.WriteHeader(http.StatusForbidden)
+		}
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u),
+		)
+	} else if rq.Method == http.MethodPost {
+		user.LogoutFromRequest(w, rq)
+		http.Redirect(w, rq, "/", http.StatusSeeOther)
 	}
-	w.Write([]byte(views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u)))
 }
 
-// handlerLogoutConfirm logs the user out.
-//
-// TODO: merge into handlerLogout as POST method.
-func handlerLogoutConfirm(w http.ResponseWriter, rq *http.Request) {
-	user.LogoutFromRequest(w, rq)
-	http.Redirect(w, rq, "/", http.StatusSeeOther)
-}
-
-// handlerLogin shows the login form.
+// handlerLogin shows the login form (GET) or logs the user in (POST).
 func handlerLogin(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	if cfg.UseAuth {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		w.WriteHeader(http.StatusForbidden)
-	}
 	lc := l18n.FromRequest(rq)
-	w.Write([]byte(views.BaseHTML(lc.Get("auth.login_title"), views.LoginHTML(lc), lc, user.EmptyUser())))
+	if rq.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "text/html;charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(
+			w,
+			views.BaseHTML(
+				lc.Get("auth.login_title"),
+				views.LoginHTML(lc),
+				lc,
+				user.EmptyUser(),
+			),
+		)
+	} else if rq.Method == http.MethodPost {
+		var (
+			username = util.CanonicalName(rq.PostFormValue("username"))
+			password = rq.PostFormValue("password")
+			err      = user.LoginDataHTTP(w, rq, username, password)
+		)
+		if err != "" {
+			w.Header().Set("Content-Type", "text/html;charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = io.WriteString(w, views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser()))
+			return
+		}
+		http.Redirect(w, rq, "/", http.StatusSeeOther)
+	}
 }
 
 func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
@@ -155,7 +169,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		log.Printf("Failed to register ‘%s’ using Telegram: %s", username, err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(
+		_, _ = io.WriteString(
 			w,
 			views.BaseHTML(
 				lc.Get("ui.error"),
@@ -176,7 +190,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	if errmsg != "" {
 		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(
+		_, _ = io.WriteString(
 			w,
 			views.BaseHTML(
 				"Error",
@@ -194,22 +208,4 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	}
 	log.Printf("Authorize ‘%s’ from Telegram", username)
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
-}
-
-// handlerLoginData logs the user in.
-//
-// TODO: merge into handlerLogin as POST method.
-func handlerLoginData(w http.ResponseWriter, rq *http.Request) {
-	lc := l18n.FromRequest(rq)
-	util.PrepareRq(rq)
-	var (
-		username = util.CanonicalName(rq.PostFormValue("username"))
-		password = rq.PostFormValue("password")
-		err      = user.LoginDataHTTP(w, rq, username, password)
-	)
-	if err != "" {
-		w.Write([]byte(views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser())))
-	} else {
-		http.Redirect(w, rq, "/", http.StatusSeeOther)
-	}
 }

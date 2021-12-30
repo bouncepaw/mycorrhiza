@@ -45,7 +45,7 @@
 <main class="main-width">
 	<section>
 	{% if cfg.UseAuth %}
-		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+		<form class="modal" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">{%s lc.Get("auth.login_header", &l18n.Replacements{"name": cfg.WikiName}) %}</legend>
 				<label for="login-form__username">{%s lc.Get("auth.username") %}</label>
@@ -102,8 +102,10 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 	<section>
 	{% if can %}
 		<h1>{%s lc.Get("auth.logout_header") %}</h1>
-		<p><a href="/logout-confirm"><strong>{%s lc.Get("auth.logout_button") %}</strong></a></p>
-		<p><a href="/">{%s lc.Get("ui.cancel") %}</a></p>
+		<form method="POST" action="/logout">
+			<input class="btn btn_accent" type="submit" value="{%s lc.Get("auth.logout_button") %}"/>
+			<a class="btn btn_weak" href="/">{%s lc.Get("auth.go_home") %}</a>
+		</form>
 	{% else %}
 		<p>{%s lc.Get("auth.logout_anon") %}</p>
 		<p><a href="/login">{%s lc.Get("auth.login_title") %}</a></p>
@@ -129,7 +131,7 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 		<section class="locked-notice__message">
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">{%s lc.Get("auth.lock_title") %}</h1>
-			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+			<form class="locked-notice__login-form" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 				<label for="login-form__username">{%s lc.Get("auth.username") %}</label>
 				<br>
 				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">

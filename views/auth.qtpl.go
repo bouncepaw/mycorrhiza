@@ -190,7 +190,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	if cfg.UseAuth {
 //line views/auth.qtpl:47
 		qw422016.N().S(`
-		<form class="modal" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+		<form class="modal" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">`)
 //line views/auth.qtpl:50
@@ -446,77 +446,79 @@ func StreamLogoutHTML(qw422016 *qt422016.Writer, can bool, lc *l18n.Localizer) {
 		qw422016.E().S(lc.Get("auth.logout_header"))
 //line views/auth.qtpl:104
 		qw422016.N().S(`</h1>
-		<p><a href="/logout-confirm"><strong>`)
-//line views/auth.qtpl:105
+		<form method="POST" action="/logout">
+			<input class="btn btn_accent" type="submit" value="`)
+//line views/auth.qtpl:106
 		qw422016.E().S(lc.Get("auth.logout_button"))
-//line views/auth.qtpl:105
-		qw422016.N().S(`</strong></a></p>
-		<p><a href="/">`)
 //line views/auth.qtpl:106
-		qw422016.E().S(lc.Get("ui.cancel"))
-//line views/auth.qtpl:106
-		qw422016.N().S(`</a></p>
+		qw422016.N().S(`"/>
+			<a class="btn btn_weak" href="/">`)
+//line views/auth.qtpl:107
+		qw422016.E().S(lc.Get("auth.go_home"))
+//line views/auth.qtpl:107
+		qw422016.N().S(`</a>
+		</form>
 	`)
-//line views/auth.qtpl:107
+//line views/auth.qtpl:109
 	} else {
-//line views/auth.qtpl:107
+//line views/auth.qtpl:109
 		qw422016.N().S(`
 		<p>`)
-//line views/auth.qtpl:108
+//line views/auth.qtpl:110
 		qw422016.E().S(lc.Get("auth.logout_anon"))
-//line views/auth.qtpl:108
+//line views/auth.qtpl:110
 		qw422016.N().S(`</p>
 		<p><a href="/login">`)
-//line views/auth.qtpl:109
+//line views/auth.qtpl:111
 		qw422016.E().S(lc.Get("auth.login_title"))
-//line views/auth.qtpl:109
+//line views/auth.qtpl:111
 		qw422016.N().S(`</a></p>
 		<p><a href="/">← `)
-//line views/auth.qtpl:110
+//line views/auth.qtpl:112
 		qw422016.E().S(lc.Get("auth.go_home"))
-//line views/auth.qtpl:110
+//line views/auth.qtpl:112
 		qw422016.N().S(`</a></p>
 	`)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:113
 	}
-//line views/auth.qtpl:111
+//line views/auth.qtpl:113
 	qw422016.N().S(`
 	</section>
 </main>
 </div>
 `)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 }
 
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 func WriteLogoutHTML(qq422016 qtio422016.Writer, can bool, lc *l18n.Localizer) {
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	StreamLogoutHTML(qw422016, can, lc)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 }
 
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 func LogoutHTML(can bool, lc *l18n.Localizer) string {
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	WriteLogoutHTML(qb422016, can, lc)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 	return qs422016
-//line views/auth.qtpl:115
+//line views/auth.qtpl:117
 }
 
-//line views/auth.qtpl:117
+//line views/auth.qtpl:119
 func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:117
+//line views/auth.qtpl:119
 	qw422016.N().S(`
 <!doctype html>
 <html>
@@ -524,9 +526,9 @@ func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>🔒 `)
-//line views/auth.qtpl:123
+//line views/auth.qtpl:125
 	qw422016.E().S(lc.Get("auth.lock_title"))
-//line views/auth.qtpl:123
+//line views/auth.qtpl:125
 	qw422016.N().S(`</title>
 	<link rel="shortcut icon" href="/static/favicon.ico">
 	<link rel="stylesheet" href="/static/style.css">
@@ -536,68 +538,68 @@ func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		<section class="locked-notice__message">
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">`)
-//line views/auth.qtpl:131
+//line views/auth.qtpl:133
 	qw422016.E().S(lc.Get("auth.lock_title"))
-//line views/auth.qtpl:131
+//line views/auth.qtpl:133
 	qw422016.N().S(`</h1>
-			<form class="locked-notice__login-form" method="post" action="/login-data" id="login-form" enctype="multipart/form-data" autocomplete="on">
+			<form class="locked-notice__login-form" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 				<label for="login-form__username">`)
-//line views/auth.qtpl:133
+//line views/auth.qtpl:135
 	qw422016.E().S(lc.Get("auth.username"))
-//line views/auth.qtpl:133
+//line views/auth.qtpl:135
 	qw422016.N().S(`</label>
 				<br>
 				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
 				<br>
 				<label for="login-form__password">`)
-//line views/auth.qtpl:137
+//line views/auth.qtpl:139
 	qw422016.E().S(lc.Get("auth.password"))
-//line views/auth.qtpl:137
+//line views/auth.qtpl:139
 	qw422016.N().S(`</label>
 				<br>
 				<input type="password" required name="password" autocomplete="current-password">
 				<br>
 				<button class="btn" type="submit" value="Log in">`)
-//line views/auth.qtpl:141
+//line views/auth.qtpl:143
 	qw422016.E().S(lc.Get("auth.login_button"))
-//line views/auth.qtpl:141
+//line views/auth.qtpl:143
 	qw422016.N().S(`</button>
 			</form>
 			`)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:145
 	streamtelegramWidgetHTML(qw422016, lc)
-//line views/auth.qtpl:143
+//line views/auth.qtpl:145
 	qw422016.N().S(`
 		</section>
 	</main>
 </body>
 </html>
 `)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 }
 
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 func WriteLockHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	StreamLockHTML(qw422016, lc)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 }
 
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 func LockHTML(lc *l18n.Localizer) string {
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	WriteLockHTML(qb422016, lc)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 	return qs422016
-//line views/auth.qtpl:148
+//line views/auth.qtpl:150
 }
