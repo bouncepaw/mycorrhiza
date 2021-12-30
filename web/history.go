@@ -52,6 +52,9 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	// Error ignored: filtered by regex
 	n, _ := strconv.Atoi(mux.Vars(rq)["count"])
+	if n > 100 {
+		return
+	}
 	var lc = l18n.FromRequest(rq)
 	util.HTTP200Page(w, views.BaseHTML(
 		lc.GetPlural("ui.recent_title", n),
