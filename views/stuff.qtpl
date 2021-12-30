@@ -122,17 +122,18 @@ It outputs a poorly formatted JSON, but it works and is valid.
 }
 {% endfunc %}
 
-{% func BacklinksHTML(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
+{% func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">
-	<h1>{%s lc.Get("ui.backlinks_query", &l18n.Replacements{"query": query})%}</h1>
+	<h1>{%s lc.Get("ui.backlinks_query", &l18n.Replacements{"query": hyphaName})%}</h1>
 	<p>{%s lc.Get("ui.backlinks_desc")%}</p>
 	<ul class="backlinks__list">
-	{% for hyphaName := range generator(query) %}
+	{% for hyphaName := range generator(hyphaName) %}
 		<li class="backlinks__entry">
 			<a class="backlinks__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
 		</li>
 	{% endfor %}
+	</ul>
 </main>
 </div>
 {% endfunc %}

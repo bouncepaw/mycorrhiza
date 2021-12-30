@@ -75,7 +75,7 @@ func RenameHypha(h *hyphae.Hypha, newHypha *hyphae.Hypha, recursive bool, u *use
 			h.TextPath = replaceName(h.TextPath)
 			h.BinaryPath = replaceName(h.BinaryPath)
 			h.Unlock()
-			backlinks.BacklinksOnRename(h, oldName)
+			backlinks.UpdateBacklinksAfterRename(h, oldName)
 		}
 	}
 	return hop, ""

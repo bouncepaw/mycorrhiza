@@ -106,7 +106,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 	}
 	*originalFullPath = fullPath
 	if hop.Type == history.TypeEditText {
-		backlinks.BacklinksOnEdit(h, originalText)
+		backlinks.UpdateBacklinksAfterEdit(h, originalText)
 	}
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }
