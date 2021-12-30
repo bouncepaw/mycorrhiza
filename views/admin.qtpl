@@ -42,7 +42,7 @@
 	<h1>{%s lc.Get("admin.users_title") %}</h1>
 
 	<form action="/admin/reindex-users" method="post">
-		<a class="btn" href="/admin/user/new">{%s lc.Get("admin.users_create") %}</a>
+		<a class="btn" href="/admin/new-user">{%s lc.Get("admin.users_create") %}</a>
 		<button class="btn" type="submit">{%s lc.Get("admin.users_reindex") %}</button>
 	</form>
 

@@ -23,7 +23,7 @@ func initAdmin(r *mux.Router) {
 	r.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
 	r.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
 
-	r.HandleFunc("/user/new", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
+	r.HandleFunc("/new-user", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
 	r.HandleFunc("/users/{username}/edit", handlerAdminUserEdit).Methods(http.MethodGet, http.MethodPost)
 	r.HandleFunc("/users/{username}/delete", handlerAdminUserDelete).Methods(http.MethodGet, http.MethodPost)
 	r.HandleFunc("/users", handlerAdminUsers)

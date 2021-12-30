@@ -144,7 +144,7 @@ func StreamAdminUsersPanelHTML(qw422016 *qt422016.Writer, userList []*user.User,
 	qw422016.N().S(`</h1>
 
 	<form action="/admin/reindex-users" method="post">
-		<a class="btn" href="/admin/user/new">`)
+		<a class="btn" href="/admin/new-user">`)
 //line views/admin.qtpl:45
 	qw422016.E().S(lc.Get("admin.users_create"))
 //line views/admin.qtpl:45
