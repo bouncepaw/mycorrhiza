@@ -315,7 +315,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
-	<article id="hypha">
+	<section id="hypha">
 		<div class="jump-btn">
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
@@ -368,7 +368,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 	}
 //line views/readers.qtpl:102
 	qw422016.N().S(`
-	</article>
+	</section>
 	<section class="prevnext">
 		`)
 //line views/readers.qtpl:105
@@ -478,7 +478,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Lo
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
-	<article>
+	<section>
 		<p>`)
 //line views/readers.qtpl:132
 	qw422016.E().S(lc.Get("ui.revision_warning"))
@@ -506,7 +506,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Lo
 	qw422016.N().S(contents)
 //line views/readers.qtpl:134
 	qw422016.N().S(`
-	</article>
+	</section>
 `)
 //line views/readers.qtpl:136
 	StreamSubhyphaeHTML(qw422016, subhyphae, lc)

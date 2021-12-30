@@ -87,7 +87,7 @@ If you rename .prevnext, change the docs too.
 %}
 <div class="layout">
 <main class="main-width">
-	<article id="hypha">
+	<section id="hypha">
 		<div class="jump-btn">
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
@@ -100,7 +100,7 @@ If you rename .prevnext, change the docs too.
 		{% else %}
 		    {%= nonExistentHyphaNotice(h, u, lc) %}
 		{% endif %}
-	</article>
+	</section>
 	<section class="prevnext">
 		{% if prevHyphaName != "" %}
 		<a class="prevnext__el prevnext__prev" href="/hypha/{%s prevHyphaName %}" rel="prev">← {%s util.BeautifulName(path.Base(prevHyphaName)) %}</a>
@@ -128,11 +128,11 @@ If you rename .prevnext, change the docs too.
 %}
 <div class="layout">
 <main class="main-width">
-	<article>
+	<section>
 		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.Name %}">{%s lc.Get("ui.revision_link") %}</a></p>
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
-	</article>
+	</section>
 {%= SubhyphaeHTML(subhyphae, lc) %}
 </main>
 {%= siblingHyphaeHTML(siblings, lc) %}
