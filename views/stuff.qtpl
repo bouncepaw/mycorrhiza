@@ -1,5 +1,7 @@
+{% import "fmt" %}
 {% import "path/filepath" %}
 {% import "sort" %}
+
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
@@ -125,7 +127,16 @@ It outputs a poorly formatted JSON, but it works and is valid.
 {% func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">
-	<h1>{%s lc.Get("ui.backlinks_query", &l18n.Replacements{"query": hyphaName})%}</h1>
+	<h1>{%s= lc.Get(
+		"ui.backlinks_heading",
+		&l18n.Replacements{
+			"hypha_link": fmt.Sprintf(
+				`<a href="/hypha/%s">%s</a>`,
+				hyphaName,
+				util.BeautifulName(hyphaName),
+			),
+		},
+	)%}</h1>
 	<p>{%s lc.Get("ui.backlinks_desc")%}</p>
 	<ul class="backlinks__list">
 	{% for hyphaName := range generator(hyphaName) %}

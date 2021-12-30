@@ -8,9 +8,9 @@
 	"search_results_query": "Search results for ‘{{.query}}’",
 	"search_results_desc": "Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.",
 	
-	"backlinks_title": "Backlinks to {{.query}}",
-	"backlinks_query": "Backlinks to ‘{{.query}}’",
-	"backlinks_desc": "Hyphae which have a link to the selected hypha are listed below.",
+	"backlinks_title": "Backlinks to {{.hypha_name}}",
+	"backlinks_heading": "Backlinks to {{.hypha_link}}",
+	"backlinks_desc": "Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.",
 
 	"list_title": "List of pages",
 	"list_heading": "List of hyphae",
