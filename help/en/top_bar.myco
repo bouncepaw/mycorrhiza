@@ -6,9 +6,7 @@ On big screens, the top bar is spread onto two lines.
 ** Link to the [[/ | home page]]
 ** Search bar
 ** //If authorization is enabled,//
-*** //If logged in,//
-**** Link to your user hypha
-**** //For admins,// link to the admin panel
+*** Link to your profile, //if logged in//
 *** //If not logged in,//
 **** Login link
 **** Register link
