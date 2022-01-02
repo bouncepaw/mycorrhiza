@@ -92,13 +92,22 @@ If you rename .prevnext, change the docs too.
 			<a class="jump-btn__link" href="#hypha-bottom">↓</a>
 		</div>
 
-		{% if u.CanProceed("edit") %}<div class="btn btn_navititle">
+		{% if u.CanProceed("edit") %}
+		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/edit/{%s h.Name %}">{%s lc.Get("ui.edit_link") %}</a>
-		</div>{% endif %}
+		</div>
+		{% endif %}
 
-		{% if cfg.UseAuth && util.IsProfileName(h.Name) && u.Name == strings.TrimPrefix(h.Name, cfg.UserHypha + "/") %}<div class="btn btn_navititle">
+		{% if cfg.UseAuth && util.IsProfileName(h.Name) && u.Name == strings.TrimPrefix(h.Name, cfg.UserHypha + "/") %}
+		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/logout">{%s lc.Get("ui.logout_link") %}</a>
-		</div>{% endif %}
+		</div>
+		{% if u.Group == "admin" %}
+		<div class="btn btn_navititle">
+			<a class="btn__link_navititle" href="admin">{%s lc.Get("ui.admin_panel") %}<a>
+		</div>
+		{% endif %}
+		{% endif %}
 
 		{%s= NaviTitleHTML(h) %}
 		{% if h.Exists %}
