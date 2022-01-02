@@ -64,6 +64,13 @@ func CanonicalName(name string) string {
 	return util.CanonicalName(name)
 }
 
+// IsProfileName if the given hypha name is a profile name. It takes configuration into consideration.
+//
+// With default configuration, u/ is the prefix such names have. For example, u/wikimind matches. Note that u/wikimind/sub does not.
+func IsProfileName(hyphaName string) bool {
+	return strings.HasPrefix(hyphaName, cfg.UserHypha+"/") && strings.Count(hyphaName, "/") == 1
+}
+
 // HyphaNameFromRq extracts hypha name from http request. You have to also pass the action which is embedded in the url or several actions. For url /hypha/hypha, the action would be "hypha".
 func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 	p := rq.URL.Path

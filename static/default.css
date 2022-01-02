@@ -778,12 +778,12 @@ kbd {
 /*
  * Buttons beside the hypha title
  */
-.edit-btn {
+.btn_navititle {
 	float: right;
 	margin: -0.25rem 0;
 	padding: 0;
 }
-.edit-btn__link {
+.btn__link_navititle {
 	display: block;
 	text-decoration: none;
 	color: inherit;
