@@ -49,11 +49,6 @@
 								<a href="/register" class="auth-links__link auth-links__register-link">{%s lc.Get("ui.register") %}</a>
 							</li>
 							{% endif %}
-							{% if u.Group == "admin" %}
-							<li class="auth-links__box auth-links__admin-box">
-								<a href="/admin" class="auth-links__link auth-links__admin-link">{%s lc.Get("ui.admin_panel") %}</a>
-							</li>
-							{% endif %}
 						</ul>
 					{% endif %}
 					</li>
