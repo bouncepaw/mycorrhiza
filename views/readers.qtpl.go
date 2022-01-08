@@ -360,7 +360,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 //line views/readers.qtpl:105
 			qw422016.N().S(`
 		<div class="btn btn_navititle">
-			<a class="btn__link_navititle" href="admin">`)
+			<a class="btn__link_navititle" href="/admin">`)
 //line views/readers.qtpl:107
 			qw422016.E().S(lc.Get("ui.admin_panel"))
 //line views/readers.qtpl:107

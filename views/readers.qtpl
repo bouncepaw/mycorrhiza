@@ -104,7 +104,7 @@ If you rename .prevnext, change the docs too.
 		</div>
 		{% if u.Group == "admin" %}
 		<div class="btn btn_navititle">
-			<a class="btn__link_navititle" href="admin">{%s lc.Get("ui.admin_panel") %}<a>
+			<a class="btn__link_navititle" href="/admin">{%s lc.Get("ui.admin_panel") %}<a>
 		</div>
 		{% endif %}
 		{% endif %}
