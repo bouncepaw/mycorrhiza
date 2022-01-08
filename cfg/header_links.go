@@ -22,6 +22,7 @@ func SetDefaultHeaderLinks() {
 
 // ParseHeaderLinks extracts all rocketlinks from the given text and saves them as header links.
 func ParseHeaderLinks(text string) {
+	HeaderLinks = []HeaderLink{}
 	ctx, _ := mycocontext.ContextFromStringInput("", text)
 	// We call for side-effects
 	_ = mycomarkup.BlockTree(ctx, func(block blocks.Block) {
