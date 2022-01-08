@@ -1,14 +1,14 @@
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=views
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=tree
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
-//go:generate go run github.com/chekoopa/go-localize -input l18n_src -output l18n
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 	"log"
 	"os"
+
+	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
