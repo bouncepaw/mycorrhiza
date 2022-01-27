@@ -151,17 +151,14 @@ aside { clear: both; }
 .img-gallery { text-align: center; margin-top: .25rem; margin-bottom: .25rem; }
 .img-gallery_many-images { border-radius: .25rem; padding: .5rem; }
 @media screen and (min-width: 700px) {
-	.img-gallery_arrangement-grid {
+	.img-gallery_layout-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 	}
 
-	.img-gallery_position-end {
+	.img-gallery_layout-side {
 		float: right;
-	}
-
-	.img-gallery_position-start {
-		float: left;
+		max-width: 50%;
 	}
 }
 .img-gallery img { max-width: 100%; max-height: 50vh; }
