@@ -6,17 +6,17 @@ It is the only supported markup, there is no support for Markdown, Creole, etc.
 A Mycomarkup document (which is most often a hypha's text part) consists of //blocks//. There are different blocks for different purposes.
 
 == Table of contents
-=> /help/en/mycomarkup#Paragraph Paragraph
-=> /help/en/mycomarkup#Inline_link Inline link
-=> /help/en/mycomarkup#Rocket_link Rocket link
-=> /help/en/mycomarkup#Heading Heading
-=> /help/en/mycomarkup#Codeblock Codeblock
-=> /help/en/mycomarkup#Horizontal_line Horizontal line
-=> /help/en/mycomarkup#Image_gallery Image gallery
-=> /help/en/mycomarkup#List List
-=> /help/en/mycomarkup#Quote Quote
-=> /help/en/mycomarkup#Table Table
-=> /help/en/mycomarkup#Transclusion Transclusion
+=> /help/en/mycomarkup#Paragraph       | Paragraph
+=> /help/en/mycomarkup#Inline_link     | Inline link
+=> /help/en/mycomarkup#Rocket_link     | Rocket link
+=> /help/en/mycomarkup#Heading         | Heading
+=> /help/en/mycomarkup#Codeblock       | Codeblock
+=> /help/en/mycomarkup#Horizontal_line | Horizontal line
+=> /help/en/mycomarkup#Image_gallery   | Image gallery
+=> /help/en/mycomarkup#List            | List
+=> /help/en/mycomarkup#Quote           | Quote
+=> /help/en/mycomarkup#Table           | Table
+=> /help/en/mycomarkup#Transclusion    | Transclusion
 
 == Paragraph
 **Paragraphs** are the most ubiquitous blocks. You will use them a lot.
@@ -95,15 +95,15 @@ The display text is written after the first space, not `|`. If you want to link 
 
 * {```
 => hypha
-=> hypha_with_spaces
+=> hypha with spaces
 => https://example.org
-=> https://example.org Display text
+=> https://example.org | Display text
 ```}
 * {
 => hypha
-=> hypha_with_spaces
+=> hypha with spaces
 => https://example.org
-=> https://example.org Display text
+=> https://example.org | Display text
 }
 
 === Relative link addressing
@@ -199,17 +199,11 @@ img { https://mycorrhiza.wiki/static/favicon.ico }
 
 === Gallery layout
 
-A **gallery layout** consists of two things: position and arrangement.
+Set **gallery layout** to specify how your gallery is placed.
 
-* **Position** is about how the gallery is placed in the document. There are three possible positions, listed below. Note that they matter only on big screens. There is no difference on a phone.
-** `end` places the gallery at the end of line. By default, it is the right of the line. The text is wrapped around it.
-** `start` does the same thing, but places the gallery at the start, i/e left side.
-** `stretch` is the default position: the gallery is stretched to fit the document horizontally.
-* **Arrangement** is about how the images are placed in the gallery. There are two possible arrangements:
-** `grid` places the images in a grid.
-** `column` is the default arrangement: the images are in a vertical column.
+There are three layouts: `normal` (the default), `grid` and `side`.
 
-Specify the layout after `img` and before `{`. Just write the position and arrangement you need. If you do not write any of them, the default value will be used.
+Specify the layout after `img` and before `{`. If you do not write any of them, `normal` will be used.
 
 ```
 img grid {
@@ -217,7 +211,7 @@ img grid {
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
 }
 
-img start column {
+img side {
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
 }
@@ -229,7 +223,7 @@ img grid {
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
 }
 
-img start column {
+img side {
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
    https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
 }
