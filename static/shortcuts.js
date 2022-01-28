@@ -325,8 +325,8 @@ window.addEventListener('load', () => {
             this.bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
             this.bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
 
+            this.bindElement('e, ' + (isMac ? "Meta+Enter" : "Ctrl+Enter"), '.btn__link_navititle[href^="/edit/"]', 'Edit this hypha');
             this.bindElement('v', '.hypha-info__link[href^="/hypha/"]', 'Go to hypha′s page');
-            this.bindElement('e, ' + (isMac ? "Meta+Enter" : "Ctrl+Enter"), '.edit-btn__link[href^="/edit/"]', 'Edit this hypha');
             this.bindElement('a', '.hypha-info__link[href^="/attachment/"]', 'Go to attachment');
             this.bindElement('h', '.hypha-info__link[href^="/history/"]', 'Go to history');
             this.bindElement('r', '.hypha-info__link[href^="/rename-ask/"]', 'Rename this hypha');
