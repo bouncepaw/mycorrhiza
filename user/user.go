@@ -88,6 +88,16 @@ func EmptyUser() *User {
 	}
 }
 
+// WikimindUser constructs the wikimind user, which is to be used for automated wiki edits and has admin privileges.
+func WikimindUser() *User {
+	return &User{
+		Name:     "wikimind",
+		Group:    "admin",
+		Password: "",
+		Source:   "local",
+	}
+}
+
 // CanProceed checks whether user has rights to visit the provided path (and perform an action).
 func (user *User) CanProceed(route string) bool {
 	if !cfg.UseAuth {

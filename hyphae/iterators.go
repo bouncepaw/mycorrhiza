@@ -21,8 +21,9 @@ func YieldExistingHyphae() chan *Hypha {
 	return ch
 }
 
-// FilterTextHyphae filters the source channel and yields only those hyphae than have text parts.
-func FilterTextHyphae(src chan *Hypha) chan *Hypha {
+// FilterHyphaeWithText filters the source channel and yields only those hyphae than have text parts.
+func FilterHyphaeWithText(src chan *Hypha) chan *Hypha {
+	// TODO: reimplement as a function with a callback?
 	sink := make(chan *Hypha)
 	go func() {
 		for h := range src {

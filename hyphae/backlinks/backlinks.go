@@ -41,7 +41,7 @@ var backlinkIndex = make(map[string]linkSet)
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index. Call it when indexing and reindexing hyphae.
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
-	for h := range hyphae.FilterTextHyphae(hyphae.YieldExistingHyphae()) {
+	for h := range hyphae.FilterHyphaeWithText(hyphae.YieldExistingHyphae()) {
 		foundLinks := extractHyphaLinksFromContent(h.Name, fetchText(h))
 		for _, link := range foundLinks {
 			if _, exists := backlinkIndex[link]; !exists {

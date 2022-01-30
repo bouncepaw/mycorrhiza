@@ -5,6 +5,7 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/migration"
 	"log"
 	"os"
 
@@ -45,6 +46,7 @@ func main() {
 	user.InitUserDatabase()
 	history.Start()
 	history.InitGitRepo()
+	migration.MigrateRocketsMaybe()
 	shroom.SetHeaderLinks()
 
 	// Static files:

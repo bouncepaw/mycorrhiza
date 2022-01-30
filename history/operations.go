@@ -31,6 +31,8 @@ const (
 	TypeRenameHypha
 	// TypeUnattachHypha represents a hypha attachment deletion
 	TypeUnattachHypha
+	// TypeMarkupMigration represents a wikimind-powered automatic markup migration procedure
+	TypeMarkupMigration
 )
 
 // Op is an object representing a history operation.
@@ -65,15 +67,15 @@ func (hop *Op) gitop(args ...string) *Op {
 	return hop
 }
 
-// WithErr appends the `err` to the list of errors.
-func (hop *Op) WithErr(err error) *Op {
+// withErr appends the `err` to the list of errors.
+func (hop *Op) withErr(err error) *Op {
 	hop.Errs = append(hop.Errs, err)
 	return hop
 }
 
 // WithErrAbort appends the `err` to the list of errors and immediately aborts the operation.
 func (hop *Op) WithErrAbort(err error) *Op {
-	return hop.WithErr(err).Abort()
+	return hop.withErr(err).Abort()
 }
 
 // WithFilesRemoved git-rm-s all passed `paths`. Paths can be rooted or not. Paths that are empty strings are ignored.
@@ -110,7 +112,7 @@ func (hop *Op) WithFiles(paths ...string) *Op {
 	return hop.gitop(append([]string{"add"}, paths...)...)
 }
 
-// Apply applies history operation by doing the commit.
+// Apply applies history operation by doing the commit. You do not need to call Abort afterwards.
 func (hop *Op) Apply() *Op {
 	hop.gitop(
 		"commit",

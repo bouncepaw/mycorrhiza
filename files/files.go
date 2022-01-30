@@ -38,6 +38,9 @@ func TokensJSON() string { return paths.tokensJSON }
 // UserCredentialsJSON returns the path to the JSON user credentials storage.
 func UserCredentialsJSON() string { return paths.userCredentialsJSON }
 
+// FileInRoot returns full path for the given filename if it was placed in the root of the wiki structure.
+func FileInRoot(filename string) string { return filepath.Join(cfg.WikiDir, filename) }
+
 // PrepareWikiRoot ensures all needed directories and files exist and have
 // correct permissions.
 func PrepareWikiRoot() error {
