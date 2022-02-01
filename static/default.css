@@ -159,6 +159,7 @@ aside { clear: both; }
 	.img-gallery_layout-side {
 		float: right;
 		max-width: 50%;
+		margin-left: 1em;
 	}
 }
 .img-gallery img { max-width: 100%; max-height: 50vh; }
