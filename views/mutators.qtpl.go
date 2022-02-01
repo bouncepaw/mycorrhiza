@@ -36,7 +36,7 @@ var (
 func StreamToolbar(qw422016 *qt422016.Writer, u *user.User, lc *l18n.Localizer) {
 //line views/mutators.qtpl:8
 	qw422016.N().S(`
-<aside class="edit-toolbar layout-card">
+<aside class="edit-toolbar markup-toolbar layout-card">
 	<h2 class="edit-toolbar__title layout-card__title">`)
 //line views/mutators.qtpl:10
 	qw422016.E().S(lc.Get("edit.markup"))
@@ -101,14 +101,16 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User, lc *l18n.Localizer) 
 	qw422016.N().S(lc.Get("edit.help", &l18n.Replacements{"link": fmt.Sprintf("<a href=\"/help/%s/mycomarkup\" target=\"_blank\" class=\"shy-link\">%s</a>", lc.Locale, lc.Get("edit.help_link"))}))
 //line views/mutators.qtpl:45
 	qw422016.N().S(`</p>
+</aside>
+<aside class="edit-toolbar action-toolbar layout-card">
 	<h2 class="edit-toolbar__title layout-card__title">`)
-//line views/mutators.qtpl:46
+//line views/mutators.qtpl:48
 	qw422016.E().S(lc.Get("edit.actions"))
-//line views/mutators.qtpl:46
+//line views/mutators.qtpl:48
 	qw422016.N().S(`</h2>
 	<section class="edit-toolbar__buttons">
 	`)
-//line views/mutators.qtpl:48
+//line views/mutators.qtpl:50
 	for _, el := range []struct {
 		class   string
 		onclick string
@@ -117,348 +119,348 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User, lc *l18n.Localizer) 
 		{"date", "insertDate()", lc.Get("edit.date")},
 		{"time", "insertTimeUTC()", lc.Get("edit.time")},
 	} {
-//line views/mutators.qtpl:55
+//line views/mutators.qtpl:57
 		qw422016.N().S(`
 		<button
 			class="btn edit-toolbar__btn edit-toolbar__`)
-//line views/mutators.qtpl:57
+//line views/mutators.qtpl:59
 		qw422016.E().S(el.class)
-//line views/mutators.qtpl:57
+//line views/mutators.qtpl:59
 		qw422016.N().S(`"
 			onclick="`)
-//line views/mutators.qtpl:58
+//line views/mutators.qtpl:60
 		qw422016.E().S(el.onclick)
-//line views/mutators.qtpl:58
+//line views/mutators.qtpl:60
 		qw422016.N().S(`">
 			`)
-//line views/mutators.qtpl:59
+//line views/mutators.qtpl:61
 		qw422016.N().S(el.display)
-//line views/mutators.qtpl:59
+//line views/mutators.qtpl:61
 		qw422016.N().S(`
 		</button>
 	`)
-//line views/mutators.qtpl:61
+//line views/mutators.qtpl:63
 	}
-//line views/mutators.qtpl:61
+//line views/mutators.qtpl:63
 	qw422016.N().S(`
 	`)
-//line views/mutators.qtpl:62
+//line views/mutators.qtpl:64
 	if u.Group != "anon" {
-//line views/mutators.qtpl:62
+//line views/mutators.qtpl:64
 		qw422016.N().S(`
 		<button
 			class="btn edit-toolbar__btn edit-toolbar__user-link"
 			onclick="insertUserlink()">
 			`)
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:68
 		qw422016.E().S(lc.Get("edit.selflink"))
-//line views/mutators.qtpl:66
+//line views/mutators.qtpl:68
 		qw422016.N().S(`
 		</button>
 	`)
-//line views/mutators.qtpl:68
+//line views/mutators.qtpl:70
 	}
-//line views/mutators.qtpl:68
+//line views/mutators.qtpl:70
 	qw422016.N().S(`
 	</section>
 </aside>
 <script src="/static/toolbar.js"></script>
 `)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 }
 
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 func WriteToolbar(qq422016 qtio422016.Writer, u *user.User, lc *l18n.Localizer) {
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	StreamToolbar(qw422016, u, lc)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 }
 
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 func Toolbar(u *user.User, lc *l18n.Localizer) string {
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	WriteToolbar(qb422016, u, lc)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 	return qs422016
-//line views/mutators.qtpl:72
+//line views/mutators.qtpl:74
 }
 
-//line views/mutators.qtpl:74
+//line views/mutators.qtpl:76
 func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line views/mutators.qtpl:74
+//line views/mutators.qtpl:76
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:76
+//line views/mutators.qtpl:78
 	lc := l18n.FromRequest(rq)
 
-//line views/mutators.qtpl:77
+//line views/mutators.qtpl:79
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">`)
-//line views/mutators.qtpl:80
+//line views/mutators.qtpl:82
 	qw422016.N().S(fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)))
-//line views/mutators.qtpl:80
+//line views/mutators.qtpl:82
 	qw422016.N().S(`</h1>
 	`)
-//line views/mutators.qtpl:81
+//line views/mutators.qtpl:83
 	qw422016.N().S(warning)
-//line views/mutators.qtpl:81
+//line views/mutators.qtpl:83
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line views/mutators.qtpl:83
+//line views/mutators.qtpl:85
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:83
+//line views/mutators.qtpl:85
 	qw422016.N().S(`">
 		<textarea name="text" class="edit-form__textarea" autofocus>`)
-//line views/mutators.qtpl:84
+//line views/mutators.qtpl:86
 	qw422016.E().S(textAreaFill)
-//line views/mutators.qtpl:84
+//line views/mutators.qtpl:86
 	qw422016.N().S(`</textarea>
 		<br><br>
 		<label for="text">`)
-//line views/mutators.qtpl:86
+//line views/mutators.qtpl:88
 	qw422016.E().S(lc.Get("edit.tag"))
-//line views/mutators.qtpl:86
+//line views/mutators.qtpl:88
 	qw422016.N().S(`</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message">
 		<br><br>
 		<button type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">`)
-//line views/mutators.qtpl:89
+//line views/mutators.qtpl:91
 	qw422016.E().S(lc.Get("edit.save"))
-//line views/mutators.qtpl:89
+//line views/mutators.qtpl:91
 	qw422016.N().S(`</button>
 		<button type="submit" name="action" class="btn edit-form__preview" value="Preview">`)
-//line views/mutators.qtpl:90
+//line views/mutators.qtpl:92
 	qw422016.E().S(lc.Get("edit.preview"))
-//line views/mutators.qtpl:90
+//line views/mutators.qtpl:92
 	qw422016.N().S(`</button>
 		<a href="/hypha/`)
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:93
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:93
 	qw422016.N().S(`" class="btn btn_weak">`)
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:93
 	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/mutators.qtpl:91
+//line views/mutators.qtpl:93
 	qw422016.N().S(`</a>
 	</form>
 </main>
 `)
-//line views/mutators.qtpl:94
+//line views/mutators.qtpl:96
 	qw422016.N().S(Toolbar(user.FromRequest(rq), lc))
-//line views/mutators.qtpl:94
+//line views/mutators.qtpl:96
 	qw422016.N().S(`
 </div>
 `)
-//line views/mutators.qtpl:96
+//line views/mutators.qtpl:98
 	streameditScripts(qw422016)
-//line views/mutators.qtpl:96
+//line views/mutators.qtpl:98
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 }
 
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 func WriteEditHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	StreamEditHTML(qw422016, rq, hyphaName, textAreaFill, warning)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 }
 
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string {
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	WriteEditHTML(qb422016, rq, hyphaName, textAreaFill, warning)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 	return qs422016
-//line views/mutators.qtpl:97
+//line views/mutators.qtpl:99
 }
 
-//line views/mutators.qtpl:99
+//line views/mutators.qtpl:101
 func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
-//line views/mutators.qtpl:99
+//line views/mutators.qtpl:101
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:101
+//line views/mutators.qtpl:103
 	lc := l18n.FromRequest(rq)
 
-//line views/mutators.qtpl:102
+//line views/mutators.qtpl:104
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width edit edit_with-preview">
 	<h1 class="edit__title">`)
-//line views/mutators.qtpl:105
+//line views/mutators.qtpl:107
 	qw422016.N().S(fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)))
-//line views/mutators.qtpl:105
+//line views/mutators.qtpl:107
 	qw422016.N().S(`</h1>
 	`)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:108
 	qw422016.N().S(warning)
-//line views/mutators.qtpl:106
+//line views/mutators.qtpl:108
 	qw422016.N().S(`
 	<form method="post" class="edit-form"
 			action="/upload-text/`)
-//line views/mutators.qtpl:108
+//line views/mutators.qtpl:110
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:108
+//line views/mutators.qtpl:110
 	qw422016.N().S(`">
 		<textarea name="text" class="edit-form__textarea" autofocus>`)
-//line views/mutators.qtpl:109
+//line views/mutators.qtpl:111
 	qw422016.E().S(textAreaFill)
-//line views/mutators.qtpl:109
+//line views/mutators.qtpl:111
 	qw422016.N().S(`</textarea>
 		<br><br>
 		<label for="text">`)
-//line views/mutators.qtpl:111
+//line views/mutators.qtpl:113
 	qw422016.E().S(lc.Get("edit.tag"))
-//line views/mutators.qtpl:111
+//line views/mutators.qtpl:113
 	qw422016.N().S(`</label><br>
 		<input id="text" type="text" name="message" class="edit-form__message" value="`)
-//line views/mutators.qtpl:112
+//line views/mutators.qtpl:114
 	qw422016.E().S(message)
-//line views/mutators.qtpl:112
+//line views/mutators.qtpl:114
 	qw422016.N().S(`">
 		<br><br>
 		<button type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">`)
-//line views/mutators.qtpl:114
+//line views/mutators.qtpl:116
 	qw422016.E().S(lc.Get("edit.save"))
-//line views/mutators.qtpl:114
+//line views/mutators.qtpl:116
 	qw422016.N().S(`</button>
 		<button type="submit" name="action" class="btn edit-form__preview" value="Preview">`)
-//line views/mutators.qtpl:115
+//line views/mutators.qtpl:117
 	qw422016.E().S(lc.Get("edit.preview"))
-//line views/mutators.qtpl:115
+//line views/mutators.qtpl:117
 	qw422016.N().S(`</button>
 		<a href="/hypha/`)
-//line views/mutators.qtpl:116
+//line views/mutators.qtpl:118
 	qw422016.E().S(hyphaName)
-//line views/mutators.qtpl:116
+//line views/mutators.qtpl:118
 	qw422016.N().S(`" class="btn btn_weak">`)
-//line views/mutators.qtpl:116
+//line views/mutators.qtpl:118
 	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/mutators.qtpl:116
+//line views/mutators.qtpl:118
 	qw422016.N().S(`</a>
 	</form>
 	<p class="warning">`)
-//line views/mutators.qtpl:118
+//line views/mutators.qtpl:120
 	qw422016.E().S(lc.Get("edit.preview_tip"))
-//line views/mutators.qtpl:118
+//line views/mutators.qtpl:120
 	qw422016.N().S(`</p>
 	<article class="edit__preview">`)
-//line views/mutators.qtpl:119
+//line views/mutators.qtpl:121
 	qw422016.N().S(renderedPage)
-//line views/mutators.qtpl:119
+//line views/mutators.qtpl:121
 	qw422016.N().S(`</article>
 </main>
 `)
-//line views/mutators.qtpl:121
+//line views/mutators.qtpl:123
 	qw422016.N().S(Toolbar(user.FromRequest(rq), lc))
-//line views/mutators.qtpl:121
+//line views/mutators.qtpl:123
 	qw422016.N().S(`
 </div>
 `)
-//line views/mutators.qtpl:123
+//line views/mutators.qtpl:125
 	streameditScripts(qw422016)
-//line views/mutators.qtpl:123
+//line views/mutators.qtpl:125
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 }
 
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 func WritePreviewHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	StreamPreviewHTML(qw422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 }
 
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) string {
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	WritePreviewHTML(qb422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 	return qs422016
-//line views/mutators.qtpl:124
+//line views/mutators.qtpl:126
 }
 
-//line views/mutators.qtpl:126
+//line views/mutators.qtpl:128
 func streameditScripts(qw422016 *qt422016.Writer) {
-//line views/mutators.qtpl:126
+//line views/mutators.qtpl:128
 	qw422016.N().S(`
 <script src="/static/editor.js"></script>
 `)
-//line views/mutators.qtpl:128
+//line views/mutators.qtpl:130
 	for _, scriptPath := range cfg.EditScripts {
-//line views/mutators.qtpl:128
+//line views/mutators.qtpl:130
 		qw422016.N().S(`
 <script src="`)
-//line views/mutators.qtpl:129
+//line views/mutators.qtpl:131
 		qw422016.E().S(scriptPath)
-//line views/mutators.qtpl:129
+//line views/mutators.qtpl:131
 		qw422016.N().S(`"></script>
 `)
-//line views/mutators.qtpl:130
+//line views/mutators.qtpl:132
 	}
-//line views/mutators.qtpl:130
+//line views/mutators.qtpl:132
 	qw422016.N().S(`
 `)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 }
 
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 func writeeditScripts(qq422016 qtio422016.Writer) {
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	streameditScripts(qw422016)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	qt422016.ReleaseWriter(qw422016)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 }
 
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 func editScripts() string {
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	writeeditScripts(qb422016)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	qs422016 := string(qb422016.B)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 	return qs422016
-//line views/mutators.qtpl:131
+//line views/mutators.qtpl:133
 }
