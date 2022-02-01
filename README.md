@@ -2,7 +2,7 @@
 
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
 
-<img src="https://mycorrhiza.wiki/binary/release/1.6/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
+<img src="https://mycorrhiza.wiki/binary/release/1.8/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
 
 ## Features
 
