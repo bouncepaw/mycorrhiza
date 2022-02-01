@@ -1,9 +1,11 @@
-# Help
+= Help
 
-This is documentation for **Mycorrhiza Wiki** version **1.8** ([[https://mycorrhiza.wiki | official wiki]]).
+This is documentation for **Mycorrhiza Wiki** 1.8.
 
-**Choose a topic from the list.**
+//Choose a topic from the list.//
 
 Currently, the documentation does not cover everything there is to cover, but it will probably change in the future.
 
 If you want to contribute to the documentation, open a pull request or an issue on [[https://github.com/bouncepaw/mycorrhiza | GitHub]].
+
+=> https://mycorrhiza.wiki | Official wiki
