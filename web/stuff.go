@@ -41,9 +41,9 @@ func initStuff(r *mux.Router) {
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	articlePath := strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
-	lang := lc.Locale
+	lang := "en" // replace with lc.Locale once Russian docs are back
 	if articlePath == "" {
-		articlePath = lc.Locale
+		articlePath = "en" // replace with lc.Locale once Russian docs are back
 	} else {
 		var slashIndex = strings.Index(articlePath, "/")
 		if slashIndex == -1 {
