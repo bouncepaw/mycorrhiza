@@ -43,9 +43,9 @@ Reload the wiki.
 Edit the hypha. You can put any markup there. Rocket links will be used for generating the top bar:
 
 ```myco
-=> /recent-changes Recent changes
+=> /recent-changes | Recent changes
 => Highlights
-=> Philosophy Our views on life
+=> Philosophy | Our views on life
 => Essays
 ```
 

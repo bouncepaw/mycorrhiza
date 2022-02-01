@@ -3,7 +3,7 @@
 
 Engaged wiki editors usually visit this page quite often.
 
-=> /recent-changes See this wiki's recent changes
+=> /recent-changes | See this wiki's recent changes
 
 By default, it lists 20 recent changes. On the page, you can choose other number: 50 or 100.
 
@@ -17,4 +17,4 @@ Each edit has these properties:
 * **Message.** This message tells you what the edit is about. The message format is quite regular and parseable.
 
 == See also
-=> /help/en/feeds Feeds
+=> /help/en/feeds | Feeds
