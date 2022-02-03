@@ -257,7 +257,7 @@ sort.Strings(editors)
 		hyphaNames := make(chan string)
 		sortedHypha := hyphae.PathographicSort(hyphaNames)
 		for hypha := range hyphae.YieldExistingHyphae() {
-			hyphaNames <- hypha.Name
+			hyphaNames <- hypha.CanonicalName()
 		}
 		close(hyphaNames)
 		%}

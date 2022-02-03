@@ -27,7 +27,7 @@ func init() {
 	}
 	globals.HyphaIterate = func(λ func(string)) {
 		for h := range hyphae.YieldExistingHyphae() {
-			λ(h.Name)
+			λ(h.CanonicalName())
 		}
 	}
 }

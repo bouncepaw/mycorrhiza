@@ -9,20 +9,20 @@ import (
 )
 
 func canFactory(
-	rejectLogger func(*hyphae.Hypha, *user.User, string),
+	rejectLogger func(hyphae.Hypher, *user.User, string),
 	action string,
-	dispatcher func(*hyphae.Hypha, *user.User, *l18n.Localizer) (string, string),
+	dispatcher func(hyphae.Hypher, *user.User, *l18n.Localizer) (string, string),
 	noRightsMsg string,
 	notExistsMsg string,
 	mustExist bool,
-) func(*user.User, *hyphae.Hypha, *l18n.Localizer) (string, error) {
-	return func(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (string, error) {
+) func(*user.User, hyphae.Hypher, *l18n.Localizer) (string, error) {
+	return func(u *user.User, h hyphae.Hypher, lc *l18n.Localizer) (string, error) {
 		if !u.CanProceed(action) {
 			rejectLogger(h, u, "no rights")
 			return lc.Get("ui.act_no_rights"), errors.New(lc.Get(noRightsMsg))
 		}
 
-		if mustExist && !h.Exists {
+		if mustExist && !h.DoesExist() {
 			rejectLogger(h, u, "does not exist")
 			return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
 		}
@@ -61,8 +61,8 @@ var (
 	CanUnattach = canFactory(
 		rejectUnattachLog,
 		"unattach-confirm",
-		func(h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
-			if h.BinaryPath == "" {
+		func(h hyphae.Hypher, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
+			if h.Kind() != hyphae.HyphaMedia {
 				rejectUnattachLog(h, u, "no amnt")
 				return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
 			}
