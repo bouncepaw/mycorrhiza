@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/go-ini/ini"
 )
@@ -186,8 +187,8 @@ func ReadConfigFile(path string) error {
 	TelegramBotName = cfg.TelegramBotName
 	TelegramEnabled = (TelegramBotToken != "") && (TelegramBotName != "")
 
-	// This URL makes much more sense.
-	if URL == "" {
+	// This URL makes much more sense. If no URL is set or the protocol is forgotten, assume HTTP.
+	if (URL == "") || (strings.Index(URL, ":") == -1) {
 		URL = "http://" + ListenAddr
 	}
 
