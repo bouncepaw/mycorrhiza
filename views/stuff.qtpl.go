@@ -1027,11 +1027,11 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		<li class="hypha-list__entry">
 			<a class="hypha-list__link" href="/hypha/`)
 //line views/stuff.qtpl:267
-		qw422016.E().S(hypha.Name)
+		qw422016.E().S(hypha.CanonicalName())
 //line views/stuff.qtpl:267
 		qw422016.N().S(`">`)
 //line views/stuff.qtpl:267
-		qw422016.E().S(util.BeautifulName(hypha.Name))
+		qw422016.E().S(util.BeautifulName(hypha.CanonicalName()))
 //line views/stuff.qtpl:267
 		qw422016.N().S(`</a>
 			`)

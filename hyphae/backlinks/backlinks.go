@@ -53,9 +53,9 @@ func IndexBacklinks() {
 }
 
 // BacklinksCount returns the amount of backlinks to the hypha.
-func BacklinksCount(h *hyphae.Hypha) int {
-	if _, exists := backlinkIndex[h.Name]; exists {
-		return len(backlinkIndex[h.Name])
+func BacklinksCount(h hyphae.Hypher) int {
+	if links, exists := backlinkIndex[h.CanonicalName()]; exists {
+		return len(links)
 	}
 	return 0
 }

@@ -20,7 +20,7 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *hist
 
 	hop.
 		WithFilesRemoved(h.BinaryPath()).
-		WithMsg(fmt.Sprintf("Unattach ‘%s’", h.Name)).
+		WithMsg(fmt.Sprintf("Unattach ‘%s’", h.CanonicalName())).
 		WithUser(u).
 		Apply()
 

@@ -27,13 +27,13 @@
 		<h3 class="non-existent-hypha__subtitle">📝 {%s lc.Get("ui.notexist_write") %}</h3>
 		<p>{%s= lc.Get("ui.notexist_write_tip1", &l18n.Replacements{"myco": mycoLink(lc)}) %}</p>
 		<p>{%s lc.Get("ui.notexist_write_tip2") %}</p>
-		<a class="btn btn_accent stick-to-bottom" href="/edit/{%s h.Name %}">{%s lc.Get("ui.notexist_write_button") %}</a>
+		<a class="btn btn_accent stick-to-bottom" href="/edit/{%s h.CanonicalName() %}">{%s lc.Get("ui.notexist_write_button") %}</a>
 	</section>
 
 	<section class="non-existent-hypha__way">
 		<h3 class="non-existent-hypha__subtitle">🖼 {%s lc.Get("ui.notexist_media") %}</h3>
 		<p>{%s lc.Get("ui.notexist_media_tip1") %}</p>
-		<form action="/upload-binary/{%s h.Name %}"
+		<form action="/upload-binary/{%s h.CanonicalName() %}"
         		method="post" enctype="multipart/form-data"
         		class="upload-binary">
         	<label for="upload-binary__input"></label>
@@ -51,7 +51,7 @@
 {% code 
 	var (
 		prevAcc = "/hypha/"
-		parts = strings.Split(h.Name, "/")
+		parts = strings.Split(h.CanonicalName(), "/")
 	)
 %}
 <h1 class="navi-title">
@@ -82,28 +82,28 @@
 
 	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}
 	<div class="binary-container binary-container_with-img">
-		<a href="/binary/{%s= h.Name %}"><img src="/binary/{%s= h.Name %}"/></a>
+		<a href="/binary/{%s= h.CanonicalName() %}"><img src="/binary/{%s= h.CanonicalName() %}"/></a>
 	</div>
 
 	{% case ".ogg", ".webm", ".mp4" %}
 	<div class="binary-container binary-container_with-video">
 		<video controls>
-			<source src="/binary/{%s= h.Name %}"/>
-			<p>{%s lc.Get("ui.media_novideo") %} <a href="/binary/{%s= h.Name %}">{%s lc.Get("ui.media_novideo_link") %}</a></p>
+			<source src="/binary/{%s= h.CanonicalName() %}"/>
+			<p>{%s lc.Get("ui.media_novideo") %} <a href="/binary/{%s= h.CanonicalName() %}">{%s lc.Get("ui.media_novideo_link") %}</a></p>
 		</video>
 	</div>
 
 	{% case ".mp3" %}
 	<div class="binary-container binary-container_with-audio">
 		<audio controls>
-			<source src="/binary/{%s= h.Name %}"/>
-			<p>{%s lc.Get("ui.media_noaudio") %} <a href="/binary/{%s= h.Name %}">{%s lc.Get("ui.media_noaudio_link") %}</a></p>
+			<source src="/binary/{%s= h.CanonicalName() %}"/>
+			<p>{%s lc.Get("ui.media_noaudio") %} <a href="/binary/{%s= h.CanonicalName() %}">{%s lc.Get("ui.media_noaudio_link") %}</a></p>
 		</audio>
 	</div>
 
 	{% default %}
 	<div class="binary-container binary-container_with-nothing">
-		<p><a href="/binary/{%s= h.Name %}">{%s lc.Get("ui.media_download") %}</a></p>
+		<p><a href="/binary/{%s= h.CanonicalName() %}">{%s lc.Get("ui.media_download") %}</a></p>
 	</div>
 {% endswitch %}
 {% endfunc %}

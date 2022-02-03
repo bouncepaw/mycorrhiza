@@ -31,17 +31,19 @@ func IsValidName(hyphaName string) bool {
 type Hypha struct {
 	sync.RWMutex
 
-	Name       string // Canonical name
+	name       string // Canonical name
 	Exists     bool
 	TextPath   string // == "" => no text part
 	binaryPath string // == "" => no attachment
 }
 
+func (h *Hypha) SetName(s string) { h.name = s }
+
 func (h *Hypha) BinaryPath() string     { return h.binaryPath }
 func (h *Hypha) SetBinaryPath(s string) { h.binaryPath = s }
 
 func (h *Hypha) CanonicalName() string {
-	return h.Name
+	return h.name
 }
 
 func (h *Hypha) Kind() HyphaKind {
@@ -65,7 +67,7 @@ func (h *Hypha) HasTextPart() bool {
 // TextPartPath returns rooted path to the file where the text part should be.
 func (h *Hypha) TextPartPath() string {
 	if h.TextPath == "" {
-		return filepath.Join(files.HyphaeDir(), h.Name+".myco")
+		return filepath.Join(files.HyphaeDir(), h.name+".myco")
 	}
 	return h.TextPath
 }
@@ -81,7 +83,7 @@ var byNamesMutex = sync.Mutex{}
 // EmptyHypha returns an empty hypha struct with given name.
 func EmptyHypha(hyphaName string) *Hypha {
 	return &Hypha{
-		Name:       hyphaName,
+		name:       hyphaName,
 		Exists:     false,
 		TextPath:   "",
 		binaryPath: "",
@@ -99,7 +101,7 @@ func ByName(hyphaName string) (h *Hypha) {
 
 func storeHypha(h *Hypha) {
 	byNamesMutex.Lock()
-	byNames[h.Name] = h
+	byNames[h.name] = h
 	byNamesMutex.Unlock()
 
 	h.Lock()
@@ -108,8 +110,8 @@ func storeHypha(h *Hypha) {
 }
 
 // insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
-func (h *Hypha) insert() (justRecorded bool) {
-	hp, recorded := byNames[h.Name]
+func (h *Hypha) insert() (madeNewRecord bool) {
+	hp, recorded := byNames[h.name]
 	if recorded {
 		hp.mergeIn(h)
 	} else {
@@ -121,20 +123,20 @@ func (h *Hypha) insert() (justRecorded bool) {
 }
 
 // InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
-func (h *Hypha) InsertIfNew() (justRecorded bool) {
-	if !h.Exists {
-		return h.insert()
+func (h *Hypha) InsertIfNew() (madeNewRecord bool) {
+	if h.DoesExist() {
+		return false
 	}
-	return false
+	return h.insert()
 }
 
 // RenameTo renames a hypha and performs respective changes in the storage.
 func (h *Hypha) RenameTo(newName string) {
 	byNamesMutex.Lock()
 	h.Lock()
-	delete(byNames, h.Name)
-	h.Name = newName
-	byNames[h.Name] = h
+	delete(byNames, h.CanonicalName())
+	h.SetName(newName)
+	byNames[h.CanonicalName()] = h
 	byNamesMutex.Unlock()
 	h.Unlock()
 }

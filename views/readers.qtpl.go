@@ -64,7 +64,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 <main class="main-width attachment-tab">
 	<h1>`)
 //line views/readers.qtpl:20
-	qw422016.N().S(lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.Name)}))
+	qw422016.N().S(lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}))
 //line views/readers.qtpl:20
 	qw422016.N().S(`</h1>
 	`)
@@ -169,7 +169,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 			qw422016.N().S(`</p>
 			<pre class="codeblock"><code>img { `)
 //line views/readers.qtpl:45
-			qw422016.E().S(h.Name)
+			qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:45
 			qw422016.N().S(` }</code></pre>
 		</fieldset>
@@ -191,7 +191,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 		qw422016.N().S(`
 	<form action="/upload-binary/`)
 //line views/readers.qtpl:51
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:51
 		qw422016.N().S(`"
 			method="post" enctype="multipart/form-data"
@@ -230,7 +230,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 		qw422016.N().S(`
 	<form action="/unattach-confirm/`)
 //line views/readers.qtpl:66
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:66
 		qw422016.N().S(`" method="post" class="modal amnt-menu-block">
 		<fieldset class="modal__fieldset">
@@ -300,7 +300,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:85
-	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.Name)
+	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	u := user.FromRequest(rq)
 
 //line views/readers.qtpl:87
@@ -316,7 +316,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/edit/`)
 //line views/readers.qtpl:93
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:93
 		qw422016.N().S(`">`)
 //line views/readers.qtpl:93
@@ -332,7 +332,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 
 		`)
 //line views/readers.qtpl:97
-	if cfg.UseAuth && util.IsProfileName(h.Name) && u.Name == strings.TrimPrefix(h.Name, cfg.UserHypha+"/") {
+	if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && u.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/") {
 //line views/readers.qtpl:97
 		qw422016.N().S(`
 		<div class="btn btn_navititle">
@@ -496,7 +496,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Lo
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:135
-	siblings, subhyphae, _, _ := tree.Tree(h.Name)
+	siblings, subhyphae, _, _ := tree.Tree(h.CanonicalName())
 
 //line views/readers.qtpl:136
 	qw422016.N().S(`
@@ -513,7 +513,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Lo
 //line views/readers.qtpl:140
 	qw422016.N().S(`/`)
 //line views/readers.qtpl:140
-	qw422016.E().S(h.Name)
+	qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:140
 	qw422016.N().S(`">`)
 //line views/readers.qtpl:140

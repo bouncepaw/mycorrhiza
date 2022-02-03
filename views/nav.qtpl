@@ -8,7 +8,7 @@
 {% func hyphaInfoEntry(h *hyphae.Hypha, u *user.User, action, displayText string) %}
 {% if u.CanProceed(action) %}
 <li class="hypha-info__entry hypha-info__entry_{%s action %}">
-	<a class="hypha-info__link" href="/{%s action %}/{%s h.Name %}">{%s displayText %}</a>
+	<a class="hypha-info__link" href="/{%s action %}/{%s h.CanonicalName() %}">{%s displayText %}</a>
 </li>
 {% endif %}
 {% endfunc %}

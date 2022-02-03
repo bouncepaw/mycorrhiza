@@ -31,9 +31,9 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *
 	}
 
 	if message == "" {
-		hop.WithMsg(fmt.Sprintf("%s ‘%s’", action, h.Name))
+		hop.WithMsg(fmt.Sprintf("%s ‘%s’", action, h.CanonicalName()))
 	} else {
-		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.Name, message))
+		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.CanonicalName(), message))
 	}
 
 	if errtitle, err := CanEdit(u, h, lc); err != nil {
@@ -49,7 +49,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *
 // UploadBinary edits a hypha' attachment and makes a history record about that.
 func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
 	var (
-		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.Name, mime))
+		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.CanonicalName(), mime))
 		data, err = io.ReadAll(file)
 	)
 
@@ -69,11 +69,11 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
 	var (
-		fullPath       = filepath.Join(files.HyphaeDir(), h.Name+ext)
+		fullPath       = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
 		sourceFullPath = h.TextPartPath()
 		originalText   = "" // for backlink update
 	)
-	if !isValidPath(fullPath) || !hyphae.IsValidName(h.Name) {
+	if !isValidPath(fullPath) || !hyphae.IsValidName(h.CanonicalName()) {
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
