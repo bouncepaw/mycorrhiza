@@ -18,7 +18,7 @@
 <div class="layout">
 <main class="main-width attachment-tab">
 	<h1>{%s= lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.Name)}) %}</h1>
-	{% if h.BinaryPath == "" %}
+	{% if h.BinaryPath() == "" %}
 	<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
 	{% else %}
 	<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
@@ -26,10 +26,10 @@
 
 	<section class="amnt-grid">
 
-	{% if h.BinaryPath != "" %}
+	{% if h.BinaryPath() != "" %}
 		{% code
-			mime := mimetype.FromExtension(path.Ext(h.BinaryPath))
-			fileinfo, err := os.Stat(h.BinaryPath) %}
+			mime := mimetype.FromExtension(path.Ext(h.BinaryPath()))
+			fileinfo, err := os.Stat(h.BinaryPath()) %}
 		{% if err == nil %}
 		<fieldset class="amnt-menu-block">
 			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_stat") %}</legend>
@@ -62,7 +62,7 @@
 	</form>
 	{% endif %}
 
-	{% if h.BinaryPath != "" && u.CanProceed("unattach-confirm") %}
+	{% if h.BinaryPath() != "" && u.CanProceed("unattach-confirm") %}
 	<form action="/unattach-confirm/{%s h.Name %}" method="post" class="modal amnt-menu-block">
 		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_remove") %}</legend>

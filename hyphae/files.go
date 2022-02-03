@@ -57,7 +57,7 @@ func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
 			if isText {
 				hypha.TextPath = hyphaPartPath
 			} else {
-				hypha.BinaryPath = hyphaPartPath
+				hypha.SetBinaryPath(hyphaPartPath)
 			}
 			ch <- hypha
 		}

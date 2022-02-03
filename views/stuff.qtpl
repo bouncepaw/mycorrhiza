@@ -265,8 +265,8 @@ sort.Strings(editors)
 		{% code hypha := hyphae.ByName(hyphaName) %}
 		<li class="hypha-list__entry">
 			<a class="hypha-list__link" href="/hypha/{%s hypha.Name %}">{%s util.BeautifulName(hypha.Name) %}</a>
-			{% if hypha.BinaryPath != "" %}
-			<span class="hypha-list__amnt-type">{%s filepath.Ext(hypha.BinaryPath)[1:] %}</span>
+			{% if hypha.BinaryPath() != "" %}
+			<span class="hypha-list__amnt-type">{%s filepath.Ext(hypha.BinaryPath())[1:] %}</span>
 			{% endif %}
 		</li>
 		{% endfor %}

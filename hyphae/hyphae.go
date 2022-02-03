@@ -34,8 +34,11 @@ type Hypha struct {
 	Name       string // Canonical name
 	Exists     bool
 	TextPath   string // == "" => no text part
-	BinaryPath string // == "" => no attachment
+	binaryPath string // == "" => no attachment
 }
+
+func (h *Hypha) BinaryPath() string     { return h.binaryPath }
+func (h *Hypha) SetBinaryPath(s string) { h.binaryPath = s }
 
 func (h *Hypha) CanonicalName() string {
 	return h.Name
@@ -69,7 +72,7 @@ func (h *Hypha) TextPartPath() string {
 
 // HasAttachment is true if the hypha has an attachment.
 func (h *Hypha) HasAttachment() bool {
-	return h.BinaryPath != ""
+	return h.binaryPath != ""
 }
 
 var byNames = make(map[string]*Hypha)
@@ -81,7 +84,7 @@ func EmptyHypha(hyphaName string) *Hypha {
 		Name:       hyphaName,
 		Exists:     false,
 		TextPath:   "",
-		BinaryPath: "",
+		binaryPath: "",
 	}
 }
 
@@ -145,11 +148,11 @@ func (h *Hypha) mergeIn(oh *Hypha) {
 	if h.TextPath == "" && oh.TextPath != "" {
 		h.TextPath = oh.TextPath
 	}
-	if oh.BinaryPath != "" {
-		if h.BinaryPath != "" {
-			log.Println("There is a file collision for attachment of a hypha:", h.BinaryPath, "and", oh.BinaryPath, "-- going on with the latter")
+	if oh.binaryPath != "" {
+		if h.binaryPath != "" {
+			log.Println("There is a file collision for attachment of a hypha:", h.binaryPath, "and", oh.binaryPath, "-- going on with the latter")
 		}
-		h.BinaryPath = oh.BinaryPath
+		h.binaryPath = oh.binaryPath
 	}
 	h.Unlock()
 }

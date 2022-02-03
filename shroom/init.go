@@ -16,7 +16,7 @@ func init() {
 	globals.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
 		if h := hyphae.ByName(hyphaName); h.Exists {
 			rawText, err = FetchTextPart(h)
-			if h.BinaryPath != "" {
+			if h.BinaryPath() != "" {
 				// the view is localized, but we can't pass it, so...
 				binaryBlock = views.AttachmentHTMLRaw(h)
 			}
