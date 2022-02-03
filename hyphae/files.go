@@ -23,7 +23,7 @@ func Index(path string) {
 		if oh := ByName(h.name); oh.Exists {
 			oh.mergeIn(h)
 		} else {
-			h.insert()
+			insert(h)
 		}
 	}
 	log.Println("Indexed", Count(), "hyphae")
@@ -40,10 +40,8 @@ func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
 
 	for _, node := range nodes {
 		// If this hypha looks like it can be a hypha path, go deeper. Do not
-		// touch the .git and static folders for they have an administrative
-		// importance!
-		if node.IsDir() && IsValidName(node.Name()) && node.Name() != ".git" &&
-			!(nestLevel == 0 && node.Name() == "static") {
+		// touch the .git folders for it has an administrative importance!
+		if node.IsDir() && IsValidName(node.Name()) && node.Name() != ".git" {
 			indexHelper(filepath.Join(path, node.Name()), nestLevel+1, ch)
 			continue
 		}
