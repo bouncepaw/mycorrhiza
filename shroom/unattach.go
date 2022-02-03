@@ -35,7 +35,7 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *hist
 	}
 	// If nothing is left of the hypha
 	if h.TextPath == "" {
-		h.Delete()
+		hyphae.DeleteHypha(h)
 	}
 	return hop, ""
 }

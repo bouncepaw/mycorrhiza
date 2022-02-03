@@ -27,7 +27,7 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *histor
 		Apply()
 	if !hop.HasErrors() {
 		backlinks.UpdateBacklinksAfterDelete(h, originalText)
-		h.Delete()
+		hyphae.DeleteHypha(h)
 	}
 	return hop, ""
 }

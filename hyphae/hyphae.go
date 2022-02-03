@@ -37,6 +37,24 @@ type Hypha struct {
 	BinaryPath string // == "" => no attachment
 }
 
+func (h *Hypha) CanonicalName() string {
+	return h.Name
+}
+
+func (h *Hypha) Kind() HyphaKind {
+	if !h.Exists {
+		return HyphaEmpty
+	}
+	if h.HasAttachment() {
+		return HyphaMedia
+	}
+	return HyphaText
+}
+
+func (h *Hypha) HasTextPart() bool {
+	return h.TextPath != ""
+}
+
 // TextPartPath returns rooted path to the file where the text part should be.
 func (h *Hypha) TextPartPath() string {
 	if h.TextPath == "" {
@@ -101,16 +119,6 @@ func (h *Hypha) InsertIfNew() (justRecorded bool) {
 		return h.insert()
 	}
 	return false
-}
-
-// Delete removes a hypha from the storage.
-func (h *Hypha) Delete() {
-	byNamesMutex.Lock()
-	h.Lock()
-	delete(byNames, h.Name)
-	decrementCount()
-	byNamesMutex.Unlock()
-	h.Unlock()
 }
 
 // RenameTo renames a hypha and performs respective changes in the storage.
