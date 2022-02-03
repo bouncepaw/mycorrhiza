@@ -98,7 +98,7 @@ func StreamToolbar(qw422016 *qt422016.Writer, u *user.User, lc *l18n.Localizer) 
 	</section>
 	<p class="edit-toolbar__ad">`)
 //line views/mutators.qtpl:45
-	qw422016.N().S(lc.Get("edit.help", &l18n.Replacements{"link": fmt.Sprintf("<a href=\"/help/%s/mycomarkup\" target=\"_blank\" class=\"shy-link\">%s</a>", lc.Locale, lc.Get("edit.help_link"))}))
+	qw422016.N().S(lc.Get("edit.help", &l18n.Replacements{"link": fmt.Sprintf("<a href=\"/help/en/mycomarkup\" target=\"_blank\" class=\"shy-link\">%s</a>", lc.Get("edit.help_link"))}))
 //line views/mutators.qtpl:45
 	qw422016.N().S(`</p>
 </aside>

@@ -794,11 +794,7 @@ func helpTopicsHTML(lang string, lc *l18n.Localizer) string {
 func streamhelpTopicBadgeHTML(qw422016 *qt422016.Writer, lang, topic string) {
 //line views/stuff.qtpl:200
 	qw422016.N().S(`
-<a class="help-topic-badge" href="/help/`)
-//line views/stuff.qtpl:201
-	qw422016.E().S(lang)
-//line views/stuff.qtpl:201
-	qw422016.N().S(`/`)
+<a class="help-topic-badge" href="/help/en/`)
 //line views/stuff.qtpl:201
 	qw422016.E().S(topic)
 //line views/stuff.qtpl:201

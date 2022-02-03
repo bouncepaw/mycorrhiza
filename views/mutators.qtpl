@@ -42,7 +42,7 @@
 		</button>
 	{% endfor %}
 	</section>
-	<p class="edit-toolbar__ad">{%s= lc.Get("edit.help", &l18n.Replacements{"link": fmt.Sprintf("<a href=\"/help/%s/mycomarkup\" target=\"_blank\" class=\"shy-link\">%s</a>", lc.Locale, lc.Get("edit.help_link"))}) %}</p>
+	<p class="edit-toolbar__ad">{%s= lc.Get("edit.help", &l18n.Replacements{"link": fmt.Sprintf("<a href=\"/help/en/mycomarkup\" target=\"_blank\" class=\"shy-link\">%s</a>", lc.Get("edit.help_link"))}) %}</p>
 </aside>
 <aside class="edit-toolbar action-toolbar layout-card">
 	<h2 class="edit-toolbar__title layout-card__title">{%s lc.Get("edit.actions")%}</h2>

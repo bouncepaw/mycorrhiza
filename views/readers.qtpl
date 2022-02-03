@@ -19,9 +19,9 @@
 <main class="main-width attachment-tab">
 	<h1>{%s= lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.Name)}) %}</h1>
 	{% if h.BinaryPath == "" %}
-	<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/{%s lc.Locale %}/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+	<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
 	{% else %}
-	<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/{%s lc.Locale %}/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+	<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
 	{% endif %}
 
 	<section class="amnt-grid">

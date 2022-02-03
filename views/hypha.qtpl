@@ -9,7 +9,7 @@
 
 {% func beautifulLink(hyphaName string) %}<a href="/hypha/{%s= hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>{% endfunc %}
 
-{% func mycoLink(lc *l18n.Localizer) %}<a href="/help/{%s lc.Locale %}/mycomarkup" class="shy-link">{%s lc.Get("ui.notexist_write_myco") %}</a>{% endfunc %}
+{% func mycoLink(lc *l18n.Localizer) %}<a href="/help/en/mycomarkup" class="shy-link">{%s lc.Get("ui.notexist_write_myco") %}</a>{% endfunc %}
 
 {% func nonExistentHyphaNotice(h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) %}
 <section class="non-existent-hypha">

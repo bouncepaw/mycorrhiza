@@ -76,11 +76,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 //line views/readers.qtpl:22
 		qw422016.E().S(lc.Get("ui.attach_empty"))
 //line views/readers.qtpl:22
-		qw422016.N().S(` <a href="/help/`)
-//line views/readers.qtpl:22
-		qw422016.E().S(lc.Locale)
-//line views/readers.qtpl:22
-		qw422016.N().S(`/attachment" class="shy-link">`)
+		qw422016.N().S(` <a href="/help/en/attachment" class="shy-link">`)
 //line views/readers.qtpl:22
 		qw422016.E().S(lc.Get("ui.attach_link"))
 //line views/readers.qtpl:22
@@ -94,11 +90,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 //line views/readers.qtpl:24
 		qw422016.E().S(lc.Get("ui.attach_tip"))
 //line views/readers.qtpl:24
-		qw422016.N().S(` <a href="/help/`)
-//line views/readers.qtpl:24
-		qw422016.E().S(lc.Locale)
-//line views/readers.qtpl:24
-		qw422016.N().S(`/attachment" class="shy-link">`)
+		qw422016.N().S(` <a href="/help/en/attachment" class="shy-link">`)
 //line views/readers.qtpl:24
 		qw422016.E().S(lc.Get("ui.attach_link"))
 //line views/readers.qtpl:24

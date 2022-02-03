@@ -198,7 +198,7 @@ It outputs a poorly formatted JSON, but it works and is valid.
 {% endfunc %}
 
 {% func helpTopicBadgeHTML(lang, topic string) %}
-<a class="help-topic-badge" href="/help/{%s lang %}/{%s topic %}">?</a>
+<a class="help-topic-badge" href="/help/en/{%s topic %}">?</a>
 {% endfunc %}
 
 {% func UserListHTML(lc *l18n.Localizer) %}

@@ -82,11 +82,7 @@ func beautifulLink(hyphaName string) string {
 //line views/hypha.qtpl:12
 func streammycoLink(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/hypha.qtpl:12
-	qw422016.N().S(`<a href="/help/`)
-//line views/hypha.qtpl:12
-	qw422016.E().S(lc.Locale)
-//line views/hypha.qtpl:12
-	qw422016.N().S(`/mycomarkup" class="shy-link">`)
+	qw422016.N().S(`<a href="/help/en/mycomarkup" class="shy-link">`)
 //line views/hypha.qtpl:12
 	qw422016.E().S(lc.Get("ui.notexist_write_myco"))
 //line views/hypha.qtpl:12

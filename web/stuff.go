@@ -41,17 +41,18 @@ func initStuff(r *mux.Router) {
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	articlePath := strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
-	lang := "en" // replace with lc.Locale once Russian docs are back
+	// See the history of this file to resurrect the old algorithm that supported multiple languages
+	lang := "en"
 	if articlePath == "" {
-		articlePath = "en" // replace with lc.Locale once Russian docs are back
-	} else {
-		var slashIndex = strings.Index(articlePath, "/")
-		if slashIndex == -1 {
-			lang = articlePath
-		} else {
-			lang = articlePath[:slashIndex]
-		}
+		articlePath = "en"
 	}
+
+	if !strings.HasPrefix(articlePath, "en") {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = io.WriteString(w, "404 Not found")
+		return
+	}
+
 	content, err := help.Get(articlePath)
 	if err != nil && strings.HasPrefix(err.Error(), "open") {
 		w.WriteHeader(http.StatusNotFound)
