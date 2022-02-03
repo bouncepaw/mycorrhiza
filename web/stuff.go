@@ -145,7 +145,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	i := rand.Intn(amountOfHyphae)
 	for h := range hyphae.YieldExistingHyphae() {
 		if i == 0 {
-			randomHyphaName = h.Name
+			randomHyphaName = h.CanonicalName()
 		}
 		i--
 	}

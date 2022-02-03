@@ -51,6 +51,10 @@ func (h *Hypha) Kind() HyphaKind {
 	return HyphaText
 }
 
+func (h *Hypha) DoesExist() bool { // TODO: rename
+	return h.Exists
+}
+
 func (h *Hypha) HasTextPart() bool {
 	return h.TextPath != ""
 }

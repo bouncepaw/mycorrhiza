@@ -16,6 +16,7 @@ type Hypher interface {
 
 	CanonicalName() string
 	Kind() HyphaKind
+	DoesExist() bool
 
 	HasTextPart() bool
 	TextPartPath() string

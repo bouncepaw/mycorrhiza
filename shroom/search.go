@@ -14,8 +14,8 @@ func YieldHyphaNamesContainingString(query string) <-chan string {
 	sorted := hyphae.PathographicSort(out)
 	go func() {
 		for h := range hyphae.YieldExistingHyphae() {
-			if hyphaNameMatchesString(h.Name, query) {
-				out <- h.Name
+			if hyphaNameMatchesString(h.CanonicalName(), query) {
+				out <- h.CanonicalName()
 			}
 		}
 		close(out)

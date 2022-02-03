@@ -42,12 +42,12 @@ var backlinkIndex = make(map[string]linkSet)
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
 	for h := range hyphae.FilterHyphaeWithText(hyphae.YieldExistingHyphae()) {
-		foundLinks := extractHyphaLinksFromContent(h.Name, fetchText(h))
+		foundLinks := extractHyphaLinksFromContent(h.CanonicalName(), fetchText(h))
 		for _, link := range foundLinks {
 			if _, exists := backlinkIndex[link]; !exists {
 				backlinkIndex[link] = make(linkSet)
 			}
-			backlinkIndex[link][h.Name] = struct{}{}
+			backlinkIndex[link][h.CanonicalName()] = struct{}{}
 		}
 	}
 }
@@ -71,11 +71,11 @@ func toLinkSet(xs []string) linkSet {
 	return result
 }
 
-func fetchText(h *hyphae.Hypha) string {
-	if h.TextPath == "" {
+func fetchText(h hyphae.Hypher) string {
+	if !h.HasTextPart() {
 		return ""
 	}
-	text, err := os.ReadFile(h.TextPath)
+	text, err := os.ReadFile(h.TextPartPath())
 	if err == nil {
 		return string(text)
 	}

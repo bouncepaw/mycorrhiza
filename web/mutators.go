@@ -35,7 +35,7 @@ func initMutators(r *mux.Router) {
 
 func factoryHandlerAsker(
 	actionPath string,
-	asker func(*user.User, *hyphae.Hypha, *l18n.Localizer) (string, error),
+	asker func(*user.User, hyphae.Hypher, *l18n.Localizer) (string, error),
 	succTitleKey string,
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {

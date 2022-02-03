@@ -1007,7 +1007,7 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	hyphaNames := make(chan string)
 	sortedHypha := hyphae.PathographicSort(hyphaNames)
 	for hypha := range hyphae.YieldExistingHyphae() {
-		hyphaNames <- hypha.Name
+		hyphaNames <- hypha.CanonicalName()
 	}
 	close(hyphaNames)
 
