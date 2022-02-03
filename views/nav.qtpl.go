@@ -55,7 +55,7 @@ func streamhyphaInfoEntry(qw422016 *qt422016.Writer, h *hyphae.Hypha, u *user.Us
 //line views/nav.qtpl:11
 		qw422016.N().S(`/`)
 //line views/nav.qtpl:11
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/nav.qtpl:11
 		qw422016.N().S(`">`)
 //line views/nav.qtpl:11

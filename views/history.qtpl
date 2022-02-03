@@ -20,7 +20,7 @@ if err != nil {
 <div class="layout">
 <main class="main-width">
 	<article>
-		<h1>{%s= lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.Name), "rev": hash}) %}</h1>
+		<h1>{%s= lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName()), "rev": hash}) %}</h1>
 		<pre class="codeblock"><code>{%s text %}</code></pre>
 	</article>
 </main>

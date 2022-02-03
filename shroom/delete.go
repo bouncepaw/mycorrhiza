@@ -22,7 +22,7 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *histor
 	originalText, _ := FetchTextPart(h)
 	hop.
 		WithFilesRemoved(h.TextPath, h.BinaryPath()).
-		WithMsg(fmt.Sprintf("Delete ‘%s’", h.Name)).
+		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
 		WithUser(u).
 		Apply()
 	if !hop.HasErrors() {

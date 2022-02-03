@@ -181,7 +181,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 		qw422016.N().S(`</p>
 		<a class="btn btn_accent stick-to-bottom" href="/edit/`)
 //line views/hypha.qtpl:30
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/hypha.qtpl:30
 		qw422016.N().S(`">`)
 //line views/hypha.qtpl:30
@@ -203,7 +203,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 		qw422016.N().S(`</p>
 		<form action="/upload-binary/`)
 //line views/hypha.qtpl:36
-		qw422016.E().S(h.Name)
+		qw422016.E().S(h.CanonicalName())
 //line views/hypha.qtpl:36
 		qw422016.N().S(`"
         		method="post" enctype="multipart/form-data"
@@ -263,7 +263,7 @@ func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
 //line views/hypha.qtpl:52
 	var (
 		prevAcc = "/hypha/"
-		parts   = strings.Split(h.Name, "/")
+		parts   = strings.Split(h.CanonicalName(), "/")
 	)
 
 //line views/hypha.qtpl:56
@@ -395,11 +395,11 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 	<div class="binary-container binary-container_with-img">
 		<a href="/binary/`)
 //line views/hypha.qtpl:85
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:85
 		qw422016.N().S(`"><img src="/binary/`)
 //line views/hypha.qtpl:85
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:85
 		qw422016.N().S(`"/></a>
 	</div>
@@ -413,7 +413,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 		<video controls>
 			<source src="/binary/`)
 //line views/hypha.qtpl:91
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:91
 		qw422016.N().S(`"/>
 			<p>`)
@@ -422,7 +422,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 //line views/hypha.qtpl:92
 		qw422016.N().S(` <a href="/binary/`)
 //line views/hypha.qtpl:92
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:92
 		qw422016.N().S(`">`)
 //line views/hypha.qtpl:92
@@ -441,7 +441,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 		<audio controls>
 			<source src="/binary/`)
 //line views/hypha.qtpl:99
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:99
 		qw422016.N().S(`"/>
 			<p>`)
@@ -450,7 +450,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 //line views/hypha.qtpl:100
 		qw422016.N().S(` <a href="/binary/`)
 //line views/hypha.qtpl:100
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:100
 		qw422016.N().S(`">`)
 //line views/hypha.qtpl:100
@@ -468,7 +468,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 	<div class="binary-container binary-container_with-nothing">
 		<p><a href="/binary/`)
 //line views/hypha.qtpl:106
-		qw422016.N().S(h.Name)
+		qw422016.N().S(h.CanonicalName())
 //line views/hypha.qtpl:106
 		qw422016.N().S(`">`)
 //line views/hypha.qtpl:106

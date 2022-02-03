@@ -60,7 +60,7 @@ func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyp
 	<article>
 		<h1>`)
 //line views/history.qtpl:23
-	qw422016.N().S(lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.Name), "rev": hash}))
+	qw422016.N().S(lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName()), "rev": hash}))
 //line views/history.qtpl:23
 	qw422016.N().S(`</h1>
 		<pre class="codeblock"><code>`)
