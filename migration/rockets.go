@@ -86,6 +86,11 @@ func MigrateRocketsMaybe() {
 		_ = file.Close()
 	}
 
+	if len(mycoFiles) == 0 {
+		hop.Abort()
+		return
+	}
+
 	if hop.WithFiles(mycoFiles...).Apply().HasErrors() {
 		log.Fatal("Something went wrong when commiting rocket link migration: ", hop.FirstErrorText())
 	}
