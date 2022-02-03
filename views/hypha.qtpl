@@ -78,7 +78,7 @@
 {% func AttachmentHTMLRaw(h *hyphae.Hypha) %}{%= AttachmentHTML(h, l18n.New("en", "en")) %}{% endfunc %}
 
 {% func AttachmentHTML(h *hyphae.Hypha, lc *l18n.Localizer) %}
-	{% switch filepath.Ext(h.BinaryPath) %}
+	{% switch filepath.Ext(h.BinaryPath()) %}
 
 	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}
 	<div class="binary-container binary-container_with-img">

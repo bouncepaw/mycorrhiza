@@ -387,7 +387,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 	qw422016.N().S(`
 	`)
 //line views/hypha.qtpl:81
-	switch filepath.Ext(h.BinaryPath) {
+	switch filepath.Ext(h.BinaryPath()) {
 //line views/hypha.qtpl:83
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 //line views/hypha.qtpl:83

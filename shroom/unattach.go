@@ -19,7 +19,7 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *hist
 	}
 
 	hop.
-		WithFilesRemoved(h.BinaryPath).
+		WithFilesRemoved(h.BinaryPath()).
 		WithMsg(fmt.Sprintf("Unattach ‘%s’", h.Name)).
 		WithUser(u).
 		Apply()
@@ -30,8 +30,8 @@ func UnattachHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *hist
 		return hop.WithErrAbort(fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)), "Error"
 	}
 
-	if h.BinaryPath != "" {
-		h.BinaryPath = ""
+	if h.BinaryPath() != "" {
+		h.SetBinaryPath("")
 	}
 	// If nothing is left of the hypha
 	if h.TextPath == "" {

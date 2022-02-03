@@ -39,7 +39,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *
 	if errtitle, err := CanEdit(u, h, lc); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
-	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath == "" {
+	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath() == "" {
 		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
@@ -69,16 +69,16 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 // uploadHelp is a helper function for UploadText and UploadBinary
 func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
 	var (
-		fullPath         = filepath.Join(files.HyphaeDir(), h.Name+ext)
-		originalFullPath = &h.TextPath
-		originalText     = "" // for backlink update
+		fullPath       = filepath.Join(files.HyphaeDir(), h.Name+ext)
+		sourceFullPath = h.TextPartPath()
+		originalText   = "" // for backlink update
 	)
 	if !isValidPath(fullPath) || !hyphae.IsValidName(h.Name) {
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
 	if hop.Type == history.TypeEditBinary {
-		originalFullPath = &h.BinaryPath
+		sourceFullPath = h.BinaryPath()
 	}
 
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
@@ -93,18 +93,23 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if h.Exists && *originalFullPath != fullPath && *originalFullPath != "" {
-		if err := history.Rename(*originalFullPath, fullPath); err != nil {
+	if h.Exists && sourceFullPath != fullPath && sourceFullPath != "" {
+		if err := history.Rename(sourceFullPath, fullPath); err != nil {
 			return hop.WithErrAbort(err), err.Error()
 		}
-		log.Println("Move", *originalFullPath, "to", fullPath)
+		log.Println("Move", sourceFullPath, "to", fullPath)
 	}
 
 	h.InsertIfNew()
 	if h.Exists && h.TextPath != "" && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
 		return hop.Abort(), "No changes"
 	}
-	*originalFullPath = fullPath
+	// TODO: test
+	if hop.Type == history.TypeEditBinary {
+		h.SetBinaryPath(fullPath)
+	} else {
+		h.TextPath = fullPath
+	}
 	if hop.Type == history.TypeEditText {
 		backlinks.UpdateBacklinksAfterEdit(h, originalText)
 	}

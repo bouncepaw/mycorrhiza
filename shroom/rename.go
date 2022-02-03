@@ -74,7 +74,7 @@ func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *use
 			h.RenameTo(replaceName(h.CanonicalName()))
 			h.Lock()
 			h.TextPath = replaceName(h.TextPath)
-			h.BinaryPath = replaceName(h.BinaryPath)
+			h.SetBinaryPath(replaceName(h.BinaryPath()))
 			h.Unlock()
 			backlinks.UpdateBacklinksAfterRename(h, oldName)
 		}
@@ -101,7 +101,7 @@ func renamingPairs(hyphaeToRename []hyphae.Hypher, replaceName func(string) stri
 		}
 		if h.Kind() == hyphae.HyphaMedia { // ontology think
 			h := h.(*hyphae.Hypha)
-			renameMap[h.BinaryPath] = replaceName(h.BinaryPath)
+			renameMap[h.BinaryPath()] = replaceName(h.BinaryPath())
 		}
 		h.Unlock()
 	}

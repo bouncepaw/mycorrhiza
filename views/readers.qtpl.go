@@ -69,7 +69,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 	qw422016.N().S(`</h1>
 	`)
 //line views/readers.qtpl:21
-	if h.BinaryPath == "" {
+	if h.BinaryPath() == "" {
 //line views/readers.qtpl:21
 		qw422016.N().S(`
 	<p class="explanation">`)
@@ -105,13 +105,13 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 
 	`)
 //line views/readers.qtpl:29
-	if h.BinaryPath != "" {
+	if h.BinaryPath() != "" {
 //line views/readers.qtpl:29
 		qw422016.N().S(`
 		`)
 //line views/readers.qtpl:31
-		mime := mimetype.FromExtension(path.Ext(h.BinaryPath))
-		fileinfo, err := os.Stat(h.BinaryPath)
+		mime := mimetype.FromExtension(path.Ext(h.BinaryPath()))
+		fileinfo, err := os.Stat(h.BinaryPath())
 
 //line views/readers.qtpl:32
 		qw422016.N().S(`
@@ -225,7 +225,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 
 	`)
 //line views/readers.qtpl:65
-	if h.BinaryPath != "" && u.CanProceed("unattach-confirm") {
+	if h.BinaryPath() != "" && u.CanProceed("unattach-confirm") {
 //line views/readers.qtpl:65
 		qw422016.N().S(`
 	<form action="/unattach-confirm/`)

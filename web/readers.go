@@ -150,9 +150,9 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	if h := hyphae.ByName(hyphaName); h.Exists {
-		log.Println("Serving", h.BinaryPath)
-		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath)))
-		http.ServeFile(w, rq, h.BinaryPath)
+		log.Println("Serving", h.BinaryPath())
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
+		http.ServeFile(w, rq, h.BinaryPath())
 	}
 }
 
@@ -169,7 +169,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	)
 	if h.Exists {
 		fileContentsT, errT := os.ReadFile(h.TextPath)
-		_, errB := os.Stat(h.BinaryPath)
+		_, errB := os.Stat(h.BinaryPath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
 			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
