@@ -100,7 +100,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		log.Println("Move", sourceFullPath, "to", fullPath)
 	}
 
-	h.InsertIfNew()
+	hyphae.InsertIfNew(h)
 	if h.Exists && h.TextPath != "" && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
 		return hop.Abort(), "No changes"
 	}

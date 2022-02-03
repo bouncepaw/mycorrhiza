@@ -9,7 +9,7 @@ import (
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
 func FetchTextPart(h *hyphae.Hypha) (string, error) {
-	if h.TextPath == "" {
+	if !h.HasTextPart() {
 		return "", nil
 	}
 	text, err := os.ReadFile(h.TextPath)

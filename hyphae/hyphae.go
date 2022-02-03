@@ -110,7 +110,7 @@ func storeHypha(h *Hypha) {
 }
 
 // insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
-func (h *Hypha) insert() (madeNewRecord bool) {
+func insert(h *Hypha) (madeNewRecord bool) {
 	hp, recorded := byNames[h.name]
 	if recorded {
 		hp.mergeIn(h)
@@ -123,11 +123,11 @@ func (h *Hypha) insert() (madeNewRecord bool) {
 }
 
 // InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
-func (h *Hypha) InsertIfNew() (madeNewRecord bool) {
+func InsertIfNew(h *Hypha) (madeNewRecord bool) {
 	if h.DoesExist() {
 		return false
 	}
-	return h.insert()
+	return insert(h)
 }
 
 // RenameTo renames a hypha and performs respective changes in the storage.
