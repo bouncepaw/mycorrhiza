@@ -262,7 +262,7 @@ sort.Strings(editors)
 		close(hyphaNames)
 		%}
 		{% for hyphaName := range sortedHypha %}
-		{% code hypha := hyphae.ByName(hyphaName).(*hyphae.MediaHypha) %}
+		{% code hypha := hyphae.ByName(hyphaName).(*hyphae.NonEmptyHypha) %}
 		<li class="hypha-list__entry">
 			<a class="hypha-list__link" href="/hypha/{%s hypha.CanonicalName() %}">
 				{%s util.BeautifulName(hypha.CanonicalName()) %}

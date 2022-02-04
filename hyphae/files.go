@@ -24,7 +24,7 @@ func Index(path string) {
 			insert(nh)
 		default:
 			// In case of conflicts the newer hypha overwrites the previous
-			switch nh, oh := nh.(*MediaHypha), oh.(*MediaHypha); {
+			switch nh, oh := nh.(*NonEmptyHypha), oh.(*NonEmptyHypha); {
 			case (nh.Kind() == HyphaText) && (oh.Kind() == HyphaMedia):
 				oh.TextPath = nh.TextPartPath()
 
@@ -64,7 +64,7 @@ func indexHelper(path string, nestLevel uint, ch chan Hypher) {
 		var (
 			hyphaPartPath           = filepath.Join(path, node.Name())
 			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
-			hypha                   = &MediaHypha{name: hyphaName, Exists: true}
+			hypha                   = &NonEmptyHypha{name: hyphaName, Exists: true}
 		)
 		if !skip {
 			if isText {

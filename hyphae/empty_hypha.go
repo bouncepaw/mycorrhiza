@@ -27,8 +27,8 @@ func NewEmptyHypha(hyphaName string) *EmptyHypha {
 	}
 }
 
-func FillEmptyHyphaUpToTextualHypha(e *EmptyHypha, textPath string) *MediaHypha { // sic!
-	return &MediaHypha{
+func FillEmptyHyphaUpToTextualHypha(e *EmptyHypha, textPath string) *NonEmptyHypha { // sic!
+	return &NonEmptyHypha{
 		name:     e.CanonicalName(),
 		TextPath: textPath,
 	}

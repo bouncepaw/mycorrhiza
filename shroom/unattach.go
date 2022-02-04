@@ -17,7 +17,7 @@ func UnattachHypha(u *user.User, h hyphae.Hypher, lc *l18n.Localizer) (hop *hist
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
-	H := h.(*hyphae.MediaHypha)
+	H := h.(*hyphae.NonEmptyHypha)
 
 	hop.
 		WithFilesRemoved(H.BinaryPath()).

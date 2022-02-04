@@ -41,7 +41,7 @@ func writeTextToDiskForEmptyHypha(eh *hyphae.EmptyHypha, data []byte) error {
 	return writeTextToDiskForNonEmptyHypha(h, data)
 }
 
-func writeTextToDiskForNonEmptyHypha(h *hyphae.MediaHypha, data []byte) error {
+func writeTextToDiskForNonEmptyHypha(h *hyphae.NonEmptyHypha, data []byte) error {
 	if err := os.MkdirAll(filepath.Dir(h.TextPartPath()), 0777); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 		case *hyphae.EmptyHypha:
 			// It's ok, just like cancel button.
 			return hop.Abort(), ""
-		case *hyphae.MediaHypha:
+		case *hyphae.NonEmptyHypha:
 			switch h.Kind() {
 			case hyphae.HyphaMedia:
 				// Writing no description, it's ok, just like cancel button.
@@ -99,7 +99,7 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 		}
 
 		hyphae.InsertIfNew(h)
-	case *hyphae.MediaHypha:
+	case *hyphae.NonEmptyHypha:
 		oldText, err := FetchTextPart(h)
 		if err != nil {
 			return hop.WithErrAbort(err), err.Error()
@@ -152,7 +152,7 @@ func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.Use
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if h := h.(*hyphae.MediaHypha); hop.Type == history.TypeEditBinary {
+	if h := h.(*hyphae.NonEmptyHypha); hop.Type == history.TypeEditBinary {
 		sourceFullPath = h.BinaryPath()
 	}
 
@@ -186,7 +186,7 @@ func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.Use
 	}
 
 	// sic!
-	h.(*hyphae.MediaHypha).SetBinaryPath(fullPath)
+	h.(*hyphae.NonEmptyHypha).SetBinaryPath(fullPath)
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }
 

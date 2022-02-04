@@ -47,7 +47,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.AttachmentMenuHTML(rq, h.(*hyphae.MediaHypha), u),
+			views.AttachmentMenuHTML(rq, h.(*hyphae.NonEmptyHypha), u),
 			lc,
 			u))
 }
@@ -154,7 +154,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	switch h := hyphae.ByName(hyphaName).(type) {
 	case *hyphae.EmptyHypha:
 	default: // TODO: deindent
-		switch h := h.(*hyphae.MediaHypha); h.Kind() {
+		switch h := h.(*hyphae.NonEmptyHypha); h.Kind() {
 		case hyphae.HyphaText:
 			w.WriteHeader(http.StatusNotFound)
 			log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
@@ -187,7 +187,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				lc,
 				u,
 				openGraph))
-	case *hyphae.MediaHypha:
+	case *hyphae.NonEmptyHypha:
 		fileContentsT, errT := os.ReadFile(h.TextPartPath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
