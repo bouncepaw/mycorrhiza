@@ -11,7 +11,7 @@ import (
 )
 
 // DeleteHypha deletes hypha and makes a history record about that.
-func DeleteHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+func DeleteHypha(u *user.User, h hyphae.Hypher, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeDeleteHypha)
 
 	if errtitle, err := CanDelete(u, h, lc); errtitle != "" {
@@ -21,7 +21,7 @@ func DeleteHypha(u *user.User, h *hyphae.Hypha, lc *l18n.Localizer) (hop *histor
 
 	originalText, _ := FetchTextPart(h)
 	hop.
-		WithFilesRemoved(h.TextPath, h.BinaryPath()).
+		WithFilesRemoved(h.TextPartPath(), h.(*hyphae.Hypha).BinaryPath()).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
 		WithUser(u).
 		Apply()

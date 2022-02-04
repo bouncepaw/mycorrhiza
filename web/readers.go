@@ -47,7 +47,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.AttachmentMenuHTML(rq, h, u),
+			views.AttachmentMenuHTML(rq, h.(*hyphae.Hypha), u),
 			lc,
 			u))
 }
@@ -138,10 +138,10 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "text")
-	if h := hyphae.ByName(hyphaName); h.Exists {
-		log.Println("Serving", h.TextPath)
+	if h := hyphae.ByName(hyphaName); h.DoesExist() {
+		log.Println("Serving", h.TextPartPath())
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		http.ServeFile(w, rq, h.TextPath)
+		http.ServeFile(w, rq, h.TextPartPath())
 	}
 }
 
@@ -149,7 +149,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
-	if h := hyphae.ByName(hyphaName); h.Exists {
+	if h := hyphae.ByName(hyphaName).(*hyphae.Hypha); h.DoesExist() {
 		log.Println("Serving", h.BinaryPath())
 		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
 		http.ServeFile(w, rq, h.BinaryPath())
@@ -167,9 +167,8 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
 	)
-	if h.Exists {
-		fileContentsT, errT := os.ReadFile(h.TextPath)
-		_, errB := os.Stat(h.BinaryPath())
+	if h.DoesExist() {
+		fileContentsT, errT := os.ReadFile(h.TextPartPath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
 			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
@@ -178,7 +177,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = mycomarkup.BlocksToHTML(ctx, ast)
 			openGraph = getOpenGraph()
 		}
-		if !os.IsNotExist(errB) {
+		if h.Kind() == hyphae.HyphaMedia {
 			contents = views.AttachmentHTML(h, lc) + contents
 		}
 	}

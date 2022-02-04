@@ -12,7 +12,7 @@ func YieldExistingHyphae() chan Hypher {
 	ch := make(chan Hypher)
 	go func() {
 		for _, h := range byNames {
-			if h.Exists {
+			if h.DoesExist() {
 				ch <- h
 			}
 		}

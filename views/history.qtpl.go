@@ -42,7 +42,7 @@ var (
 )
 
 //line views/history.qtpl:12
-func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) {
+func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypher, u *user.User, hash string) {
 //line views/history.qtpl:12
 	qw422016.N().S(`
 `)
@@ -76,7 +76,7 @@ func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyp
 }
 
 //line views/history.qtpl:28
-func WritePrimitiveDiffHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) {
+func WritePrimitiveDiffHTML(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hypher, u *user.User, hash string) {
 //line views/history.qtpl:28
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/history.qtpl:28
@@ -87,7 +87,7 @@ func WritePrimitiveDiffHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyp
 }
 
 //line views/history.qtpl:28
-func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) string {
+func PrimitiveDiffHTML(rq *http.Request, h hyphae.Hypher, u *user.User, hash string) string {
 //line views/history.qtpl:28
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/history.qtpl:28

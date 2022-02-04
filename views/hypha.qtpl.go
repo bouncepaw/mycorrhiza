@@ -117,7 +117,7 @@ func mycoLink(lc *l18n.Localizer) string {
 }
 
 //line views/hypha.qtpl:14
-func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) {
+func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h hyphae.Hypher, u *user.User, lc *l18n.Localizer) {
 //line views/hypha.qtpl:14
 	qw422016.N().S(`
 <section class="non-existent-hypha">
@@ -230,7 +230,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h *hyphae.Hypha, u 
 }
 
 //line views/hypha.qtpl:48
-func writenonExistentHyphaNotice(qq422016 qtio422016.Writer, h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) {
+func writenonExistentHyphaNotice(qq422016 qtio422016.Writer, h hyphae.Hypher, u *user.User, lc *l18n.Localizer) {
 //line views/hypha.qtpl:48
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:48
@@ -241,7 +241,7 @@ func writenonExistentHyphaNotice(qq422016 qtio422016.Writer, h *hyphae.Hypha, u 
 }
 
 //line views/hypha.qtpl:48
-func nonExistentHyphaNotice(h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) string {
+func nonExistentHyphaNotice(h hyphae.Hypher, u *user.User, lc *l18n.Localizer) string {
 //line views/hypha.qtpl:48
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:48
@@ -256,7 +256,7 @@ func nonExistentHyphaNotice(h *hyphae.Hypha, u *user.User, lc *l18n.Localizer) s
 }
 
 //line views/hypha.qtpl:50
-func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
+func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h hyphae.Hypher) {
 //line views/hypha.qtpl:50
 	qw422016.N().S(`
 `)
@@ -323,7 +323,7 @@ func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
 }
 
 //line views/hypha.qtpl:76
-func WriteNaviTitleHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
+func WriteNaviTitleHTML(qq422016 qtio422016.Writer, h hyphae.Hypher) {
 //line views/hypha.qtpl:76
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:76
@@ -334,7 +334,7 @@ func WriteNaviTitleHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
 }
 
 //line views/hypha.qtpl:76
-func NaviTitleHTML(h *hyphae.Hypha) string {
+func NaviTitleHTML(h hyphae.Hypher) string {
 //line views/hypha.qtpl:76
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:76
@@ -349,14 +349,14 @@ func NaviTitleHTML(h *hyphae.Hypha) string {
 }
 
 //line views/hypha.qtpl:78
-func StreamAttachmentHTMLRaw(qw422016 *qt422016.Writer, h *hyphae.Hypha) {
+func StreamAttachmentHTMLRaw(qw422016 *qt422016.Writer, h hyphae.Hypher) {
 //line views/hypha.qtpl:78
 	StreamAttachmentHTML(qw422016, h, l18n.New("en", "en"))
 //line views/hypha.qtpl:78
 }
 
 //line views/hypha.qtpl:78
-func WriteAttachmentHTMLRaw(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
+func WriteAttachmentHTMLRaw(qq422016 qtio422016.Writer, h hyphae.Hypher) {
 //line views/hypha.qtpl:78
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:78
@@ -367,7 +367,7 @@ func WriteAttachmentHTMLRaw(qq422016 qtio422016.Writer, h *hyphae.Hypha) {
 }
 
 //line views/hypha.qtpl:78
-func AttachmentHTMLRaw(h *hyphae.Hypha) string {
+func AttachmentHTMLRaw(h hyphae.Hypher) string {
 //line views/hypha.qtpl:78
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:78
@@ -382,12 +382,12 @@ func AttachmentHTMLRaw(h *hyphae.Hypha) string {
 }
 
 //line views/hypha.qtpl:80
-func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.Localizer) {
+func StreamAttachmentHTML(qw422016 *qt422016.Writer, h hyphae.Hypher, lc *l18n.Localizer) {
 //line views/hypha.qtpl:80
 	qw422016.N().S(`
 	`)
 //line views/hypha.qtpl:81
-	switch filepath.Ext(h.BinaryPath()) {
+	switch filepath.Ext(h.(*hyphae.Hypha).BinaryPath()) {
 //line views/hypha.qtpl:83
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
 //line views/hypha.qtpl:83
@@ -486,7 +486,7 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.Hypha, lc *l18n.L
 }
 
 //line views/hypha.qtpl:109
-func WriteAttachmentHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha, lc *l18n.Localizer) {
+func WriteAttachmentHTML(qq422016 qtio422016.Writer, h hyphae.Hypher, lc *l18n.Localizer) {
 //line views/hypha.qtpl:109
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:109
@@ -497,7 +497,7 @@ func WriteAttachmentHTML(qq422016 qtio422016.Writer, h *hyphae.Hypha, lc *l18n.L
 }
 
 //line views/hypha.qtpl:109
-func AttachmentHTML(h *hyphae.Hypha, lc *l18n.Localizer) string {
+func AttachmentHTML(h hyphae.Hypher, lc *l18n.Localizer) string {
 //line views/hypha.qtpl:109
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:109

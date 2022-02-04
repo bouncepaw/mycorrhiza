@@ -10,20 +10,20 @@ import (
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.
 func Index(path string) {
-	byNames = make(map[string]*Hypha)
-	ch := make(chan *Hypha, 5)
+	byNames = make(map[string]Hypher)
+	ch := make(chan Hypher, 5)
 
-	go func(ch chan *Hypha) {
+	go func(ch chan Hypher) {
 		indexHelper(path, 0, ch)
 		close(ch)
 	}(ch)
 
 	for h := range ch {
 		// It's safe to ignore the mutex because there is a single worker right now.
-		if oh := ByName(h.name); oh.Exists {
-			oh.mergeIn(h)
+		if oh := ByName(h.CanonicalName()); oh.DoesExist() {
+			oh.(*Hypha).mergeIn(h.(*Hypha))
 		} else {
-			insert(h)
+			insert(h.(*Hypha))
 		}
 	}
 	log.Println("Indexed", Count(), "hyphae")
@@ -32,7 +32,7 @@ func Index(path string) {
 // indexHelper finds all hypha files in the full `path` and sends them to the
 // channel. Handling of duplicate entries and attachment and counting them is
 // up to the caller.
-func indexHelper(path string, nestLevel uint, ch chan *Hypha) {
+func indexHelper(path string, nestLevel uint, ch chan Hypher) {
 	nodes, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)

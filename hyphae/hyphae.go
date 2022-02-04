@@ -47,7 +47,7 @@ func (h *Hypha) CanonicalName() string {
 }
 
 func (h *Hypha) Kind() HyphaKind {
-	if !h.Exists {
+	if !h.DoesExist() {
 		return HyphaEmpty
 	}
 	if h.HasAttachment() {
@@ -77,7 +77,7 @@ func (h *Hypha) HasAttachment() bool {
 	return h.binaryPath != ""
 }
 
-var byNames = make(map[string]*Hypha)
+var byNames = make(map[string]Hypher)
 var byNamesMutex = sync.Mutex{}
 
 // EmptyHypha returns an empty hypha struct with given name.
@@ -91,7 +91,7 @@ func EmptyHypha(hyphaName string) *Hypha {
 }
 
 // ByName returns a hypha by name. It may have been recorded to the storage.
-func ByName(hyphaName string) (h *Hypha) {
+func ByName(hyphaName string) (h Hypher) {
 	h, recorded := byNames[hyphaName]
 	if recorded {
 		return h
@@ -99,21 +99,21 @@ func ByName(hyphaName string) (h *Hypha) {
 	return EmptyHypha(hyphaName)
 }
 
-func storeHypha(h *Hypha) {
+func storeHypha(h Hypher) {
 	byNamesMutex.Lock()
-	byNames[h.name] = h
+	byNames[h.CanonicalName()] = h
 	byNamesMutex.Unlock()
 
 	h.Lock()
-	h.Exists = true
+	h.(*Hypha).Exists = true
 	h.Unlock()
 }
 
 // insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
-func insert(h *Hypha) (madeNewRecord bool) {
-	hp, recorded := byNames[h.name]
+func insert(h Hypher) (madeNewRecord bool) {
+	hp, recorded := byNames[h.CanonicalName()]
 	if recorded {
-		hp.mergeIn(h)
+		hp.(*Hypha).mergeIn(h)
 	} else {
 		storeHypha(h)
 		incrementCount()
@@ -123,34 +123,23 @@ func insert(h *Hypha) (madeNewRecord bool) {
 }
 
 // InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
-func InsertIfNew(h *Hypha) (madeNewRecord bool) {
+func InsertIfNew(h Hypher) (madeNewRecord bool) {
 	if h.DoesExist() {
 		return false
 	}
 	return insert(h)
 }
 
-// RenameTo renames a hypha and performs respective changes in the storage.
-func (h *Hypha) RenameTo(newName string) {
-	byNamesMutex.Lock()
-	h.Lock()
-	delete(byNames, h.CanonicalName())
-	h.SetName(newName)
-	byNames[h.CanonicalName()] = h
-	byNamesMutex.Unlock()
-	h.Unlock()
-}
-
 // mergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
-func (h *Hypha) mergeIn(oh *Hypha) {
+func (h *Hypha) mergeIn(oh Hypher) {
 	if h == oh {
 		return
 	}
 	h.Lock()
-	if h.TextPath == "" && oh.TextPath != "" {
-		h.TextPath = oh.TextPath
+	if h.TextPath == "" && oh.HasTextPart() {
+		h.TextPath = oh.TextPartPath()
 	}
-	if oh.binaryPath != "" {
+	if oh := oh.(*Hypha); oh.Kind() == HyphaMedia {
 		if h.binaryPath != "" {
 			log.Println("There is a file collision for attachment of a hypha:", h.binaryPath, "and", oh.binaryPath, "-- going on with the latter")
 		}

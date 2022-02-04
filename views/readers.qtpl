@@ -80,7 +80,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) %}
+{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	u := user.FromRequest(rq)
@@ -106,7 +106,7 @@ If you rename .prevnext, change the docs too.
 		{% endif %}
 
 		{%s= NaviTitleHTML(h) %}
-		{% if h.Exists %}
+		{% if h.DoesExist() %}
 			{%s= contents %}
 		{% else %}
 		    {%= nonExistentHyphaNotice(h, u, lc) %}
@@ -130,7 +130,7 @@ If you rename .prevnext, change the docs too.
 {%= viewScripts() %}
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents, revHash string) %}
+{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents, revHash string) %}
 {% code
 	siblings, subhyphae, _, _ := tree.Tree(h.CanonicalName())
 %}

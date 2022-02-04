@@ -11,12 +11,12 @@ import (
 
 func init() {
 	globals.HyphaExists = func(hyphaName string) bool {
-		return hyphae.ByName(hyphaName).Exists
+		return hyphae.ByName(hyphaName).DoesExist()
 	}
 	globals.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
-		if h := hyphae.ByName(hyphaName); h.Exists {
+		if h := hyphae.ByName(hyphaName); h.DoesExist() {
 			rawText, err = FetchTextPart(h)
-			if h.BinaryPath() != "" {
+			if h.(*hyphae.Hypha).BinaryPath() != "" {
 				// the view is localized, but we can't pass it, so...
 				binaryBlock = views.AttachmentHTMLRaw(h)
 			}

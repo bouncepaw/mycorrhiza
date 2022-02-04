@@ -21,10 +21,10 @@ import (
 )
 
 // UploadText edits a hypha' text part and makes a history record about that.
-func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+func UploadText(h hyphae.Hypher, data []byte, message string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeEditText)
 	var action string
-	if h.Exists {
+	if h.DoesExist() {
 		action = "Edit"
 	} else {
 		action = "Create"
@@ -39,7 +39,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *
 	if errtitle, err := CanEdit(u, h, lc); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
-	if len(bytes.TrimSpace(data)) == 0 && h.BinaryPath() == "" {
+	if len(bytes.TrimSpace(data)) == 0 && h.Kind() != hyphae.HyphaMedia {
 		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
@@ -47,7 +47,7 @@ func UploadText(h *hyphae.Hypha, data []byte, message string, u *user.User, lc *
 }
 
 // UploadBinary edits a hypha' attachment and makes a history record about that.
-func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
+func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.CanonicalName(), mime))
 		data, err = io.ReadAll(file)
@@ -67,7 +67,7 @@ func UploadBinary(h *hyphae.Hypha, mime string, file multipart.File, u *user.Use
 }
 
 // uploadHelp is a helper function for UploadText and UploadBinary
-func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
+func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
 	var (
 		fullPath       = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
 		sourceFullPath = h.TextPartPath()
@@ -77,7 +77,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if hop.Type == history.TypeEditBinary {
+	if h := h.(*hyphae.Hypha); hop.Type == history.TypeEditBinary {
 		sourceFullPath = h.BinaryPath()
 	}
 
@@ -93,7 +93,7 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if h.Exists && sourceFullPath != fullPath && sourceFullPath != "" {
+	if h.DoesExist() && sourceFullPath != fullPath && sourceFullPath != "" {
 		if err := history.Rename(sourceFullPath, fullPath); err != nil {
 			return hop.WithErrAbort(err), err.Error()
 		}
@@ -101,11 +101,11 @@ func uploadHelp(h *hyphae.Hypha, hop *history.Op, ext string, data []byte, u *us
 	}
 
 	hyphae.InsertIfNew(h)
-	if h.Exists && h.TextPath != "" && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+	if h.DoesExist() && h.HasTextPart() && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
 		return hop.Abort(), "No changes"
 	}
 	// TODO: test
-	if hop.Type == history.TypeEditBinary {
+	if h := h.(*hyphae.Hypha); hop.Type == history.TypeEditBinary {
 		h.SetBinaryPath(fullPath)
 	} else {
 		h.TextPath = fullPath
