@@ -5,7 +5,11 @@ package hyphae
 import (
 	"sort"
 	"strings"
+	"sync"
 )
+
+var byNames = make(map[string]Hypher)
+var byNamesMutex = sync.Mutex{}
 
 // YieldExistingHyphae iterates over all hyphae and yields all existing ones.
 func YieldExistingHyphae() chan Hypher {

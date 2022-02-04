@@ -4,28 +4,10 @@ package hyphae
 import (
 	"log"
 	"path/filepath"
-	"regexp"
-	"strings"
 	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/files"
 )
-
-// HyphaPattern is a pattern which all hyphae names must match.
-var HyphaPattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
-
-// IsValidName checks for invalid characters and path traversals.
-func IsValidName(hyphaName string) bool {
-	if !HyphaPattern.MatchString(hyphaName) {
-		return false
-	}
-	for _, segment := range strings.Split(hyphaName, "/") {
-		if segment == ".git" || segment == ".." {
-			return false
-		}
-	}
-	return true
-}
 
 // MediaHypha keeps vital information about a media hypha
 type MediaHypha struct {
@@ -75,59 +57,6 @@ func (h *MediaHypha) TextPartPath() string {
 // HasAttachment is true if the hypha has an attachment.
 func (h *MediaHypha) HasAttachment() bool {
 	return h.binaryPath != ""
-}
-
-var byNames = make(map[string]Hypher)
-var byNamesMutex = sync.Mutex{}
-
-// EmptyHypha returns an empty hypha struct with given name.
-func EmptyHypha(hyphaName string) *MediaHypha {
-	return &MediaHypha{
-		name:       hyphaName,
-		Exists:     false,
-		TextPath:   "",
-		binaryPath: "",
-	}
-}
-
-// ByName returns a hypha by name. It may have been recorded to the storage.
-func ByName(hyphaName string) (h Hypher) {
-	h, recorded := byNames[hyphaName]
-	if recorded {
-		return h
-	}
-	return EmptyHypha(hyphaName)
-}
-
-func storeHypha(h Hypher) {
-	byNamesMutex.Lock()
-	byNames[h.CanonicalName()] = h
-	byNamesMutex.Unlock()
-
-	h.Lock()
-	h.(*MediaHypha).Exists = true
-	h.Unlock()
-}
-
-// insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
-func insert(h Hypher) (madeNewRecord bool) {
-	hp, recorded := byNames[h.CanonicalName()]
-	if recorded {
-		hp.(*MediaHypha).mergeIn(h)
-	} else {
-		storeHypha(h)
-		incrementCount()
-	}
-
-	return !recorded
-}
-
-// InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
-func InsertIfNew(h Hypher) (madeNewRecord bool) {
-	if h.DoesExist() {
-		return false
-	}
-	return insert(h)
 }
 
 // mergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
