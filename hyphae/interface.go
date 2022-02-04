@@ -85,7 +85,7 @@ func InsertIfNew(h Hypher) (madeNewRecord bool) {
 	}
 }
 
-// ByName returns a hypha by name. It may have been recorded to the storage.
+// ByName returns a hypha by name. It returns an *EmptyHypha if there is no such hypha. This function is the only source of empty hyphae.
 func ByName(hyphaName string) (h Hypher) {
 	byNamesMutex.Lock()
 	defer byNamesMutex.Unlock()

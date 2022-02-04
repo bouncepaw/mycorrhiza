@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
+	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"io"
 	"log"
 	"mime/multipart"
@@ -16,44 +17,115 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-// UploadText edits a hypha' text part and makes a history record about that.
-func UploadText(h hyphae.Hypher, data []byte, message string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
-	hop = history.Operation(history.TypeEditText)
-
-	var action string
+func historyMessageForTextUpload(h hyphae.Hypher, userMessage string) string {
+	var verb string
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
-		action = "Create"
+		verb = "Create"
 	default:
-		action = "Edit"
+		verb = "Edit"
 	}
 
-	if message == "" {
-		hop.WithMsg(fmt.Sprintf("%s ‘%s’", action, h.CanonicalName()))
-	} else {
-		hop.WithMsg(fmt.Sprintf("%s ‘%s’: %s", action, h.CanonicalName(), message))
+	if userMessage == "" {
+		return fmt.Sprintf("%s ‘%s’", verb, h.CanonicalName())
+	}
+	return fmt.Sprintf("%s ‘%s’: %s", verb, h.CanonicalName(), userMessage)
+}
+
+func writeTextToDiskForEmptyHypha(eh *hyphae.EmptyHypha, data []byte) error {
+	h := hyphae.FillEmptyHyphaUpToTextualHypha(eh, filepath.Join(files.HyphaeDir(), eh.CanonicalName()+".myco"))
+
+	return writeTextToDiskForNonEmptyHypha(h, data)
+}
+
+func writeTextToDiskForNonEmptyHypha(h *hyphae.MediaHypha, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(h.TextPartPath()), 0777); err != nil {
+		return err
 	}
 
-	if errtitle, err := CanEdit(u, h, lc); err != nil {
-		return hop.WithErrAbort(err), errtitle
+	if err := os.WriteFile(h.TextPartPath(), data, 0666); err != nil {
+		return err
 	}
-	if len(bytes.TrimSpace(data)) == 0 {
+	return nil
+}
+
+// UploadText edits the hypha's text part and makes a history record about that.
+func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+	hop = history.
+		Operation(history.TypeEditText).
+		WithMsg(historyMessageForTextUpload(h, userMessage))
+
+	// Privilege check
+	if !u.CanProceed("upload-text") {
+		rejectEditLog(h, u, "no rights")
+		return hop.WithErrAbort(errors.New(lc.Get("ui.act_norights_edit"))), lc.Get("ui.act_no_rights")
+	}
+
+	// Hypha name exploit check
+	if !hyphae.IsValidName(h.CanonicalName()) {
+		// We check for the name only. I suppose the filepath would be valid as well.
+		err := errors.New("invalid hypha name")
+		return hop.WithErrAbort(err), err.Error()
+	}
+
+	// Empty data check
+	if len(bytes.TrimSpace(data)) == 0 { // if nothing but whitespace
 		switch h := h.(type) {
+		case *hyphae.EmptyHypha:
+			// It's ok, just like cancel button.
+			return hop.Abort(), ""
 		case *hyphae.MediaHypha:
-			if h.Kind() != hyphae.HyphaMedia {
+			switch h.Kind() {
+			case hyphae.HyphaMedia:
+				// Writing no description, it's ok, just like cancel button.
+				return hop.Abort(), ""
+			case hyphae.HyphaText:
+				// What do you want passing nothing for a textual hypha?
 				return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 			}
 		}
 	}
 
-	return uploadHelp(h, hop, ".myco", data, u)
+	// At this point, we have a savable user-generated Mycomarkup document. Gotta save it.
+
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha:
+		err := writeTextToDiskForEmptyHypha(h, data)
+		if err != nil {
+			return hop.WithErrAbort(err), err.Error()
+		}
+
+		hyphae.InsertIfNew(h)
+	case *hyphae.MediaHypha:
+		oldText, err := FetchTextPart(h)
+		if err != nil {
+			return hop.WithErrAbort(err), err.Error()
+		}
+
+		// TODO: that []byte(...) part should be removed
+		if bytes.Compare(data, []byte(oldText)) == 0 {
+			// No changes! Just like cancel button
+			return hop.Abort(), ""
+		}
+
+		err = writeTextToDiskForNonEmptyHypha(h, data)
+		if err != nil {
+			return hop.WithErrAbort(err), err.Error()
+		}
+
+		backlinks.UpdateBacklinksAfterEdit(h, oldText)
+	}
+
+	return hop.
+		WithFiles(h.TextPartPath()).
+		WithUser(u).
+		Apply(), ""
 }
 
-// UploadBinary edits a hypha' attachment and makes a history record about that.
+// UploadBinary edits the hypha's media part and makes a history record about that.
 func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
 	var (
 		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.CanonicalName(), mime))
@@ -70,15 +142,11 @@ func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.Use
 		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
-	return uploadHelp(h, hop, mimetype.ToExtension(mime), data, u)
-}
+	ext := mimetype.ToExtension(mime)
 
-// uploadHelp is a helper function for UploadText and UploadBinary
-func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *user.User) (*history.Op, string) {
 	var (
 		fullPath       = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
 		sourceFullPath = h.TextPartPath()
-		originalText   = "" // for backlink update
 	)
 	if !isValidPath(fullPath) || !hyphae.IsValidName(h.CanonicalName()) {
 		err := errors.New("bad path")
@@ -90,10 +158,6 @@ func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *us
 
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
 		return hop.WithErrAbort(err), err.Error()
-	}
-
-	if hop.Type == history.TypeEditText {
-		originalText, _ = FetchTextPart(h)
 	}
 
 	if err := os.WriteFile(fullPath, data, 0666); err != nil {
@@ -122,14 +186,7 @@ func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *us
 	}
 
 	// sic!
-	if h := h.(*hyphae.MediaHypha); hop.Type == history.TypeEditBinary {
-		h.SetBinaryPath(fullPath)
-	} else {
-		h.TextPath = fullPath
-	}
-	if hop.Type == history.TypeEditText {
-		backlinks.UpdateBacklinksAfterEdit(h, originalText)
-	}
+	h.(*hyphae.MediaHypha).SetBinaryPath(fullPath)
 	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
 }
 

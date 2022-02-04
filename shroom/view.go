@@ -1,6 +1,7 @@
 package shroom
 
 import (
+	"errors"
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -9,6 +10,10 @@ import (
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
 func FetchTextPart(h hyphae.Hypher) (string, error) {
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+		return "", errors.New("empty hyphae have no text")
+	}
 	if !h.HasTextPart() {
 		return "", nil
 	}
