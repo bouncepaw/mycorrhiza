@@ -21,7 +21,7 @@ func Index(path string) {
 	for nh := range ch {
 		switch oh := ByName(nh.CanonicalName()).(type) {
 		case *EmptyHypha:
-			insert(nh)
+			Insert(nh)
 		default:
 			// In case of conflicts the newer hypha overwrites the previous
 			switch nh, oh := nh.(*NonEmptyHypha), oh.(*NonEmptyHypha); {

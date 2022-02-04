@@ -51,7 +51,7 @@ var (
 )
 
 //line views/readers.qtpl:14
-func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.MediaHypha, u *user.User) {
+func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hyphae.NonEmptyHypha, u *user.User) {
 //line views/readers.qtpl:14
 	qw422016.N().S(`
 `)
@@ -265,7 +265,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h *hy
 }
 
 //line views/readers.qtpl:78
-func WriteAttachmentMenuHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.MediaHypha, u *user.User) {
+func WriteAttachmentMenuHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hyphae.NonEmptyHypha, u *user.User) {
 //line views/readers.qtpl:78
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/readers.qtpl:78
@@ -276,7 +276,7 @@ func WriteAttachmentMenuHTML(qq422016 qtio422016.Writer, rq *http.Request, h *hy
 }
 
 //line views/readers.qtpl:78
-func AttachmentMenuHTML(rq *http.Request, h *hyphae.MediaHypha, u *user.User) string {
+func AttachmentMenuHTML(rq *http.Request, h *hyphae.NonEmptyHypha, u *user.User) string {
 //line views/readers.qtpl:78
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/readers.qtpl:78

@@ -1020,7 +1020,7 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		qw422016.N().S(`
 		`)
 //line views/stuff.qtpl:265
-		hypha := hyphae.ByName(hyphaName).(*hyphae.MediaHypha)
+		hypha := hyphae.ByName(hyphaName).(*hyphae.NonEmptyHypha)
 
 //line views/stuff.qtpl:265
 		qw422016.N().S(`
