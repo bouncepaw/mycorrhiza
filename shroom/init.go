@@ -24,7 +24,7 @@ func init() {
 			err = errors.New("Hypha " + hyphaName + " does not exist")
 		default:
 			rawText, err = FetchTextPart(h)
-			if h := h.(*hyphae.MediaHypha); h.Kind() == hyphae.HyphaMedia {
+			if h := h.(*hyphae.NonEmptyHypha); h.Kind() == hyphae.HyphaMedia {
 				// the view is localized, but we can't pass it, so...
 				binaryBlock = views.AttachmentHTMLRaw(h)
 			}

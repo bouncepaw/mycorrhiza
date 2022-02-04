@@ -29,7 +29,7 @@ const (
 	HyphaMedia
 )
 
-// Hypher is a temporary name for this interface. The name will become MediaHypha, once the struct with the said name is deprecated for good.
+// Hypher is a temporary name for this interface. The name will become NonEmptyHypha, once the struct with the said name is deprecated for good.
 type Hypher interface {
 	sync.Locker
 
@@ -54,8 +54,8 @@ func RenameHyphaTo(h Hypher, newName string) {
 	byNamesMutex.Lock()
 	h.Lock()
 	delete(byNames, h.CanonicalName())
-	h.(*MediaHypha).SetName(newName)
-	byNames[h.CanonicalName()] = h.(*MediaHypha)
+	h.(*NonEmptyHypha).SetName(newName)
+	byNames[h.CanonicalName()] = h.(*NonEmptyHypha)
 	byNamesMutex.Unlock()
 	h.Unlock()
 }

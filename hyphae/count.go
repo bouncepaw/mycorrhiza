@@ -4,7 +4,7 @@ import (
 	"sync"
 )
 
-// Its value is number of all existing hyphae. MediaHypha mutators are expected to manipulate the value. It is concurrent-safe.
+// Its value is number of all existing hyphae. NonEmptyHypha mutators are expected to manipulate the value. It is concurrent-safe.
 var count = struct {
 	value int
 	sync.Mutex

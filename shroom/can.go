@@ -69,7 +69,7 @@ var (
 		func(h hyphae.Hypher, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
 			switch h := h.(type) {
 			case *hyphae.EmptyHypha:
-			case *hyphae.MediaHypha:
+			case *hyphae.NonEmptyHypha:
 				if h.Kind() != hyphae.HyphaMedia {
 					rejectUnattachLog(h, u, "no amnt")
 					return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")

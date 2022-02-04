@@ -71,7 +71,7 @@ func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *use
 		Apply()
 	if len(hop.Errs) == 0 {
 		for _, h := range hyphaeToRename {
-			h := h.(*hyphae.MediaHypha) // ontology think
+			h := h.(*hyphae.NonEmptyHypha) // ontology think
 			oldName := h.CanonicalName()
 			hyphae.RenameHyphaTo(h, replaceName(h.CanonicalName()))
 			h.Lock()
@@ -102,7 +102,7 @@ func renamingPairs(hyphaeToRename []hyphae.Hypher, replaceName func(string) stri
 			renameMap[h.TextPartPath()] = replaceName(h.TextPartPath())
 		}
 		switch h := h.(type) {
-		case *hyphae.MediaHypha:
+		case *hyphae.NonEmptyHypha:
 			if h.Kind() == hyphae.HyphaMedia { // ontology think
 				renameMap[h.BinaryPath()] = replaceName(h.BinaryPath())
 			}
@@ -110,7 +110,7 @@ func renamingPairs(hyphaeToRename []hyphae.Hypher, replaceName func(string) stri
 		h.Unlock()
 	}
 	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
-		return nil, errors.New("MediaHypha " + firstFailure + " already exists")
+		return nil, errors.New("NonEmptyHypha " + firstFailure + " already exists")
 	}
 	return renameMap, nil
 }
