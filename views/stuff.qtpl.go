@@ -1041,7 +1041,7 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 			qw422016.N().S(`
 			<span class="hypha-list__amnt-type">`)
 //line views/stuff.qtpl:269
-			qw422016.E().S(filepath.Ext(hypha.(*hyphae.Hypha).BinaryPath())[1:])
+			qw422016.E().S(filepath.Ext(hypha.(*hyphae.MediaHypha).BinaryPath())[1:])
 //line views/stuff.qtpl:269
 			qw422016.N().S(`</span>
 			`)

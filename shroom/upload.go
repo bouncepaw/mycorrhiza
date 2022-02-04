@@ -77,7 +77,7 @@ func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *us
 		err := errors.New("bad path")
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if h := h.(*hyphae.Hypha); hop.Type == history.TypeEditBinary {
+	if h := h.(*hyphae.MediaHypha); hop.Type == history.TypeEditBinary {
 		sourceFullPath = h.BinaryPath()
 	}
 
@@ -105,7 +105,7 @@ func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *us
 		return hop.Abort(), "No changes"
 	}
 	// TODO: test
-	if h := h.(*hyphae.Hypha); hop.Type == history.TypeEditBinary {
+	if h := h.(*hyphae.MediaHypha); hop.Type == history.TypeEditBinary {
 		h.SetBinaryPath(fullPath)
 	} else {
 		h.TextPath = fullPath

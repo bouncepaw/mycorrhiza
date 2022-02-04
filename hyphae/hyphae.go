@@ -1,4 +1,4 @@
-// Package hyphae is for the Hypha type, hypha storage and stuff like that. It shall not depend on mycorrhiza modules other than util.
+// Package hyphae is for the MediaHypha type, hypha storage and stuff like that. It shall not depend on mycorrhiza modules other than util.
 package hyphae
 
 import (
@@ -27,8 +27,8 @@ func IsValidName(hyphaName string) bool {
 	return true
 }
 
-// Hypha keeps vital information about a hypha
-type Hypha struct {
+// MediaHypha keeps vital information about a media hypha
+type MediaHypha struct {
 	sync.RWMutex
 
 	name       string // Canonical name
@@ -37,16 +37,16 @@ type Hypha struct {
 	binaryPath string // == "" => no attachment
 }
 
-func (h *Hypha) SetName(s string) { h.name = s }
+func (h *MediaHypha) SetName(s string) { h.name = s }
 
-func (h *Hypha) BinaryPath() string     { return h.binaryPath }
-func (h *Hypha) SetBinaryPath(s string) { h.binaryPath = s }
+func (h *MediaHypha) BinaryPath() string     { return h.binaryPath }
+func (h *MediaHypha) SetBinaryPath(s string) { h.binaryPath = s }
 
-func (h *Hypha) CanonicalName() string {
+func (h *MediaHypha) CanonicalName() string {
 	return h.name
 }
 
-func (h *Hypha) Kind() HyphaKind {
+func (h *MediaHypha) Kind() HyphaKind {
 	if !h.DoesExist() {
 		return HyphaEmpty
 	}
@@ -56,16 +56,16 @@ func (h *Hypha) Kind() HyphaKind {
 	return HyphaText
 }
 
-func (h *Hypha) DoesExist() bool { // TODO: rename
+func (h *MediaHypha) DoesExist() bool { // TODO: rename
 	return h.Exists
 }
 
-func (h *Hypha) HasTextPart() bool {
+func (h *MediaHypha) HasTextPart() bool {
 	return h.TextPath != ""
 }
 
 // TextPartPath returns rooted path to the file where the text part should be.
-func (h *Hypha) TextPartPath() string {
+func (h *MediaHypha) TextPartPath() string {
 	if h.TextPath == "" {
 		return filepath.Join(files.HyphaeDir(), h.name+".myco")
 	}
@@ -73,7 +73,7 @@ func (h *Hypha) TextPartPath() string {
 }
 
 // HasAttachment is true if the hypha has an attachment.
-func (h *Hypha) HasAttachment() bool {
+func (h *MediaHypha) HasAttachment() bool {
 	return h.binaryPath != ""
 }
 
@@ -81,8 +81,8 @@ var byNames = make(map[string]Hypher)
 var byNamesMutex = sync.Mutex{}
 
 // EmptyHypha returns an empty hypha struct with given name.
-func EmptyHypha(hyphaName string) *Hypha {
-	return &Hypha{
+func EmptyHypha(hyphaName string) *MediaHypha {
+	return &MediaHypha{
 		name:       hyphaName,
 		Exists:     false,
 		TextPath:   "",
@@ -105,7 +105,7 @@ func storeHypha(h Hypher) {
 	byNamesMutex.Unlock()
 
 	h.Lock()
-	h.(*Hypha).Exists = true
+	h.(*MediaHypha).Exists = true
 	h.Unlock()
 }
 
@@ -113,7 +113,7 @@ func storeHypha(h Hypher) {
 func insert(h Hypher) (madeNewRecord bool) {
 	hp, recorded := byNames[h.CanonicalName()]
 	if recorded {
-		hp.(*Hypha).mergeIn(h)
+		hp.(*MediaHypha).mergeIn(h)
 	} else {
 		storeHypha(h)
 		incrementCount()
@@ -131,7 +131,7 @@ func InsertIfNew(h Hypher) (madeNewRecord bool) {
 }
 
 // mergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
-func (h *Hypha) mergeIn(oh Hypher) {
+func (h *MediaHypha) mergeIn(oh Hypher) {
 	if h == oh {
 		return
 	}
@@ -139,7 +139,7 @@ func (h *Hypha) mergeIn(oh Hypher) {
 	if h.TextPath == "" && oh.HasTextPart() {
 		h.TextPath = oh.TextPartPath()
 	}
-	if oh := oh.(*Hypha); oh.Kind() == HyphaMedia {
+	if oh := oh.(*MediaHypha); oh.Kind() == HyphaMedia {
 		if h.binaryPath != "" {
 			log.Println("There is a file collision for attachment of a hypha:", h.binaryPath, "and", oh.binaryPath, "-- going on with the latter")
 		}

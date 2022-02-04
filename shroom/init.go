@@ -16,12 +16,12 @@ func init() {
 	globals.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
 		if h := hyphae.ByName(hyphaName); h.DoesExist() {
 			rawText, err = FetchTextPart(h)
-			if h.(*hyphae.Hypha).BinaryPath() != "" {
+			if h := h.(*hyphae.MediaHypha); h.Kind() == hyphae.HyphaMedia {
 				// the view is localized, but we can't pass it, so...
 				binaryBlock = views.AttachmentHTMLRaw(h)
 			}
 		} else {
-			err = errors.New("Hypha " + hyphaName + " does not exist")
+			err = errors.New("MediaHypha " + hyphaName + " does not exist")
 		}
 		return
 	}

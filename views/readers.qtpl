@@ -11,7 +11,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) %}
+{% func AttachmentMenuHTML(rq *http.Request, h *hyphae.MediaHypha, u *user.User) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}

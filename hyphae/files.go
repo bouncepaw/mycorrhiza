@@ -21,9 +21,9 @@ func Index(path string) {
 	for h := range ch {
 		// It's safe to ignore the mutex because there is a single worker right now.
 		if oh := ByName(h.CanonicalName()); oh.DoesExist() {
-			oh.(*Hypha).mergeIn(h.(*Hypha))
+			oh.(*MediaHypha).mergeIn(h.(*MediaHypha))
 		} else {
-			insert(h.(*Hypha))
+			insert(h.(*MediaHypha))
 		}
 	}
 	log.Println("Indexed", Count(), "hyphae")
@@ -49,7 +49,7 @@ func indexHelper(path string, nestLevel uint, ch chan Hypher) {
 		var (
 			hyphaPartPath           = filepath.Join(path, node.Name())
 			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
-			hypha                   = &Hypha{name: hyphaName, Exists: true}
+			hypha                   = &MediaHypha{name: hyphaName, Exists: true}
 		)
 		if !skip {
 			if isText {
