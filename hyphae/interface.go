@@ -60,8 +60,8 @@ func RenameHyphaTo(h Hypher, newName string) {
 	h.Unlock()
 }
 
-// insert inserts the hypha into the storage, possibly overwriting the previous hypha with the same name. Count incrementation is done if needed.
-func insert(h Hypher) (madeNewRecord bool) {
+// Insert inserts the hypha into the storage, possibly overwriting the previous hypha with the same name. Count incrementation is done if needed.
+func Insert(h Hypher) (madeNewRecord bool) {
 	_, recorded := byNames[h.CanonicalName()]
 
 	byNamesMutex.Lock()
@@ -79,7 +79,7 @@ func insert(h Hypher) (madeNewRecord bool) {
 func InsertIfNew(h Hypher) (madeNewRecord bool) {
 	switch ByName(h.CanonicalName()).(type) {
 	case *EmptyHypha:
-		return insert(h)
+		return Insert(h)
 	default:
 		return false
 	}

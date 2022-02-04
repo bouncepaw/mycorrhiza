@@ -35,13 +35,7 @@ func historyMessageForTextUpload(h hyphae.Hypher, userMessage string) string {
 	return fmt.Sprintf("%s ‘%s’: %s", verb, h.CanonicalName(), userMessage)
 }
 
-func writeTextToDiskForEmptyHypha(eh *hyphae.EmptyHypha, data []byte) error {
-	h := hyphae.FillEmptyHyphaUpToTextualHypha(eh, filepath.Join(files.HyphaeDir(), eh.CanonicalName()+".myco"))
-
-	return writeTextToDiskForNonEmptyHypha(h, data)
-}
-
-func writeTextToDiskForNonEmptyHypha(h *hyphae.NonEmptyHypha, data []byte) error {
+func writeTextToDisk(h *hyphae.NonEmptyHypha, data []byte, hop *history.Op) error {
 	if err := os.MkdirAll(filepath.Dir(h.TextPartPath()), 0777); err != nil {
 		return err
 	}
@@ -49,6 +43,8 @@ func writeTextToDiskForNonEmptyHypha(h *hyphae.NonEmptyHypha, data []byte) error
 	if err := os.WriteFile(h.TextPartPath(), data, 0666); err != nil {
 		return err
 	}
+	hop.WithFiles(h.TextPartPath())
+
 	return nil
 }
 
@@ -56,7 +52,8 @@ func writeTextToDiskForNonEmptyHypha(h *hyphae.NonEmptyHypha, data []byte) error
 func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.
 		Operation(history.TypeEditText).
-		WithMsg(historyMessageForTextUpload(h, userMessage))
+		WithMsg(historyMessageForTextUpload(h, userMessage)).
+		WithUser(u)
 
 	// Privilege check
 	if !u.CanProceed("upload-text") {
@@ -93,12 +90,14 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		err := writeTextToDiskForEmptyHypha(h, data)
+		H := hyphae.FillEmptyHyphaUpToTextualHypha(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
+
+		err := writeTextToDisk(H, data, hop)
 		if err != nil {
 			return hop.WithErrAbort(err), err.Error()
 		}
 
-		hyphae.InsertIfNew(h)
+		hyphae.Insert(H)
 	case *hyphae.NonEmptyHypha:
 		oldText, err := FetchTextPart(h)
 		if err != nil {
@@ -111,7 +110,7 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 			return hop.Abort(), ""
 		}
 
-		err = writeTextToDiskForNonEmptyHypha(h, data)
+		err = writeTextToDisk(h, data, hop)
 		if err != nil {
 			return hop.WithErrAbort(err), err.Error()
 		}
@@ -119,10 +118,7 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 		backlinks.UpdateBacklinksAfterEdit(h, oldText)
 	}
 
-	return hop.
-		WithFiles(h.TextPartPath()).
-		WithUser(u).
-		Apply(), ""
+	return hop.Apply(), ""
 }
 
 // UploadBinary edits the hypha's media part and makes a history record about that.
