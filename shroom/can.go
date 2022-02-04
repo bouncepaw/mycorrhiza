@@ -8,6 +8,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
+// TODO: get rid of this abomination
+
 func canFactory(
 	rejectLogger func(hyphae.Hypher, *user.User, string),
 	action string,

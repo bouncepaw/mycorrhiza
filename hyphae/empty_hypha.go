@@ -12,10 +12,6 @@ func (e *EmptyHypha) CanonicalName() string {
 	return e.canonicalName
 }
 
-func (e *EmptyHypha) DoesExist() bool {
-	return false
-}
-
 func (e *EmptyHypha) HasTextPart() bool {
 	return false
 }
@@ -31,10 +27,9 @@ func NewEmptyHypha(hyphaName string) *EmptyHypha {
 	}
 }
 
-func FillEmptyHyphaUpToMediaHypha(e *EmptyHypha) *MediaHypha { // sic!
+func FillEmptyHyphaUpToTextualHypha(e *EmptyHypha, textPath string) *MediaHypha { // sic!
 	return &MediaHypha{
-		name:       e.CanonicalName(),
-		TextPath:   "",
-		binaryPath: "",
+		name:     e.CanonicalName(),
+		TextPath: textPath,
 	}
 }
