@@ -18,12 +18,27 @@ func Index(path string) {
 		close(ch)
 	}(ch)
 
-	for h := range ch {
-		// It's safe to ignore the mutex because there is a single worker right now.
-		if oh := ByName(h.CanonicalName()); oh.DoesExist() {
-			oh.(*MediaHypha).mergeIn(h.(*MediaHypha))
-		} else {
-			insert(h.(*MediaHypha))
+	for nh := range ch {
+		switch oh := ByName(nh.CanonicalName()).(type) {
+		case *EmptyHypha:
+			insert(nh)
+		default:
+			// In case of conflicts the newer hypha overwrites the previous
+			switch nh, oh := nh.(*MediaHypha), oh.(*MediaHypha); {
+			case (nh.Kind() == HyphaText) && (oh.Kind() == HyphaMedia):
+				oh.TextPath = nh.TextPartPath()
+
+			case (nh.Kind() == HyphaText) && (oh.Kind() == HyphaText):
+				log.Printf("File collision for hypha ‘%s’, using %s rather than %s\n", nh.CanonicalName(), nh.TextPartPath(), oh.TextPartPath())
+				oh.TextPath = nh.TextPartPath()
+
+			case (nh.Kind() == HyphaMedia) && (oh.Kind() == HyphaMedia):
+				log.Printf("File collision for hypha ‘%s’, using %s rather than %s\n", nh.CanonicalName(), nh.BinaryPath(), oh.BinaryPath())
+				oh.SetBinaryPath(nh.BinaryPath())
+
+			case (nh.Kind() == HyphaMedia) && (oh.Kind() == HyphaText):
+				oh.SetBinaryPath(nh.BinaryPath())
+			}
 		}
 	}
 	log.Println("Indexed", Count(), "hyphae")

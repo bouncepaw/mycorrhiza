@@ -14,7 +14,9 @@ import (
 )
 
 func canRenameThisToThat(oh hyphae.Hypher, nh hyphae.Hypher, u *user.User, lc *l18n.Localizer) (errtitle string, err error) {
-	if nh.DoesExist() {
+	switch nh.(type) {
+	case *hyphae.EmptyHypha:
+	default:
 		rejectRenameLog(oh, u, fmt.Sprintf("name ‘%s’ taken already", nh.CanonicalName()))
 		return lc.Get("ui.rename_taken"), fmt.Errorf(lc.Get("ui.rename_taken_tip", &l18n.Replacements{"name": "<a href='/hypha/%[1]s'>%[1]s</a>"}), nh.CanonicalName())
 	}
@@ -99,9 +101,11 @@ func renamingPairs(hyphaeToRename []hyphae.Hypher, replaceName func(string) stri
 		if h.HasTextPart() {
 			renameMap[h.TextPartPath()] = replaceName(h.TextPartPath())
 		}
-		if h.Kind() == hyphae.HyphaMedia { // ontology think
-			h := h.(*hyphae.MediaHypha)
-			renameMap[h.BinaryPath()] = replaceName(h.BinaryPath())
+		switch h := h.(type) {
+		case *hyphae.MediaHypha:
+			if h.Kind() == hyphae.HyphaMedia { // ontology think
+				renameMap[h.BinaryPath()] = replaceName(h.BinaryPath())
+			}
 		}
 		h.Unlock()
 	}

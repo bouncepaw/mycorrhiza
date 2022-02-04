@@ -16,7 +16,9 @@ func YieldExistingHyphae() chan Hypher {
 	ch := make(chan Hypher)
 	go func() {
 		for _, h := range byNames {
-			if h.DoesExist() {
+			switch h.(type) {
+			case *EmptyHypha:
+			default:
 				ch <- h
 			}
 		}

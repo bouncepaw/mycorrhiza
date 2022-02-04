@@ -11,17 +11,23 @@ import (
 
 func init() {
 	globals.HyphaExists = func(hyphaName string) bool {
-		return hyphae.ByName(hyphaName).DoesExist()
+		switch hyphae.ByName(hyphaName).(type) {
+		case *hyphae.EmptyHypha:
+			return false
+		default:
+			return true
+		}
 	}
 	globals.HyphaAccess = func(hyphaName string) (rawText, binaryBlock string, err error) {
-		if h := hyphae.ByName(hyphaName); h.DoesExist() {
+		switch h := hyphae.ByName(hyphaName).(type) {
+		case *hyphae.EmptyHypha:
+			err = errors.New("Hypha " + hyphaName + " does not exist")
+		default:
 			rawText, err = FetchTextPart(h)
 			if h := h.(*hyphae.MediaHypha); h.Kind() == hyphae.HyphaMedia {
 				// the view is localized, but we can't pass it, so...
 				binaryBlock = views.AttachmentHTMLRaw(h)
 			}
-		} else {
-			err = errors.New("MediaHypha " + hyphaName + " does not exist")
 		}
 		return
 	}

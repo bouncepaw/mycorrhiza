@@ -22,9 +22,12 @@ func canFactory(
 			return lc.Get("ui.act_no_rights"), errors.New(lc.Get(noRightsMsg))
 		}
 
-		if mustExist && !h.DoesExist() {
-			rejectLogger(h, u, "does not exist")
-			return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
+		if mustExist {
+			switch h.(type) {
+			case *hyphae.EmptyHypha:
+				rejectLogger(h, u, "does not exist")
+				return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
+			}
 		}
 
 		if dispatcher == nil {
@@ -62,9 +65,13 @@ var (
 		rejectUnattachLog,
 		"unattach-confirm",
 		func(h hyphae.Hypher, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
-			if h.Kind() != hyphae.HyphaMedia {
-				rejectUnattachLog(h, u, "no amnt")
-				return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
+			switch h := h.(type) {
+			case *hyphae.EmptyHypha:
+			case *hyphae.MediaHypha:
+				if h.Kind() != hyphae.HyphaMedia {
+					rejectUnattachLog(h, u, "no amnt")
+					return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
+				}
 			}
 
 			return "", ""

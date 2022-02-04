@@ -25,8 +25,7 @@ func IsValidName(hyphaName string) bool {
 type HyphaKind int
 
 const (
-	HyphaEmpty HyphaKind = iota
-	HyphaText
+	HyphaText HyphaKind = iota
 	HyphaMedia
 )
 
@@ -35,8 +34,6 @@ type Hypher interface {
 	sync.Locker
 
 	CanonicalName() string
-	Kind() HyphaKind
-	DoesExist() bool
 
 	HasTextPart() bool
 	TextPartPath() string
@@ -63,39 +60,35 @@ func RenameHyphaTo(h Hypher, newName string) {
 	h.Unlock()
 }
 
-// insert inserts the hypha into the storage. A previous record is used if possible. Count incrementation is done if needed.
+// insert inserts the hypha into the storage, possibly overwriting the previous hypha with the same name. Count incrementation is done if needed.
 func insert(h Hypher) (madeNewRecord bool) {
-	hp, recorded := byNames[h.CanonicalName()]
-	if recorded {
-		hp.(*MediaHypha).mergeIn(h)
-	} else {
-		storeHypha(h)
+	_, recorded := byNames[h.CanonicalName()]
+
+	byNamesMutex.Lock()
+	byNames[h.CanonicalName()] = h
+	byNamesMutex.Unlock()
+
+	if !recorded {
 		incrementCount()
 	}
 
 	return !recorded
 }
 
-// InsertIfNew checks whether hypha exists and returns `true` if it didn't and has been created.
+// InsertIfNew checks whether the hypha exists and returns `true` if it didn't and has been created.
 func InsertIfNew(h Hypher) (madeNewRecord bool) {
-	if h.DoesExist() {
+	switch ByName(h.CanonicalName()).(type) {
+	case *EmptyHypha:
+		return insert(h)
+	default:
 		return false
 	}
-	return insert(h)
-}
-
-func storeHypha(h Hypher) {
-	byNamesMutex.Lock()
-	byNames[h.CanonicalName()] = h
-	byNamesMutex.Unlock()
-
-	h.Lock()
-	h.(*MediaHypha).Exists = true
-	h.Unlock()
 }
 
 // ByName returns a hypha by name. It may have been recorded to the storage.
 func ByName(hyphaName string) (h Hypher) {
+	byNamesMutex.Lock()
+	defer byNamesMutex.Unlock()
 	h, recorded := byNames[hyphaName]
 	if recorded {
 		return h
