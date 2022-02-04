@@ -106,11 +106,12 @@ If you rename .prevnext, change the docs too.
 		{% endif %}
 
 		{%s= NaviTitleHTML(h) %}
-		{% if h.DoesExist() %}
-			{%s= contents %}
-		{% else %}
-		    {%= nonExistentHyphaNotice(h, u, lc) %}
-		{% endif %}
+		{% switch h.(type) %}
+			{% case *hyphae.EmptyHypha %}
+				{%= nonExistentHyphaNotice(h, u, lc) %}
+			{% default %}
+				{%s= contents %}
+		{% endswitch %}
 	</section>
 	<section class="prevnext">
 		{% if prevHyphaName != "" %}

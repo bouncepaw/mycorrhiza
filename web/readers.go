@@ -138,7 +138,9 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "text")
-	if h := hyphae.ByName(hyphaName); h.DoesExist() {
+	switch h := hyphae.ByName(hyphaName).(type) {
+	case *hyphae.EmptyHypha:
+	default:
 		log.Println("Serving", h.TextPartPath())
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, h.TextPartPath())
@@ -149,10 +151,18 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
-	if h := hyphae.ByName(hyphaName).(*hyphae.MediaHypha); h.DoesExist() {
-		log.Println("Serving", h.BinaryPath())
-		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
-		http.ServeFile(w, rq, h.BinaryPath())
+	switch h := hyphae.ByName(hyphaName).(type) {
+	case *hyphae.EmptyHypha:
+	default: // TODO: deindent
+		switch h := h.(*hyphae.MediaHypha); h.Kind() {
+		case hyphae.HyphaText:
+			w.WriteHeader(http.StatusNotFound)
+			log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
+		default:
+			log.Println("Serving", h.BinaryPath())
+			w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
+			http.ServeFile(w, rq, h.BinaryPath())
+		}
 	}
 }
 
@@ -167,7 +177,17 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
 	)
-	if h.DoesExist() {
+
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha:
+		util.HTTP404Page(w,
+			views.BaseHTML(
+				util.BeautifulName(hyphaName),
+				views.HyphaHTML(rq, lc, h, contents),
+				lc,
+				u,
+				openGraph))
+	case *hyphae.MediaHypha:
 		fileContentsT, errT := os.ReadFile(h.TextPartPath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
@@ -178,18 +198,9 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = getOpenGraph()
 		}
 		if h.Kind() == hyphae.HyphaMedia {
-			contents = views.AttachmentHTML(h.(*hyphae.MediaHypha), lc) + contents
+			contents = views.AttachmentHTML(h, lc) + contents
 		}
-	}
-	if contents == "" {
-		util.HTTP404Page(w,
-			views.BaseHTML(
-				util.BeautifulName(hyphaName),
-				views.HyphaHTML(rq, lc, h, contents),
-				lc,
-				u,
-				openGraph))
-	} else {
+
 		util.HTTP200Page(w,
 			views.BaseHTML(
 				util.BeautifulName(hyphaName),

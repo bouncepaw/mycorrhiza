@@ -2,7 +2,6 @@
 package hyphae
 
 import (
-	"log"
 	"path/filepath"
 	"sync"
 
@@ -28,18 +27,11 @@ func (h *MediaHypha) CanonicalName() string {
 	return h.name
 }
 
-func (h *MediaHypha) Kind() HyphaKind {
-	if !h.DoesExist() {
-		return HyphaEmpty
-	}
+func (h *MediaHypha) Kind() HyphaKind { // sic!
 	if h.HasAttachment() {
 		return HyphaMedia
 	}
 	return HyphaText
-}
-
-func (h *MediaHypha) DoesExist() bool { // TODO: rename
-	return h.Exists
 }
 
 func (h *MediaHypha) HasTextPart() bool {
@@ -57,22 +49,4 @@ func (h *MediaHypha) TextPartPath() string {
 // HasAttachment is true if the hypha has an attachment.
 func (h *MediaHypha) HasAttachment() bool {
 	return h.binaryPath != ""
-}
-
-// mergeIn merges in content file paths from a different hypha object. Prints warnings sometimes.
-func (h *MediaHypha) mergeIn(oh Hypher) {
-	if h == oh {
-		return
-	}
-	h.Lock()
-	if h.TextPath == "" && oh.HasTextPart() {
-		h.TextPath = oh.TextPartPath()
-	}
-	if oh := oh.(*MediaHypha); oh.Kind() == HyphaMedia {
-		if h.binaryPath != "" {
-			log.Println("There is a file collision for attachment of a hypha:", h.binaryPath, "and", oh.binaryPath, "-- going on with the latter")
-		}
-		h.binaryPath = oh.binaryPath
-	}
-	h.Unlock()
 }

@@ -33,6 +33,8 @@ func initMutators(r *mux.Router) {
 	r.PathPrefix("/unattach-confirm/").HandlerFunc(handlerUnattachConfirm)
 }
 
+/// TODO: this is ridiculous, refactor heavily:
+
 func factoryHandlerAsker(
 	actionPath string,
 	asker func(*user.User, hyphae.Hypher, *l18n.Localizer) (string, error),
@@ -61,7 +63,14 @@ func factoryHandlerAsker(
 			w,
 			views.BaseHTML(
 				fmt.Sprintf(lc.Get(succTitleKey), util.BeautifulName(hyphaName)),
-				succPageTemplate(rq, hyphaName, h.DoesExist()),
+				succPageTemplate(rq, hyphaName, func(h hyphae.Hypher) bool {
+					switch h.(type) {
+					case *hyphae.EmptyHypha:
+						return false
+					default:
+						return true
+					}
+				}(h)),
 				lc,
 				u))
 	}
@@ -164,7 +173,10 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 			err.Error())
 		return
 	}
-	if h.DoesExist() {
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
+	default:
 		textAreaFill, err = shroom.FetchTextPart(h)
 		if err != nil {
 			log.Println(err)
@@ -173,8 +185,6 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 				lc.Get("ui.error_text_fetch"))
 			return
 		}
-	} else {
-		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
 	}
 	util.HTTP200Page(
 		w,

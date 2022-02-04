@@ -23,11 +23,13 @@ import (
 // UploadText edits a hypha' text part and makes a history record about that.
 func UploadText(h hyphae.Hypher, data []byte, message string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.Operation(history.TypeEditText)
+
 	var action string
-	if h.DoesExist() {
-		action = "Edit"
-	} else {
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
 		action = "Create"
+	default:
+		action = "Edit"
 	}
 
 	if message == "" {
@@ -39,8 +41,13 @@ func UploadText(h hyphae.Hypher, data []byte, message string, u *user.User, lc *
 	if errtitle, err := CanEdit(u, h, lc); err != nil {
 		return hop.WithErrAbort(err), errtitle
 	}
-	if len(bytes.TrimSpace(data)) == 0 && h.Kind() != hyphae.HyphaMedia {
-		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
+	if len(bytes.TrimSpace(data)) == 0 {
+		switch h := h.(type) {
+		case *hyphae.MediaHypha:
+			if h.Kind() != hyphae.HyphaMedia {
+				return hop.WithErrAbort(errors.New("No data passed")), "Empty"
+			}
+		}
 	}
 
 	return uploadHelp(h, hop, ".myco", data, u)
@@ -93,18 +100,28 @@ func uploadHelp(h hyphae.Hypher, hop *history.Op, ext string, data []byte, u *us
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if h.DoesExist() && sourceFullPath != fullPath && sourceFullPath != "" {
-		if err := history.Rename(sourceFullPath, fullPath); err != nil {
-			return hop.WithErrAbort(err), err.Error()
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+	default:
+		if sourceFullPath != fullPath && sourceFullPath != "" {
+			if err := history.Rename(sourceFullPath, fullPath); err != nil {
+				return hop.WithErrAbort(err), err.Error()
+			}
+			log.Println("Move", sourceFullPath, "to", fullPath)
 		}
-		log.Println("Move", sourceFullPath, "to", fullPath)
 	}
 
 	hyphae.InsertIfNew(h)
-	if h.DoesExist() && h.HasTextPart() && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
-		return hop.Abort(), "No changes"
+
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+	default:
+		if h.HasTextPart() && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
+			return hop.Abort(), "No changes"
+		}
 	}
-	// TODO: test
+
+	// sic!
 	if h := h.(*hyphae.MediaHypha); hop.Type == history.TypeEditBinary {
 		h.SetBinaryPath(fullPath)
 	} else {
