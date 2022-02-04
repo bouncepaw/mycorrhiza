@@ -8,11 +8,11 @@ import (
 )
 
 // FetchTextPart tries to read text file of the given hypha. If there is no file, empty string is returned.
-func FetchTextPart(h *hyphae.Hypha) (string, error) {
+func FetchTextPart(h hyphae.Hypher) (string, error) {
 	if !h.HasTextPart() {
 		return "", nil
 	}
-	text, err := os.ReadFile(h.TextPath)
+	text, err := os.ReadFile(h.TextPartPath())
 	if os.IsNotExist(err) {
 		return "", nil
 	} else if err != nil {
@@ -23,10 +23,10 @@ func FetchTextPart(h *hyphae.Hypha) (string, error) {
 
 // SetHeaderLinks initializes header links by reading the configured hypha, if there is any, or resorting to default values.
 func SetHeaderLinks() {
-	if userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha); !userLinksHypha.Exists {
+	if userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha); !userLinksHypha.DoesExist() {
 		cfg.SetDefaultHeaderLinks()
 	} else {
-		contents, err := os.ReadFile(userLinksHypha.TextPath)
+		contents, err := os.ReadFile(userLinksHypha.TextPartPath())
 		if err != nil || len(contents) == 0 {
 			cfg.SetDefaultHeaderLinks()
 		} else {

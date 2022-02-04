@@ -295,7 +295,7 @@ func AttachmentMenuHTML(rq *http.Request, h *hyphae.Hypha, u *user.User) string 
 // If you rename .prevnext, change the docs too.
 
 //line views/readers.qtpl:83
-func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) {
+func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents string) {
 //line views/readers.qtpl:83
 	qw422016.N().S(`
 `)
@@ -372,7 +372,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 	qw422016.N().S(`
 		`)
 //line views/readers.qtpl:109
-	if h.Exists {
+	if h.DoesExist() {
 //line views/readers.qtpl:109
 		qw422016.N().S(`
 			`)
@@ -465,7 +465,7 @@ func StreamHyphaHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Local
 }
 
 //line views/readers.qtpl:131
-func WriteHyphaHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) {
+func WriteHyphaHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents string) {
 //line views/readers.qtpl:131
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/readers.qtpl:131
@@ -476,7 +476,7 @@ func WriteHyphaHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Local
 }
 
 //line views/readers.qtpl:131
-func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents string) string {
+func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents string) string {
 //line views/readers.qtpl:131
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/readers.qtpl:131
@@ -491,7 +491,7 @@ func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents s
 }
 
 //line views/readers.qtpl:133
-func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents, revHash string) {
+func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents, revHash string) {
 //line views/readers.qtpl:133
 	qw422016.N().S(`
 `)
@@ -553,7 +553,7 @@ func StreamRevisionHTML(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Lo
 }
 
 //line views/readers.qtpl:149
-func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents, revHash string) {
+func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents, revHash string) {
 //line views/readers.qtpl:149
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/readers.qtpl:149
@@ -564,7 +564,7 @@ func WriteRevisionHTML(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Lo
 }
 
 //line views/readers.qtpl:149
-func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h *hyphae.Hypha, contents, revHash string) string {
+func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents, revHash string) string {
 //line views/readers.qtpl:149
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/readers.qtpl:149

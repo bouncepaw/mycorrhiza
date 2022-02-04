@@ -9,7 +9,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/history" %}
 
 
-{% func PrimitiveDiffHTML(rq *http.Request, h *hyphae.Hypha, u *user.User, hash string) %}
+{% func PrimitiveDiffHTML(rq *http.Request, h hyphae.Hypher, u *user.User, hash string) %}
 {% code
 lc := l18n.FromRequest(rq)
 text, err := history.PrimitiveDiffAtRevision(h.TextPartPath(), hash)

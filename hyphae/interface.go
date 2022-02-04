@@ -31,3 +31,14 @@ func DeleteHypha(h Hypher) {
 	byNamesMutex.Unlock()
 	h.Unlock()
 }
+
+// RenameHyphaTo renames a hypha and performs respective changes in the storage.
+func RenameHyphaTo(h Hypher, newName string) {
+	byNamesMutex.Lock()
+	h.Lock()
+	delete(byNames, h.CanonicalName())
+	h.(*Hypha).SetName(newName)
+	byNames[h.CanonicalName()] = h.(*Hypha)
+	byNamesMutex.Unlock()
+	h.Unlock()
+}

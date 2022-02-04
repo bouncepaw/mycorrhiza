@@ -71,7 +71,7 @@ func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *use
 		for _, h := range hyphaeToRename {
 			h := h.(*hyphae.Hypha) // ontology think
 			oldName := h.CanonicalName()
-			h.RenameTo(replaceName(h.CanonicalName()))
+			hyphae.RenameHyphaTo(h, replaceName(h.CanonicalName()))
 			h.Lock()
 			h.TextPath = replaceName(h.TextPath)
 			h.SetBinaryPath(replaceName(h.BinaryPath()))
