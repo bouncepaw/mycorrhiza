@@ -47,7 +47,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.AttachmentMenuHTML(rq, h.(*hyphae.Hypha), u),
+			views.AttachmentMenuHTML(rq, h.(*hyphae.MediaHypha), u),
 			lc,
 			u))
 }
@@ -149,7 +149,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
-	if h := hyphae.ByName(hyphaName).(*hyphae.Hypha); h.DoesExist() {
+	if h := hyphae.ByName(hyphaName).(*hyphae.MediaHypha); h.DoesExist() {
 		log.Println("Serving", h.BinaryPath())
 		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
 		http.ServeFile(w, rq, h.BinaryPath())
@@ -178,7 +178,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = getOpenGraph()
 		}
 		if h.Kind() == hyphae.HyphaMedia {
-			contents = views.AttachmentHTML(h, lc) + contents
+			contents = views.AttachmentHTML(h.(*hyphae.MediaHypha), lc) + contents
 		}
 	}
 	if contents == "" {

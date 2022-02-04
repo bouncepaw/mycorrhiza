@@ -20,7 +20,7 @@ func findSiblings(hyphaName string) []*sibling {
 		siblingsMap  = make(map[string]bool)
 		siblingCheck = func(h hyphae.Hypher) hyphae.CheckResult {
 			switch {
-			case h.CanonicalName() == hyphaName, // Hypha is no sibling of itself
+			case h.CanonicalName() == hyphaName, // MediaHypha is no sibling of itself
 				h.CanonicalName() == parentHyphaName: // Parent hypha is no sibling of its child
 				return hyphae.CheckContinue
 			}
