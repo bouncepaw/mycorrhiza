@@ -4,20 +4,18 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
+	"github.com/bouncepaw/mycorrhiza/user"
 	"io"
 	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"strings"
-
-	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/user"
 )
 
 func historyMessageForTextUpload(h hyphae.Hypher, userMessage string) string {
@@ -121,71 +119,84 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 	return hop.Apply(), ""
 }
 
-// UploadBinary edits the hypha's media part and makes a history record about that.
-func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
+func historyMessageForMediaUpload(h hyphae.Hypher, mime string) string {
+	return fmt.Sprintf("Upload media for ‘%s’ with type ‘%s’", h.CanonicalName(), mime)
+}
+
+// writeMediaToDisk saves the given data with the given mime type for the given hypha to the disk and returns the path to the saved file and an error, if any.
+func writeMediaToDisk(h hyphae.Hypher, mime string, data []byte) (string, error) {
 	var (
-		hop       = history.Operation(history.TypeEditBinary).WithMsg(fmt.Sprintf("Upload attachment for ‘%s’ with type ‘%s’", h.CanonicalName(), mime))
-		data, err = io.ReadAll(file)
+		ext = mimetype.ToExtension(mime)
+		// That's where the file will go
+		uploadedFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
 	)
 
+	if err := os.MkdirAll(filepath.Dir(uploadedFilePath), 0777); err != nil {
+		return uploadedFilePath, err
+	}
+
+	if err := os.WriteFile(uploadedFilePath, data, 0666); err != nil {
+		return uploadedFilePath, err
+	}
+	return uploadedFilePath, nil
+}
+
+// UploadBinary edits the hypha's media part and makes a history record about that.
+func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
+	hop := history.
+		Operation(history.TypeEditBinary).
+		WithMsg(historyMessageForMediaUpload(h, mime)).
+		WithUser(u)
+
+	// Privilege check
+	if !u.CanProceed("upload-binary") {
+		rejectAttachLog(h, u, "no rights")
+		return hop.WithErrAbort(errors.New(lc.Get("ui.act_norights_attach"))), lc.Get("ui.act_no_rights")
+	}
+
+	// Hypha name exploit check
+	if !hyphae.IsValidName(h.CanonicalName()) {
+		// We check for the name only. I suppose the filepath would be valid as well.
+		err := errors.New("invalid hypha name")
+		return hop.WithErrAbort(err), err.Error()
+	}
+
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
-	if errtitle, err := CanAttach(u, h, lc); err != nil {
-		return hop.WithErrAbort(err), errtitle
-	}
+
+	// Empty data check
 	if len(data) == 0 {
 		return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 	}
 
-	ext := mimetype.ToExtension(mime)
+	// At this point, we have a savable media document. Gotta save it.
 
-	var (
-		fullPath       = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
-		sourceFullPath = h.TextPartPath()
-	)
-	if !isValidPath(fullPath) || !hyphae.IsValidName(h.CanonicalName()) {
-		err := errors.New("bad path")
-		return hop.WithErrAbort(err), err.Error()
-	}
-	if h := h.(*hyphae.NonEmptyHypha); hop.Type == history.TypeEditBinary {
-		sourceFullPath = h.BinaryPath()
-	}
-
-	if err := os.MkdirAll(filepath.Dir(fullPath), 0777); err != nil {
+	uploadedFilePath, err := writeMediaToDisk(h, mime, data)
+	if err != nil {
 		return hop.WithErrAbort(err), err.Error()
 	}
 
-	if err := os.WriteFile(fullPath, data, 0666); err != nil {
-		return hop.WithErrAbort(err), err.Error()
-	}
-
-	switch h.(type) {
+	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-	default:
-		if sourceFullPath != fullPath && sourceFullPath != "" {
-			if err := history.Rename(sourceFullPath, fullPath); err != nil {
-				return hop.WithErrAbort(err), err.Error()
+		H := hyphae.FillEmptyHyphaUpToMediaHypha(h, uploadedFilePath)
+		hyphae.Insert(H)
+	case *hyphae.NonEmptyHypha:
+		switch h.Kind() {
+		case hyphae.HyphaText:
+			h.SetBinaryPath(uploadedFilePath)
+		case hyphae.HyphaMedia: // If this is not the first media the hypha gets
+			prevFilePath := h.BinaryPath()
+			if prevFilePath != uploadedFilePath {
+				if err := history.Rename(prevFilePath, uploadedFilePath); err != nil {
+					return hop.WithErrAbort(err), err.Error()
+				}
+				log.Printf("Move ‘%s’ to ‘%s’\n", prevFilePath, uploadedFilePath)
+				h.SetBinaryPath(uploadedFilePath)
 			}
-			log.Println("Move", sourceFullPath, "to", fullPath)
 		}
 	}
 
-	hyphae.InsertIfNew(h)
-
-	switch h.(type) {
-	case *hyphae.EmptyHypha:
-	default:
-		if h.HasTextPart() && hop.Type == history.TypeEditText && !history.FileChanged(fullPath) {
-			return hop.Abort(), "No changes"
-		}
-	}
-
-	// sic!
-	h.(*hyphae.NonEmptyHypha).SetBinaryPath(fullPath)
-	return hop.WithFiles(fullPath).WithUser(u).Apply(), ""
-}
-
-func isValidPath(pathname string) bool {
-	return strings.HasPrefix(pathname, files.HyphaeDir())
+	return hop.WithFiles(uploadedFilePath).Apply(), ""
 }
