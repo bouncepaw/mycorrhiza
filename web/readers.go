@@ -140,10 +140,12 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := util.HyphaNameFromRq(rq, "text")
 	switch h := hyphae.ByName(hyphaName).(type) {
 	case *hyphae.EmptyHypha:
-	default:
-		log.Println("Serving", h.TextPartPath())
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		http.ServeFile(w, rq, h.TextPartPath())
+	case *hyphae.NonEmptyHypha:
+		if h.Kind() == hyphae.HyphaText {
+			log.Println("Serving", h.TextPartPath())
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			http.ServeFile(w, rq, h.TextPartPath())
+		}
 	}
 }
 
