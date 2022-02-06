@@ -33,3 +33,10 @@ func FillEmptyHyphaUpToTextualHypha(e *EmptyHypha, textPath string) *NonEmptyHyp
 		TextPath: textPath,
 	}
 }
+
+func FillEmptyHyphaUpToMediaHypha(e *EmptyHypha, binaryPath string) *NonEmptyHypha { // sic!
+	return &NonEmptyHypha{
+		name:       e.CanonicalName(),
+		binaryPath: binaryPath,
+	}
+}
