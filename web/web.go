@@ -80,6 +80,9 @@ func Handler() http.Handler {
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
 			util.PrepareRq(rq)
+			w.Header().Add("Content-Security-Policy",
+				"default-src 'self' telegram.org *.telegram.org; "+
+					"img-src * data:; media-src *; style-src *; font-src * data:")
 			next.ServeHTTP(w, rq)
 		})
 	})

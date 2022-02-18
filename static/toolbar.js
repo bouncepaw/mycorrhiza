@@ -93,12 +93,44 @@ function insertDate() {
 }
 
 function insertTimeUTC() {
-	let time = new Date().toISOString().substring(11, 19) + " UTC"
-	textInserter(time)()
+    let time = new Date().toISOString().substring(11, 19) + " UTC"
+    textInserter(time)()
 }
 
 function insertUserlink() {
     const userlink = document.querySelector('.auth-links__user-link')
     const userHypha = userlink.getAttribute('href').substring(7) // no /hypha/
     textInserter('[[' + userHypha + ']]')()
+}
+
+const buttonsHandlers = {
+    link: wrapLink,
+    titlelink: wrapTitleLink,
+    heading1: insertHeading1,
+    heading2: insertHeading2,
+    bold: wrapBold,
+    italic: wrapItalic,
+    highlighted: wrapHighlighted,
+    underline: wrapUnderline,
+    monospace: wrapMonospace,
+    lifted: wrapLifted,
+    lowered: wrapLowered,
+    strikethrough: wrapStrikethrough,
+    rocket: insertRocket,
+    xcl: insertXcl,
+    img: insertImgBlock,
+    table: insertTableBlock,
+    hr: insertHorizontalBar,
+    codeblock: insertCodeblock,
+    bulletedlist: insertBulletedList,
+    numberedlist: insertNumberedList,
+    date: insertDate,
+    time: insertTimeUTC,
+    'user-link': insertUserlink,
+}
+for (const key of Object.keys(buttonsHandlers)) {
+    const button = document.getElementsByClassName(`edit-toolbar__${key}`)[0]
+    if (button) {
+        button.addEventListener('click', buttonsHandlers[key])
+    }
 }

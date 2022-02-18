@@ -11,33 +11,30 @@
 	<section class="edit-toolbar__buttons">
 	{% for _, el := range []struct{
 			class string
-			onclick string
 			display string
 		}{
-			{"link", "wrapLink()", fmt.Sprintf("[[%s]]", lc.Get("edit.link"))},
-			{"titlelink", "wrapTitleLink()", fmt.Sprintf("[[%s | %s]]", lc.Get("edit.link"), lc.Get("edit.link_title"))},
-			{"heading1", "insertHeading1()", fmt.Sprintf("= %s", lc.Get("edit.heading"))},
-			{"heading2", "insertHeading2()", fmt.Sprintf("== %s", lc.Get("edit.heading"))},
-			{"bold", "wrapBold()", fmt.Sprintf("<b>**%s**</b>", lc.Get("edit.bold"))},
-			{"italic", "wrapItalic()", fmt.Sprintf("<i>//%s//</i>", lc.Get("edit.italic"))},
-			{"highlighted", "wrapHighlighted()", fmt.Sprintf("<mark>++%s++</mark>", lc.Get("edit.highlight"))},
-			{"underline", "wrapUnderline()", fmt.Sprintf("<u>__%s__</u>", lc.Get("edit.underline"))},
-			{"monospace", "wrapMonospace()", fmt.Sprintf("<code>`%s`</code>", lc.Get("edit.mono"))},
-			{"lifted", "wrapLifted()", fmt.Sprintf("<sup>^^%s^^</sup>", lc.Get("edit.super"))}, // inconsistent names: lifted, supertext. How cute ❤️
-			{"lowered", "wrapLowered()", fmt.Sprintf("<sub>,,%s,,</sub>", lc.Get("edit.sub"))},
-			{"strikethrough", "wrapStrikethrough()", fmt.Sprintf("<strike>~~%s~~</strike>", lc.Get("edit.strike"))},
-			{"rocket", "insertRocket()", "=> " + lc.Get("edit.rocket")},
-			{"xcl", "insertXcl()", "<= " + lc.Get("edit.transclude")},
-			{"img", "insertImgBlock()", "<code>img {}</code>"},
-			{"table", "insertTableBlock()", "<code>table {}</code>"},
-			{"hr", "insertHorizontalBar()", lc.Get("edit.hr")},
-			{"codeblock", "insertCodeblock()", lc.Get("edit.code")},
-			{"bulletedlist", "insertBulletedList()", "* " + lc.Get("edit.bullets")},
-			{"numberedlist", "insertNumberedList()", "*. " + lc.Get("edit.numbers")},
+			{"link", fmt.Sprintf("[[%s]]", lc.Get("edit.link"))},
+			{"titlelink", fmt.Sprintf("[[%s | %s]]", lc.Get("edit.link"), lc.Get("edit.link_title"))},
+			{"heading1", fmt.Sprintf("= %s", lc.Get("edit.heading"))},
+			{"heading2", fmt.Sprintf("== %s", lc.Get("edit.heading"))},
+			{"bold", fmt.Sprintf("<b>**%s**</b>", lc.Get("edit.bold"))},
+			{"italic", fmt.Sprintf("<i>//%s//</i>", lc.Get("edit.italic"))},
+			{"highlighted", fmt.Sprintf("<mark>++%s++</mark>", lc.Get("edit.highlight"))},
+			{"underline", fmt.Sprintf("<u>__%s__</u>", lc.Get("edit.underline"))},
+			{"monospace", fmt.Sprintf("<code>`%s`</code>", lc.Get("edit.mono"))},
+			{"lifted", fmt.Sprintf("<sup>^^%s^^</sup>", lc.Get("edit.super"))}, // inconsistent names: lifted, supertext. How cute ❤️
+			{"lowered", fmt.Sprintf("<sub>,,%s,,</sub>", lc.Get("edit.sub"))},
+			{"strikethrough", fmt.Sprintf("<strike>~~%s~~</strike>", lc.Get("edit.strike"))},
+			{"rocket", "=> " + lc.Get("edit.rocket")},
+			{"xcl", "<= " + lc.Get("edit.transclude")},
+			{"img", "<code>img {}</code>"},
+			{"table", "<code>table {}</code>"},
+			{"hr", lc.Get("edit.hr")},
+			{"codeblock", lc.Get("edit.code")},
+			{"bulletedlist", "* " + lc.Get("edit.bullets")},
+			{"numberedlist", "*. " + lc.Get("edit.numbers")},
 		} %}
-		<button
-			class="btn edit-toolbar__btn edit-toolbar__{%s el.class %}"
-			onclick="{%s el.onclick %}">
+		<button class="btn edit-toolbar__btn edit-toolbar__{%s el.class %}">
 			{%s= el.display %}
 		</button>
 	{% endfor %}
@@ -49,22 +46,17 @@
 	<section class="edit-toolbar__buttons">
 	{% for _, el := range []struct{
 			class string
-			onclick string
 			display string
 		}{
-			{"date", "insertDate()", lc.Get("edit.date")},
-			{"time", "insertTimeUTC()", lc.Get("edit.time")},
+			{"date", lc.Get("edit.date")},
+			{"time", lc.Get("edit.time")},
 		} %}
-		<button
-			class="btn edit-toolbar__btn edit-toolbar__{%s el.class %}"
-			onclick="{%s el.onclick %}">
+		<button class="btn edit-toolbar__btn edit-toolbar__{%s el.class %}">
 			{%s= el.display %}
 		</button>
 	{% endfor %}
 	{% if u.Group != "anon" %}
-		<button
-			class="btn edit-toolbar__btn edit-toolbar__user-link"
-			onclick="insertUserlink()">
+		<button class="btn edit-toolbar__btn edit-toolbar__user-link">
 			{%s lc.Get("edit.selflink") %}
 		</button>
 	{% endif %}
