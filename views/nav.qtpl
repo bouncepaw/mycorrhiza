@@ -1,5 +1,6 @@
 {% import "net/http" %}
 {% import "strings" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae/backlinks" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
@@ -32,10 +33,12 @@
 {% endfunc %}
 
 {% func siblingHyphaeHTML(siblings string, lc *l18n.Localizer) %}
+{% if cfg.UseSiblingHyphaeSidebar %}
 <aside class="sibling-hyphae layout-card">
 	<h2 class="sibling-hyphae__title layout-card__title">{%s lc.Get("ui.sibling_hyphae") %}</h2>
 	{%s= siblings %}
 </aside>
+{% endif %}
 {% endfunc %}
 
 {% func SubhyphaeHTML(subhyphae string, lc *l18n.Localizer) %}
