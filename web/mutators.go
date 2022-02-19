@@ -37,7 +37,7 @@ func initMutators(r *mux.Router) {
 
 func factoryHandlerAsker(
 	actionPath string,
-	asker func(*user.User, hyphae.Hypher, *l18n.Localizer) (string, error),
+	asker func(*user.User, hyphae.Hypha, *l18n.Localizer) (string, error),
 	succTitleKey string,
 	succPageTemplate func(*http.Request, string, bool) string,
 ) func(http.ResponseWriter, *http.Request) {
@@ -63,7 +63,7 @@ func factoryHandlerAsker(
 			w,
 			views.BaseHTML(
 				fmt.Sprintf(lc.Get(succTitleKey), util.BeautifulName(hyphaName)),
-				succPageTemplate(rq, hyphaName, func(h hyphae.Hypher) bool {
+				succPageTemplate(rq, hyphaName, func(h hyphae.Hypha) bool {
 					switch h.(type) {
 					case *hyphae.EmptyHypha:
 						return false
@@ -99,7 +99,7 @@ var handlerRenameAsk = factoryHandlerAsker(
 
 func factoryHandlerConfirmer(
 	actionPath string,
-	confirmer func(hyphae.Hypher, *user.User, *http.Request) (*history.Op, string),
+	confirmer func(hyphae.Hypha, *user.User, *http.Request) (*history.Op, string),
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
 		util.PrepareRq(rq)
@@ -121,14 +121,14 @@ func factoryHandlerConfirmer(
 
 var handlerUnattachConfirm = factoryHandlerConfirmer(
 	"unattach-confirm",
-	func(h hyphae.Hypher, u *user.User, rq *http.Request) (*history.Op, string) {
+	func(h hyphae.Hypha, u *user.User, rq *http.Request) (*history.Op, string) {
 		return shroom.UnattachHypha(u, h, l18n.FromRequest(rq))
 	},
 )
 
 var handlerDeleteConfirm = factoryHandlerConfirmer(
 	"delete-confirm",
-	func(h hyphae.Hypher, u *user.User, rq *http.Request) (*history.Op, string) {
+	func(h hyphae.Hypha, u *user.User, rq *http.Request) (*history.Op, string) {
 		return shroom.DeleteHypha(u, h, l18n.FromRequest(rq))
 	},
 )
@@ -177,7 +177,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	case *hyphae.EmptyHypha:
 		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
 	default:
-		textAreaFill, err = shroom.FetchTextPart(h)
+		textAreaFill, err = shroom.FetchTextFile(h)
 		if err != nil {
 			log.Println(err)
 			httpErr(w, lc, http.StatusInternalServerError, hyphaName,

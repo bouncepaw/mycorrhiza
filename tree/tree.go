@@ -18,7 +18,7 @@ func findSiblings(hyphaName string) []*sibling {
 	}
 	var (
 		siblingsMap  = make(map[string]bool)
-		siblingCheck = func(h hyphae.Hypher) hyphae.CheckResult {
+		siblingCheck = func(h hyphae.Hypha) hyphae.CheckResult {
 			switch {
 			case h.CanonicalName() == hyphaName, // NonEmptyHypha is no sibling of itself
 				h.CanonicalName() == parentHyphaName: // Parent hypha is no sibling of its child
@@ -63,7 +63,7 @@ func findSiblings(hyphaName string) []*sibling {
 
 func countSubhyphae(siblings []*sibling) {
 	var (
-		subhyphaCheck = func(h hyphae.Hypher) hyphae.CheckResult {
+		subhyphaCheck = func(h hyphae.Hypha) hyphae.CheckResult {
 			for _, s := range siblings {
 				if path.Dir(h.CanonicalName()) == s.name {
 					s.directSubhyphaeCount++

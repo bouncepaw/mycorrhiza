@@ -7,20 +7,20 @@ import (
 // Iteration represents an iteration over all hyphae in the storage. You may use it instead of directly iterating using hyphae.YieldExistingHyphae when you want to do n checks at once instead of iterating n times.
 type Iteration struct {
 	sync.Mutex
-	iterator func() chan Hypher
-	checks   []func(h Hypher) CheckResult
+	iterator func() chan ExistingHypha
+	checks   []func(h Hypha) CheckResult
 }
 
 // NewIteration constructs an iteration without checks.
 func NewIteration() *Iteration {
 	return &Iteration{
 		iterator: YieldExistingHyphae,
-		checks:   make([]func(h Hypher) CheckResult, 0),
+		checks:   make([]func(h Hypha) CheckResult, 0),
 	}
 }
 
 // AddCheck adds the check to the iteration. It is concurrent-safe.
-func (i7n *Iteration) AddCheck(check func(h Hypher) CheckResult) {
+func (i7n *Iteration) AddCheck(check func(h Hypha) CheckResult) {
 	i7n.Lock()
 	i7n.checks = append(i7n.checks, check)
 	i7n.Unlock()

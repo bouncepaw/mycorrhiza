@@ -41,10 +41,10 @@ func MigrateRocketsMaybe() {
 	for hypha := range hyphae.FilterHyphaeWithText(hyphae.YieldExistingHyphae()) {
 		/// Open file, read from file, modify file. If anything goes wrong, scream and shout.
 
-		file, err := os.OpenFile(hypha.TextPartPath(), os.O_RDWR, 0766)
+		file, err := os.OpenFile(hypha.TextFilePath(), os.O_RDWR, 0766)
 		if err != nil {
 			hop.WithErrAbort(err)
-			log.Fatal("Something went wrong when opening ", hypha.TextPartPath(), ": ", err.Error())
+			log.Fatal("Something went wrong when opening ", hypha.TextFilePath(), ": ", err.Error())
 		}
 
 		var buf strings.Builder
@@ -52,7 +52,7 @@ func MigrateRocketsMaybe() {
 		if err != nil {
 			hop.WithErrAbort(err)
 			_ = file.Close()
-			log.Fatal("Something went wrong when reading ", hypha.TextPartPath(), ": ", err.Error())
+			log.Fatal("Something went wrong when reading ", hypha.TextFilePath(), ": ", err.Error())
 		}
 
 		var (
@@ -60,27 +60,27 @@ func MigrateRocketsMaybe() {
 			newText = tools.MigrateRocketLinks(oldText)
 		)
 		if oldText != newText { // This file right here is being migrated for real.
-			mycoFiles = append(mycoFiles, hypha.TextPartPath())
+			mycoFiles = append(mycoFiles, hypha.TextFilePath())
 
 			err = file.Truncate(0)
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when truncating ", hypha.TextPartPath(), ": ", err.Error())
+				log.Fatal("Something went wrong when truncating ", hypha.TextFilePath(), ": ", err.Error())
 			}
 
 			_, err = file.Seek(0, 0)
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when seeking in  ", hypha.TextPartPath(), ": ", err.Error())
+				log.Fatal("Something went wrong when seeking in  ", hypha.TextFilePath(), ": ", err.Error())
 			}
 
 			_, err = file.WriteString(newText)
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when writing to ", hypha.TextPartPath(), ": ", err.Error())
+				log.Fatal("Something went wrong when writing to ", hypha.TextFilePath(), ": ", err.Error())
 			}
 		}
 		_ = file.Close()

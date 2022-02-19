@@ -262,16 +262,17 @@ sort.Strings(editors)
 		close(hyphaNames)
 		%}
 		{% for hyphaName := range sortedHypha %}
-		{% code hypha := hyphae.ByName(hyphaName).(*hyphae.NonEmptyHypha) %}
+		{% code h := hyphae.ByName(hyphaName) %}
 		<li class="hypha-list__entry">
-			<a class="hypha-list__link" href="/hypha/{%s hypha.CanonicalName() %}">
-				{%s util.BeautifulName(hypha.CanonicalName()) %}
+			<a class="hypha-list__link" href="/hypha/{%s h.CanonicalName() %}">
+				{%s util.BeautifulName(h.CanonicalName()) %}
 			</a>
-			{% if hypha.Kind() == hyphae.HyphaMedia %}
-			<span class="hypha-list__amnt-type">
-				{%s filepath.Ext(hypha.BinaryPath())[1:] %}
-			</span>
-			{% endif %}
+			{% switch h := h.(type) %}
+			{% case *hyphae.MediaHypha %}
+				<span class="hypha-list__amnt-type">
+					{%s filepath.Ext(h.MediaFilePath())[1:] %}
+				</span>
+			{% endswitch %}
 		</li>
 		{% endfor %}
 	</ul>

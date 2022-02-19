@@ -47,7 +47,7 @@ func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
 	util.HTTP200Page(w,
 		views.BaseHTML(
 			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.AttachmentMenuHTML(rq, h.(*hyphae.NonEmptyHypha), u),
+			views.AttachmentMenuHTML(rq, h, u),
 			lc,
 			u))
 }
@@ -63,12 +63,18 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		u               = user.FromRequest(rq)
 		lc              = l18n.FromRequest(rq)
 	)
-	util.HTTP200Page(w,
-		views.BaseHTML(
-			lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-			views.PrimitiveDiffHTML(rq, h, u, revHash),
-			lc,
-			u))
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha:
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = io.WriteString(w, "404 not found")
+	case hyphae.ExistingHypha:
+		util.HTTP200Page(w,
+			views.BaseHTML(
+				lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
+				views.PrimitiveDiffHTML(rq, h, u, revHash),
+				lc,
+				u))
+	}
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
@@ -77,42 +83,57 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		shorterURL        = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
-		firstSlashIndex   = strings.IndexRune(shorterURL, '/')
-		revHash           = shorterURL[:firstSlashIndex]
-		hyphaName         = util.CanonicalName(shorterURL[firstSlashIndex+1:])
-		h                 = hyphae.ByName(hyphaName)
-		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
+		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
+		firstSlashIndex = strings.IndexRune(shorterURL, '/')
+		revHash         = shorterURL[:firstSlashIndex]
+		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
+		h               = hyphae.ByName(hyphaName)
 	)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	if err != nil {
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha:
+		log.Printf(`Hypha ‘%s’ does not exist`)
 		w.WriteHeader(http.StatusNotFound)
-		log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
-		_, _ = io.WriteString(w, "Error: "+err.Error())
-		return
+	case hyphae.ExistingHypha:
+		if !h.HasTextFile() {
+			log.Printf(`Media hypha ‘%s’ has no text`)
+			w.WriteHeader(http.StatusNotFound)
+		}
+		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
+
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+			_, _ = io.WriteString(w, "Error: "+err.Error())
+			return
+		}
+		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, h.TextFilePath(), revHash)
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, textContents)
 	}
-	log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, h.TextPartPath(), revHash)
-	w.WriteHeader(http.StatusOK)
-	_, _ = io.WriteString(w, textContents)
 }
 
 // handlerRevision displays a specific revision of the text part the hypha
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		lc                = l18n.FromRequest(rq)
-		shorterURL        = strings.TrimPrefix(rq.URL.Path, "/rev/")
-		firstSlashIndex   = strings.IndexRune(shorterURL, '/')
-		revHash           = shorterURL[:firstSlashIndex]
-		hyphaName         = util.CanonicalName(shorterURL[firstSlashIndex+1:])
-		h                 = hyphae.ByName(hyphaName)
-		contents          = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
-		textContents, err = history.FileAtRevision(h.TextPartPath(), revHash)
-		u                 = user.FromRequest(rq)
+		lc              = l18n.FromRequest(rq)
+		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/rev/")
+		firstSlashIndex = strings.IndexRune(shorterURL, '/')
+		revHash         = shorterURL[:firstSlashIndex]
+		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
+		h               = hyphae.ByName(hyphaName)
+		contents        = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
+		u               = user.FromRequest(rq)
 	)
-	if err == nil {
-		ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textContents)
-		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
+	switch h := h.(type) {
+	case *hyphae.TextualHypha:
+		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
+
+		if err == nil {
+			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textContents)
+			contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
+		}
 	}
 	page := views.RevisionHTML(
 		rq,
@@ -139,13 +160,10 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "text")
 	switch h := hyphae.ByName(hyphaName).(type) {
-	case *hyphae.EmptyHypha:
-	case *hyphae.NonEmptyHypha:
-		if h.Kind() == hyphae.HyphaText {
-			log.Println("Serving", h.TextPartPath())
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			http.ServeFile(w, rq, h.TextPartPath())
-		}
+	case *hyphae.TextualHypha:
+		log.Println("Serving", h.TextFilePath())
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		http.ServeFile(w, rq, h.TextFilePath())
 	}
 }
 
@@ -155,16 +173,13 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	switch h := hyphae.ByName(hyphaName).(type) {
 	case *hyphae.EmptyHypha:
-	default: // TODO: deindent
-		switch h := h.(*hyphae.NonEmptyHypha); h.Kind() {
-		case hyphae.HyphaText:
-			w.WriteHeader(http.StatusNotFound)
-			log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
-		default:
-			log.Println("Serving", h.BinaryPath())
-			w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.BinaryPath())))
-			http.ServeFile(w, rq, h.BinaryPath())
-		}
+	case *hyphae.TextualHypha:
+		w.WriteHeader(http.StatusNotFound)
+		log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
+	case *hyphae.MediaHypha:
+		log.Println("Serving", h.MediaFilePath())
+		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.MediaFilePath())))
+		http.ServeFile(w, rq, h.MediaFilePath())
 	}
 }
 
@@ -189,8 +204,8 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				lc,
 				u,
 				openGraph))
-	case *hyphae.NonEmptyHypha:
-		fileContentsT, errT := os.ReadFile(h.TextPartPath())
+	case hyphae.ExistingHypha:
+		fileContentsT, errT := os.ReadFile(h.TextFilePath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
 			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
@@ -199,7 +214,8 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = mycomarkup.BlocksToHTML(ctx, ast)
 			openGraph = getOpenGraph()
 		}
-		if h.Kind() == hyphae.HyphaMedia {
+		switch h := h.(type) {
+		case *hyphae.MediaHypha:
 			contents = views.AttachmentHTML(h, lc) + contents
 		}
 

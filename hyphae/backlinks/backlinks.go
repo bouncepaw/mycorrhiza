@@ -2,6 +2,7 @@
 package backlinks
 
 import (
+	"log"
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -53,7 +54,7 @@ func IndexBacklinks() {
 }
 
 // BacklinksCount returns the amount of backlinks to the hypha.
-func BacklinksCount(h hyphae.Hypher) int {
+func BacklinksCount(h hyphae.Hypha) int {
 	if links, exists := backlinkIndex[h.CanonicalName()]; exists {
 		return len(links)
 	}
@@ -71,15 +72,26 @@ func toLinkSet(xs []string) linkSet {
 	return result
 }
 
-func fetchText(h hyphae.Hypher) string {
-	if !h.HasTextPart() {
+func fetchText(h hyphae.Hypha) string {
+	var path string
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha:
+		return ""
+	case *hyphae.TextualHypha:
+		path = h.TextFilePath()
+	case *hyphae.MediaHypha:
+		if !h.HasTextFile() {
+			return ""
+		}
+		path = h.TextFilePath()
+	}
+
+	text, err := os.ReadFile(path)
+	if err != nil {
+		log.Println(err)
 		return ""
 	}
-	text, err := os.ReadFile(h.TextPartPath())
-	if err == nil {
-		return string(text)
-	}
-	return ""
+	return string(text)
 }
 
 // backlinkIndexOperation is an operation for the backlink index. This operation is executed async-safe.

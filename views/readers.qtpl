@@ -11,25 +11,26 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AttachmentMenuHTML(rq *http.Request, h *hyphae.NonEmptyHypha, u *user.User) %}
+{% func AttachmentMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}
 <div class="layout">
 <main class="main-width attachment-tab">
 	<h1>{%s= lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}) %}</h1>
-	{% if h.BinaryPath() == "" %}
-	<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
-	{% else %}
-	<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
-	{% endif %}
+	{% switch h.(type) %}
+	{% case *hyphae.MediaHypha %}
+		<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+	{% default %}
+		<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+	{% endswitch %}
 
 	<section class="amnt-grid">
-
-	{% if h.BinaryPath() != "" %}
+	{% switch h := h.(type) %}
+	{% case *hyphae.MediaHypha %}
 		{% code
-			mime := mimetype.FromExtension(path.Ext(h.BinaryPath()))
-			fileinfo, err := os.Stat(h.BinaryPath()) %}
+			mime := mimetype.FromExtension(path.Ext(h.MediaFilePath()))
+			fileinfo, err := os.Stat(h.MediaFilePath()) %}
 		{% if err == nil %}
 		<fieldset class="amnt-menu-block">
 			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_stat") %}</legend>
@@ -45,7 +46,7 @@
 			<pre class="codeblock"><code>img { {%s h.CanonicalName() %} }</code></pre>
 		</fieldset>
 		{% endif %}
-	{% endif %}
+	{% endswitch %}
 
 	{% if u.CanProceed("upload-binary") %}
 	<form action="/upload-binary/{%s h.CanonicalName() %}"
@@ -62,15 +63,19 @@
 	</form>
 	{% endif %}
 
-	{% if h.BinaryPath() != "" && u.CanProceed("unattach-confirm") %}
-	<form action="/unattach-confirm/{%s h.CanonicalName() %}" method="post" class="modal amnt-menu-block">
-		<fieldset class="modal__fieldset">
-			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_remove") %}</legend>
-			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_remove_tip") %}</p>
-			<button type="submit" class="btn" value="Unattach">{%s lc.Get("ui.attach_remove_button") %}</button>
-		</fieldset>
-	</form>
-	{% endif %}
+
+	{% switch h := h.(type) %}
+	{% case *hyphae.MediaHypha %}
+		{% if u.CanProceed("unattach-confirm") %}
+		<form action="/unattach-confirm/{%s h.CanonicalName() %}" method="post" class="modal amnt-menu-block">
+			<fieldset class="modal__fieldset">
+				<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_remove") %}</legend>
+				<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_remove_tip") %}</p>
+				<button type="submit" class="btn" value="Unattach">{%s lc.Get("ui.attach_remove_button") %}</button>
+			</fieldset>
+		</form>
+		{% endif %}
+	{% endswitch %}
 
 	</section>
 </main>
@@ -80,7 +85,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents string) %}
+{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	u := user.FromRequest(rq)
@@ -131,7 +136,7 @@ If you rename .prevnext, change the docs too.
 {%= viewScripts() %}
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypher, contents, revHash string) %}
+{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
 {% code
 	siblings, subhyphae, _, _ := tree.Tree(h.CanonicalName())
 %}
