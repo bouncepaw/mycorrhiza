@@ -19,114 +19,107 @@ import (
 )
 
 func initMutators(r *mux.Router) {
-	// Those that do not actually mutate anything:
 	r.PathPrefix("/edit/").HandlerFunc(handlerEdit)
 	r.PathPrefix("/rename/").HandlerFunc(handlerRename).Methods("GET", "POST")
-	r.PathPrefix("/delete-ask/").HandlerFunc(handlerDeleteAsk)
-	r.PathPrefix("/unattach-ask/").HandlerFunc(handlerUnattachAsk)
-	// And those that do mutate something:
+	r.PathPrefix("/delete/").HandlerFunc(handlerDelete).Methods("GET", "POST")
+	r.PathPrefix("/remove-media/").HandlerFunc(handlerRemoveMedia).Methods("GET", "POST")
 	r.PathPrefix("/upload-binary/").HandlerFunc(handlerUploadBinary)
 	r.PathPrefix("/upload-text/").HandlerFunc(handlerUploadText)
-	r.PathPrefix("/delete-confirm/").HandlerFunc(handlerDeleteConfirm)
-	r.PathPrefix("/unattach-confirm/").HandlerFunc(handlerUnattachConfirm)
 }
 
-/// TODO: this is ridiculous, refactor heavily:
+/// TODO: this is no longer ridiculous, but is now ugly. Gotta make it at least bearable to look at :-/
 
-func factoryHandlerAsker(
-	actionPath string,
-	asker func(*user.User, hyphae.Hypha, *l18n.Localizer) error,
-	succTitleKey string,
-	succPageTemplate func(*http.Request, string) string,
-) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, rq *http.Request) {
-		util.PrepareRq(rq)
-		var (
-			hyphaName = util.HyphaNameFromRq(rq, actionPath)
-			h         = hyphae.ByName(hyphaName)
-			u         = user.FromRequest(rq)
-			lc        = l18n.FromRequest(rq)
-		)
-		if err := asker(u, h, lc); err != nil {
-			httpErr(
-				w,
-				lc,
-				http.StatusInternalServerError,
-				hyphaName,
-				err.Error())
-			return
-		}
+func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	var (
+		u  = user.FromRequest(rq)
+		lc = l18n.FromRequest(rq)
+		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
+	)
+	if !u.CanProceed("remove-media") {
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "no rights")
+		return
+	}
+	if rq.Method == "GET" {
 		util.HTTP200Page(
 			w,
 			views.BaseHTML(
-				fmt.Sprintf(lc.Get(succTitleKey), util.BeautifulName(hyphaName)),
-				succPageTemplate(rq, hyphaName),
+				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
+				views.RemoveMediaAskHTML(rq, h.CanonicalName()),
 				lc,
 				u))
+		return
 	}
-}
-
-var handlerUnattachAsk = factoryHandlerAsker(
-	"unattach-ask",
-	shroom.CanUnattach,
-	"ui.ask_unattach",
-	views.UnattachAskHTML,
-)
-
-var handlerDeleteAsk = factoryHandlerAsker(
-	"delete-ask",
-	shroom.CanDelete,
-	"ui.ask_delete",
-	views.DeleteAskHTML,
-)
-
-func factoryHandlerConfirmer(
-	actionPath string,
-	confirmer func(hyphae.Hypha, *user.User, *http.Request) error,
-) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, rq *http.Request) {
-		util.PrepareRq(rq)
-		var (
-			hyphaName = util.HyphaNameFromRq(rq, actionPath)
-			h         = hyphae.ByName(hyphaName)
-			u         = user.FromRequest(rq)
-			lc        = l18n.FromRequest(rq)
-		)
-		if err := confirmer(h, u, rq); err != nil {
-			httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-				err.Error())
+	switch h := h.(type) {
+	case *hyphae.EmptyHypha, *hyphae.TextualHypha:
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "no media to remove")
+		return
+	case *hyphae.MediaHypha:
+		if err := shroom.RemoveMedia(u, h, lc); err != nil {
+			httpErr(w, lc, http.StatusInternalServerError, h.CanonicalName(), err.Error())
 			return
 		}
-		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
 	}
 }
 
-var handlerUnattachConfirm = factoryHandlerConfirmer(
-	"unattach-confirm",
-	func(h hyphae.Hypha, u *user.User, rq *http.Request) error {
-		return shroom.UnattachHypha(u, h, l18n.FromRequest(rq))
-	},
-)
+func handlerDelete(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	var (
+		u  = user.FromRequest(rq)
+		lc = l18n.FromRequest(rq)
+		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
+	)
 
-var handlerDeleteConfirm = factoryHandlerConfirmer(
-	"delete-confirm",
-	func(h hyphae.Hypha, u *user.User, rq *http.Request) error {
-		return shroom.DeleteHypha(u, h, l18n.FromRequest(rq))
-	},
-)
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+		log.Printf("%s tries to delete empty hypha ‘%s’", u.Name, h.CanonicalName())
+		// TODO: localize
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
+		return
+	}
+
+	if !u.CanProceed("delete") {
+		log.Printf("%s has no rights to delete ‘%s’\n", u.Name, h.CanonicalName())
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "No rights")
+		return
+	}
+
+	if rq.Method == "GET" {
+		util.HTTP200Page(
+			w,
+			views.BaseHTML(
+				fmt.Sprintf(lc.Get("ui.ask_delete"), util.BeautifulName(h.CanonicalName())),
+				views.DeleteAskHTML(rq, h.CanonicalName()),
+				lc,
+				u))
+		return
+	}
+
+	if err := shroom.DeleteHypha(u, h, lc); err != nil {
+		log.Println(err)
+		httpErr(w, lc, http.StatusInternalServerError, h.CanonicalName(), err.Error())
+	}
+	http.Redirect(w, rq, "/hypha/"+h.CanonicalName(), http.StatusSeeOther)
+}
 
 func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u  = user.FromRequest(rq)
 		lc = l18n.FromRequest(rq)
-		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "rename-confirm"))
+		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "rename"))
 	)
 
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
 		log.Printf("%s tries to rename empty hypha ‘%s’", u.Name, h.CanonicalName())
 		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha") // TODO: localize
+		return
+	}
+
+	if !u.CanProceed("rename") {
+		log.Printf("%s has no rights to rename ‘%s’\n", u.Name, h.CanonicalName())
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "No rights")
 		return
 	}
 
@@ -144,6 +137,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 				views.RenameAskHTML(rq, oldHypha.CanonicalName()),
 				lc,
 				u))
+		return
 	}
 
 	if err := shroom.Rename(oldHypha, newName, recursive, u); err != nil {

@@ -26,6 +26,9 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *us
 
 	switch targetHypha := hyphae.ByName(newName); targetHypha.(type) {
 	case hyphae.ExistingHypha:
+		if targetHypha.CanonicalName() == oldHypha.CanonicalName() {
+			return nil
+		}
 		rejectRenameLog(oldHypha, u, fmt.Sprintf("name ‘%s’ taken already", newName))
 		return errors.New("ui.rename_taken_tip") // FIXME: There is a bug related to this.
 	}

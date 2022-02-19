@@ -9,17 +9,11 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-// UnattachHypha unattaches hypha and makes a history record about that.
-func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) error {
-
-	if err := CanUnattach(u, h, lc); err != nil {
-		return err
-	}
-	H := h.(*hyphae.MediaHypha)
-
+// RemoveMedia unattaches hypha and makes a history record about that.
+func RemoveMedia(u *user.User, h *hyphae.MediaHypha, lc *l18n.Localizer) error {
 	hop := history.
 		Operation(history.TypeUnattachHypha).
-		WithFilesRemoved(H.MediaFilePath()).
+		WithFilesRemoved(h.MediaFilePath()).
 		WithMsg(fmt.Sprintf("Unattach ‘%s’", h.CanonicalName())).
 		WithUser(u).
 		Apply()
@@ -30,10 +24,10 @@ func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) error {
 		return fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)
 	}
 
-	if H.HasTextFile() {
-		hyphae.Insert(hyphae.ShrinkMediaToTextual(H))
+	if h.HasTextFile() {
+		hyphae.Insert(hyphae.ShrinkMediaToTextual(h))
 	} else {
-		hyphae.DeleteHypha(H)
+		hyphae.DeleteHypha(h)
 	}
 	return nil
 }

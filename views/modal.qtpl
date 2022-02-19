@@ -7,7 +7,7 @@
   lc := l18n.FromRequest(rq)
 %}
 {%= modalBegin(
-	"delete-confirm",
+	"delete",
 	hyphaName,
 	"",
 	fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName))) %}
@@ -16,25 +16,27 @@
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
 
-{% func UnattachAskHTML(rq *http.Request, hyphaName string) %}
+{% func RemoveMediaAskHTML(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
 {%= modalBegin(
-	"unattach",
+	"remove-media",
 	hyphaName,
 	"",
-	fmt.Sprintf(lc.Get("ui.ask_unattach"), beautifulLink(hyphaName))) %}
-{%= modalReallyWant(hyphaName, lc.Get("ui.ask_unattach_verb"), lc) %}
+	fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName))) %}
+{%= modalReallyWant(hyphaName, lc.Get("ui.ask_remove_media_verb"), lc) %}
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
+
+bloody hell !!
 
 {% func RenameAskHTML(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
 {%= modalBegin(
-	"rename-confirm",
+	"rename",
 	hyphaName,
 	` method="post" enctype="multipart/form-data"`,
 	fmt.Sprintf(lc.Get("ui.ask_rename"), beautifulLink(hyphaName))) %}
