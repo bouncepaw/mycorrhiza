@@ -23,7 +23,7 @@
 <nav class="hypha-info">
 	<ul class="hypha-info__list">
 		{%= hyphaInfoEntry(h, u, "history", lc.Get("ui.history_link")) %}
-		{%= hyphaInfoEntry(h, u, "rename-ask", lc.Get("ui.rename_link")) %}
+		{%= hyphaInfoEntry(h, u, "rename", lc.Get("ui.rename_link")) %}
 		{%= hyphaInfoEntry(h, u, "delete-ask", lc.Get("ui.delete_link")) %}
 		{%= hyphaInfoEntry(h, u, "text", lc.Get("ui.text_link")) %}
 		{%= hyphaInfoEntry(h, u, "attachment", lc.Get("ui.attachment_link")) %}

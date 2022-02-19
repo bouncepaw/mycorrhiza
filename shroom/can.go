@@ -17,29 +17,29 @@ func canFactory(
 	noRightsMsg string,
 	notExistsMsg string,
 	mustExist bool,
-) func(*user.User, hyphae.Hypha, *l18n.Localizer) (string, error) {
-	return func(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) (string, error) {
+) func(*user.User, hyphae.Hypha, *l18n.Localizer) error {
+	return func(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) error {
 		if !u.CanProceed(action) {
 			rejectLogger(h, u, "no rights")
-			return lc.Get("ui.act_no_rights"), errors.New(lc.Get(noRightsMsg))
+			return errors.New(noRightsMsg)
 		}
 
 		if mustExist {
 			switch h.(type) {
 			case *hyphae.EmptyHypha:
 				rejectLogger(h, u, "does not exist")
-				return lc.Get("ui.act_notexist"), errors.New(lc.Get(notExistsMsg))
+				return errors.New(notExistsMsg)
 			}
 		}
 
 		if dispatcher == nil {
-			return "", nil
+			return nil
 		}
 		errmsg, errtitle := dispatcher(h, u, lc)
 		if errtitle == "" {
-			return "", nil
+			return nil
 		}
-		return errtitle, errors.New(errmsg)
+		return errors.New(errmsg)
 	}
 }
 
@@ -54,22 +54,12 @@ var (
 		true,
 	)
 
-	CanRename = canFactory(
-		rejectRenameLog,
-		"rename-confirm",
-		nil,
-		"ui.act_norights_rename",
-		"ui.act_notexist_rename",
-		true,
-	)
-
 	CanUnattach = canFactory(
 		rejectUnattachLog,
 		"unattach-confirm",
 		func(h hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
 			switch h := h.(type) {
-			case *hyphae.EmptyHypha:
-			case *hyphae.TextualHypha:
+			case *hyphae.EmptyHypha, *hyphae.TextualHypha:
 				rejectUnattachLog(h, u, "no amnt")
 				return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
 			}

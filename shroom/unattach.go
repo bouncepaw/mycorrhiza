@@ -10,16 +10,15 @@ import (
 )
 
 // UnattachHypha unattaches hypha and makes a history record about that.
-func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
-	hop = history.Operation(history.TypeUnattachHypha)
+func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) error {
 
-	if errtitle, err := CanUnattach(u, h, lc); errtitle != "" {
-		hop.WithErrAbort(err)
-		return hop, errtitle
+	if err := CanUnattach(u, h, lc); err != nil {
+		return err
 	}
 	H := h.(*hyphae.MediaHypha)
 
-	hop.
+	hop := history.
+		Operation(history.TypeUnattachHypha).
 		WithFilesRemoved(H.MediaFilePath()).
 		WithMsg(fmt.Sprintf("Unattach ‘%s’", h.CanonicalName())).
 		WithUser(u).
@@ -28,7 +27,7 @@ func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) (hop *histo
 	if len(hop.Errs) > 0 {
 		rejectUnattachLog(h, u, "fail")
 		// FIXME: something may be wrong here
-		return hop.WithErrAbort(fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)), "Error"
+		return fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)
 	}
 
 	if H.HasTextFile() {
@@ -36,5 +35,5 @@ func UnattachHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) (hop *histo
 	} else {
 		hyphae.DeleteHypha(H)
 	}
-	return hop, ""
+	return nil
 }

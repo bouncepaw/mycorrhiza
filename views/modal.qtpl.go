@@ -27,7 +27,7 @@ var (
 )
 
 //line views/modal.qtpl:5
-func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:5
 	qw422016.N().S(`
 `)
@@ -65,22 +65,22 @@ func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 }
 
 //line views/modal.qtpl:17
-func WriteDeleteAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func WriteDeleteAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:17
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:17
-	StreamDeleteAskHTML(qw422016, rq, hyphaName, isOld)
+	StreamDeleteAskHTML(qw422016, rq, hyphaName)
 //line views/modal.qtpl:17
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:17
 }
 
 //line views/modal.qtpl:17
-func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) string {
+func DeleteAskHTML(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:17
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:17
-	WriteDeleteAskHTML(qb422016, rq, hyphaName, isOld)
+	WriteDeleteAskHTML(qb422016, rq, hyphaName)
 //line views/modal.qtpl:17
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:17
@@ -91,7 +91,7 @@ func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) string {
 }
 
 //line views/modal.qtpl:19
-func StreamUnattachAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func StreamUnattachAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:19
 	qw422016.N().S(`
 `)
@@ -124,22 +124,22 @@ func StreamUnattachAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaNam
 }
 
 //line views/modal.qtpl:30
-func WriteUnattachAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func WriteUnattachAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:30
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:30
-	StreamUnattachAskHTML(qw422016, rq, hyphaName, isOld)
+	StreamUnattachAskHTML(qw422016, rq, hyphaName)
 //line views/modal.qtpl:30
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:30
 }
 
 //line views/modal.qtpl:30
-func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) string {
+func UnattachAskHTML(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:30
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:30
-	WriteUnattachAskHTML(qb422016, rq, hyphaName, isOld)
+	WriteUnattachAskHTML(qb422016, rq, hyphaName)
 //line views/modal.qtpl:30
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:30
@@ -150,7 +150,7 @@ func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) string {
 }
 
 //line views/modal.qtpl:32
-func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:32
 	qw422016.N().S(`
 `)
@@ -201,22 +201,22 @@ func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 }
 
 //line views/modal.qtpl:49
-func WriteRenameAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string, isOld bool) {
+func WriteRenameAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:49
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:49
-	StreamRenameAskHTML(qw422016, rq, hyphaName, isOld)
+	StreamRenameAskHTML(qw422016, rq, hyphaName)
 //line views/modal.qtpl:49
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:49
 }
 
 //line views/modal.qtpl:49
-func RenameAskHTML(rq *http.Request, hyphaName string, isOld bool) string {
+func RenameAskHTML(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:49
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:49
-	WriteRenameAskHTML(qb422016, rq, hyphaName, isOld)
+	WriteRenameAskHTML(qb422016, rq, hyphaName)
 //line views/modal.qtpl:49
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:49

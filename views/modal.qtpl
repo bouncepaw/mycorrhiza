@@ -2,7 +2,7 @@
 {% import "net/http" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
-{% func DeleteAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
+{% func DeleteAskHTML(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
@@ -16,7 +16,7 @@
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
 
-{% func UnattachAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
+{% func UnattachAskHTML(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
@@ -29,7 +29,7 @@
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
 
-{% func RenameAskHTML(rq *http.Request, hyphaName string, isOld bool) %}
+{% func RenameAskHTML(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}

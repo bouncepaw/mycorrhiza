@@ -104,7 +104,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.no_rights"), lc.Get("ui.reindex_no_rights"))
+		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -122,7 +122,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.no_rights"), lc.Get("ui.header_no_rights"))
+		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -139,7 +139,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	)
 	if amountOfHyphae == 0 {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae"), lc.Get("ui.random_no_hyphae_tip"))
+		httpErr(w, lc, http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae_tip"))
 		return
 	}
 	i := rand.Intn(amountOfHyphae)

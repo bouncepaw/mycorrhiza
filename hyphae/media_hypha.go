@@ -14,9 +14,6 @@ type MediaHypha struct {
 	mediaFilePath string
 }
 
-func (m *MediaHypha) DoesExist() {
-}
-
 func (m *MediaHypha) CanonicalName() string {
 	return m.canonicalName
 }

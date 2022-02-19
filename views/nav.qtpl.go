@@ -122,7 +122,7 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:26
-	streamhyphaInfoEntry(qw422016, h, u, "rename-ask", lc.Get("ui.rename_link"))
+	streamhyphaInfoEntry(qw422016, h, u, "rename", lc.Get("ui.rename_link"))
 //line views/nav.qtpl:26
 	qw422016.N().S(`
 		`)

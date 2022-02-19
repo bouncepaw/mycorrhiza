@@ -6,7 +6,6 @@ package web
 import (
 	"fmt"
 	"io"
-	"log"
 	"mime"
 	"net/http"
 	"net/url"
@@ -24,14 +23,13 @@ import (
 var stylesheets = []string{"default.css", "custom.css"}
 
 // httpErr is used by many handlers to signal errors in a compact way.
-func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, title, errMsg string) {
-	log.Println(errMsg, "for", name)
+func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, errMsg string) {
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(status)
 	fmt.Fprint(
 		w,
 		views.BaseHTML(
-			title,
+			"Error",
 			fmt.Sprintf(
 				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
 				errMsg,

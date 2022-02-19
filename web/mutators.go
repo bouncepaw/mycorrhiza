@@ -10,7 +10,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -22,14 +21,13 @@ import (
 func initMutators(r *mux.Router) {
 	// Those that do not actually mutate anything:
 	r.PathPrefix("/edit/").HandlerFunc(handlerEdit)
+	r.PathPrefix("/rename/").HandlerFunc(handlerRename).Methods("GET", "POST")
 	r.PathPrefix("/delete-ask/").HandlerFunc(handlerDeleteAsk)
-	r.PathPrefix("/rename-ask/").HandlerFunc(handlerRenameAsk)
 	r.PathPrefix("/unattach-ask/").HandlerFunc(handlerUnattachAsk)
 	// And those that do mutate something:
 	r.PathPrefix("/upload-binary/").HandlerFunc(handlerUploadBinary)
 	r.PathPrefix("/upload-text/").HandlerFunc(handlerUploadText)
 	r.PathPrefix("/delete-confirm/").HandlerFunc(handlerDeleteConfirm)
-	r.PathPrefix("/rename-confirm/").HandlerFunc(handlerRenameConfirm)
 	r.PathPrefix("/unattach-confirm/").HandlerFunc(handlerUnattachConfirm)
 }
 
@@ -37,9 +35,9 @@ func initMutators(r *mux.Router) {
 
 func factoryHandlerAsker(
 	actionPath string,
-	asker func(*user.User, hyphae.Hypha, *l18n.Localizer) (string, error),
+	asker func(*user.User, hyphae.Hypha, *l18n.Localizer) error,
 	succTitleKey string,
-	succPageTemplate func(*http.Request, string, bool) string,
+	succPageTemplate func(*http.Request, string) string,
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
 		util.PrepareRq(rq)
@@ -49,13 +47,12 @@ func factoryHandlerAsker(
 			u         = user.FromRequest(rq)
 			lc        = l18n.FromRequest(rq)
 		)
-		if errtitle, err := asker(u, h, lc); err != nil {
+		if err := asker(u, h, lc); err != nil {
 			httpErr(
 				w,
 				lc,
 				http.StatusInternalServerError,
 				hyphaName,
-				errtitle,
 				err.Error())
 			return
 		}
@@ -63,14 +60,7 @@ func factoryHandlerAsker(
 			w,
 			views.BaseHTML(
 				fmt.Sprintf(lc.Get(succTitleKey), util.BeautifulName(hyphaName)),
-				succPageTemplate(rq, hyphaName, func(h hyphae.Hypha) bool {
-					switch h.(type) {
-					case *hyphae.EmptyHypha:
-						return false
-					default:
-						return true
-					}
-				}(h)),
+				succPageTemplate(rq, hyphaName),
 				lc,
 				u))
 	}
@@ -90,16 +80,9 @@ var handlerDeleteAsk = factoryHandlerAsker(
 	views.DeleteAskHTML,
 )
 
-var handlerRenameAsk = factoryHandlerAsker(
-	"rename-ask",
-	shroom.CanRename,
-	"ui.ask_rename",
-	views.RenameAskHTML,
-)
-
 func factoryHandlerConfirmer(
 	actionPath string,
-	confirmer func(hyphae.Hypha, *user.User, *http.Request) (*history.Op, string),
+	confirmer func(hyphae.Hypha, *user.User, *http.Request) error,
 ) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, rq *http.Request) {
 		util.PrepareRq(rq)
@@ -109,10 +92,9 @@ func factoryHandlerConfirmer(
 			u         = user.FromRequest(rq)
 			lc        = l18n.FromRequest(rq)
 		)
-		if hop, errtitle := confirmer(h, u, rq); hop.HasErrors() {
+		if err := confirmer(h, u, rq); err != nil {
 			httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-				errtitle,
-				hop.FirstErrorText())
+				err.Error())
 			return
 		}
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
@@ -121,35 +103,52 @@ func factoryHandlerConfirmer(
 
 var handlerUnattachConfirm = factoryHandlerConfirmer(
 	"unattach-confirm",
-	func(h hyphae.Hypha, u *user.User, rq *http.Request) (*history.Op, string) {
+	func(h hyphae.Hypha, u *user.User, rq *http.Request) error {
 		return shroom.UnattachHypha(u, h, l18n.FromRequest(rq))
 	},
 )
 
 var handlerDeleteConfirm = factoryHandlerConfirmer(
 	"delete-confirm",
-	func(h hyphae.Hypha, u *user.User, rq *http.Request) (*history.Op, string) {
+	func(h hyphae.Hypha, u *user.User, rq *http.Request) error {
 		return shroom.DeleteHypha(u, h, l18n.FromRequest(rq))
 	},
 )
 
-// handlerRenameConfirm should redirect to the new hypha, thus it's out of factory
-func handlerRenameConfirm(w http.ResponseWriter, rq *http.Request) {
+func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u         = user.FromRequest(rq)
-		lc        = l18n.FromRequest(rq)
-		hyphaName = util.HyphaNameFromRq(rq, "rename-confirm")
-		oldHypha  = hyphae.ByName(hyphaName)
+		u  = user.FromRequest(rq)
+		lc = l18n.FromRequest(rq)
+		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "rename-confirm"))
+	)
+
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+		log.Printf("%s tries to rename empty hypha ‘%s’", u.Name, h.CanonicalName())
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha") // TODO: localize
+		return
+	}
+
+	var (
+		oldHypha  = h.(hyphae.ExistingHypha)
 		newName   = util.CanonicalName(rq.PostFormValue("new-name"))
-		newHypha  = hyphae.ByName(newName)
 		recursive = rq.PostFormValue("recursive") == "true"
 	)
-	hop, errtitle := shroom.RenameHypha(oldHypha, newHypha, recursive, u, lc)
-	if hop.HasErrors() {
-		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-			errtitle,
-			hop.FirstErrorText())
+
+	if rq.Method == "GET" {
+		util.HTTP200Page(
+			w,
+			views.BaseHTML(
+				fmt.Sprintf(lc.Get("ui.ask_rename"), util.BeautifulName(oldHypha.CanonicalName())),
+				views.RenameAskHTML(rq, oldHypha.CanonicalName()),
+				lc,
+				u))
+	}
+
+	if err := shroom.Rename(oldHypha, newName, recursive, u); err != nil {
+		log.Printf("%s tries to rename ‘%s’: %s", u.Name, oldHypha.CanonicalName(), err.Error())
+		httpErr(w, lc, http.StatusForbidden, oldHypha.CanonicalName(), lc.Get(err.Error())) // TODO: localize
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+newName, http.StatusSeeOther)
@@ -167,9 +166,8 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		u            = user.FromRequest(rq)
 		lc           = l18n.FromRequest(rq)
 	)
-	if errtitle, err := shroom.CanEdit(u, h, lc); err != nil {
+	if err := shroom.CanEdit(u, h, lc); err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-			errtitle,
 			err.Error())
 		return
 	}
@@ -181,7 +179,6 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		if err != nil {
 			log.Println(err)
 			httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-				lc.Get("ui.error"),
 				lc.Get("ui.error_text_fetch"))
 			return
 		}
@@ -206,16 +203,11 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		message   = rq.PostFormValue("message")
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
-		hop       *history.Op
-		errtitle  string
 	)
 
 	if action != "Preview" {
-		hop, errtitle = shroom.UploadText(h, []byte(textData), message, u, lc)
-		if hop.HasErrors() {
-			httpErr(w, lc, http.StatusForbidden, hyphaName,
-				errtitle,
-				hop.FirstErrorText())
+		if err := shroom.UploadText(h, []byte(textData), message, u, lc); err != nil {
+			httpErr(w, lc, http.StatusForbidden, hyphaName, err.Error())
 			return
 		}
 	}
@@ -254,12 +246,10 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	)
 	if err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-			lc.Get("ui.error"),
 			err.Error())
 	}
-	if errtitle, err := shroom.CanAttach(u, h, lc); err != nil {
+	if err := shroom.CanAttach(u, h, lc); err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName,
-			errtitle,
 			err.Error())
 	}
 
@@ -272,13 +262,13 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if file != nil {
 		defer file.Close()
 	}
+
 	var (
-		mime          = handler.Header.Get("Content-Type")
-		hop, errtitle = shroom.UploadBinary(h, mime, file, u, lc)
+		mime = handler.Header.Get("Content-Type")
 	)
 
-	if hop.HasErrors() {
-		httpErr(w, lc, http.StatusInternalServerError, hyphaName, errtitle, hop.FirstErrorText())
+	if err := shroom.UploadBinary(h, mime, file, u, lc); err != nil {
+		httpErr(w, lc, http.StatusInternalServerError, hyphaName, err.Error())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
