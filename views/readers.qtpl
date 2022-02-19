@@ -137,9 +137,6 @@ If you rename .prevnext, change the docs too.
 {% endfunc %}
 
 {% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
-{% code
-	siblings, subhyphae, _, _ := tree.Tree(h.CanonicalName())
-%}
 <div class="layout">
 <main class="main-width">
 	<section>
@@ -147,9 +144,7 @@ If you rename .prevnext, change the docs too.
 		{%s= NaviTitleHTML(h) %}
 		{%s= contents %}
 	</section>
-{%= SubhyphaeHTML(subhyphae, lc) %}
 </main>
-{%= siblingHyphaeHTML(siblings, lc) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}
