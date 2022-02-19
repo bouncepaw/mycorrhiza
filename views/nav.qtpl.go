@@ -36,7 +36,7 @@ var (
 )
 
 //line views/nav.qtpl:8
-func streamhyphaInfoEntry(qw422016 *qt422016.Writer, h hyphae.Hypher, u *user.User, action, displayText string) {
+func streamhyphaInfoEntry(qw422016 *qt422016.Writer, h hyphae.Hypha, u *user.User, action, displayText string) {
 //line views/nav.qtpl:8
 	qw422016.N().S(`
 `)
@@ -73,7 +73,7 @@ func streamhyphaInfoEntry(qw422016 *qt422016.Writer, h hyphae.Hypher, u *user.Us
 }
 
 //line views/nav.qtpl:14
-func writehyphaInfoEntry(qq422016 qtio422016.Writer, h hyphae.Hypher, u *user.User, action, displayText string) {
+func writehyphaInfoEntry(qq422016 qtio422016.Writer, h hyphae.Hypha, u *user.User, action, displayText string) {
 //line views/nav.qtpl:14
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/nav.qtpl:14
@@ -84,7 +84,7 @@ func writehyphaInfoEntry(qq422016 qtio422016.Writer, h hyphae.Hypher, u *user.Us
 }
 
 //line views/nav.qtpl:14
-func hyphaInfoEntry(h hyphae.Hypher, u *user.User, action, displayText string) string {
+func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action, displayText string) string {
 //line views/nav.qtpl:14
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/nav.qtpl:14
@@ -99,7 +99,7 @@ func hyphaInfoEntry(h hyphae.Hypher, u *user.User, action, displayText string) s
 }
 
 //line views/nav.qtpl:16
-func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypher) {
+func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha) {
 //line views/nav.qtpl:16
 	qw422016.N().S(`
 `)
@@ -149,7 +149,7 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hyphe
 }
 
 //line views/nav.qtpl:32
-func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hypher) {
+func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hypha) {
 //line views/nav.qtpl:32
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/nav.qtpl:32
@@ -160,7 +160,7 @@ func writehyphaInfo(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hyphe
 }
 
 //line views/nav.qtpl:32
-func hyphaInfo(rq *http.Request, h hyphae.Hypher) string {
+func hyphaInfo(rq *http.Request, h hyphae.Hypha) string {
 //line views/nav.qtpl:32
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/nav.qtpl:32

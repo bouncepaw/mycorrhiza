@@ -10,6 +10,7 @@ import (
 )
 
 func init() {
+	// TODO: clean this complete and utter mess
 	globals.HyphaExists = func(hyphaName string) bool {
 		switch hyphae.ByName(hyphaName).(type) {
 		case *hyphae.EmptyHypha:
@@ -22,12 +23,11 @@ func init() {
 		switch h := hyphae.ByName(hyphaName).(type) {
 		case *hyphae.EmptyHypha:
 			err = errors.New("Hypha " + hyphaName + " does not exist")
-		default:
-			rawText, err = FetchTextPart(h)
-			if h := h.(*hyphae.NonEmptyHypha); h.Kind() == hyphae.HyphaMedia {
-				// the view is localized, but we can't pass it, so...
-				binaryBlock = views.AttachmentHTMLRaw(h)
-			}
+		case *hyphae.TextualHypha:
+			rawText, err = FetchTextFile(h)
+		case *hyphae.MediaHypha:
+			rawText, err = FetchTextFile(h)
+			binaryBlock = views.AttachmentHTMLRaw(h)
 		}
 		return
 	}

@@ -5,7 +5,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 
-{% func hyphaInfoEntry(h hyphae.Hypher, u *user.User, action, displayText string) %}
+{% func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action, displayText string) %}
 {% if u.CanProceed(action) %}
 <li class="hypha-info__entry hypha-info__entry_{%s action %}">
 	<a class="hypha-info__link" href="/{%s action %}/{%s h.CanonicalName() %}">{%s displayText %}</a>
@@ -13,7 +13,7 @@
 {% endif %}
 {% endfunc %}
 
-{% func hyphaInfo(rq *http.Request, h hyphae.Hypher) %}
+{% func hyphaInfo(rq *http.Request, h hyphae.Hypha) %}
 {% code
 	u := user.FromRequest(rq)
 	lc := l18n.FromRequest(rq)

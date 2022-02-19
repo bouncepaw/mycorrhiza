@@ -18,7 +18,7 @@ import (
 	"path/filepath"
 )
 
-func historyMessageForTextUpload(h hyphae.Hypher, userMessage string) string {
+func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
 	var verb string
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
@@ -33,21 +33,21 @@ func historyMessageForTextUpload(h hyphae.Hypher, userMessage string) string {
 	return fmt.Sprintf("%s ‘%s’: %s", verb, h.CanonicalName(), userMessage)
 }
 
-func writeTextToDisk(h *hyphae.NonEmptyHypha, data []byte, hop *history.Op) error {
-	if err := os.MkdirAll(filepath.Dir(h.TextPartPath()), 0777); err != nil {
+func writeTextToDisk(h hyphae.ExistingHypha, data []byte, hop *history.Op) error {
+	if err := os.MkdirAll(filepath.Dir(h.TextFilePath()), 0777); err != nil {
 		return err
 	}
 
-	if err := os.WriteFile(h.TextPartPath(), data, 0666); err != nil {
+	if err := os.WriteFile(h.TextFilePath(), data, 0666); err != nil {
 		return err
 	}
-	hop.WithFiles(h.TextPartPath())
+	hop.WithFiles(h.TextFilePath())
 
 	return nil
 }
 
 // UploadText edits the hypha's text part and makes a history record about that.
-func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	hop = history.
 		Operation(history.TypeEditText).
 		WithMsg(historyMessageForTextUpload(h, userMessage)).
@@ -68,19 +68,16 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 
 	// Empty data check
 	if len(bytes.TrimSpace(data)) == 0 { // if nothing but whitespace
-		switch h := h.(type) {
+		switch h.(type) {
 		case *hyphae.EmptyHypha:
 			// It's ok, just like cancel button.
 			return hop.Abort(), ""
-		case *hyphae.NonEmptyHypha:
-			switch h.Kind() {
-			case hyphae.HyphaMedia:
-				// Writing no description, it's ok, just like cancel button.
-				return hop.Abort(), ""
-			case hyphae.HyphaText:
-				// What do you want passing nothing for a textual hypha?
-				return hop.WithErrAbort(errors.New("No data passed")), "Empty"
-			}
+		case *hyphae.MediaHypha:
+			// Writing no description, it's ok, just like cancel button.
+			return hop.Abort(), ""
+		case *hyphae.TextualHypha:
+			// What do you want passing nothing for a textual hypha?
+			return hop.WithErrAbort(errors.New("No data passed")), "Empty"
 		}
 	}
 
@@ -88,7 +85,7 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		H := hyphae.FillEmptyHyphaUpToTextualHypha(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
+		H := hyphae.ExtendEmptyToTextual(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
 
 		err := writeTextToDisk(H, data, hop)
 		if err != nil {
@@ -96,8 +93,26 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 		}
 
 		hyphae.Insert(H)
-	case *hyphae.NonEmptyHypha:
-		oldText, err := FetchTextPart(h)
+	case *hyphae.MediaHypha:
+		oldText, err := FetchTextFile(h)
+		if err != nil {
+			return hop.WithErrAbort(err), err.Error()
+		}
+
+		// TODO: that []byte(...) part should be removed
+		if bytes.Compare(data, []byte(oldText)) == 0 {
+			// No changes! Just like cancel button
+			return hop.Abort(), ""
+		}
+
+		err = writeTextToDisk(h, data, hop)
+		if err != nil {
+			return hop.WithErrAbort(err), err.Error()
+		}
+
+		backlinks.UpdateBacklinksAfterEdit(h, oldText)
+	case *hyphae.TextualHypha:
+		oldText, err := FetchTextFile(h)
 		if err != nil {
 			return hop.WithErrAbort(err), err.Error()
 		}
@@ -119,12 +134,12 @@ func UploadText(h hyphae.Hypher, data []byte, userMessage string, u *user.User, 
 	return hop.Apply(), ""
 }
 
-func historyMessageForMediaUpload(h hyphae.Hypher, mime string) string {
+func historyMessageForMediaUpload(h hyphae.Hypha, mime string) string {
 	return fmt.Sprintf("Upload media for ‘%s’ with type ‘%s’", h.CanonicalName(), mime)
 }
 
 // writeMediaToDisk saves the given data with the given mime type for the given hypha to the disk and returns the path to the saved file and an error, if any.
-func writeMediaToDisk(h hyphae.Hypher, mime string, data []byte) (string, error) {
+func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) {
 	var (
 		ext = mimetype.ToExtension(mime)
 		// That's where the file will go
@@ -142,7 +157,7 @@ func writeMediaToDisk(h hyphae.Hypher, mime string, data []byte) (string, error)
 }
 
 // UploadBinary edits the hypha's media part and makes a history record about that.
-func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
+func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User, lc *l18n.Localizer) (*history.Op, string) {
 	hop := history.
 		Operation(history.TypeEditBinary).
 		WithMsg(historyMessageForMediaUpload(h, mime)).
@@ -180,21 +195,18 @@ func UploadBinary(h hyphae.Hypher, mime string, file multipart.File, u *user.Use
 
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		H := hyphae.FillEmptyHyphaUpToMediaHypha(h, uploadedFilePath)
+		H := hyphae.ExtendEmptyToMedia(h, uploadedFilePath)
 		hyphae.Insert(H)
-	case *hyphae.NonEmptyHypha:
-		switch h.Kind() {
-		case hyphae.HyphaText:
-			h.SetBinaryPath(uploadedFilePath)
-		case hyphae.HyphaMedia: // If this is not the first media the hypha gets
-			prevFilePath := h.BinaryPath()
-			if prevFilePath != uploadedFilePath {
-				if err := history.Rename(prevFilePath, uploadedFilePath); err != nil {
-					return hop.WithErrAbort(err), err.Error()
-				}
-				log.Printf("Move ‘%s’ to ‘%s’\n", prevFilePath, uploadedFilePath)
-				h.SetBinaryPath(uploadedFilePath)
+	case *hyphae.TextualHypha:
+		hyphae.Insert(hyphae.ExtendTextualToMedia(h, uploadedFilePath))
+	case *hyphae.MediaHypha: // If this is not the first media the hypha gets
+		prevFilePath := h.MediaFilePath()
+		if prevFilePath != uploadedFilePath {
+			if err := history.Rename(prevFilePath, uploadedFilePath); err != nil {
+				return hop.WithErrAbort(err), err.Error()
 			}
+			log.Printf("Move ‘%s’ to ‘%s’\n", prevFilePath, uploadedFilePath)
+			h.SetMediaFilePath(uploadedFilePath)
 		}
 	}
 

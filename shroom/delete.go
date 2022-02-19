@@ -11,23 +11,30 @@ import (
 )
 
 // DeleteHypha deletes hypha and makes a history record about that.
-func DeleteHypha(u *user.User, h hyphae.Hypher, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
-	hop = history.Operation(history.TypeDeleteHypha)
+func DeleteHypha(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+	hop = history.
+		Operation(history.TypeDeleteHypha).
+		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
+		WithUser(u)
 
 	if errtitle, err := CanDelete(u, h, lc); errtitle != "" {
 		hop.WithErrAbort(err)
 		return hop, errtitle
 	}
 
-	originalText, _ := FetchTextPart(h)
-	hop.
-		WithFilesRemoved(h.TextPartPath(), h.(*hyphae.NonEmptyHypha).BinaryPath()).
-		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
-		WithUser(u).
-		Apply()
+	switch h := h.(type) {
+	case *hyphae.MediaHypha:
+		hop.WithFilesRemoved(h.MediaFilePath(), h.TextFilePath())
+	case *hyphae.TextualHypha:
+		hop.WithFilesRemoved(h.TextFilePath())
+	default:
+		panic("impossible")
+	}
+	originalText, _ := FetchTextFile(h)
+	hop.Apply()
 	if !hop.HasErrors() {
 		backlinks.UpdateBacklinksAfterDelete(h, originalText)
-		hyphae.DeleteHypha(h)
+		hyphae.DeleteHypha(h.(hyphae.ExistingHypha)) // we panicked before, so it's safe
 	}
 	return hop, ""
 }

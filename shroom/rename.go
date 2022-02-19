@@ -13,7 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-func canRenameThisToThat(oh hyphae.Hypher, nh hyphae.Hypher, u *user.User, lc *l18n.Localizer) (errtitle string, err error) {
+func canRenameThisToThat(oh hyphae.Hypha, nh hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errtitle string, err error) {
 	switch nh.(type) {
 	case *hyphae.EmptyHypha:
 	default:
@@ -35,7 +35,7 @@ func canRenameThisToThat(oh hyphae.Hypher, nh hyphae.Hypher, u *user.User, lc *l
 }
 
 // RenameHypha renames hypha from old name `hyphaName` to `newName` and makes a history record about that. If `recursive` is `true`, its subhyphae will be renamed the same way.
-func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
+func RenameHypha(h hyphae.Hypha, newHypha hyphae.Hypha, recursive bool, u *user.User, lc *l18n.Localizer) (hop *history.Op, errtitle string) {
 	newHypha.Lock()
 	defer newHypha.Unlock()
 	hop = history.Operation(history.TypeRenameHypha)
@@ -54,7 +54,7 @@ func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *use
 		replaceName = func(str string) string {
 			return re.ReplaceAllString(util.CanonicalName(str), newHypha.CanonicalName())
 		}
-		hyphaeToRename = findHyphaeToRename(h, recursive)
+		hyphaeToRename = findHyphaeToRename(h.(hyphae.ExistingHypha), recursive)
 		renameMap, err = renamingPairs(hyphaeToRename, replaceName)
 		renameMsg      = "Rename ‘%s’ to ‘%s’"
 	)
@@ -70,47 +70,43 @@ func RenameHypha(h hyphae.Hypher, newHypha hyphae.Hypher, recursive bool, u *use
 		WithUser(u).
 		Apply()
 	if len(hop.Errs) == 0 {
-		for _, h := range hyphaeToRename {
-			h := h.(*hyphae.NonEmptyHypha) // ontology think
+		for _, H := range hyphaeToRename {
+			h := H.(hyphae.ExistingHypha) // ontology think
 			oldName := h.CanonicalName()
-			hyphae.RenameHyphaTo(h, replaceName(h.CanonicalName()))
-			h.Lock()
-			h.TextPath = replaceName(h.TextPath)
-			h.SetBinaryPath(replaceName(h.BinaryPath()))
-			h.Unlock()
+			hyphae.RenameHyphaTo(h, replaceName(h.CanonicalName()), replaceName)
 			backlinks.UpdateBacklinksAfterRename(h, oldName)
 		}
 	}
 	return hop, ""
 }
 
-func findHyphaeToRename(superhypha hyphae.Hypher, recursive bool) []hyphae.Hypher {
-	hyphaList := []hyphae.Hypher{superhypha}
+func findHyphaeToRename(superhypha hyphae.ExistingHypha, recursive bool) []hyphae.ExistingHypha {
+	hyphaList := []hyphae.ExistingHypha{superhypha}
 	if recursive {
 		hyphaList = append(hyphaList, hyphae.Subhyphae(superhypha)...)
 	}
 	return hyphaList
 }
 
-func renamingPairs(hyphaeToRename []hyphae.Hypher, replaceName func(string) string) (map[string]string, error) {
-	renameMap := make(map[string]string)
-	newNames := make([]string, len(hyphaeToRename))
+func renamingPairs(hyphaeToRename []hyphae.ExistingHypha, replaceName func(string) string) (map[string]string, error) {
+	var (
+		renameMap = make(map[string]string)
+		newNames  = make([]string, len(hyphaeToRename))
+	)
 	for _, h := range hyphaeToRename {
 		h.Lock()
 		newNames = append(newNames, replaceName(h.CanonicalName()))
-		if h.HasTextPart() {
-			renameMap[h.TextPartPath()] = replaceName(h.TextPartPath())
+		if h.HasTextFile() {
+			renameMap[h.TextFilePath()] = replaceName(h.TextFilePath())
 		}
 		switch h := h.(type) {
-		case *hyphae.NonEmptyHypha:
-			if h.Kind() == hyphae.HyphaMedia { // ontology think
-				renameMap[h.BinaryPath()] = replaceName(h.BinaryPath())
-			}
+		case *hyphae.MediaHypha:
+			renameMap[h.MediaFilePath()] = replaceName(h.MediaFilePath())
 		}
 		h.Unlock()
 	}
 	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
-		return nil, errors.New("NonEmptyHypha " + firstFailure + " already exists")
+		return nil, errors.New("Hypha " + firstFailure + " already exists")
 	}
 	return renameMap, nil
 }

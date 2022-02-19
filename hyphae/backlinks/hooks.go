@@ -9,26 +9,26 @@ import (
 )
 
 // UpdateBacklinksAfterEdit is a creation/editing hook for backlinks index
-func UpdateBacklinksAfterEdit(h hyphae.Hypher, oldText string) {
+func UpdateBacklinksAfterEdit(h hyphae.Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.CanonicalName(), oldText)
 	newLinks := extractHyphaLinks(h)
 	backlinkConveyor <- backlinkIndexEdit{h.CanonicalName(), oldLinks, newLinks}
 }
 
 // UpdateBacklinksAfterDelete is a deletion hook for backlinks index
-func UpdateBacklinksAfterDelete(h hyphae.Hypher, oldText string) {
+func UpdateBacklinksAfterDelete(h hyphae.Hypha, oldText string) {
 	oldLinks := extractHyphaLinksFromContent(h.CanonicalName(), oldText)
 	backlinkConveyor <- backlinkIndexDeletion{h.CanonicalName(), oldLinks}
 }
 
 // UpdateBacklinksAfterRename is a renaming hook for backlinks index
-func UpdateBacklinksAfterRename(h hyphae.Hypher, oldName string) {
+func UpdateBacklinksAfterRename(h hyphae.Hypha, oldName string) {
 	actualLinks := extractHyphaLinks(h)
 	backlinkConveyor <- backlinkIndexRenaming{oldName, h.CanonicalName(), actualLinks}
 }
 
 // extractHyphaLinks extracts hypha links from a desired hypha
-func extractHyphaLinks(h hyphae.Hypher) []string {
+func extractHyphaLinks(h hyphae.Hypha) []string {
 	return extractHyphaLinksFromContent(h.CanonicalName(), fetchText(h))
 }
 

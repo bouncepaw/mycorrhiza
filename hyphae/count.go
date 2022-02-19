@@ -17,7 +17,7 @@ func ResetCount() {
 	count.Unlock()
 }
 
-// Count how many hyphae there are.
+// Count how many hyphae there are. This is a O(1), the number of hyphae is stored in memory.
 func Count() int {
 	count.Lock()
 	defer count.Unlock()

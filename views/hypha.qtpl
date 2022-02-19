@@ -11,7 +11,7 @@
 
 {% func mycoLink(lc *l18n.Localizer) %}<a href="/help/en/mycomarkup" class="shy-link">{%s lc.Get("ui.notexist_write_myco") %}</a>{% endfunc %}
 
-{% func nonExistentHyphaNotice(h hyphae.Hypher, u *user.User, lc *l18n.Localizer) %}
+{% func nonExistentHyphaNotice(h hyphae.Hypha, u *user.User, lc *l18n.Localizer) %}
 <section class="non-existent-hypha">
 	<h2 class="non-existent-hypha__title">{%s lc.Get("ui.notexist_heading") %}</h2>
 	{% if cfg.UseAuth && u.Group == "anon" %}
@@ -47,7 +47,7 @@
 </section>
 {% endfunc %}
 
-{% func NaviTitleHTML(h hyphae.Hypher) %}
+{% func NaviTitleHTML(h hyphae.Hypha) %}
 {% code 
 	var (
 		prevAcc = "/hypha/"
@@ -75,10 +75,10 @@
 </h1>
 {% endfunc %}
 
-{% func AttachmentHTMLRaw(h *hyphae.NonEmptyHypha) %}{%= AttachmentHTML(h, l18n.New("en", "en")) %}{% endfunc %}
+{% func AttachmentHTMLRaw(h *hyphae.MediaHypha) %}{%= AttachmentHTML(h, l18n.New("en", "en")) %}{% endfunc %}
 
-{% func AttachmentHTML(h *hyphae.NonEmptyHypha, lc *l18n.Localizer) %}
-	{% switch filepath.Ext(h.BinaryPath()) %}
+{% func AttachmentHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) %}
+	{% switch filepath.Ext(h.MediaFilePath()) %}
 
 	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}
 	<div class="binary-container binary-container_with-img">

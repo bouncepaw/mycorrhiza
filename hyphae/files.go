@@ -10,34 +10,45 @@ import (
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.
 func Index(path string) {
-	byNames = make(map[string]Hypher)
-	ch := make(chan Hypher, 5)
+	byNames = make(map[string]ExistingHypha)
+	ch := make(chan ExistingHypha, 5)
 
-	go func(ch chan Hypher) {
+	go func(ch chan ExistingHypha) {
 		indexHelper(path, 0, ch)
 		close(ch)
 	}(ch)
 
-	for nh := range ch {
-		switch oh := ByName(nh.CanonicalName()).(type) {
+	for foundHypha := range ch {
+		switch storedHypha := ByName(foundHypha.CanonicalName()).(type) {
 		case *EmptyHypha:
-			Insert(nh)
-		default:
-			// In case of conflicts the newer hypha overwrites the previous
-			switch nh, oh := nh.(*NonEmptyHypha), oh.(*NonEmptyHypha); {
-			case (nh.Kind() == HyphaText) && (oh.Kind() == HyphaMedia):
-				oh.TextPath = nh.TextPartPath()
+			Insert(foundHypha)
 
-			case (nh.Kind() == HyphaText) && (oh.Kind() == HyphaText):
-				log.Printf("File collision for hypha ‘%s’, using %s rather than %s\n", nh.CanonicalName(), nh.TextPartPath(), oh.TextPartPath())
-				oh.TextPath = nh.TextPartPath()
+		case *TextualHypha:
+			switch foundHypha := foundHypha.(type) {
+			case *TextualHypha: // conflict! overwrite
+				storedHypha.mycoFilePath = foundHypha.mycoFilePath
+				log.Printf(
+					"File collision for hypha ‘%s’, using ‘%s’ rather than ‘%s’\n",
+					foundHypha.CanonicalName(),
+					foundHypha.TextFilePath(),
+					storedHypha.TextFilePath(),
+				)
+			case *MediaHypha: // no conflict
+				Insert(ExtendTextualToMedia(storedHypha, foundHypha.mediaFilePath))
+			}
 
-			case (nh.Kind() == HyphaMedia) && (oh.Kind() == HyphaMedia):
-				log.Printf("File collision for hypha ‘%s’, using %s rather than %s\n", nh.CanonicalName(), nh.BinaryPath(), oh.BinaryPath())
-				oh.SetBinaryPath(nh.BinaryPath())
-
-			case (nh.Kind() == HyphaMedia) && (oh.Kind() == HyphaText):
-				oh.SetBinaryPath(nh.BinaryPath())
+		case *MediaHypha:
+			switch foundHypha := foundHypha.(type) {
+			case *TextualHypha: // no conflict
+				storedHypha.mycoFilePath = foundHypha.mycoFilePath
+			case *MediaHypha: // conflict! overwrite
+				storedHypha.mediaFilePath = foundHypha.mediaFilePath
+				log.Printf(
+					"File collision for hypha ‘%s’, using ‘%s’ rather than ‘%s’\n",
+					foundHypha.CanonicalName(),
+					foundHypha.MediaFilePath(),
+					storedHypha.MediaFilePath(),
+				)
 			}
 		}
 	}
@@ -47,7 +58,7 @@ func Index(path string) {
 // indexHelper finds all hypha files in the full `path` and sends them to the
 // channel. Handling of duplicate entries and attachment and counting them is
 // up to the caller.
-func indexHelper(path string, nestLevel uint, ch chan Hypher) {
+func indexHelper(path string, nestLevel uint, ch chan ExistingHypha) {
 	nodes, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
@@ -64,15 +75,20 @@ func indexHelper(path string, nestLevel uint, ch chan Hypher) {
 		var (
 			hyphaPartPath           = filepath.Join(path, node.Name())
 			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
-			hypha                   = &NonEmptyHypha{name: hyphaName, Exists: true}
 		)
 		if !skip {
 			if isText {
-				hypha.TextPath = hyphaPartPath
+				ch <- &TextualHypha{
+					canonicalName: hyphaName,
+					mycoFilePath:  hyphaPartPath,
+				}
 			} else {
-				hypha.SetBinaryPath(hyphaPartPath)
+				ch <- &MediaHypha{
+					canonicalName: hyphaName,
+					mycoFilePath:  "",
+					mediaFilePath: hyphaPartPath,
+				}
 			}
-			ch <- hypha
 		}
 	}
 }
