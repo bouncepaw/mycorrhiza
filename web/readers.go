@@ -127,7 +127,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		u               = user.FromRequest(rq)
 	)
 	switch h := h.(type) {
-	case *hyphae.TextualHypha:
+	case hyphae.ExistingHypha:
 		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
 
 		if err == nil {
