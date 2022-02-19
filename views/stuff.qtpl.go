@@ -1111,7 +1111,7 @@ func StreamAboutHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/stuff.qtpl:289
 	qw422016.N().S(lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}))
 //line views/stuff.qtpl:289
-	qw422016.N().S(`</b> 1.8.0</li>
+	qw422016.N().S(`</b> 1.8.2</li>
 `)
 //line views/stuff.qtpl:290
 	if cfg.UseAuth {
