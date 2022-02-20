@@ -28,11 +28,6 @@ func printHelp() {
 	flag.PrintDefaults()
 }
 
-// CreateUserCommand is parameters for admin creation flag. Only a single parameter, though.
-type CreateUserCommand struct {
-	name string
-}
-
 // parseCliArgs parses CLI options and sets several important global variables. Call it early.
 func parseCliArgs() {
 	var createAdminName string
@@ -74,7 +69,7 @@ func createAdminCommand(name string) {
 	user.InitUserDatabase()
 	log.SetOutput(wr)
 
-	handle := syscall.Stdin
+	handle /*rug*/ := syscall.Stdin
 	if !term.IsTerminal(handle) {
 		log.Fatal("error: not a terminal")
 	}

@@ -1,6 +1,4 @@
 // Package web contains web handlers and initialization stuff.
-//
-// It exports just one function: Init. Call it if you want to have web capabilities.
 package web
 
 import (

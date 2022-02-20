@@ -49,7 +49,7 @@ func RecentChangesJSON(opts FeedOptions) (string, error) {
 type revisionGroup []Revision
 
 func newRevisionGroup(rev Revision) revisionGroup {
-	return revisionGroup([]Revision{rev})
+	return []Revision{rev}
 }
 
 func (grp *revisionGroup) addRevision(rev Revision) {

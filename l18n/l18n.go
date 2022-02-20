@@ -105,27 +105,6 @@ func FromRequest(r *http.Request) *Localizer {
 	return New(base.String(), "en")
 }
 
-// SetLocales changes locales used by the localizer.
-func (t Localizer) SetLocales(locale, fallback string) Localizer {
-	t.Locale = locale
-	t.FallbackLocale = fallback
-	return t
-}
-
-// SetLocale changes the preferred locale used by the localizer. The fallback
-// locale is kept unchanged.
-func (t Localizer) SetLocale(locale string) Localizer {
-	t.Locale = locale
-	return t
-}
-
-// SetFallbackLocale changes the fallback locale used by the localizer. The
-// preferred locale is kept unchanged.
-func (t Localizer) SetFallbackLocale(fallback string) Localizer {
-	t.FallbackLocale = fallback
-	return t
-}
-
 // GetWithLocale returns a localized string for the provided key in a specific
 // locale with optional replacements executed on the string.
 func (t Localizer) GetWithLocale(locale, key string, replacements ...*Replacements) string {
@@ -248,4 +227,7 @@ func getLocalizationKey(locale string, key string) string {
 - feeds (it seems diffcult to pull locale here)
 	We do not translate:
 - stdout traces (logging is English-only)
+
+bouncepaw:
+- more error messages
 */
