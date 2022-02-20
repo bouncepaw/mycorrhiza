@@ -55,7 +55,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "no media to remove")
 		return
 	case *hyphae.MediaHypha:
-		if err := shroom.RemoveMedia(u, h, lc); err != nil {
+		if err := shroom.RemoveMedia(u, h); err != nil {
 			httpErr(w, lc, http.StatusInternalServerError, h.CanonicalName(), err.Error())
 			return
 		}
@@ -70,17 +70,17 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 		h  = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
 	)
 
-	switch h.(type) {
-	case *hyphae.EmptyHypha:
-		log.Printf("%s tries to delete empty hypha ‘%s’", u.Name, h.CanonicalName())
-		// TODO: localize
-		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
-		return
-	}
-
 	if !u.CanProceed("delete") {
 		log.Printf("%s has no rights to delete ‘%s’\n", u.Name, h.CanonicalName())
 		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "No rights")
+		return
+	}
+
+	switch h.(type) {
+	case *hyphae.EmptyHypha:
+		log.Printf("%s tries to delete empty hypha ‘%s’\n", u.Name, h.CanonicalName())
+		// TODO: localize
+		httpErr(w, lc, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
 		return
 	}
 
@@ -95,9 +95,10 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	if err := shroom.DeleteHypha(u, h, lc); err != nil {
+	if err := shroom.Delete(u, h.(hyphae.ExistingHypha)); err != nil {
 		log.Println(err)
 		httpErr(w, lc, http.StatusInternalServerError, h.CanonicalName(), err.Error())
+		return
 	}
 	http.Redirect(w, rq, "/hypha/"+h.CanonicalName(), http.StatusSeeOther)
 }
@@ -200,7 +201,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if action != "Preview" {
-		if err := shroom.UploadText(h, []byte(textData), message, u, lc); err != nil {
+		if err := shroom.UploadText(h, []byte(textData), message, u); err != nil {
 			httpErr(w, lc, http.StatusForbidden, hyphaName, err.Error())
 			return
 		}
@@ -261,7 +262,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		mime = handler.Header.Get("Content-Type")
 	)
 
-	if err := shroom.UploadBinary(h, mime, file, u, lc); err != nil {
+	if err := shroom.UploadBinary(h, mime, file, u); err != nil {
 		httpErr(w, lc, http.StatusInternalServerError, hyphaName, err.Error())
 		return
 	}

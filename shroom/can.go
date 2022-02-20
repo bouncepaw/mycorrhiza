@@ -45,32 +45,6 @@ func canFactory(
 
 // CanDelete and etc are hyphae operation checkers based on user rights and hyphae existence.
 var (
-	CanDelete = canFactory(
-		rejectDeleteLog,
-		"delete-confirm",
-		nil,
-		"ui.act_norights_delete",
-		"ui.act_notexist_delete",
-		true,
-	)
-
-	CanUnattach = canFactory(
-		rejectUnattachLog,
-		"unattach-confirm",
-		func(h hyphae.Hypha, u *user.User, lc *l18n.Localizer) (errmsg, errtitle string) {
-			switch h := h.(type) {
-			case *hyphae.EmptyHypha, *hyphae.TextualHypha:
-				rejectUnattachLog(h, u, "no amnt")
-				return lc.Get("ui.act_noattachment_tip"), lc.Get("ui.act_noattachment")
-			}
-
-			return "", ""
-		},
-		"ui.act_norights_unattach",
-		"ui.act_notexist_unattach",
-		true,
-	)
-
 	CanEdit = canFactory(
 		rejectEditLog,
 		"upload-text",

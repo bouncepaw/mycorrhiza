@@ -5,12 +5,11 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-// RemoveMedia unattaches hypha and makes a history record about that.
-func RemoveMedia(u *user.User, h *hyphae.MediaHypha, lc *l18n.Localizer) error {
+// RemoveMedia removes media from the media hypha and makes a history record about that. If it only had media, the hypha will be deleted. If it also had text, the hypha will become textual.
+func RemoveMedia(u *user.User, h *hyphae.MediaHypha) error {
 	hop := history.
 		Operation(history.TypeUnattachHypha).
 		WithFilesRemoved(h.MediaFilePath()).

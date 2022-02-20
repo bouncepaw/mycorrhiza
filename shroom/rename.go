@@ -12,7 +12,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// Rename renames the old hypha to the new name. Call if and only if the user has the permission to rename.
+// Rename renames the old hypha to the new name and makes a history record about that. Call if and only if the user has the permission to rename.
 func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *user.User) error {
 	if newName == "" {
 		rejectRenameLog(oldHypha, u, "no new name given")
