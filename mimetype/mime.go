@@ -17,7 +17,7 @@ func ToExtension(mime string) string {
 
 // FromExtension returns mime-type for given extension. The extension must start with a dot.
 func FromExtension(ext string) string {
-	if mime, ok := mapExt2Mime[ext]; ok {
+	if mime, ok := mapExt2Mime[strings.ToLower(ext)]; ok {
 		return mime
 	}
 	return "application/octet-stream"
