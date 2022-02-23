@@ -4,6 +4,7 @@
 
 <img src="https://mycorrhiza.wiki/binary/release/1.8/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
 
+
 ## Features
 
 * **No database required.** Everything is stored in plain files. It makes installation super easy, and you can modify the content directly by yourself.
@@ -16,23 +17,6 @@
 * **[Open Graph] support.**
 * **Optional [Telegram] authentication.**
 
-Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatrix.org/show/mycorrhiza).
-
-## Installing
-
-See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on the wiki.
-
-## Contributing
-
-Help is always welcome! We have an IRC channel [#mycorrhiza on irc.libera.chat]
-and a [Telegram chat] for discussions and development. You can also sponsor the
-maintainer of Mycorrhiza, [@bouncepaw], on [Boosty]. If you want to contribute
-with code, you can either open a pull request on GitHub or send a patch to the
-[mailing list]. Feel free to open an issue on GitHub or contact us directly.
-
-You can view the list of planned features at [our GitHub project kanban
-board][kanban] or on the [roadmap page].
-
 [hypha]: https://mycorrhiza.wiki/hypha/feature/hypha
 [transclusion]: https://mycorrhiza.wiki/hypha/feature/transclusion
 [authorization]: https://mycorrhiza.wiki/hypha/feature/authorization
@@ -41,10 +25,29 @@ board][kanban] or on the [roadmap page].
 [Open Graph]: https://mycorrhiza.wiki/hypha/standard/opengraph
 [Telegram]: https://mycorrhiza.wiki/help/en/telegram
 
-[#mycorrhiza on irc.libera.chat]: irc://irc.libera.chat/#mycorrhiza
-[Telegram chat]: https://t.me/mycorrhizadev
-[@bouncepaw]: https://github.com/bouncepaw
-[Boosty]: https://boosty.to/bouncepaw
+Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatrix.org/show/mycorrhiza).
+
+
+## Installing
+
+See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on the wiki.
+
+
+## Contributing
+
+* [GitHub](https://github.com/bouncepaw/mycorrhiza)
+* [SourceHut](https://sr.ht/~handlerug/mycorrhiza)
+* [#mycorrhiza on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza)
+* [#mycorrhiza-ru (Russian) on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza-ru)
+* [@mycorrhizadev (Russian) in Telegram](https://t.me/mycorrhizadev)
+
+If you want to contribute with code, open a pull request on GitHub or send a
+patch to the [mailing list]. If you want to report an issue, open an issue on
+GitHub or contact us directly.
+
+Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
+
+You can view the list of planned features on the [roadmap page].
+
 [mailing list]: https://lists.sr.ht/~handlerug/mycorrhiza-devel
-[kanban]: https://github.com/bouncepaw/mycorrhiza/projects/1
 [roadmap page]: https://mycorrhiza.wiki/hypha/release/roadmap
