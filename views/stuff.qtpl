@@ -244,30 +244,6 @@ sort.Strings(editors)
 </div>
 {% endfunc %}
 
-{% func AboutHTML(lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width">
-	<section>
-		<h1>{%s lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName}) %}</h1>
-		<ul>
-			<li><b>{%s= lc.Get("ui.about_version", &l18n.Replacements{"pre": "<a href=\"https://mycorrhiza.wiki\">", "post": "</a>"}) %}</b> 1.8.2</li>
-		{%- if cfg.UseAuth -%}
-			<li><b>{%s lc.Get("ui.about_usercount") %}</b> {%dul user.Count() %}</li>
-			<li><b>{%s lc.Get("ui.about_homepage") %}</b> <a href="/">{%s cfg.HomeHypha %}</a></li>
-			<li><b>{%s lc.Get("ui.about_admins") %}</b> {%- for i, username := range user.ListUsersWithGroup("admin") -%}
-				{%- if i > 0 -%}<span aria-hidden="true">, </span>
-				{%- endif -%}
-				<a href="/hypha/{%s cfg.UserHypha %}/{%s username %}">{%s username %}</a>{%- endfor -%}</li>
-		{%- else -%}
-			<li>{%s lc.Get("ui.about_noauth") %}</li>
-		{%- endif -%}
-		</ul>
-		<p>{%s= lc.Get("ui.about_hyphae", &l18n.Replacements{"link": "<a href=\"/list\">/list</a>"}) %}</p>
-	</section>
-</main>
-</div>
-{% endfunc %}
-
 {% func CommonScripts() %}
 {% for _, scriptPath := range cfg.CommonScripts %}
 <script src="{%s scriptPath %}"></script>

@@ -90,14 +90,6 @@
 	"revision_link": "Get Mycomarkup source of this revision",
 	"revision_no_text": "This hypha had no text at this revision.",
 
-	"about_title": "About {{.name}}",
-	"about_version": "{{.pre}}Mycorrhiza Wiki{{.post}} version:",
-	"about_usercount": "User count:",
-	"about_homepage": "Home page:",
-	"about_admins": "Administrators:",
-	"about_noauth": "This wiki does not use authorization",
-	"about_hyphae": "See {{.link}} for information about hyphae on this wiki.",
-
 	"users_title": "User list",
 	"users_heading": "List of users",
 	"users_admins": "Admins",
