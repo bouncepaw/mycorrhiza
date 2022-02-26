@@ -33,11 +33,7 @@ func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
 }
 
 func writeTextToDisk(h hyphae.ExistingHypha, data []byte, hop *history.Op) error {
-	if err := os.MkdirAll(filepath.Dir(h.TextFilePath()), 0777); err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(h.TextFilePath(), data, 0666); err != nil {
+	if err := hyphae.WriteToMycoFile(h, data); err != nil {
 		return err
 	}
 	hop.WithFiles(h.TextFilePath())
@@ -92,6 +88,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		}
 
 		hyphae.Insert(H)
+		backlinks.UpdateBacklinksAfterEdit(H, "")
 	case *hyphae.MediaHypha:
 		oldText, err := FetchTextFile(h)
 		if err != nil {

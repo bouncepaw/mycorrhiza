@@ -127,7 +127,7 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:27
-	streamhyphaInfoEntry(qw422016, h, u, "delete-ask", lc.Get("ui.delete_link"))
+	streamhyphaInfoEntry(qw422016, h, u, "delete", lc.Get("ui.delete_link"))
 //line views/nav.qtpl:27
 	qw422016.N().S(`
 		`)

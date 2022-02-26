@@ -2,6 +2,8 @@ package hyphae
 
 import (
 	"github.com/bouncepaw/mycorrhiza/util"
+	"os"
+	"path/filepath"
 )
 
 // ExistingHypha is not EmptyHypha. *MediaHypha and *TextualHypha implement this interface.
@@ -58,4 +60,20 @@ func Insert(h ExistingHypha) (madeNewRecord bool) {
 	}
 
 	return !recorded
+}
+
+func WriteToMycoFile(h ExistingHypha, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(h.TextFilePath()), 0777); err != nil {
+		return err
+	}
+	if err := os.WriteFile(h.TextFilePath(), data, 0666); err != nil {
+		return err
+	}
+	switch h := h.(type) {
+	case *MediaHypha:
+		if !h.HasTextFile() {
+			h.mycoFilePath = h.TextFilePath()
+		}
+	}
+	return nil
 }
