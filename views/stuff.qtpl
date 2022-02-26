@@ -161,42 +161,6 @@ It outputs a poorly formatted JSON, but it works and is valid.
 <p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
 {% endfunc %}
 
-{% func helpTopicsHTML(lang string, lc *l18n.Localizer) %}
-<aside class="help-topics layout-card">
-	<h2 class="layout-card__title">{%s lc.GetWithLocale(lang, "help.topics") %}</h2>
-	<ul class="help-topics__list">
-		<li><a href="/help/{%s lang %}">{%s lc.GetWithLocale(lang, "help.main") %}</a></li>
-		<li><a href="/help/{%s lang %}/hypha">{%s lc.GetWithLocale(lang, "help.hypha") %}</a>
-			<ul>
-				<li><a href="/help/{%s lang %}/media">{%s lc.GetWithLocale(lang, "help.media") %}</a></li>
-			</ul>
-		</li>
-		<li><a href="/help/{%s lang %}/mycomarkup">{%s lc.GetWithLocale(lang, "help.mycomarkup") %}</a></li>
-		<li>{%s lc.GetWithLocale(lang, "help.interface") %}
-			<ul>
-				<li><a href="/help/{%s lang %}/prevnext">{%s lc.GetWithLocale(lang, "help.prevnext") %}</a></li>
-				<li><a href="/help/{%s lang %}/top_bar">{%s lc.GetWithLocale(lang, "help.top_bar") %}</a></li>
-				<li><a href="/help/{%s lang %}/sibling_hyphae_section">{%s lc.GetWithLocale(lang, "help.sibling_hyphae") %}</a></li>
-			</ul>
-		</li>
-		<li>{%s lc.GetWithLocale(lang, "help.special_pages") %}
-			<ul>
-				<li><a href="/help/{%s lang %}/recent_changes">{%s lc.GetWithLocale(lang, "help.recent_changes") %}</a></li>
-				<li><a href="/help/{%s lang %}/feeds">{%s lc.GetWithLocale(lang, "help.feeds") %}</a></li>
-			</ul>
-		</li>
-		<li>{%s lc.GetWithLocale(lang, "help.configuration") %}
-			<ul>
-				<li><a href="/help/{%s lang %}/config_file">{%s lc.GetWithLocale(lang, "help.config_file") %}</a></li>
-				<li><a href="/help/{%s lang %}/lock">{%s lc.GetWithLocale(lang, "help.lock") %}</a></li>
-				<li><a href="/help/{%s lang %}/whitelist">{%s lc.GetWithLocale(lang, "help.whitelist") %}</a></li>
-				<li><a href="/help/{%s lang %}/telegram">{%s lc.GetWithLocale(lang, "help.telegram") %}</a></li>
-			</ul>
-		</li>
-	</ul>
-</aside>
-{% endfunc %}
-
 {% func helpTopicBadgeHTML(lang, topic string) %}
 <a class="help-topic-badge" href="/help/en/{%s topic %}">?</a>
 {% endfunc %}

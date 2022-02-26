@@ -5,23 +5,5 @@
 	"empty_error_line_1": "Try finding a different entry that would help you.",
 	"empty_error_line_2a": "If you want to write this entry by yourself, consider",
 	"empty_error_link": "contributing",
-	"empty_error_line_2b": "to Mycorrhiza Wiki directly.",
-	
-	"topics": "Help topics",
-	"main": "Main",
-	"hypha": "Hypha",
-	"media": "Media",
-	"mycomarkup": "Mycomarkup",
-	"interface": "Interface",
-	"prevnext": "Previous/next",
-	"top_bar": "Top bar",
-	"sibling_hyphae": "Sibling hyphae",
-	"special_pages": "Special pages",
-	"recent_changes": "Recent changes",
-	"feeds": "Feeds",
-	"configuration": "Configuration (for administrators)",
-	"lock": "Lock",
-	"whitelist": "Whitelist",
-	"telegram": "Telegram authorization",
-	"config_file": "Configuration file"
+	"empty_error_line_2b": "to Mycorrhiza Wiki directly."
 }
