@@ -33,21 +33,21 @@ func initReaders(r *mux.Router) {
 	r.PathPrefix("/rev/").HandlerFunc(handlerRevision)
 	r.PathPrefix("/rev-text/").HandlerFunc(handlerRevisionText)
 	r.PathPrefix("/primitive-diff/").HandlerFunc(handlerPrimitiveDiff)
-	r.PathPrefix("/attachment/").HandlerFunc(handlerAttachment)
+	r.PathPrefix("/media/").HandlerFunc(handlerMedia)
 }
 
-func handlerAttachment(w http.ResponseWriter, rq *http.Request) {
+func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName = util.HyphaNameFromRq(rq, "attachment")
+		hyphaName = util.HyphaNameFromRq(rq, "media")
 		h         = hyphae.ByName(hyphaName)
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
 		views.BaseHTML(
-			lc.Get("ui.attach_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.AttachmentMenuHTML(rq, h, u),
+			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
+			views.MediaMenuHTML(rq, h, u),
 			lc,
 			u))
 }
@@ -216,7 +216,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 		switch h := h.(type) {
 		case *hyphae.MediaHypha:
-			contents = views.AttachmentHTML(h, lc) + contents
+			contents = views.MediaHTML(h, lc) + contents
 		}
 
 		util.HTTP200Page(w,

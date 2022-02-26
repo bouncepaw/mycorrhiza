@@ -26,7 +26,7 @@
 		{%= hyphaInfoEntry(h, u, "rename", lc.Get("ui.rename_link")) %}
 		{%= hyphaInfoEntry(h, u, "delete", lc.Get("ui.delete_link")) %}
 		{%= hyphaInfoEntry(h, u, "text", lc.Get("ui.text_link")) %}
-		{%= hyphaInfoEntry(h, u, "attachment", lc.Get("ui.attachment_link")) %}
+		{%= hyphaInfoEntry(h, u, "media", lc.Get("ui.media_link")) %}
 		{%= hyphaInfoEntry(h, u, "backlinks", lc.GetPlural("ui.backlinks_link", backs)) %}
 	</ul>
 </nav>

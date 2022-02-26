@@ -164,7 +164,7 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User
 
 	// Privilege check
 	if !u.CanProceed("upload-binary") {
-		rejectAttachLog(h, u, "no rights")
+		rejectUploadMediaLog(h, u, "no rights")
 		return errors.New("ui.act_no_rights")
 	}
 

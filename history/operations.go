@@ -23,14 +23,14 @@ const (
 	TypeNone OpType = iota
 	// TypeEditText represents an edit of hypha text part.
 	TypeEditText
-	// TypeEditBinary represents an addition or replacement of hypha attachment.
+	// TypeEditBinary represents an addition or replacement of hypha media.
 	TypeEditBinary
 	// TypeDeleteHypha represents a hypha deletion
 	TypeDeleteHypha
 	// TypeRenameHypha represents a hypha renaming
 	TypeRenameHypha
-	// TypeUnattachHypha represents a hypha attachment deletion
-	TypeUnattachHypha
+	// TypeRemoveMedia represents media removal
+	TypeRemoveMedia
 	// TypeMarkupMigration represents a wikimind-powered automatic markup migration procedure
 	TypeMarkupMigration
 )

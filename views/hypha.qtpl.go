@@ -213,7 +213,7 @@ func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h hyphae.Hypha, u *
 
         	<button type="submit" class="btn stick-to-bottom" value="Upload">`)
 //line views/hypha.qtpl:42
-		qw422016.E().S(lc.Get("ui.attach_upload"))
+		qw422016.E().S(lc.Get("ui.media_upload"))
 //line views/hypha.qtpl:42
 		qw422016.N().S(`</button>
         </form>
@@ -349,29 +349,29 @@ func NaviTitleHTML(h hyphae.Hypha) string {
 }
 
 //line views/hypha.qtpl:78
-func StreamAttachmentHTMLRaw(qw422016 *qt422016.Writer, h *hyphae.MediaHypha) {
+func StreamMediaHTMLRaw(qw422016 *qt422016.Writer, h *hyphae.MediaHypha) {
 //line views/hypha.qtpl:78
-	StreamAttachmentHTML(qw422016, h, l18n.New("en", "en"))
+	StreamMediaHTML(qw422016, h, l18n.New("en", "en"))
 //line views/hypha.qtpl:78
 }
 
 //line views/hypha.qtpl:78
-func WriteAttachmentHTMLRaw(qq422016 qtio422016.Writer, h *hyphae.MediaHypha) {
+func WriteMediaHTMLRaw(qq422016 qtio422016.Writer, h *hyphae.MediaHypha) {
 //line views/hypha.qtpl:78
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:78
-	StreamAttachmentHTMLRaw(qw422016, h)
+	StreamMediaHTMLRaw(qw422016, h)
 //line views/hypha.qtpl:78
 	qt422016.ReleaseWriter(qw422016)
 //line views/hypha.qtpl:78
 }
 
 //line views/hypha.qtpl:78
-func AttachmentHTMLRaw(h *hyphae.MediaHypha) string {
+func MediaHTMLRaw(h *hyphae.MediaHypha) string {
 //line views/hypha.qtpl:78
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:78
-	WriteAttachmentHTMLRaw(qb422016, h)
+	WriteMediaHTMLRaw(qb422016, h)
 //line views/hypha.qtpl:78
 	qs422016 := string(qb422016.B)
 //line views/hypha.qtpl:78
@@ -382,7 +382,7 @@ func AttachmentHTMLRaw(h *hyphae.MediaHypha) string {
 }
 
 //line views/hypha.qtpl:80
-func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
+func StreamMediaHTML(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
 //line views/hypha.qtpl:80
 	qw422016.N().S(`
 	`)
@@ -486,22 +486,22 @@ func StreamAttachmentHTML(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l
 }
 
 //line views/hypha.qtpl:109
-func WriteAttachmentHTML(qq422016 qtio422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
+func WriteMediaHTML(qq422016 qtio422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
 //line views/hypha.qtpl:109
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:109
-	StreamAttachmentHTML(qw422016, h, lc)
+	StreamMediaHTML(qw422016, h, lc)
 //line views/hypha.qtpl:109
 	qt422016.ReleaseWriter(qw422016)
 //line views/hypha.qtpl:109
 }
 
 //line views/hypha.qtpl:109
-func AttachmentHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
+func MediaHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
 //line views/hypha.qtpl:109
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:109
-	WriteAttachmentHTML(qb422016, h, lc)
+	WriteMediaHTML(qb422016, h, lc)
 //line views/hypha.qtpl:109
 	qs422016 := string(qb422016.B)
 //line views/hypha.qtpl:109

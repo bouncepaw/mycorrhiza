@@ -413,7 +413,7 @@ The //selector// specifies what part of the //target// to transclude. The parser
 
 * `full` Transclude the whole document.
 * `text` Transclude all text.
-* `attachment` Transclude attachment only.
+* `attachment` Transclude media only.
 * `description` Transclude first paragraph only.
 * `overview` Short for both `attachment` and `description`.
 

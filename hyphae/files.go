@@ -56,7 +56,7 @@ func Index(path string) {
 }
 
 // indexHelper finds all hypha files in the full `path` and sends them to the
-// channel. Handling of duplicate entries and attachment and counting them is
+// channel. Handling of duplicate entries and media and counting them is
 // up to the caller.
 func indexHelper(path string, nestLevel uint, ch chan ExistingHypha) {
 	nodes, err := os.ReadDir(path)

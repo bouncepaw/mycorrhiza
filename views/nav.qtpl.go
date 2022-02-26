@@ -137,7 +137,7 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha
 	qw422016.N().S(`
 		`)
 //line views/nav.qtpl:29
-	streamhyphaInfoEntry(qw422016, h, u, "attachment", lc.Get("ui.attachment_link"))
+	streamhyphaInfoEntry(qw422016, h, u, "media", lc.Get("ui.media_link"))
 //line views/nav.qtpl:29
 	qw422016.N().S(`
 		`)

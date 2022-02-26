@@ -1,15 +1,16 @@
 = Help: Hypha
 A **hypha** (//plural:// hyphae) is the main content unit used in Mycorrhiza Wiki.
 
-== The structure of hypha
-A hypha consists of two parts:
-* **Attachment.** Some form of media. There is only one attachment. See [[/help/en/attachment | Attachment]] for more information about attachments.
-* **Text part.** Either a description of the attachment or a stand-alone text unit such as an article, a diary or a poem. It is written in a special markup, called [[/help/en/mycomarkup | Mycomarkup]].
+== The ontology
+There are two types of hyphae:
 
-Both parts are optional. You can have a picture without description, an article without an attachment, etc. You can have them both. You must have at least one part, though.
+*. **Textual hypha.** This is a stand-alone text unit such as an article, a diary or a poem. It is written in a special markup, called [[/help/en/mycomarkup | Mycomarkup]].
+*. **Media hypha.** This is a media resource such as an image. Media hyphae also have descriptions, also written in Mycomarkup. See [[/help/en/media | media]].
+
+Understanding the difference between the two is really important, as it is one of the defining features of the engine. It can be confusing at first.
 
 == How to create a hypha?
-Some links on wiki are red. It means that they link a hypha that does not exist yet. If you follow this link, you will see a special page where you can upload an attachment or open the text editor. This is how you create hyphae.
+Some links on wiki are red. It means that they link a hypha that does not exist yet. If you follow this link, you will see a special page where you can upload a media or open the text editor. This is how you create hyphae.
 
 You can create such red links and follow them to create hyphae.
 

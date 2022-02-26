@@ -34,7 +34,7 @@ var minimalRights = map[string]int{
 	"text":                0,
 	"backlinks":           0,
 	"history":             0,
-	"attachment":          1,
+	"media":               1,
 	"edit":                1,
 	"upload-binary":       1,
 	"upload-text":         1,

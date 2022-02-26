@@ -228,7 +228,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-// handlerUploadBinary uploads a new attachment for the hypha.
+// handlerUploadBinary uploads a new media for the hypha.
 func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	rq.ParseMultipartForm(10 << 20) // Set upload limit

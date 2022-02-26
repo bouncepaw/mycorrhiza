@@ -1,0 +1,33 @@
+= Help: Media
+You can upload **media** such as images, audio or video to your wiki in form of **media hyphae**. The word //media// is short for //multimedia//. Media hyphae are not just media files, they can also have a description in [[/help/en/mycomarkup | Mycomarkup]].
+
+== Supported media types
+You can upload any media file, but only those listed below will be displayed on the wiki. You can download unsupported medias, though.
+
+* **Images:** jpg, gif, png, webp, svg, ico
+* **Video:** ogg, webm, mp4
+* **Audio:** ogg, webm, mp3
+
+== How to upload media?
+For non-existent hyphae, upload a file in the //Upload media// section.
+
+For textual hyphae and already uploaded media hyphae, click the //Manage media// link on the bottom and upload a new media file.
+
+== Media management
+Every hypha has the //Manage media// section. Click it to see what is out there.
+
+You can upload a new file, you can //remove// the media and see some file stats (size and type).
+
+== On naming media hyphae
+The hypha name should not just copy the file name. If you are uploading a photo of a rose, do not call it `rose.jpg`, no. Call it `photo of rose` or `rose photo` or whatever. You rarely need to think of file extensions when using Mycorrhiza Wiki.
+
+This is not a rule, of course, just a convention.
+
+== What to put in the description?
+* A textual description or representation of the picture.
+* A transcript of the song.
+* An analysis of the media.
+* Some meta data.
+* Things above combined.
+
+The media //should not// be an illustration of the description. In this case it is better to put it into a subhypha and embed it into the markup.

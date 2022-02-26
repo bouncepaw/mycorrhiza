@@ -39,7 +39,7 @@
         	<label for="upload-binary__input"></label>
         	<input type="file" id="upload-binary__input" name="binary">
 
-        	<button type="submit" class="btn stick-to-bottom" value="Upload">{%s lc.Get("ui.attach_upload")%}</button>
+        	<button type="submit" class="btn stick-to-bottom" value="Upload">{%s lc.Get("ui.media_upload")%}</button>
         </form>
 	</section>
 	</div>
@@ -75,9 +75,9 @@
 </h1>
 {% endfunc %}
 
-{% func AttachmentHTMLRaw(h *hyphae.MediaHypha) %}{%= AttachmentHTML(h, l18n.New("en", "en")) %}{% endfunc %}
+{% func MediaHTMLRaw(h *hyphae.MediaHypha) %}{%= MediaHTML(h, l18n.New("en", "en")) %}{% endfunc %}
 
-{% func AttachmentHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) %}
+{% func MediaHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) %}
 	{% switch filepath.Ext(h.MediaFilePath()) %}
 
 	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}

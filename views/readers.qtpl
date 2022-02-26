@@ -11,18 +11,18 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AttachmentMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) %}
+{% func MediaMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}
 <div class="layout">
-<main class="main-width attachment-tab">
-	<h1>{%s= lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}) %}</h1>
+<main class="main-width media-tab">
+	<h1>{%s= lc.Get("ui.media_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}) %}</h1>
 	{% switch h.(type) %}
 	{% case *hyphae.MediaHypha %}
-		<p class="explanation">{%s lc.Get("ui.attach_tip") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+		<p class="explanation">{%s lc.Get("ui.media_tip") %} <a href="/help/en/media" class="shy-link">{%s lc.Get("ui.media_what_is") %}</a></p>
 	{% default %}
-		<p class="explanation">{%s lc.Get("ui.attach_empty") %} <a href="/help/en/attachment" class="shy-link">{%s lc.Get("ui.attach_link") %}</a></p>
+		<p class="explanation">{%s lc.Get("ui.media_empty") %} <a href="/help/en/media" class="shy-link">{%s lc.Get("ui.media_what_is") %}</a></p>
 	{% endswitch %}
 
 	<section class="amnt-grid">
@@ -33,16 +33,16 @@
 			fileinfo, err := os.Stat(h.MediaFilePath()) %}
 		{% if err == nil %}
 		<fieldset class="amnt-menu-block">
-			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_stat") %}</legend>
-			<p class="modal__confirmation-msg"><b>{%s lc.Get("ui.attach_stat_size") %}</b> {%s lc.GetPlural64("ui.attach_size_value", fileinfo.Size())%}</p>
-			<p><b>{%s lc.Get("ui.attach_stat_mime") %}</b> {%s mime %}</p>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.media_stat") %}</legend>
+			<p class="modal__confirmation-msg"><b>{%s lc.Get("ui.media_stat_size") %}</b> {%s lc.GetPlural64("ui.media_size_value", fileinfo.Size())%}</p>
+			<p><b>{%s lc.Get("ui.media_stat_mime") %}</b> {%s mime %}</p>
 		</fieldset>
 		{% endif %}
 
 		{% if strings.HasPrefix(mime, "image/") %}
 		<fieldset class="amnt-menu-block">
-			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_include") %}</legend>
-			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_include_tip") %}</p>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.media_include") %}</legend>
+			<p class="modal__confirmation-msg">{%s lc.Get("ui.media_include_tip") %}</p>
 			<pre class="codeblock"><code>img { {%s h.CanonicalName() %} }</code></pre>
 		</fieldset>
 		{% endif %}
@@ -53,12 +53,12 @@
 			method="post" enctype="multipart/form-data"
 			class="upload-binary modal amnt-menu-block">
 		<fieldset class="modal__fieldset">
-			<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_new") %}</legend>
-			<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_new_tip") %}</p>
+			<legend class="modal__title modal__title_small">{%s lc.Get("ui.media_new") %}</legend>
+			<p class="modal__confirmation-msg">{%s lc.Get("ui.media_new_tip") %}</p>
 			<label for="upload-binary__input"></label>
 			<input type="file" id="upload-binary__input" name="binary">
 
-			<button type="submit" class="btn stick-to-bottom" value="Upload">{%s lc.Get("ui.attach_upload")%}</button>
+			<button type="submit" class="btn stick-to-bottom" value="Upload">{%s lc.Get("ui.media_upload")%}</button>
 		</fieldset>
 	</form>
 	{% endif %}
@@ -66,12 +66,12 @@
 
 	{% switch h := h.(type) %}
 	{% case *hyphae.MediaHypha %}
-		{% if u.CanProceed("unattach-confirm") %}
-		<form action="/unattach-confirm/{%s h.CanonicalName() %}" method="post" class="modal amnt-menu-block">
+		{% if u.CanProceed("remove-media") %}
+		<form action="/remove-media/{%s h.CanonicalName() %}" method="post" class="modal amnt-menu-block" method="POST">
 			<fieldset class="modal__fieldset">
-				<legend class="modal__title modal__title_small">{%s lc.Get("ui.attach_remove") %}</legend>
-				<p class="modal__confirmation-msg">{%s lc.Get("ui.attach_remove_tip") %}</p>
-				<button type="submit" class="btn" value="Unattach">{%s lc.Get("ui.attach_remove_button") %}</button>
+				<legend class="modal__title modal__title_small">{%s lc.Get("ui.media_remove") %}</legend>
+				<p class="modal__confirmation-msg">{%s lc.Get("ui.media_remove_tip") %}</p>
+				<button type="submit" class="btn" value="Remove media">{%s lc.Get("ui.media_remove_button") %}</button>
 			</fieldset>
 		</form>
 		{% endif %}

@@ -637,9 +637,9 @@ func streamhelpTopicsHTML(qw422016 *qt422016.Writer, lang string, lc *l18n.Local
 //line views/stuff.qtpl:171
 	qw422016.E().S(lang)
 //line views/stuff.qtpl:171
-	qw422016.N().S(`/attachment">`)
+	qw422016.N().S(`/media">`)
 //line views/stuff.qtpl:171
-	qw422016.E().S(lc.GetWithLocale(lang, "help.attachment"))
+	qw422016.E().S(lc.GetWithLocale(lang, "help.media"))
 //line views/stuff.qtpl:171
 	qw422016.N().S(`</a></li>
 			</ul>

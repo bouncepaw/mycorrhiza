@@ -51,7 +51,7 @@ var (
 )
 
 //line views/readers.qtpl:14
-func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha, u *user.User) {
+func StreamMediaMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.Hypha, u *user.User) {
 //line views/readers.qtpl:14
 	qw422016.N().S(`
 `)
@@ -61,10 +61,10 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 //line views/readers.qtpl:17
 	qw422016.N().S(`
 <div class="layout">
-<main class="main-width attachment-tab">
+<main class="main-width media-tab">
 	<h1>`)
 //line views/readers.qtpl:20
-	qw422016.N().S(lc.Get("ui.attach_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}))
+	qw422016.N().S(lc.Get("ui.media_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}))
 //line views/readers.qtpl:20
 	qw422016.N().S(`</h1>
 	`)
@@ -76,11 +76,11 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		qw422016.N().S(`
 		<p class="explanation">`)
 //line views/readers.qtpl:23
-		qw422016.E().S(lc.Get("ui.attach_tip"))
+		qw422016.E().S(lc.Get("ui.media_tip"))
 //line views/readers.qtpl:23
-		qw422016.N().S(` <a href="/help/en/attachment" class="shy-link">`)
+		qw422016.N().S(` <a href="/help/en/media" class="shy-link">`)
 //line views/readers.qtpl:23
-		qw422016.E().S(lc.Get("ui.attach_link"))
+		qw422016.E().S(lc.Get("ui.media_what_is"))
 //line views/readers.qtpl:23
 		qw422016.N().S(`</a></p>
 	`)
@@ -90,11 +90,11 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		qw422016.N().S(`
 		<p class="explanation">`)
 //line views/readers.qtpl:25
-		qw422016.E().S(lc.Get("ui.attach_empty"))
+		qw422016.E().S(lc.Get("ui.media_empty"))
 //line views/readers.qtpl:25
-		qw422016.N().S(` <a href="/help/en/attachment" class="shy-link">`)
+		qw422016.N().S(` <a href="/help/en/media" class="shy-link">`)
 //line views/readers.qtpl:25
-		qw422016.E().S(lc.Get("ui.attach_link"))
+		qw422016.E().S(lc.Get("ui.media_what_is"))
 //line views/readers.qtpl:25
 		qw422016.N().S(`</a></p>
 	`)
@@ -126,21 +126,21 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		<fieldset class="amnt-menu-block">
 			<legend class="modal__title modal__title_small">`)
 //line views/readers.qtpl:36
-			qw422016.E().S(lc.Get("ui.attach_stat"))
+			qw422016.E().S(lc.Get("ui.media_stat"))
 //line views/readers.qtpl:36
 			qw422016.N().S(`</legend>
 			<p class="modal__confirmation-msg"><b>`)
 //line views/readers.qtpl:37
-			qw422016.E().S(lc.Get("ui.attach_stat_size"))
+			qw422016.E().S(lc.Get("ui.media_stat_size"))
 //line views/readers.qtpl:37
 			qw422016.N().S(`</b> `)
 //line views/readers.qtpl:37
-			qw422016.E().S(lc.GetPlural64("ui.attach_size_value", fileinfo.Size()))
+			qw422016.E().S(lc.GetPlural64("ui.media_size_value", fileinfo.Size()))
 //line views/readers.qtpl:37
 			qw422016.N().S(`</p>
 			<p><b>`)
 //line views/readers.qtpl:38
-			qw422016.E().S(lc.Get("ui.attach_stat_mime"))
+			qw422016.E().S(lc.Get("ui.media_stat_mime"))
 //line views/readers.qtpl:38
 			qw422016.N().S(`</b> `)
 //line views/readers.qtpl:38
@@ -162,12 +162,12 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		<fieldset class="amnt-menu-block">
 			<legend class="modal__title modal__title_small">`)
 //line views/readers.qtpl:44
-			qw422016.E().S(lc.Get("ui.attach_include"))
+			qw422016.E().S(lc.Get("ui.media_include"))
 //line views/readers.qtpl:44
 			qw422016.N().S(`</legend>
 			<p class="modal__confirmation-msg">`)
 //line views/readers.qtpl:45
-			qw422016.E().S(lc.Get("ui.attach_include_tip"))
+			qw422016.E().S(lc.Get("ui.media_include_tip"))
 //line views/readers.qtpl:45
 			qw422016.N().S(`</p>
 			<pre class="codeblock"><code>img { `)
@@ -202,12 +202,12 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		<fieldset class="modal__fieldset">
 			<legend class="modal__title modal__title_small">`)
 //line views/readers.qtpl:56
-		qw422016.E().S(lc.Get("ui.attach_new"))
+		qw422016.E().S(lc.Get("ui.media_new"))
 //line views/readers.qtpl:56
 		qw422016.N().S(`</legend>
 			<p class="modal__confirmation-msg">`)
 //line views/readers.qtpl:57
-		qw422016.E().S(lc.Get("ui.attach_new_tip"))
+		qw422016.E().S(lc.Get("ui.media_new_tip"))
 //line views/readers.qtpl:57
 		qw422016.N().S(`</p>
 			<label for="upload-binary__input"></label>
@@ -215,7 +215,7 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 
 			<button type="submit" class="btn stick-to-bottom" value="Upload">`)
 //line views/readers.qtpl:61
-		qw422016.E().S(lc.Get("ui.attach_upload"))
+		qw422016.E().S(lc.Get("ui.media_upload"))
 //line views/readers.qtpl:61
 		qw422016.N().S(`</button>
 		</fieldset>
@@ -236,28 +236,28 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 		qw422016.N().S(`
 		`)
 //line views/readers.qtpl:69
-		if u.CanProceed("unattach-confirm") {
+		if u.CanProceed("remove-media") {
 //line views/readers.qtpl:69
 			qw422016.N().S(`
-		<form action="/unattach-confirm/`)
+		<form action="/remove-media/`)
 //line views/readers.qtpl:70
 			qw422016.E().S(h.CanonicalName())
 //line views/readers.qtpl:70
-			qw422016.N().S(`" method="post" class="modal amnt-menu-block">
+			qw422016.N().S(`" method="post" class="modal amnt-menu-block" method="POST">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title modal__title_small">`)
 //line views/readers.qtpl:72
-			qw422016.E().S(lc.Get("ui.attach_remove"))
+			qw422016.E().S(lc.Get("ui.media_remove"))
 //line views/readers.qtpl:72
 			qw422016.N().S(`</legend>
 				<p class="modal__confirmation-msg">`)
 //line views/readers.qtpl:73
-			qw422016.E().S(lc.Get("ui.attach_remove_tip"))
+			qw422016.E().S(lc.Get("ui.media_remove_tip"))
 //line views/readers.qtpl:73
 			qw422016.N().S(`</p>
-				<button type="submit" class="btn" value="Unattach">`)
+				<button type="submit" class="btn" value="Remove media">`)
 //line views/readers.qtpl:74
-			qw422016.E().S(lc.Get("ui.attach_remove_button"))
+			qw422016.E().S(lc.Get("ui.media_remove_button"))
 //line views/readers.qtpl:74
 			qw422016.N().S(`</button>
 			</fieldset>
@@ -281,22 +281,22 @@ func StreamAttachmentMenuHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyp
 }
 
 //line views/readers.qtpl:83
-func WriteAttachmentMenuHTML(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hypha, u *user.User) {
+func WriteMediaMenuHTML(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.Hypha, u *user.User) {
 //line views/readers.qtpl:83
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/readers.qtpl:83
-	StreamAttachmentMenuHTML(qw422016, rq, h, u)
+	StreamMediaMenuHTML(qw422016, rq, h, u)
 //line views/readers.qtpl:83
 	qt422016.ReleaseWriter(qw422016)
 //line views/readers.qtpl:83
 }
 
 //line views/readers.qtpl:83
-func AttachmentMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) string {
+func MediaMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) string {
 //line views/readers.qtpl:83
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/readers.qtpl:83
-	WriteAttachmentMenuHTML(qb422016, rq, h, u)
+	WriteMediaMenuHTML(qb422016, rq, h, u)
 //line views/readers.qtpl:83
 	qs422016 := string(qb422016.B)
 //line views/readers.qtpl:83

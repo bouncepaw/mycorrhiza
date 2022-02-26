@@ -55,10 +55,10 @@ var (
 	)
 
 	CanAttach = canFactory(
-		rejectAttachLog,
+		rejectUploadMediaLog,
 		"upload-binary",
 		nil,
-		"ui.act_norights_attach",
+		"ui.act_norights_media",
 		"You cannot attach a hypha that does not exist",
 		false,
 	)

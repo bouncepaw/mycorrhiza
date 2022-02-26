@@ -327,9 +327,9 @@ window.addEventListener('load', () => {
 
             this.bindElement('e, ' + (isMac ? "Meta+Enter" : "Ctrl+Enter"), '.btn__link_navititle[href^="/edit/"]', 'Edit this hypha');
             this.bindElement('v', '.hypha-info__link[href^="/hypha/"]', 'Go to hypha′s page');
-            this.bindElement('a', '.hypha-info__link[href^="/attachment/"]', 'Go to attachment');
+            this.bindElement('a', '.hypha-info__link[href^="/media/"]', 'Go to media management');
             this.bindElement('h', '.hypha-info__link[href^="/history/"]', 'Go to history');
-            this.bindElement('r', '.hypha-info__link[href^="/rename-ask/"]', 'Rename this hypha');
+            this.bindElement('r', '.hypha-info__link[href^="/rename/"]', 'Rename this hypha');
         });
 
     } else {
