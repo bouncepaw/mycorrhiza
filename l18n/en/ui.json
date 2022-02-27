@@ -90,6 +90,8 @@
 	"revision_link": "Get Mycomarkup source of this revision",
 	"revision_no_text": "This hypha had no text at this revision.",
 
+	"about_title": "About {{.name}}",
+
 	"users_title": "User list",
 	"users_heading": "List of users",
 	"users_admins": "Admins",
