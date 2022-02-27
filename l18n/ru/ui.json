@@ -96,10 +96,6 @@
 	"about_title": "О {{.name}}",
 
 	"users_title": "Список пользователей",
-	"users_heading": "Список пользователей",
-	"users_admins": "Администраторы",
-	"users_moderators": "Модераторы",
-	"users_editors": "Редакторы",
 
 	"no_rights": "Недостаточно прав",
 	"reindex_no_rights": "Вы должны быть администратором, чтобы переиндексировать гифы.",

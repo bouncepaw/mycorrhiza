@@ -93,10 +93,6 @@
 	"about_title": "About {{.name}}",
 
 	"users_title": "User list",
-	"users_heading": "List of users",
-	"users_admins": "Admins",
-	"users_moderators": "Moderators",
-	"users_editors": "Editors",
 
 	"no_rights": "Not enough rights",
 	"reindex_no_rights": "You must be an admin to reindex hyphae.",

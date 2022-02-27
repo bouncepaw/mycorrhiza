@@ -14,6 +14,10 @@ type l10nEntry struct {
 	_ru string
 }
 
+func en(v string) l10nEntry {
+	return e().en(v)
+}
+
 func e() l10nEntry {
 	return l10nEntry{}
 }
