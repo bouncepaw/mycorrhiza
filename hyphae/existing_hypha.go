@@ -28,7 +28,7 @@ func RenameHyphaTo(h ExistingHypha, newName string, replaceName func(string) str
 		h.mycoFilePath = replaceName(h.mycoFilePath)
 	case *MediaHypha:
 		h.canonicalName = newName
-		h.mycoFilePath = replaceName(h.mediaFilePath)
+		h.mycoFilePath = replaceName(h.mycoFilePath)
 		h.mediaFilePath = replaceName(h.mediaFilePath)
 	}
 
