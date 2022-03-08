@@ -9,7 +9,7 @@
 {%= modalBegin(
 	"delete",
 	hyphaName,
-	"",
+	` method="post"`,
 	fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName))) %}
 {%= modalReallyWant(hyphaName, lc.Get("ui.ask_delete_verb"), lc) %}
 		<p>{%s lc.Get("ui.ask_delete_tip") %}</p>
@@ -23,7 +23,7 @@
 {%= modalBegin(
 	"remove-media",
 	hyphaName,
-	"",
+	` method="post"`,
 	fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName))) %}
 {%= modalReallyWant(hyphaName, lc.Get("ui.ask_remove_media_verb"), lc) %}
 {%= modalEnd(hyphaName, true, lc) %}

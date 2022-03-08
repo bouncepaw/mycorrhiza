@@ -41,7 +41,7 @@ func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 	streammodalBegin(qw422016,
 		"delete",
 		hyphaName,
-		"",
+		` method="post"`,
 		fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName)))
 //line views/modal.qtpl:13
 	qw422016.N().S(`
@@ -105,7 +105,7 @@ func StreamRemoveMediaAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hypha
 	streammodalBegin(qw422016,
 		"remove-media",
 		hyphaName,
-		"",
+		` method="post"`,
 		fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName)))
 //line views/modal.qtpl:27
 	qw422016.N().S(`
