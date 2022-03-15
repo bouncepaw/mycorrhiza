@@ -15,6 +15,7 @@ var paths struct {
 	configPath          string
 	tokensJSON          string
 	userCredentialsJSON string
+	categoriesJSON      string
 }
 
 // HyphaeDir returns the path to hyphae storage.
@@ -37,6 +38,9 @@ func TokensJSON() string { return paths.tokensJSON }
 
 // UserCredentialsJSON returns the path to the JSON user credentials storage.
 func UserCredentialsJSON() string { return paths.userCredentialsJSON }
+
+// CategoriesJSON returns the path to the JSON categories storage.
+func CategoriesJSON() string { return paths.categoriesJSON }
 
 // FileInRoot returns full path for the given filename if it was placed in the root of the wiki structure.
 func FileInRoot(filename string) string { return filepath.Join(cfg.WikiDir, filename) }
@@ -67,6 +71,7 @@ func PrepareWikiRoot() error {
 	paths.userCredentialsJSON = filepath.Join(cfg.WikiDir, "users.json")
 
 	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
+	paths.categoriesJSON = filepath.Join(cfg.WikiDir, "tags.json")
 
 	return nil
 }
