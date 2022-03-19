@@ -131,6 +131,7 @@ If you rename .prevnext, change the docs too.
    		{%= hyphaInfo(rq, h) %}
 	</section>
 </main>
+{%s= categoryCardHTML(h.CanonicalName()) %}
 {%= siblingHyphaeHTML(siblings, lc) %}
 </div>
 {%= viewScripts() %}
