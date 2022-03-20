@@ -15,7 +15,6 @@ import (
 
 func initSearch(r *mux.Router) {
 	r.HandleFunc("/title-search/", handlerTitleSearch)
-	r.HandleFunc("/title-search-json/", handlerTitleSearchJSON)
 }
 
 func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
@@ -35,16 +34,5 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 			lc,
 			u,
 		),
-	)
-}
-
-func handlerTitleSearchJSON(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-	_ = rq.ParseForm()
-	query := rq.FormValue("q")
-	w.WriteHeader(http.StatusOK)
-	_, _ = io.WriteString(
-		w,
-		views.TitleSearchJSON(query, shroom.YieldHyphaNamesContainingString),
 	)
 }

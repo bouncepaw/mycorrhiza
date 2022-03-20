@@ -2,7 +2,6 @@ package web
 
 import (
 	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
-	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,7 +14,6 @@ import (
 
 func initBacklinks(r *mux.Router) {
 	r.PathPrefix("/backlinks/").HandlerFunc(handlerBacklinks)
-	r.PathPrefix("/backlinks-json/").HandlerFunc(handlerBacklinksJSON)
 }
 
 // handlerBacklinks lists all backlinks to a hypha.
@@ -29,13 +27,4 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 		views.BacklinksHTML(hyphaName, backlinks.YieldHyphaBacklinks, lc),
 		lc,
 		user.FromRequest(rq)))
-}
-
-func handlerBacklinksJSON(w http.ResponseWriter, rq *http.Request) {
-	hyphaName := util.HyphaNameFromRq(rq, "backlinks")
-	w.WriteHeader(http.StatusOK)
-	_, _ = io.WriteString(
-		w,
-		views.TitleSearchJSON(hyphaName, backlinks.YieldHyphaBacklinks),
-	)
 }

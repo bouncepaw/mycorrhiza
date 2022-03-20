@@ -98,26 +98,6 @@
 </div>
 {% endfunc %}
 
-It outputs a poorly formatted JSON, but it works and is valid.
-{% func TitleSearchJSON(query string, generator func(string) <-chan string) %}
-{% code
-	// Lol
-	counter := 0
-%}
-{
-	"source_query": "{%s query %}",
-	"results": [
-	{% for hyphaName := range generator(query) %}
-		{% if counter > 0 %}, {% endif %}{
-			"canonical_name": "{%s hyphaName %}",
-			"beautiful_name": "{%s util.BeautifulName(hyphaName) %}",
-			"url": "{%s cfg.URL + "/hypha/" + hyphaName %}"
-		}{% code counter++ %}
-	{% endfor %}
-	]
-}
-{% endfunc %}
-
 {% func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">
