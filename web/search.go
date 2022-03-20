@@ -28,9 +28,9 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
-		views.BaseHTML(
+		views.Base(
 			lc.Get("ui.title_search_title", &l18n.Replacements{"query": query}),
-			views.TitleSearchHTML(query, shroom.YieldHyphaNamesContainingString, lc),
+			views.TitleSearch(query, shroom.YieldHyphaNamesContainingString, lc),
 			lc,
 			u,
 		),

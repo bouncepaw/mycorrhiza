@@ -26,7 +26,7 @@ func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, errMsg
 	w.WriteHeader(status)
 	fmt.Fprint(
 		w,
-		views.BaseHTML(
+		views.Base(
 			"Error",
 			fmt.Sprintf(
 				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
@@ -56,7 +56,7 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.BaseHTML(lc.Get("ui.users_title"), views.UserListHTML(lc), lc, user.FromRequest(rq))))
+	w.Write([]byte(views.Base(lc.Get("ui.users_title"), views.UserList(lc), lc, user.FromRequest(rq))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {

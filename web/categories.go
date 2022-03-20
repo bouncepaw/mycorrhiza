@@ -16,7 +16,7 @@ func initCategories(r *mux.Router) {
 }
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
-	views.CategoryListHTML(views.MetaFrom(w, rq))
+	views.CategoryList(views.MetaFrom(w, rq))
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
@@ -24,7 +24,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 	var (
 		catName = util.HyphaNameFromRq(rq, "category")
 	)
-	views.CategoryPageHTML(views.MetaFrom(w, rq), catName)
+	views.CategoryPage(views.MetaFrom(w, rq), catName)
 }
 
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {

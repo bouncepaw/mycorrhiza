@@ -4,7 +4,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AdminPanelHTML(lc *l18n.Localizer) %}
+{% func AdminPanel(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<h1>{%s lc.Get("admin.panel_title") %}</h1>
@@ -36,7 +36,7 @@
 </div>
 {% endfunc %}
 
-{% func AdminUsersPanelHTML(userList []*user.User, lc *l18n.Localizer) %}
+{% func AdminUsersPanel(userList []*user.User, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<h1>{%s lc.Get("admin.users_title") %}</h1>
@@ -82,7 +82,7 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserNewHTML(f util.FormData, lc *l18n.Localizer) %}
+{% func AdminUserNew(f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
 	<h1>{%s lc.Get("admin.newuser_title") %}</h1>
@@ -127,7 +127,7 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserEditHTML(u *user.User, f util.FormData, lc *l18n.Localizer) %}
+{% func AdminUserEdit(u *user.User, f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
 	<h1>
@@ -167,7 +167,7 @@
 </div>
 {% endfunc %}
 
-{% func AdminUserDeleteHTML(u *user.User, f util.FormData, lc *l18n.Localizer) %}
+{% func AdminUserDelete(u *user.User, f util.FormData, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width form-wrap">
 	<h1>{%s lc.Get("admin.user_delete_heading") %}</h1>

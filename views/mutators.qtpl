@@ -65,7 +65,7 @@
 <script src="/static/toolbar.js"></script>
 {% endfunc %}
 
-{% func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) %}
+{% func Editor(rq *http.Request, hyphaName, textAreaFill, warning string) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}
@@ -90,7 +90,7 @@
 {%= editScripts() %}
 {% endfunc %}
 
-{% func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) %}
+{% func Preview(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}

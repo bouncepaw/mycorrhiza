@@ -9,7 +9,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/history" %}
 
 
-{% func PrimitiveDiffHTML(rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) %}
+{% func PrimitiveDiff(rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) %}
 {% code
 lc := l18n.FromRequest(rq)
 text, err := history.PrimitiveDiffAtRevision(h.TextFilePath(), hash)
@@ -27,7 +27,7 @@ if err != nil {
 </div>
 {% endfunc %}
 
-{% func RecentChangesHTML(n int, lc *l18n.Localizer) %}
+{% func RecentChanges(n int, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width recent-changes">
 	<h1>{%s lc.Get("ui.recent_heading") %}</h1>
@@ -77,7 +77,7 @@ if err != nil {
 
 		<div class="recent-changes__entry" role="article"
 		    aria-setsize="{%d n %}" aria-posinset="{%d i %}">
-			 {%s= recentChangesEntry(entry) %}
+			 {%s= recentChanges(entry) %}
 		</div>
 
 		{% endfor %}
@@ -87,7 +87,7 @@ if err != nil {
 </div>
 {% endfunc %}
 
-{% func recentChangesEntry(rev history.Revision) %}
+{% func recentChanges(rev history.Revision) %}
 <div>
 	<time class="recent-changes__entry__time">
 		{%s rev.Time.UTC().Format("15:04 UTC") %}
@@ -110,7 +110,7 @@ if err != nil {
 </div>
 {% endfunc %}
 
-{% func HistoryHTML(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) %}
+{% func History(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<article class="history">

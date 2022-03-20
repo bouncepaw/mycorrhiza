@@ -2,7 +2,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
-{% func RegisterHTML(rq *http.Request) %}
+{% func Register(rq *http.Request) %}
 {% code
   lc := l18n.FromRequest(rq)
 %}
@@ -27,7 +27,7 @@
 				<a class="btn btn_weak" href="/{%s rq.URL.RawQuery %}">{%s lc.Get("ui.cancel") %}</a>
 			</fieldset>
 		</form>
-		{%= telegramWidgetHTML(lc) %}
+		{%= telegramWidget(lc) %}
 	{% elseif cfg.UseAuth %}
 		<p>{%s lc.Get("auth.noregister") %}</p>
 		<p><a href="/{%s rq.URL.RawQuery %}">← {%s lc.Get("auth.go_back") %}</a></p>
@@ -40,7 +40,7 @@
 </div>
 {% endfunc %}
 
-{% func LoginHTML(lc *l18n.Localizer) %}
+{% func Login(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<section>
@@ -60,7 +60,7 @@
 				<a class="btn btn_weak" href="/">{%s lc.Get("ui.cancel") %}</a>
 			</fieldset>
 		</form>
-		{%= telegramWidgetHTML(lc) %}
+		{%= telegramWidget(lc) %}
 	{% else %}
 		<p>{%s lc.Get("auth.noauth") %}</p>
 		<p><a class="btn btn_weak" href="/">← {%s lc.Get("auth.go_home") %}</a></p>
@@ -71,14 +71,14 @@
 {% endfunc %}
 
 Telegram auth widget was requested by Yogurt. As you can see, we don't offer user administrators control over it. Of course we don't.
-{% func telegramWidgetHTML(lc *l18n.Localizer) %}
+{% func telegramWidget(lc *l18n.Localizer) %}
 {% if cfg.TelegramEnabled %}
 <p class="telegram-notice">{%s lc.Get("auth.telegram_tip") %}</p>
 <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="{%s cfg.TelegramBotName %}" data-size="medium" data-userpic="false" data-auth-url="{%s cfg.URL %}/telegram-login"></script>
 {% endif %}
 {% endfunc %}
 
-{% func LoginErrorHTML(err string, lc *l18n.Localizer) %}
+{% func LoginError(err string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<section>
@@ -96,7 +96,7 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 </div>
 {% endfunc %}
 
-{% func LogoutHTML(can bool, lc *l18n.Localizer) %}
+{% func Logout(can bool, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<section>
@@ -116,7 +116,7 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 </div>
 {% endfunc %}
 
-{% func LockHTML(lc *l18n.Localizer) %}
+{% func Lock(lc *l18n.Localizer) %}
 <!doctype html>
 <html>
 <head>
@@ -142,7 +142,7 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 				<br>
 				<button class="btn" type="submit" value="Log in">{%s lc.Get("auth.login_button") %}</button>
 			</form>
-			{%= telegramWidgetHTML(lc) %}
+			{%= telegramWidget(lc) %}
 		</section>
 	</main>
 </body>

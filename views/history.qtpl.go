@@ -42,7 +42,7 @@ var (
 )
 
 //line views/history.qtpl:12
-func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) {
+func StreamPrimitiveDiff(qw422016 *qt422016.Writer, rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) {
 //line views/history.qtpl:12
 	qw422016.N().S(`
 `)
@@ -76,22 +76,22 @@ func StreamPrimitiveDiffHTML(qw422016 *qt422016.Writer, rq *http.Request, h hyph
 }
 
 //line views/history.qtpl:28
-func WritePrimitiveDiffHTML(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) {
+func WritePrimitiveDiff(qq422016 qtio422016.Writer, rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) {
 //line views/history.qtpl:28
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/history.qtpl:28
-	StreamPrimitiveDiffHTML(qw422016, rq, h, u, hash)
+	StreamPrimitiveDiff(qw422016, rq, h, u, hash)
 //line views/history.qtpl:28
 	qt422016.ReleaseWriter(qw422016)
 //line views/history.qtpl:28
 }
 
 //line views/history.qtpl:28
-func PrimitiveDiffHTML(rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) string {
+func PrimitiveDiff(rq *http.Request, h hyphae.ExistingHypha, u *user.User, hash string) string {
 //line views/history.qtpl:28
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/history.qtpl:28
-	WritePrimitiveDiffHTML(qb422016, rq, h, u, hash)
+	WritePrimitiveDiff(qb422016, rq, h, u, hash)
 //line views/history.qtpl:28
 	qs422016 := string(qb422016.B)
 //line views/history.qtpl:28
@@ -102,7 +102,7 @@ func PrimitiveDiffHTML(rq *http.Request, h hyphae.ExistingHypha, u *user.User, h
 }
 
 //line views/history.qtpl:30
-func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int, lc *l18n.Localizer) {
+func StreamRecentChanges(qw422016 *qt422016.Writer, n int, lc *l18n.Localizer) {
 //line views/history.qtpl:30
 	qw422016.N().S(`
 <div class="layout">
@@ -258,7 +258,7 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int, lc *l18n.Localize
 			qw422016.N().S(`">
 			 `)
 //line views/history.qtpl:80
-			qw422016.N().S(recentChangesEntry(entry))
+			qw422016.N().S(recentChanges(entry))
 //line views/history.qtpl:80
 			qw422016.N().S(`
 		</div>
@@ -281,22 +281,22 @@ func StreamRecentChangesHTML(qw422016 *qt422016.Writer, n int, lc *l18n.Localize
 }
 
 //line views/history.qtpl:88
-func WriteRecentChangesHTML(qq422016 qtio422016.Writer, n int, lc *l18n.Localizer) {
+func WriteRecentChanges(qq422016 qtio422016.Writer, n int, lc *l18n.Localizer) {
 //line views/history.qtpl:88
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/history.qtpl:88
-	StreamRecentChangesHTML(qw422016, n, lc)
+	StreamRecentChanges(qw422016, n, lc)
 //line views/history.qtpl:88
 	qt422016.ReleaseWriter(qw422016)
 //line views/history.qtpl:88
 }
 
 //line views/history.qtpl:88
-func RecentChangesHTML(n int, lc *l18n.Localizer) string {
+func RecentChanges(n int, lc *l18n.Localizer) string {
 //line views/history.qtpl:88
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/history.qtpl:88
-	WriteRecentChangesHTML(qb422016, n, lc)
+	WriteRecentChanges(qb422016, n, lc)
 //line views/history.qtpl:88
 	qs422016 := string(qb422016.B)
 //line views/history.qtpl:88
@@ -307,7 +307,7 @@ func RecentChangesHTML(n int, lc *l18n.Localizer) string {
 }
 
 //line views/history.qtpl:90
-func streamrecentChangesEntry(qw422016 *qt422016.Writer, rev history.Revision) {
+func streamrecentChanges(qw422016 *qt422016.Writer, rev history.Revision) {
 //line views/history.qtpl:90
 	qw422016.N().S(`
 <div>
@@ -371,22 +371,22 @@ func streamrecentChangesEntry(qw422016 *qt422016.Writer, rev history.Revision) {
 }
 
 //line views/history.qtpl:111
-func writerecentChangesEntry(qq422016 qtio422016.Writer, rev history.Revision) {
+func writerecentChanges(qq422016 qtio422016.Writer, rev history.Revision) {
 //line views/history.qtpl:111
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/history.qtpl:111
-	streamrecentChangesEntry(qw422016, rev)
+	streamrecentChanges(qw422016, rev)
 //line views/history.qtpl:111
 	qt422016.ReleaseWriter(qw422016)
 //line views/history.qtpl:111
 }
 
 //line views/history.qtpl:111
-func recentChangesEntry(rev history.Revision) string {
+func recentChanges(rev history.Revision) string {
 //line views/history.qtpl:111
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/history.qtpl:111
-	writerecentChangesEntry(qb422016, rev)
+	writerecentChanges(qb422016, rev)
 //line views/history.qtpl:111
 	qs422016 := string(qb422016.B)
 //line views/history.qtpl:111
@@ -397,7 +397,7 @@ func recentChangesEntry(rev history.Revision) string {
 }
 
 //line views/history.qtpl:113
-func StreamHistoryHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, list string, lc *l18n.Localizer) {
+func StreamHistory(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, list string, lc *l18n.Localizer) {
 //line views/history.qtpl:113
 	qw422016.N().S(`
 <div class="layout">
@@ -421,22 +421,22 @@ func StreamHistoryHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, l
 }
 
 //line views/history.qtpl:122
-func WriteHistoryHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, list string, lc *l18n.Localizer) {
+func WriteHistory(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, list string, lc *l18n.Localizer) {
 //line views/history.qtpl:122
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/history.qtpl:122
-	StreamHistoryHTML(qw422016, rq, hyphaName, list, lc)
+	StreamHistory(qw422016, rq, hyphaName, list, lc)
 //line views/history.qtpl:122
 	qt422016.ReleaseWriter(qw422016)
 //line views/history.qtpl:122
 }
 
 //line views/history.qtpl:122
-func HistoryHTML(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) string {
+func History(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) string {
 //line views/history.qtpl:122
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/history.qtpl:122
-	WriteHistoryHTML(qb422016, rq, hyphaName, list, lc)
+	WriteHistory(qb422016, rq, hyphaName, list, lc)
 //line views/history.qtpl:122
 	qs422016 := string(qb422016.B)
 //line views/history.qtpl:122

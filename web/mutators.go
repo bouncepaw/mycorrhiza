@@ -43,9 +43,9 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == "GET" {
 		util.HTTP200Page(
 			w,
-			views.BaseHTML(
+			views.Base(
 				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
-				views.RemoveMediaAskHTML(rq, h.CanonicalName()),
+				views.RemoveMediaAsk(rq, h.CanonicalName()),
 				lc,
 				u))
 		return
@@ -87,9 +87,9 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == "GET" {
 		util.HTTP200Page(
 			w,
-			views.BaseHTML(
+			views.Base(
 				fmt.Sprintf(lc.Get("ui.ask_delete"), util.BeautifulName(h.CanonicalName())),
-				views.DeleteAskHTML(rq, h.CanonicalName()),
+				views.DeleteAsk(rq, h.CanonicalName()),
 				lc,
 				u))
 		return
@@ -133,9 +133,9 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == "GET" {
 		util.HTTP200Page(
 			w,
-			views.BaseHTML(
+			views.Base(
 				fmt.Sprintf(lc.Get("ui.ask_rename"), util.BeautifulName(oldHypha.CanonicalName())),
-				views.RenameAskHTML(rq, oldHypha.CanonicalName()),
+				views.RenameAsk(rq, oldHypha.CanonicalName()),
 				lc,
 				u))
 		return
@@ -180,9 +180,9 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	}
 	util.HTTP200Page(
 		w,
-		views.BaseHTML(
+		views.Base(
 			fmt.Sprintf(lc.Get("edit.title"), util.BeautifulName(hyphaName)),
-			views.EditHTML(rq, hyphaName, textAreaFill, warning),
+			views.Editor(rq, hyphaName, textAreaFill, warning),
 			lc,
 			u))
 }
@@ -212,9 +212,9 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 
 		util.HTTP200Page(
 			w,
-			views.BaseHTML(
+			views.Base(
 				fmt.Sprintf(lc.Get("edit.preview_title"), util.BeautifulName(hyphaName)),
-				views.PreviewHTML(
+				views.Preview(
 					rq,
 					hyphaName,
 					textData,

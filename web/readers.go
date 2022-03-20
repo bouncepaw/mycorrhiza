@@ -45,9 +45,9 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 		lc        = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
-		views.BaseHTML(
+		views.Base(
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.MediaMenuHTML(rq, h, u),
+			views.MediaMenu(rq, h, u),
 			lc,
 			u))
 }
@@ -69,9 +69,9 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(w, "404 not found")
 	case hyphae.ExistingHypha:
 		util.HTTP200Page(w,
-			views.BaseHTML(
+			views.Base(
 				lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-				views.PrimitiveDiffHTML(rq, h, u, revHash),
+				views.PrimitiveDiff(rq, h, u, revHash),
 				lc,
 				u))
 	}
@@ -135,7 +135,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 			contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
 		}
 	}
-	page := views.RevisionHTML(
+	page := views.Revision(
 		rq,
 		lc,
 		h,
@@ -146,7 +146,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = fmt.Fprint(
 		w,
-		views.BaseHTML(
+		views.Base(
 			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
 			lc,
@@ -198,9 +198,9 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
 		util.HTTP404Page(w,
-			views.BaseHTML(
+			views.Base(
 				util.BeautifulName(hyphaName),
-				views.HyphaHTML(rq, lc, h, contents),
+				views.Hypha(rq, lc, h, contents),
 				lc,
 				u,
 				openGraph))
@@ -216,13 +216,13 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 		switch h := h.(type) {
 		case *hyphae.MediaHypha:
-			contents = views.MediaHTML(h, lc) + contents
+			contents = views.Media(h, lc) + contents
 		}
 
 		util.HTTP200Page(w,
-			views.BaseHTML(
+			views.Base(
 				util.BeautifulName(hyphaName),
-				views.HyphaHTML(rq, lc, h, contents),
+				views.Hypha(rq, lc, h, contents),
 				lc,
 				u,
 				openGraph))

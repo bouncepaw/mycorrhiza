@@ -35,7 +35,7 @@ func initAuth(r *mux.Router) {
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	_, _ = io.WriteString(w, views.LockHTML(l18n.FromRequest(rq)))
+	_, _ = io.WriteString(w, views.Lock(l18n.FromRequest(rq)))
 }
 
 // handlerRegister displays the register form (GET) or registers the user (POST).
@@ -45,9 +45,9 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML(
+			views.Base(
 				lc.Get("auth.register_title"),
-				views.RegisterHTML(rq),
+				views.Register(rq),
 				lc,
 				user.FromRequest(rq),
 			),
@@ -64,7 +64,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = io.WriteString(
 				w,
-				views.BaseHTML(
+				views.Base(
 					lc.Get("auth.register_title"),
 					fmt.Sprintf(
 						`<main class="main-width"><p>%s</p><p><a href="/register">%s<a></p></main>`,
@@ -101,7 +101,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		}
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML(lc.Get("auth.logout_title"), views.LogoutHTML(can, lc), lc, u),
+			views.Base(lc.Get("auth.logout_title"), views.Logout(can, lc), lc, u),
 		)
 	} else if rq.Method == http.MethodPost {
 		user.LogoutFromRequest(w, rq)
@@ -117,9 +117,9 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML(
+			views.Base(
 				lc.Get("auth.login_title"),
-				views.LoginHTML(lc),
+				views.Login(lc),
 				lc,
 				user.EmptyUser(),
 			),
@@ -133,7 +133,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		if err != "" {
 			w.Header().Set("Content-Type", "text/html;charset=utf-8")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = io.WriteString(w, views.BaseHTML(err, views.LoginErrorHTML(err, lc), lc, user.EmptyUser()))
+			_, _ = io.WriteString(w, views.Base(err, views.LoginError(err, lc), lc, user.EmptyUser()))
 			return
 		}
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
@@ -171,7 +171,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML(
+			views.Base(
 				lc.Get("ui.error"),
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
@@ -192,7 +192,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,
-			views.BaseHTML(
+			views.Base(
 				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,

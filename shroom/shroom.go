@@ -30,7 +30,7 @@ func init() {
 			rawText, err = FetchTextFile(h)
 		case *hyphae.MediaHypha:
 			rawText, err = FetchTextFile(h)
-			binaryBlock = views.MediaHTMLRaw(h)
+			binaryBlock = views.MediaRaw(h)
 		}
 		return
 	}

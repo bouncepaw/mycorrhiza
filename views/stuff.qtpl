@@ -7,7 +7,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
-{% func BaseHTML(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) %}
+{% func Base(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) %}
 <!doctype html>
 <html lang="{%s lc.Locale %}">
 	<head>
@@ -83,7 +83,7 @@
 </html>
 {% endfunc %}
 
-{% func TitleSearchHTML(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
+{% func TitleSearch(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width title-search">
 	<h1>{%s lc.Get("ui.search_results_query", &l18n.Replacements{"query": query})%}</h1>
@@ -98,7 +98,7 @@
 </div>
 {% endfunc %}
 
-{% func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
+{% func Backlinks(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">
 	<h1>{%s= lc.Get(
@@ -123,24 +123,24 @@
 </div>
 {% endfunc %}
 
-{% func HelpHTML(content, lang string, lc *l18n.Localizer) %}
+{% func Help(content, lang string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width help">
 	<article>
 	{%s= content %}
 	</article>
 </main>
-{%s= helpTopicsHTML(lang, lc) %}
+{%s= helpTopics(lang, lc) %}
 </div>
 {% endfunc %}
 
-{% func HelpEmptyErrorHTML(lc *l18n.Localizer) %}
+{% func HelpEmptyError(lc *l18n.Localizer) %}
 <h1>{%s lc.Get("help.empty_error_title") %}</h1>
 <p>{%s lc.Get("help.empty_error_line_1") %}</p>
 <p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
 {% endfunc %}
 
-{% func HyphaListHTML(lc *l18n.Localizer) %}
+{% func HyphaList(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">
 	<h1>{%s lc.Get("ui.list_heading") %}</h1>

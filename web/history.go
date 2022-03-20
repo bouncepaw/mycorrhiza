@@ -41,9 +41,9 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	var lc = l18n.FromRequest(rq)
-	util.HTTP200Page(w, views.BaseHTML(
+	util.HTTP200Page(w, views.Base(
 		fmt.Sprintf(lc.Get("ui.history_title"), util.BeautifulName(hyphaName)),
-		views.HistoryHTML(rq, hyphaName, list, lc),
+		views.History(rq, hyphaName, list, lc),
 		lc,
 		user.FromRequest(rq)))
 }
@@ -56,9 +56,9 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	var lc = l18n.FromRequest(rq)
-	util.HTTP200Page(w, views.BaseHTML(
+	util.HTTP200Page(w, views.Base(
 		lc.GetPlural("ui.recent_title", n),
-		views.RecentChangesHTML(n, lc),
+		views.RecentChanges(n, lc),
 		lc,
 		user.FromRequest(rq)))
 }

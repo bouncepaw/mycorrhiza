@@ -12,7 +12,7 @@ var hyphaListL10n = map[string]l10nEntry{
 }
 %}
 
-{% func UserListHTML(lc *l18n.Localizer) %}
+{% func UserList(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width user-list">
 {% code

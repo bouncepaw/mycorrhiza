@@ -47,7 +47,7 @@
 </section>
 {% endfunc %}
 
-{% func NaviTitleHTML(h hyphae.Hypha) %}
+{% func NaviTitle(h hyphae.Hypha) %}
 {% code 
 	var (
 		prevAcc = "/hypha/"
@@ -75,9 +75,9 @@
 </h1>
 {% endfunc %}
 
-{% func MediaHTMLRaw(h *hyphae.MediaHypha) %}{%= MediaHTML(h, l18n.New("en", "en")) %}{% endfunc %}
+{% func MediaRaw(h *hyphae.MediaHypha) %}{%= Media(h, l18n.New("en", "en")) %}{% endfunc %}
 
-{% func MediaHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) %}
+{% func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) %}
 	{% switch filepath.Ext(h.MediaFilePath()) %}
 
 	{% case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico" %}

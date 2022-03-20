@@ -39,7 +39,7 @@ var (
 )
 
 //line views/stuff.qtpl:10
-func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) {
+func StreamBase(qw422016 *qt422016.Writer, title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) {
 //line views/stuff.qtpl:10
 	qw422016.N().S(`
 <!doctype html>
@@ -226,22 +226,22 @@ func StreamBaseHTML(qw422016 *qt422016.Writer, title, body string, lc *l18n.Loca
 }
 
 //line views/stuff.qtpl:84
-func WriteBaseHTML(qq422016 qtio422016.Writer, title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) {
+func WriteBase(qq422016 qtio422016.Writer, title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) {
 //line views/stuff.qtpl:84
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:84
-	StreamBaseHTML(qw422016, title, body, lc, u, headElements...)
+	StreamBase(qw422016, title, body, lc, u, headElements...)
 //line views/stuff.qtpl:84
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:84
 }
 
 //line views/stuff.qtpl:84
-func BaseHTML(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) string {
+func Base(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) string {
 //line views/stuff.qtpl:84
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:84
-	WriteBaseHTML(qb422016, title, body, lc, u, headElements...)
+	WriteBase(qb422016, title, body, lc, u, headElements...)
 //line views/stuff.qtpl:84
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:84
@@ -252,7 +252,7 @@ func BaseHTML(title, body string, lc *l18n.Localizer, u *user.User, headElements
 }
 
 //line views/stuff.qtpl:86
-func StreamTitleSearchHTML(qw422016 *qt422016.Writer, query string, generator func(string) <-chan string, lc *l18n.Localizer) {
+func StreamTitleSearch(qw422016 *qt422016.Writer, query string, generator func(string) <-chan string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:86
 	qw422016.N().S(`
 <div class="layout">
@@ -296,22 +296,22 @@ func StreamTitleSearchHTML(qw422016 *qt422016.Writer, query string, generator fu
 }
 
 //line views/stuff.qtpl:99
-func WriteTitleSearchHTML(qq422016 qtio422016.Writer, query string, generator func(string) <-chan string, lc *l18n.Localizer) {
+func WriteTitleSearch(qq422016 qtio422016.Writer, query string, generator func(string) <-chan string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:99
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:99
-	StreamTitleSearchHTML(qw422016, query, generator, lc)
+	StreamTitleSearch(qw422016, query, generator, lc)
 //line views/stuff.qtpl:99
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:99
 }
 
 //line views/stuff.qtpl:99
-func TitleSearchHTML(query string, generator func(string) <-chan string, lc *l18n.Localizer) string {
+func TitleSearch(query string, generator func(string) <-chan string, lc *l18n.Localizer) string {
 //line views/stuff.qtpl:99
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:99
-	WriteTitleSearchHTML(qb422016, query, generator, lc)
+	WriteTitleSearch(qb422016, query, generator, lc)
 //line views/stuff.qtpl:99
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:99
@@ -322,7 +322,7 @@ func TitleSearchHTML(query string, generator func(string) <-chan string, lc *l18
 }
 
 //line views/stuff.qtpl:101
-func StreamBacklinksHTML(qw422016 *qt422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
+func StreamBacklinks(qw422016 *qt422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:101
 	qw422016.N().S(`
 <div class="layout">
@@ -376,22 +376,22 @@ func StreamBacklinksHTML(qw422016 *qt422016.Writer, hyphaName string, generator 
 }
 
 //line views/stuff.qtpl:124
-func WriteBacklinksHTML(qq422016 qtio422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
+func WriteBacklinks(qq422016 qtio422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:124
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:124
-	StreamBacklinksHTML(qw422016, hyphaName, generator, lc)
+	StreamBacklinks(qw422016, hyphaName, generator, lc)
 //line views/stuff.qtpl:124
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:124
 }
 
 //line views/stuff.qtpl:124
-func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) string {
+func Backlinks(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) string {
 //line views/stuff.qtpl:124
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:124
-	WriteBacklinksHTML(qb422016, hyphaName, generator, lc)
+	WriteBacklinks(qb422016, hyphaName, generator, lc)
 //line views/stuff.qtpl:124
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:124
@@ -402,7 +402,7 @@ func BacklinksHTML(hyphaName string, generator func(string) <-chan string, lc *l
 }
 
 //line views/stuff.qtpl:126
-func StreamHelpHTML(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Localizer) {
+func StreamHelp(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:126
 	qw422016.N().S(`
 <div class="layout">
@@ -417,7 +417,7 @@ func StreamHelpHTML(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Lo
 </main>
 `)
 //line views/stuff.qtpl:133
-	qw422016.N().S(helpTopicsHTML(lang, lc))
+	qw422016.N().S(helpTopics(lang, lc))
 //line views/stuff.qtpl:133
 	qw422016.N().S(`
 </div>
@@ -426,22 +426,22 @@ func StreamHelpHTML(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Lo
 }
 
 //line views/stuff.qtpl:135
-func WriteHelpHTML(qq422016 qtio422016.Writer, content, lang string, lc *l18n.Localizer) {
+func WriteHelp(qq422016 qtio422016.Writer, content, lang string, lc *l18n.Localizer) {
 //line views/stuff.qtpl:135
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:135
-	StreamHelpHTML(qw422016, content, lang, lc)
+	StreamHelp(qw422016, content, lang, lc)
 //line views/stuff.qtpl:135
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:135
 }
 
 //line views/stuff.qtpl:135
-func HelpHTML(content, lang string, lc *l18n.Localizer) string {
+func Help(content, lang string, lc *l18n.Localizer) string {
 //line views/stuff.qtpl:135
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:135
-	WriteHelpHTML(qb422016, content, lang, lc)
+	WriteHelp(qb422016, content, lang, lc)
 //line views/stuff.qtpl:135
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:135
@@ -452,7 +452,7 @@ func HelpHTML(content, lang string, lc *l18n.Localizer) string {
 }
 
 //line views/stuff.qtpl:137
-func StreamHelpEmptyErrorHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamHelpEmptyError(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/stuff.qtpl:137
 	qw422016.N().S(`
 <h1>`)
@@ -483,22 +483,22 @@ func StreamHelpEmptyErrorHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/stuff.qtpl:141
-func WriteHelpEmptyErrorHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteHelpEmptyError(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/stuff.qtpl:141
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:141
-	StreamHelpEmptyErrorHTML(qw422016, lc)
+	StreamHelpEmptyError(qw422016, lc)
 //line views/stuff.qtpl:141
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:141
 }
 
 //line views/stuff.qtpl:141
-func HelpEmptyErrorHTML(lc *l18n.Localizer) string {
+func HelpEmptyError(lc *l18n.Localizer) string {
 //line views/stuff.qtpl:141
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:141
-	WriteHelpEmptyErrorHTML(qb422016, lc)
+	WriteHelpEmptyError(qb422016, lc)
 //line views/stuff.qtpl:141
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:141
@@ -509,7 +509,7 @@ func HelpEmptyErrorHTML(lc *l18n.Localizer) string {
 }
 
 //line views/stuff.qtpl:143
-func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamHyphaList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/stuff.qtpl:143
 	qw422016.N().S(`
 <div class="layout">
@@ -592,22 +592,22 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/stuff.qtpl:174
-func WriteHyphaListHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteHyphaList(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/stuff.qtpl:174
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:174
-	StreamHyphaListHTML(qw422016, lc)
+	StreamHyphaList(qw422016, lc)
 //line views/stuff.qtpl:174
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:174
 }
 
 //line views/stuff.qtpl:174
-func HyphaListHTML(lc *l18n.Localizer) string {
+func HyphaList(lc *l18n.Localizer) string {
 //line views/stuff.qtpl:174
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:174
-	WriteHyphaListHTML(qb422016, lc)
+	WriteHyphaList(qb422016, lc)
 //line views/stuff.qtpl:174
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:174

@@ -38,7 +38,7 @@ var hyphaListL10n = map[string]l10nEntry{
 }
 
 //line views/user_list.qtpl:15
-func StreamUserListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/user_list.qtpl:15
 	qw422016.N().S(`
 <div class="layout">
@@ -173,22 +173,22 @@ func StreamUserListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/user_list.qtpl:64
-func WriteUserListHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteUserList(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/user_list.qtpl:64
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/user_list.qtpl:64
-	StreamUserListHTML(qw422016, lc)
+	StreamUserList(qw422016, lc)
 //line views/user_list.qtpl:64
 	qt422016.ReleaseWriter(qw422016)
 //line views/user_list.qtpl:64
 }
 
 //line views/user_list.qtpl:64
-func UserListHTML(lc *l18n.Localizer) string {
+func UserList(lc *l18n.Localizer) string {
 //line views/user_list.qtpl:64
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/user_list.qtpl:64
-	WriteUserListHTML(qb422016, lc)
+	WriteUserList(qb422016, lc)
 //line views/user_list.qtpl:64
 	qs422016 := string(qb422016.B)
 //line views/user_list.qtpl:64

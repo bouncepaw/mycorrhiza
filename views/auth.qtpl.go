@@ -27,7 +27,7 @@ var (
 )
 
 //line views/auth.qtpl:5
-func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
+func StreamRegister(qw422016 *qt422016.Writer, rq *http.Request) {
 //line views/auth.qtpl:5
 	qw422016.N().S(`
 `)
@@ -99,7 +99,7 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 		</form>
 		`)
 //line views/auth.qtpl:30
-		streamtelegramWidgetHTML(qw422016, lc)
+		streamtelegramWidget(qw422016, lc)
 //line views/auth.qtpl:30
 		qw422016.N().S(`
 	`)
@@ -153,22 +153,22 @@ func StreamRegisterHTML(qw422016 *qt422016.Writer, rq *http.Request) {
 }
 
 //line views/auth.qtpl:41
-func WriteRegisterHTML(qq422016 qtio422016.Writer, rq *http.Request) {
+func WriteRegister(qq422016 qtio422016.Writer, rq *http.Request) {
 //line views/auth.qtpl:41
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:41
-	StreamRegisterHTML(qw422016, rq)
+	StreamRegister(qw422016, rq)
 //line views/auth.qtpl:41
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:41
 }
 
 //line views/auth.qtpl:41
-func RegisterHTML(rq *http.Request) string {
+func Register(rq *http.Request) string {
 //line views/auth.qtpl:41
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:41
-	WriteRegisterHTML(qb422016, rq)
+	WriteRegister(qb422016, rq)
 //line views/auth.qtpl:41
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:41
@@ -179,7 +179,7 @@ func RegisterHTML(rq *http.Request) string {
 }
 
 //line views/auth.qtpl:43
-func StreamLoginHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamLogin(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:43
 	qw422016.N().S(`
 <div class="layout">
@@ -231,7 +231,7 @@ func StreamLoginHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		</form>
 		`)
 //line views/auth.qtpl:63
-		streamtelegramWidgetHTML(qw422016, lc)
+		streamtelegramWidget(qw422016, lc)
 //line views/auth.qtpl:63
 		qw422016.N().S(`
 	`)
@@ -262,22 +262,22 @@ func StreamLoginHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/auth.qtpl:71
-func WriteLoginHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteLogin(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:71
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:71
-	StreamLoginHTML(qw422016, lc)
+	StreamLogin(qw422016, lc)
 //line views/auth.qtpl:71
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:71
 }
 
 //line views/auth.qtpl:71
-func LoginHTML(lc *l18n.Localizer) string {
+func Login(lc *l18n.Localizer) string {
 //line views/auth.qtpl:71
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:71
-	WriteLoginHTML(qb422016, lc)
+	WriteLogin(qb422016, lc)
 //line views/auth.qtpl:71
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:71
@@ -290,7 +290,7 @@ func LoginHTML(lc *l18n.Localizer) string {
 // Telegram auth widget was requested by Yogurt. As you can see, we don't offer user administrators control over it. Of course we don't.
 
 //line views/auth.qtpl:74
-func streamtelegramWidgetHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func streamtelegramWidget(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:74
 	qw422016.N().S(`
 `)
@@ -322,22 +322,22 @@ func streamtelegramWidgetHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/auth.qtpl:79
-func writetelegramWidgetHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func writetelegramWidget(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:79
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:79
-	streamtelegramWidgetHTML(qw422016, lc)
+	streamtelegramWidget(qw422016, lc)
 //line views/auth.qtpl:79
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:79
 }
 
 //line views/auth.qtpl:79
-func telegramWidgetHTML(lc *l18n.Localizer) string {
+func telegramWidget(lc *l18n.Localizer) string {
 //line views/auth.qtpl:79
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:79
-	writetelegramWidgetHTML(qb422016, lc)
+	writetelegramWidget(qb422016, lc)
 //line views/auth.qtpl:79
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:79
@@ -348,7 +348,7 @@ func telegramWidgetHTML(lc *l18n.Localizer) string {
 }
 
 //line views/auth.qtpl:81
-func StreamLoginErrorHTML(qw422016 *qt422016.Writer, err string, lc *l18n.Localizer) {
+func StreamLoginError(qw422016 *qt422016.Writer, err string, lc *l18n.Localizer) {
 //line views/auth.qtpl:81
 	qw422016.N().S(`
 <div class="layout">
@@ -404,22 +404,22 @@ func StreamLoginErrorHTML(qw422016 *qt422016.Writer, err string, lc *l18n.Locali
 }
 
 //line views/auth.qtpl:97
-func WriteLoginErrorHTML(qq422016 qtio422016.Writer, err string, lc *l18n.Localizer) {
+func WriteLoginError(qq422016 qtio422016.Writer, err string, lc *l18n.Localizer) {
 //line views/auth.qtpl:97
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:97
-	StreamLoginErrorHTML(qw422016, err, lc)
+	StreamLoginError(qw422016, err, lc)
 //line views/auth.qtpl:97
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:97
 }
 
 //line views/auth.qtpl:97
-func LoginErrorHTML(err string, lc *l18n.Localizer) string {
+func LoginError(err string, lc *l18n.Localizer) string {
 //line views/auth.qtpl:97
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:97
-	WriteLoginErrorHTML(qb422016, err, lc)
+	WriteLoginError(qb422016, err, lc)
 //line views/auth.qtpl:97
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:97
@@ -430,7 +430,7 @@ func LoginErrorHTML(err string, lc *l18n.Localizer) string {
 }
 
 //line views/auth.qtpl:99
-func StreamLogoutHTML(qw422016 *qt422016.Writer, can bool, lc *l18n.Localizer) {
+func StreamLogout(qw422016 *qt422016.Writer, can bool, lc *l18n.Localizer) {
 //line views/auth.qtpl:99
 	qw422016.N().S(`
 <div class="layout">
@@ -491,22 +491,22 @@ func StreamLogoutHTML(qw422016 *qt422016.Writer, can bool, lc *l18n.Localizer) {
 }
 
 //line views/auth.qtpl:117
-func WriteLogoutHTML(qq422016 qtio422016.Writer, can bool, lc *l18n.Localizer) {
+func WriteLogout(qq422016 qtio422016.Writer, can bool, lc *l18n.Localizer) {
 //line views/auth.qtpl:117
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:117
-	StreamLogoutHTML(qw422016, can, lc)
+	StreamLogout(qw422016, can, lc)
 //line views/auth.qtpl:117
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:117
 }
 
 //line views/auth.qtpl:117
-func LogoutHTML(can bool, lc *l18n.Localizer) string {
+func Logout(can bool, lc *l18n.Localizer) string {
 //line views/auth.qtpl:117
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:117
-	WriteLogoutHTML(qb422016, can, lc)
+	WriteLogout(qb422016, can, lc)
 //line views/auth.qtpl:117
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:117
@@ -517,7 +517,7 @@ func LogoutHTML(can bool, lc *l18n.Localizer) string {
 }
 
 //line views/auth.qtpl:119
-func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamLock(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:119
 	qw422016.N().S(`
 <!doctype html>
@@ -567,7 +567,7 @@ func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 			</form>
 			`)
 //line views/auth.qtpl:145
-	streamtelegramWidgetHTML(qw422016, lc)
+	streamtelegramWidget(qw422016, lc)
 //line views/auth.qtpl:145
 	qw422016.N().S(`
 		</section>
@@ -579,22 +579,22 @@ func StreamLockHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/auth.qtpl:150
-func WriteLockHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteLock(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/auth.qtpl:150
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/auth.qtpl:150
-	StreamLockHTML(qw422016, lc)
+	StreamLock(qw422016, lc)
 //line views/auth.qtpl:150
 	qt422016.ReleaseWriter(qw422016)
 //line views/auth.qtpl:150
 }
 
 //line views/auth.qtpl:150
-func LockHTML(lc *l18n.Localizer) string {
+func Lock(lc *l18n.Localizer) string {
 //line views/auth.qtpl:150
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/auth.qtpl:150
-	WriteLockHTML(qb422016, lc)
+	WriteLock(qb422016, lc)
 //line views/auth.qtpl:150
 	qs422016 := string(qb422016.B)
 //line views/auth.qtpl:150

@@ -180,7 +180,7 @@ func Toolbar(u *user.User, lc *l18n.Localizer) string {
 }
 
 //line views/mutators.qtpl:68
-func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
+func StreamEditor(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
 //line views/mutators.qtpl:68
 	qw422016.N().S(`
 `)
@@ -257,22 +257,22 @@ func StreamEditHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, text
 }
 
 //line views/mutators.qtpl:91
-func WriteEditHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
+func WriteEditor(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, warning string) {
 //line views/mutators.qtpl:91
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/mutators.qtpl:91
-	StreamEditHTML(qw422016, rq, hyphaName, textAreaFill, warning)
+	StreamEditor(qw422016, rq, hyphaName, textAreaFill, warning)
 //line views/mutators.qtpl:91
 	qt422016.ReleaseWriter(qw422016)
 //line views/mutators.qtpl:91
 }
 
 //line views/mutators.qtpl:91
-func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string {
+func Editor(rq *http.Request, hyphaName, textAreaFill, warning string) string {
 //line views/mutators.qtpl:91
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/mutators.qtpl:91
-	WriteEditHTML(qb422016, rq, hyphaName, textAreaFill, warning)
+	WriteEditor(qb422016, rq, hyphaName, textAreaFill, warning)
 //line views/mutators.qtpl:91
 	qs422016 := string(qb422016.B)
 //line views/mutators.qtpl:91
@@ -283,7 +283,7 @@ func EditHTML(rq *http.Request, hyphaName, textAreaFill, warning string) string 
 }
 
 //line views/mutators.qtpl:93
-func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
+func StreamPreview(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
 //line views/mutators.qtpl:93
 	qw422016.N().S(`
 `)
@@ -374,22 +374,22 @@ func StreamPreviewHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName, t
 }
 
 //line views/mutators.qtpl:118
-func WritePreviewHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
+func WritePreview(qq422016 qtio422016.Writer, rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) {
 //line views/mutators.qtpl:118
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/mutators.qtpl:118
-	StreamPreviewHTML(qw422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
+	StreamPreview(qw422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
 //line views/mutators.qtpl:118
 	qt422016.ReleaseWriter(qw422016)
 //line views/mutators.qtpl:118
 }
 
 //line views/mutators.qtpl:118
-func PreviewHTML(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) string {
+func Preview(rq *http.Request, hyphaName, textAreaFill, message, warning string, renderedPage string) string {
 //line views/mutators.qtpl:118
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/mutators.qtpl:118
-	WritePreviewHTML(qb422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
+	WritePreview(qb422016, rq, hyphaName, textAreaFill, message, warning, renderedPage)
 //line views/mutators.qtpl:118
 	qs422016 := string(qb422016.B)
 //line views/mutators.qtpl:118

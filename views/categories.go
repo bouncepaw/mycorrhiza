@@ -34,7 +34,7 @@ func init() {
 		ParseFS(fs, "*"))
 }
 
-func categoryCardHTML(hyphaName string) string {
+func categoryCard(hyphaName string) string {
 	var buf strings.Builder
 	err := categoryT.ExecuteTemplate(&buf, "category card", struct {
 		HyphaName  string
@@ -49,7 +49,7 @@ func categoryCardHTML(hyphaName string) string {
 	return buf.String()
 }
 
-func CategoryPageHTML(meta Meta, catName string) {
+func CategoryPage(meta Meta, catName string) {
 	var buf strings.Builder
 	var t, _ = categoryT.Clone()
 	if meta.Lc.Locale == "ru" {
@@ -65,7 +65,7 @@ func CategoryPageHTML(meta Meta, catName string) {
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = io.WriteString(meta.W, BaseHTML(
+	_, err = io.WriteString(meta.W, Base(
 		"Category "+util.BeautifulName(catName),
 		buf.String(),
 		meta.Lc,
@@ -76,7 +76,7 @@ func CategoryPageHTML(meta Meta, catName string) {
 	}
 }
 
-func CategoryListHTML(meta Meta) {
+func CategoryList(meta Meta) {
 	var buf strings.Builder
 	err := categoryT.ExecuteTemplate(&buf, "category list", struct {
 		Categories []string
@@ -86,7 +86,7 @@ func CategoryListHTML(meta Meta) {
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = io.WriteString(meta.W, BaseHTML(
+	_, err = io.WriteString(meta.W, Base(
 		"Category list",
 		buf.String(),
 		meta.Lc,

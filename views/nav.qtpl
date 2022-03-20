@@ -32,7 +32,7 @@
 </nav>
 {% endfunc %}
 
-{% func siblingHyphaeHTML(siblings string, lc *l18n.Localizer) %}
+{% func siblingHyphae(siblings string, lc *l18n.Localizer) %}
 {% if cfg.UseSiblingHyphaeSidebar %}
 <aside class="sibling-hyphae layout-card">
 	<h2 class="sibling-hyphae__title layout-card__title">{%s lc.Get("ui.sibling_hyphae") %}</h2>
@@ -41,7 +41,7 @@
 {% endif %}
 {% endfunc %}
 
-{% func SubhyphaeHTML(subhyphae string, lc *l18n.Localizer) %}
+{% func Subhyphae(subhyphae string, lc *l18n.Localizer) %}
 {% if strings.TrimSpace(subhyphae) != "" %}
 <section class="subhyphae">
 	<h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>

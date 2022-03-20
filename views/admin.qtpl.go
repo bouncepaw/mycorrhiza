@@ -33,7 +33,7 @@ var (
 )
 
 //line views/admin.qtpl:7
-func StreamAdminPanelHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+func StreamAdminPanel(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 //line views/admin.qtpl:7
 	qw422016.N().S(`
 <div class="layout">
@@ -106,22 +106,22 @@ func StreamAdminPanelHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 }
 
 //line views/admin.qtpl:37
-func WriteAdminPanelHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+func WriteAdminPanel(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
 //line views/admin.qtpl:37
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:37
-	StreamAdminPanelHTML(qw422016, lc)
+	StreamAdminPanel(qw422016, lc)
 //line views/admin.qtpl:37
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:37
 }
 
 //line views/admin.qtpl:37
-func AdminPanelHTML(lc *l18n.Localizer) string {
+func AdminPanel(lc *l18n.Localizer) string {
 //line views/admin.qtpl:37
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:37
-	WriteAdminPanelHTML(qb422016, lc)
+	WriteAdminPanel(qb422016, lc)
 //line views/admin.qtpl:37
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:37
@@ -132,7 +132,7 @@ func AdminPanelHTML(lc *l18n.Localizer) string {
 }
 
 //line views/admin.qtpl:39
-func StreamAdminUsersPanelHTML(qw422016 *qt422016.Writer, userList []*user.User, lc *l18n.Localizer) {
+func StreamAdminUsersPanel(qw422016 *qt422016.Writer, userList []*user.User, lc *l18n.Localizer) {
 //line views/admin.qtpl:39
 	qw422016.N().S(`
 <div class="layout">
@@ -263,22 +263,22 @@ func StreamAdminUsersPanelHTML(qw422016 *qt422016.Writer, userList []*user.User,
 }
 
 //line views/admin.qtpl:83
-func WriteAdminUsersPanelHTML(qq422016 qtio422016.Writer, userList []*user.User, lc *l18n.Localizer) {
+func WriteAdminUsersPanel(qq422016 qtio422016.Writer, userList []*user.User, lc *l18n.Localizer) {
 //line views/admin.qtpl:83
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:83
-	StreamAdminUsersPanelHTML(qw422016, userList, lc)
+	StreamAdminUsersPanel(qw422016, userList, lc)
 //line views/admin.qtpl:83
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:83
 }
 
 //line views/admin.qtpl:83
-func AdminUsersPanelHTML(userList []*user.User, lc *l18n.Localizer) string {
+func AdminUsersPanel(userList []*user.User, lc *l18n.Localizer) string {
 //line views/admin.qtpl:83
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:83
-	WriteAdminUsersPanelHTML(qb422016, userList, lc)
+	WriteAdminUsersPanel(qb422016, userList, lc)
 //line views/admin.qtpl:83
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:83
@@ -289,7 +289,7 @@ func AdminUsersPanelHTML(userList []*user.User, lc *l18n.Localizer) string {
 }
 
 //line views/admin.qtpl:85
-func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, f util.FormData, lc *l18n.Localizer) {
+func StreamAdminUserNew(qw422016 *qt422016.Writer, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:85
 	qw422016.N().S(`
 <div class="layout">
@@ -427,22 +427,22 @@ func StreamAdminUserNewHTML(qw422016 *qt422016.Writer, f util.FormData, lc *l18n
 }
 
 //line views/admin.qtpl:128
-func WriteAdminUserNewHTML(qq422016 qtio422016.Writer, f util.FormData, lc *l18n.Localizer) {
+func WriteAdminUserNew(qq422016 qtio422016.Writer, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:128
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:128
-	StreamAdminUserNewHTML(qw422016, f, lc)
+	StreamAdminUserNew(qw422016, f, lc)
 //line views/admin.qtpl:128
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:128
 }
 
 //line views/admin.qtpl:128
-func AdminUserNewHTML(f util.FormData, lc *l18n.Localizer) string {
+func AdminUserNew(f util.FormData, lc *l18n.Localizer) string {
 //line views/admin.qtpl:128
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:128
-	WriteAdminUserNewHTML(qb422016, f, lc)
+	WriteAdminUserNew(qb422016, f, lc)
 //line views/admin.qtpl:128
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:128
@@ -453,7 +453,7 @@ func AdminUserNewHTML(f util.FormData, lc *l18n.Localizer) string {
 }
 
 //line views/admin.qtpl:130
-func StreamAdminUserEditHTML(qw422016 *qt422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
+func StreamAdminUserEdit(qw422016 *qt422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:130
 	qw422016.N().S(`
 <div class="layout">
@@ -586,22 +586,22 @@ func StreamAdminUserEditHTML(qw422016 *qt422016.Writer, u *user.User, f util.For
 }
 
 //line views/admin.qtpl:168
-func WriteAdminUserEditHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
+func WriteAdminUserEdit(qq422016 qtio422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:168
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:168
-	StreamAdminUserEditHTML(qw422016, u, f, lc)
+	StreamAdminUserEdit(qw422016, u, f, lc)
 //line views/admin.qtpl:168
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:168
 }
 
 //line views/admin.qtpl:168
-func AdminUserEditHTML(u *user.User, f util.FormData, lc *l18n.Localizer) string {
+func AdminUserEdit(u *user.User, f util.FormData, lc *l18n.Localizer) string {
 //line views/admin.qtpl:168
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:168
-	WriteAdminUserEditHTML(qb422016, u, f, lc)
+	WriteAdminUserEdit(qb422016, u, f, lc)
 //line views/admin.qtpl:168
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:168
@@ -612,7 +612,7 @@ func AdminUserEditHTML(u *user.User, f util.FormData, lc *l18n.Localizer) string
 }
 
 //line views/admin.qtpl:170
-func StreamAdminUserDeleteHTML(qw422016 *qt422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
+func StreamAdminUserDelete(qw422016 *qt422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:170
 	qw422016.N().S(`
 <div class="layout">
@@ -675,22 +675,22 @@ func StreamAdminUserDeleteHTML(qw422016 *qt422016.Writer, u *user.User, f util.F
 }
 
 //line views/admin.qtpl:190
-func WriteAdminUserDeleteHTML(qq422016 qtio422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
+func WriteAdminUserDelete(qq422016 qtio422016.Writer, u *user.User, f util.FormData, lc *l18n.Localizer) {
 //line views/admin.qtpl:190
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/admin.qtpl:190
-	StreamAdminUserDeleteHTML(qw422016, u, f, lc)
+	StreamAdminUserDelete(qw422016, u, f, lc)
 //line views/admin.qtpl:190
 	qt422016.ReleaseWriter(qw422016)
 //line views/admin.qtpl:190
 }
 
 //line views/admin.qtpl:190
-func AdminUserDeleteHTML(u *user.User, f util.FormData, lc *l18n.Localizer) string {
+func AdminUserDelete(u *user.User, f util.FormData, lc *l18n.Localizer) string {
 //line views/admin.qtpl:190
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/admin.qtpl:190
-	WriteAdminUserDeleteHTML(qb422016, u, f, lc)
+	WriteAdminUserDelete(qb422016, u, f, lc)
 //line views/admin.qtpl:190
 	qs422016 := string(qb422016.B)
 //line views/admin.qtpl:190

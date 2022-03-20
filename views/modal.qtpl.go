@@ -27,7 +27,7 @@ var (
 )
 
 //line views/modal.qtpl:5
-func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
+func StreamDeleteAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:5
 	qw422016.N().S(`
 `)
@@ -65,22 +65,22 @@ func StreamDeleteAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 }
 
 //line views/modal.qtpl:17
-func WriteDeleteAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
+func WriteDeleteAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:17
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:17
-	StreamDeleteAskHTML(qw422016, rq, hyphaName)
+	StreamDeleteAsk(qw422016, rq, hyphaName)
 //line views/modal.qtpl:17
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:17
 }
 
 //line views/modal.qtpl:17
-func DeleteAskHTML(rq *http.Request, hyphaName string) string {
+func DeleteAsk(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:17
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:17
-	WriteDeleteAskHTML(qb422016, rq, hyphaName)
+	WriteDeleteAsk(qb422016, rq, hyphaName)
 //line views/modal.qtpl:17
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:17
@@ -91,7 +91,7 @@ func DeleteAskHTML(rq *http.Request, hyphaName string) string {
 }
 
 //line views/modal.qtpl:19
-func StreamRemoveMediaAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
+func StreamRemoveMediaAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:19
 	qw422016.N().S(`
 `)
@@ -124,22 +124,22 @@ func StreamRemoveMediaAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hypha
 }
 
 //line views/modal.qtpl:30
-func WriteRemoveMediaAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
+func WriteRemoveMediaAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:30
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:30
-	StreamRemoveMediaAskHTML(qw422016, rq, hyphaName)
+	StreamRemoveMediaAsk(qw422016, rq, hyphaName)
 //line views/modal.qtpl:30
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:30
 }
 
 //line views/modal.qtpl:30
-func RemoveMediaAskHTML(rq *http.Request, hyphaName string) string {
+func RemoveMediaAsk(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:30
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:30
-	WriteRemoveMediaAskHTML(qb422016, rq, hyphaName)
+	WriteRemoveMediaAsk(qb422016, rq, hyphaName)
 //line views/modal.qtpl:30
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:30
@@ -153,7 +153,7 @@ func RemoveMediaAskHTML(rq *http.Request, hyphaName string) string {
 //
 
 //line views/modal.qtpl:34
-func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
+func StreamRenameAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:34
 	qw422016.N().S(`
 `)
@@ -204,22 +204,22 @@ func StreamRenameAskHTML(qw422016 *qt422016.Writer, rq *http.Request, hyphaName 
 }
 
 //line views/modal.qtpl:51
-func WriteRenameAskHTML(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
+func WriteRenameAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:51
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/modal.qtpl:51
-	StreamRenameAskHTML(qw422016, rq, hyphaName)
+	StreamRenameAsk(qw422016, rq, hyphaName)
 //line views/modal.qtpl:51
 	qt422016.ReleaseWriter(qw422016)
 //line views/modal.qtpl:51
 }
 
 //line views/modal.qtpl:51
-func RenameAskHTML(rq *http.Request, hyphaName string) string {
+func RenameAsk(rq *http.Request, hyphaName string) string {
 //line views/modal.qtpl:51
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/modal.qtpl:51
-	WriteRenameAskHTML(qb422016, rq, hyphaName)
+	WriteRenameAsk(qb422016, rq, hyphaName)
 //line views/modal.qtpl:51
 	qs422016 := string(qb422016.B)
 //line views/modal.qtpl:51

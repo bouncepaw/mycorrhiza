@@ -11,7 +11,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func MediaMenuHTML(rq *http.Request, h hyphae.Hypha, u *user.User) %}
+{% func MediaMenu(rq *http.Request, h hyphae.Hypha, u *user.User) %}
 {% code
 	lc := l18n.FromRequest(rq)
 %}
@@ -85,7 +85,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func HyphaHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) %}
+{% func Hypha(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	u := user.FromRequest(rq)
@@ -110,7 +110,7 @@ If you rename .prevnext, change the docs too.
 		{% endif %}
 		{% endif %}
 
-		{%s= NaviTitleHTML(h) %}
+		{%s= NaviTitle(h) %}
 		{% switch h.(type) %}
 			{% case *hyphae.EmptyHypha %}
 				{%= nonExistentHyphaNotice(h, u, lc) %}
@@ -126,23 +126,23 @@ If you rename .prevnext, change the docs too.
 		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
 		{% endif %}
 	</section>
-{%= SubhyphaeHTML(subhyphae, lc) %}
+{%= Subhyphae(subhyphae, lc) %}
 	<section id="hypha-bottom">
    		{%= hyphaInfo(rq, h) %}
 	</section>
 </main>
-{%s= categoryCardHTML(h.CanonicalName()) %}
-{%= siblingHyphaeHTML(siblings, lc) %}
+{%s= categoryCard(h.CanonicalName()) %}
+{%= siblingHyphae(siblings, lc) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}
 
-{% func RevisionHTML(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
+{% func Revision(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
 <div class="layout">
 <main class="main-width">
 	<section>
 		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.CanonicalName() %}">{%s lc.Get("ui.revision_link") %}</a></p>
-		{%s= NaviTitleHTML(h) %}
+		{%s= NaviTitle(h) %}
 		{%s= contents %}
 	</section>
 </main>

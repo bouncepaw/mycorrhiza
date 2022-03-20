@@ -256,7 +256,7 @@ func nonExistentHyphaNotice(h hyphae.Hypha, u *user.User, lc *l18n.Localizer) st
 }
 
 //line views/hypha.qtpl:50
-func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h hyphae.Hypha) {
+func StreamNaviTitle(qw422016 *qt422016.Writer, h hyphae.Hypha) {
 //line views/hypha.qtpl:50
 	qw422016.N().S(`
 `)
@@ -323,22 +323,22 @@ func StreamNaviTitleHTML(qw422016 *qt422016.Writer, h hyphae.Hypha) {
 }
 
 //line views/hypha.qtpl:76
-func WriteNaviTitleHTML(qq422016 qtio422016.Writer, h hyphae.Hypha) {
+func WriteNaviTitle(qq422016 qtio422016.Writer, h hyphae.Hypha) {
 //line views/hypha.qtpl:76
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:76
-	StreamNaviTitleHTML(qw422016, h)
+	StreamNaviTitle(qw422016, h)
 //line views/hypha.qtpl:76
 	qt422016.ReleaseWriter(qw422016)
 //line views/hypha.qtpl:76
 }
 
 //line views/hypha.qtpl:76
-func NaviTitleHTML(h hyphae.Hypha) string {
+func NaviTitle(h hyphae.Hypha) string {
 //line views/hypha.qtpl:76
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:76
-	WriteNaviTitleHTML(qb422016, h)
+	WriteNaviTitle(qb422016, h)
 //line views/hypha.qtpl:76
 	qs422016 := string(qb422016.B)
 //line views/hypha.qtpl:76
@@ -349,29 +349,29 @@ func NaviTitleHTML(h hyphae.Hypha) string {
 }
 
 //line views/hypha.qtpl:78
-func StreamMediaHTMLRaw(qw422016 *qt422016.Writer, h *hyphae.MediaHypha) {
+func StreamMediaRaw(qw422016 *qt422016.Writer, h *hyphae.MediaHypha) {
 //line views/hypha.qtpl:78
-	StreamMediaHTML(qw422016, h, l18n.New("en", "en"))
+	StreamMedia(qw422016, h, l18n.New("en", "en"))
 //line views/hypha.qtpl:78
 }
 
 //line views/hypha.qtpl:78
-func WriteMediaHTMLRaw(qq422016 qtio422016.Writer, h *hyphae.MediaHypha) {
+func WriteMediaRaw(qq422016 qtio422016.Writer, h *hyphae.MediaHypha) {
 //line views/hypha.qtpl:78
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:78
-	StreamMediaHTMLRaw(qw422016, h)
+	StreamMediaRaw(qw422016, h)
 //line views/hypha.qtpl:78
 	qt422016.ReleaseWriter(qw422016)
 //line views/hypha.qtpl:78
 }
 
 //line views/hypha.qtpl:78
-func MediaHTMLRaw(h *hyphae.MediaHypha) string {
+func MediaRaw(h *hyphae.MediaHypha) string {
 //line views/hypha.qtpl:78
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:78
-	WriteMediaHTMLRaw(qb422016, h)
+	WriteMediaRaw(qb422016, h)
 //line views/hypha.qtpl:78
 	qs422016 := string(qb422016.B)
 //line views/hypha.qtpl:78
@@ -382,7 +382,7 @@ func MediaHTMLRaw(h *hyphae.MediaHypha) string {
 }
 
 //line views/hypha.qtpl:80
-func StreamMediaHTML(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
+func StreamMedia(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
 //line views/hypha.qtpl:80
 	qw422016.N().S(`
 	`)
@@ -486,22 +486,22 @@ func StreamMediaHTML(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.L
 }
 
 //line views/hypha.qtpl:109
-func WriteMediaHTML(qq422016 qtio422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
+func WriteMedia(qq422016 qtio422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
 //line views/hypha.qtpl:109
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/hypha.qtpl:109
-	StreamMediaHTML(qw422016, h, lc)
+	StreamMedia(qw422016, h, lc)
 //line views/hypha.qtpl:109
 	qt422016.ReleaseWriter(qw422016)
 //line views/hypha.qtpl:109
 }
 
 //line views/hypha.qtpl:109
-func MediaHTML(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
+func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
 //line views/hypha.qtpl:109
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/hypha.qtpl:109
-	WriteMediaHTML(qb422016, h, lc)
+	WriteMedia(qb422016, h, lc)
 //line views/hypha.qtpl:109
 	qs422016 := string(qb422016.B)
 //line views/hypha.qtpl:109

@@ -22,9 +22,9 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = util.HyphaNameFromRq(rq, "backlinks")
 		lc        = l18n.FromRequest(rq)
 	)
-	util.HTTP200Page(w, views.BaseHTML(
+	util.HTTP200Page(w, views.Base(
 		lc.Get("ui.backlinks_title", &l18n.Replacements{"query": util.BeautifulName(hyphaName)}),
-		views.BacklinksHTML(hyphaName, backlinks.YieldHyphaBacklinks, lc),
+		views.Backlinks(hyphaName, backlinks.YieldHyphaBacklinks, lc),
 		lc,
 		user.FromRequest(rq)))
 }
