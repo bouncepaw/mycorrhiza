@@ -25,8 +25,8 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName  = rq.PostFormValue("hypha")
-		catName    = rq.PostFormValue("cat")
+		hyphaName  = util.CanonicalName(rq.PostFormValue("hypha"))
+		catName    = util.CanonicalName(rq.PostFormValue("cat"))
 		redirectTo = rq.PostFormValue("redirect-to")
 	)
 	categories.RemoveHyphaFromCategory(hyphaName, catName)
@@ -36,8 +36,8 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName  = rq.PostFormValue("hypha")
-		catName    = rq.PostFormValue("cat")
+		hyphaName  = util.CanonicalName(rq.PostFormValue("hypha"))
+		catName    = util.CanonicalName(rq.PostFormValue("cat"))
 		redirectTo = rq.PostFormValue("redirect-to")
 	)
 	categories.AddHyphaToCategory(hyphaName, catName)

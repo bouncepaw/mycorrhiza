@@ -40,7 +40,7 @@ func Contents(catName string) (hyphaList []string) {
 
 var mutex sync.RWMutex
 
-// AddHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens.
+// AddHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens. Pass canonical names.
 func AddHyphaToCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
@@ -58,7 +58,7 @@ func AddHyphaToCategory(hyphaName, catName string) {
 	go saveToDisk()
 }
 
-// RemoveHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens.
+// RemoveHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens. Pass canonical names.
 func RemoveHyphaFromCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
