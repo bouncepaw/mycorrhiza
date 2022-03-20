@@ -42,12 +42,6 @@ func InitCategories() {
 	}
 
 	log.Println("Found", len(categoryToHyphae), "categories")
-	for cat, catNode := range categoryToHyphae { // TODO: remove when not needed
-		log.Println(cat, "->", catNode.hyphaList)
-	}
-	for hyp, hypNode := range hyphaToCategories {
-		log.Println(hyp, "<-", hypNode.categoryList)
-	}
 }
 
 type categoryNode struct {

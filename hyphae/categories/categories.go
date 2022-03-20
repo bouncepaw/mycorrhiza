@@ -20,7 +20,11 @@ import "sync"
 func WithHypha(hyphaName string) (categoryList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
-	return hyphaToCategories[hyphaName].categoryList
+	if node, ok := hyphaToCategories[hyphaName]; ok {
+		return node.categoryList
+	} else {
+		return nil
+	}
 }
 
 // Contents returns what hyphae are in the category. If the returned slice is empty, the category does not exist, and vice versa. The category name must be canonical.

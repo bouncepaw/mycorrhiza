@@ -18,7 +18,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 	var (
 		catName = util.HyphaNameFromRq(rq, "category")
 	)
-	views.CategoryPageHTML(w, rq, catName)
+	views.CategoryPageHTML(views.MetaFrom(w, rq), catName)
 }
 
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
