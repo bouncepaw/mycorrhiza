@@ -160,10 +160,6 @@ It outputs a poorly formatted JSON, but it works and is valid.
 <p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
 {% endfunc %}
 
-{% func helpTopicBadgeHTML(lang, topic string) %}
-<a class="help-topic-badge" href="/help/en/{%s topic %}">?</a>
-{% endfunc %}
-
 {% func HyphaListHTML(lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">

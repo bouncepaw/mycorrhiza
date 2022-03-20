@@ -601,63 +601,24 @@ func HelpEmptyErrorHTML(lc *l18n.Localizer) string {
 }
 
 //line views/stuff.qtpl:163
-func streamhelpTopicBadgeHTML(qw422016 *qt422016.Writer, lang, topic string) {
-//line views/stuff.qtpl:163
-	qw422016.N().S(`
-<a class="help-topic-badge" href="/help/en/`)
-//line views/stuff.qtpl:164
-	qw422016.E().S(topic)
-//line views/stuff.qtpl:164
-	qw422016.N().S(`">?</a>
-`)
-//line views/stuff.qtpl:165
-}
-
-//line views/stuff.qtpl:165
-func writehelpTopicBadgeHTML(qq422016 qtio422016.Writer, lang, topic string) {
-//line views/stuff.qtpl:165
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:165
-	streamhelpTopicBadgeHTML(qw422016, lang, topic)
-//line views/stuff.qtpl:165
-	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:165
-}
-
-//line views/stuff.qtpl:165
-func helpTopicBadgeHTML(lang, topic string) string {
-//line views/stuff.qtpl:165
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:165
-	writehelpTopicBadgeHTML(qb422016, lang, topic)
-//line views/stuff.qtpl:165
-	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:165
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:165
-	return qs422016
-//line views/stuff.qtpl:165
-}
-
-//line views/stuff.qtpl:167
 func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:167
+//line views/stuff.qtpl:163
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width">
 	<h1>`)
-//line views/stuff.qtpl:170
+//line views/stuff.qtpl:166
 	qw422016.E().S(lc.Get("ui.list_heading"))
-//line views/stuff.qtpl:170
+//line views/stuff.qtpl:166
 	qw422016.N().S(`</h1>
 	<p>`)
-//line views/stuff.qtpl:171
+//line views/stuff.qtpl:167
 	qw422016.E().S(lc.GetPlural("ui.list_desc", hyphae.Count()))
-//line views/stuff.qtpl:171
+//line views/stuff.qtpl:167
 	qw422016.N().S(`</p>
 	<ul class="hypha-list">
 		`)
-//line views/stuff.qtpl:174
+//line views/stuff.qtpl:170
 	hyphaNames := make(chan string)
 	sortedHypha := hyphae.PathographicSort(hyphaNames)
 	for hypha := range hyphae.YieldExistingHyphae() {
@@ -665,134 +626,134 @@ func StreamHyphaListHTML(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	}
 	close(hyphaNames)
 
-//line views/stuff.qtpl:180
+//line views/stuff.qtpl:176
 	qw422016.N().S(`
 		`)
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:177
 	for hyphaName := range sortedHypha {
-//line views/stuff.qtpl:181
+//line views/stuff.qtpl:177
 		qw422016.N().S(`
 		`)
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:178
 		h := hyphae.ByName(hyphaName)
 
-//line views/stuff.qtpl:182
+//line views/stuff.qtpl:178
 		qw422016.N().S(`
 		<li class="hypha-list__entry">
 			<a class="hypha-list__link" href="/hypha/`)
-//line views/stuff.qtpl:184
+//line views/stuff.qtpl:180
 		qw422016.E().S(h.CanonicalName())
-//line views/stuff.qtpl:184
+//line views/stuff.qtpl:180
 		qw422016.N().S(`">
 				`)
-//line views/stuff.qtpl:185
+//line views/stuff.qtpl:181
 		qw422016.E().S(util.BeautifulName(h.CanonicalName()))
-//line views/stuff.qtpl:185
+//line views/stuff.qtpl:181
 		qw422016.N().S(`
 			</a>
 			`)
-//line views/stuff.qtpl:187
+//line views/stuff.qtpl:183
 		switch h := h.(type) {
-//line views/stuff.qtpl:188
+//line views/stuff.qtpl:184
 		case *hyphae.MediaHypha:
-//line views/stuff.qtpl:188
+//line views/stuff.qtpl:184
 			qw422016.N().S(`
 				<span class="hypha-list__amnt-type">
 					`)
-//line views/stuff.qtpl:190
+//line views/stuff.qtpl:186
 			qw422016.E().S(filepath.Ext(h.MediaFilePath())[1:])
-//line views/stuff.qtpl:190
+//line views/stuff.qtpl:186
 			qw422016.N().S(`
 				</span>
 			`)
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:188
 		}
-//line views/stuff.qtpl:192
+//line views/stuff.qtpl:188
 		qw422016.N().S(`
 		</li>
 		`)
-//line views/stuff.qtpl:194
+//line views/stuff.qtpl:190
 	}
-//line views/stuff.qtpl:194
+//line views/stuff.qtpl:190
 	qw422016.N().S(`
 	</ul>
 </main>
 </div>
 `)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 func WriteHyphaListHTML(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	StreamHyphaListHTML(qw422016, lc)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 func HyphaListHTML(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	WriteHyphaListHTML(qb422016, lc)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 	return qs422016
-//line views/stuff.qtpl:198
+//line views/stuff.qtpl:194
 }
 
-//line views/stuff.qtpl:200
+//line views/stuff.qtpl:196
 func StreamCommonScripts(qw422016 *qt422016.Writer) {
-//line views/stuff.qtpl:200
+//line views/stuff.qtpl:196
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:201
+//line views/stuff.qtpl:197
 	for _, scriptPath := range cfg.CommonScripts {
-//line views/stuff.qtpl:201
+//line views/stuff.qtpl:197
 		qw422016.N().S(`
 <script src="`)
-//line views/stuff.qtpl:202
+//line views/stuff.qtpl:198
 		qw422016.E().S(scriptPath)
-//line views/stuff.qtpl:202
+//line views/stuff.qtpl:198
 		qw422016.N().S(`"></script>
 `)
-//line views/stuff.qtpl:203
+//line views/stuff.qtpl:199
 	}
-//line views/stuff.qtpl:203
+//line views/stuff.qtpl:199
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 }
 
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 func WriteCommonScripts(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	StreamCommonScripts(qw422016)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 }
 
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 func CommonScripts() string {
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	WriteCommonScripts(qb422016)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 	return qs422016
-//line views/stuff.qtpl:204
+//line views/stuff.qtpl:200
 }

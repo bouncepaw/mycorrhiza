@@ -82,7 +82,6 @@ if err != nil {
 
 		{% endfor %}
 	{% endif %}
-	{%s= helpTopicBadgeHTML(lc.Locale, "recent_changes") %}
 	</section>
 </main>
 </div>
