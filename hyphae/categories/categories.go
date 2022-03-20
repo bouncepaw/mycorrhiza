@@ -27,7 +27,11 @@ func WithHypha(hyphaName string) (categoryList []string) {
 func Contents(catName string) (hyphaList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
-	return categoryToHyphae[catName].hyphaList
+	if node, ok := categoryToHyphae[catName]; ok {
+		return node.hyphaList
+	} else {
+		return nil
+	}
 }
 
 var mutex sync.RWMutex
