@@ -13,6 +13,13 @@ import (
 //go:embed categories.html
 var fs embed.FS
 
+const categoriesRu = `
+{{define "empty cat"}}Эта категория пуста.{{end}}
+{{define "add hypha"}}Добавить в категорию{{end}}
+{{define "cat"}}Категория{{end}}
+{{define "hypha name"}}Имя гифы{{end}}
+`
+
 var (
 	categoryT *template.Template
 )
@@ -44,7 +51,11 @@ func categoryCardHTML(hyphaName string) string {
 
 func CategoryPageHTML(meta Meta, catName string) {
 	var buf strings.Builder
-	err := categoryT.ExecuteTemplate(&buf, "category page", struct {
+	var t, _ = categoryT.Clone()
+	if meta.Lc.Locale == "ru" {
+		_, _ = t.Parse(categoriesRu)
+	}
+	err := t.ExecuteTemplate(&buf, "category page", struct {
 		CatName string
 		Hyphae  []string
 	}{
