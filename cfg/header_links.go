@@ -17,6 +17,7 @@ func SetDefaultHeaderLinks() {
 		{"/list", "All hyphae"},
 		{"/random", "Random"},
 		{"/help", "Help"},
+		{"/category", "Categories"},
 	}
 }
 
