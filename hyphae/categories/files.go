@@ -6,6 +6,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"os"
+	"sync"
 )
 
 var categoryToHyphae = map[string]*categoryNode{}
@@ -118,4 +119,29 @@ func readCategoriesFromDisk() (catFileRecord, error) {
 	}
 
 	return record, nil
+}
+
+var fileMutex sync.Mutex
+
+func saveToDisk() {
+	var (
+		record catFileRecord
+	)
+	for name, node := range categoryToHyphae {
+		record.Categories = append(record.Categories, catRecord{
+			Name:   name,
+			Hyphae: node.hyphaList,
+		})
+	}
+	data, err := json.MarshalIndent(record, "", "\t")
+	if err != nil {
+		log.Fatalln(err) // Better fail now, than later
+	}
+	// TODO: make the data safer somehow?? Back it up before overwriting?
+	fileMutex.Lock()
+	err = os.WriteFile(files.CategoriesJSON(), data, 0666)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fileMutex.Unlock()
 }
