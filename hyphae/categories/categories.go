@@ -60,5 +60,12 @@ func AddHyphaToCategory(hyphaName, catName string) {
 // RemoveHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens.
 func RemoveHyphaFromCategory(hyphaName, catName string) {
 	mutex.Lock()
+	if node, ok := hyphaToCategories[hyphaName]; ok {
+		node.removeCategory(catName)
+	}
+
+	if node, ok := categoryToHyphae[catName]; ok {
+		node.removeHypha(hyphaName)
+	}
 	mutex.Unlock()
 }

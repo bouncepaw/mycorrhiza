@@ -58,6 +58,15 @@ func (cn *categoryNode) storeHypha(hypname string) {
 	cn.hyphaList = append(cn.hyphaList, hypname)
 }
 
+func (cn *categoryNode) removeHypha(hypname string) {
+	for i, hyphaName := range cn.hyphaList {
+		if hyphaName == hypname {
+			cn.hyphaList[i] = cn.hyphaList[len(cn.hyphaList)-1]
+			cn.hyphaList = cn.hyphaList[:len(cn.hyphaList)-1]
+		}
+	}
+}
+
 type hyphaNode struct {
 	// TODO: ensure this is sorted
 	categoryList []string
@@ -70,6 +79,15 @@ func (hn *hyphaNode) storeCategory(cat string) {
 		}
 	}
 	hn.categoryList = append(hn.categoryList, cat)
+}
+
+func (hn *hyphaNode) removeCategory(cat string) {
+	for i, category := range hn.categoryList {
+		if category == cat {
+			hn.categoryList[i] = hn.categoryList[len(hn.categoryList)-1]
+			hn.categoryList = hn.categoryList[:len(hn.categoryList)-1]
+		}
+	}
 }
 
 type catFileRecord struct {
