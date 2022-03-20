@@ -16,6 +16,16 @@ package categories
 
 import "sync"
 
+// List returns names of all categories.
+func List() (categoryList []string) {
+	mutex.RLock()
+	for cat, _ := range categoryToHyphae {
+		categoryList = append(categoryList, cat)
+	}
+	mutex.RUnlock()
+	return categoryList
+}
+
 // WithHypha returns what categories have the given hypha. The hypha name must be canonical.
 func WithHypha(hyphaName string) (categoryList []string) {
 	mutex.RLock()

@@ -52,3 +52,20 @@
 	</ul>
 </main>
 {{end}}
+
+{{define "category list"}}
+<main class="main-width category-list">
+	<h1>Category list</h1>
+	{{if len .Categories}}
+	<ul class="category-list__entries">
+		{{range .Categories}}
+		<li class="category-list__entry">
+			<a class="wikilink" href="/category/{{.}}">{{beautifulName .}}</a>
+		</li>
+		{{end}}
+	</ul>
+	{{else}}
+	<p>This wiki has no categories.</p>
+	{{end}}
+</main>
+{{end}}

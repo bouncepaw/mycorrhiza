@@ -64,3 +64,24 @@ func CategoryPageHTML(meta Meta, catName string) {
 		log.Println(err)
 	}
 }
+
+func CategoryListHTML(meta Meta) {
+	var buf strings.Builder
+	err := categoryT.ExecuteTemplate(&buf, "category list", struct {
+		Categories []string
+	}{
+		categories.List(),
+	})
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = io.WriteString(meta.W, BaseHTML(
+		"Category list",
+		buf.String(),
+		meta.Lc,
+		meta.U,
+	))
+	if err != nil {
+		log.Println(err)
+	}
+}

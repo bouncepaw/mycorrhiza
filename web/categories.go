@@ -12,6 +12,11 @@ func initCategories(r *mux.Router) {
 	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
 	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
 	r.PathPrefix("/category/").HandlerFunc(handlerCategory).Methods("GET")
+	r.PathPrefix("/category").HandlerFunc(handlerListCategory).Methods("GET")
+}
+
+func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
+	views.CategoryListHTML(views.MetaFrom(w, rq))
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
