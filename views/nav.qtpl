@@ -1,4 +1,3 @@
-{% import "net/http" %}
 {% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae/backlinks" %}
@@ -14,10 +13,10 @@
 {% endif %}
 {% endfunc %}
 
-{% func hyphaInfo(rq *http.Request, h hyphae.Hypha) %}
+{% func hyphaInfo(meta Meta, h hyphae.Hypha) %}
 {% code
-	u := user.FromRequest(rq)
-	lc := l18n.FromRequest(rq)
+	u := meta.U
+	lc := meta.Lc
 	backs := backlinks.BacklinksCount(h)
 %}
 <nav class="hypha-info">

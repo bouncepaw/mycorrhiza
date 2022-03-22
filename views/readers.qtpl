@@ -85,25 +85,25 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func Hypha(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) %}
+{% func Hypha(meta Meta, h hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
-	u := user.FromRequest(rq)
+	lc := meta.Lc
 %}
 <div class="layout">
 <main class="main-width">
 	<section id="hypha">
-		{% if u.CanProceed("edit") %}
+		{% if meta.U.CanProceed("edit") %}
 		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/edit/{%s h.CanonicalName() %}">{%s lc.Get("ui.edit_link") %}</a>
 		</div>
 		{% endif %}
 
-		{% if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && u.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha + "/") %}
+		{% if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha + "/") %}
 		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/logout">{%s lc.Get("ui.logout_link") %}</a>
 		</div>
-		{% if u.Group == "admin" %}
+		{% if meta.U.Group == "admin" %}
 		<div class="btn btn_navititle">
 			<a class="btn__link_navititle" href="/admin">{%s lc.Get("ui.admin_panel") %}<a>
 		</div>
@@ -113,7 +113,7 @@ If you rename .prevnext, change the docs too.
 		{%s= NaviTitle(h) %}
 		{% switch h.(type) %}
 			{% case *hyphae.EmptyHypha %}
-				{%= nonExistentHyphaNotice(h, u, lc) %}
+				{%= nonExistentHyphaNotice(h, meta.U, meta.Lc) %}
 			{% default %}
 				{%s= contents %}
 		{% endswitch %}
@@ -126,13 +126,13 @@ If you rename .prevnext, change the docs too.
 		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
 		{% endif %}
 	</section>
-{%= Subhyphae(subhyphae, lc) %}
+{%= Subhyphae(subhyphae, meta.Lc) %}
 	<section id="hypha-bottom">
-   		{%= hyphaInfo(rq, h) %}
+   		{%= hyphaInfo(meta, h) %}
 	</section>
 </main>
-{%s= categoryCard(h.CanonicalName()) %}
-{%= siblingHyphae(siblings, lc) %}
+{%s= categoryCard(meta, h.CanonicalName()) %}
+{%= siblingHyphae(siblings, meta.Lc) %}
 </div>
 {%= viewScripts() %}
 {% endfunc %}

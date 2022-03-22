@@ -14,6 +14,10 @@ const categoriesRu = `
 {{define "add hypha"}}Добавить в категорию{{end}}
 {{define "cat"}}Категория{{end}}
 {{define "hypha name"}}Имя гифы{{end}}
+{{define "categories"}}Категории{{end}}
+{{define "placeholder"}}Имя категории{{end}}
+{{define "remove from category title"}}Убрать гифу из этой категории{{end}}
+{{define "add to category"}}Добавить гифу в эту категорию{{end}}
 `
 
 var (
@@ -30,12 +34,19 @@ func init() {
 		ParseFS(fs, "categories.html"))
 }
 
-func categoryCard(hyphaName string) string {
+func categoryCard(meta Meta, hyphaName string) string {
 	var buf strings.Builder
 	t, err := categoryT.Clone()
 	if err != nil {
 		log.Println(err)
 		return ""
+	}
+	if meta.Lc.Locale == "ru" {
+		_, err = t.Parse(categoriesRu)
+		if err != nil {
+			log.Println(err)
+			return ""
+		}
 	}
 	err = t.ExecuteTemplate(&buf, "category card", struct {
 		HyphaName  string

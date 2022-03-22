@@ -200,7 +200,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP404Page(w,
 			views.Base(
 				util.BeautifulName(hyphaName),
-				views.Hypha(rq, lc, h, contents),
+				views.Hypha(views.MetaFrom(w, rq), h, contents),
 				lc,
 				u,
 				openGraph))
@@ -222,7 +222,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP200Page(w,
 			views.Base(
 				util.BeautifulName(hyphaName),
-				views.Hypha(rq, lc, h, contents),
+				views.Hypha(views.MetaFrom(w, rq), h, contents),
 				lc,
 				u,
 				openGraph))

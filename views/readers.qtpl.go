@@ -311,13 +311,13 @@ func MediaMenu(rq *http.Request, h hyphae.Hypha, u *user.User) string {
 // If you rename .prevnext, change the docs too.
 
 //line views/readers.qtpl:88
-func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) {
+func StreamHypha(qw422016 *qt422016.Writer, meta Meta, h hyphae.Hypha, contents string) {
 //line views/readers.qtpl:88
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:90
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
-	u := user.FromRequest(rq)
+	lc := meta.Lc
 
 //line views/readers.qtpl:92
 	qw422016.N().S(`
@@ -326,7 +326,7 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 	<section id="hypha">
 		`)
 //line views/readers.qtpl:96
-	if u.CanProceed("edit") {
+	if meta.U.CanProceed("edit") {
 //line views/readers.qtpl:96
 		qw422016.N().S(`
 		<div class="btn btn_navititle">
@@ -348,7 +348,7 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 
 		`)
 //line views/readers.qtpl:102
-	if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && u.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/") {
+	if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/") {
 //line views/readers.qtpl:102
 		qw422016.N().S(`
 		<div class="btn btn_navititle">
@@ -360,7 +360,7 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 		</div>
 		`)
 //line views/readers.qtpl:106
-		if u.Group == "admin" {
+		if meta.U.Group == "admin" {
 //line views/readers.qtpl:106
 			qw422016.N().S(`
 		<div class="btn btn_navititle">
@@ -395,7 +395,7 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 		qw422016.N().S(`
 				`)
 //line views/readers.qtpl:116
-		streamnonExistentHyphaNotice(qw422016, h, u, lc)
+		streamnonExistentHyphaNotice(qw422016, h, meta.U, meta.Lc)
 //line views/readers.qtpl:116
 		qw422016.N().S(`
 			`)
@@ -456,25 +456,25 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 	</section>
 `)
 //line views/readers.qtpl:129
-	StreamSubhyphae(qw422016, subhyphae, lc)
+	StreamSubhyphae(qw422016, subhyphae, meta.Lc)
 //line views/readers.qtpl:129
 	qw422016.N().S(`
 	<section id="hypha-bottom">
    		`)
 //line views/readers.qtpl:131
-	streamhyphaInfo(qw422016, rq, h)
+	streamhyphaInfo(qw422016, meta, h)
 //line views/readers.qtpl:131
 	qw422016.N().S(`
 	</section>
 </main>
 `)
 //line views/readers.qtpl:134
-	qw422016.N().S(categoryCard(h.CanonicalName()))
+	qw422016.N().S(categoryCard(meta, h.CanonicalName()))
 //line views/readers.qtpl:134
 	qw422016.N().S(`
 `)
 //line views/readers.qtpl:135
-	streamsiblingHyphae(qw422016, siblings, lc)
+	streamsiblingHyphae(qw422016, siblings, meta.Lc)
 //line views/readers.qtpl:135
 	qw422016.N().S(`
 </div>
@@ -488,22 +488,22 @@ func StreamHypha(qw422016 *qt422016.Writer, rq *http.Request, lc *l18n.Localizer
 }
 
 //line views/readers.qtpl:138
-func WriteHypha(qq422016 qtio422016.Writer, rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) {
+func WriteHypha(qq422016 qtio422016.Writer, meta Meta, h hyphae.Hypha, contents string) {
 //line views/readers.qtpl:138
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/readers.qtpl:138
-	StreamHypha(qw422016, rq, lc, h, contents)
+	StreamHypha(qw422016, meta, h, contents)
 //line views/readers.qtpl:138
 	qt422016.ReleaseWriter(qw422016)
 //line views/readers.qtpl:138
 }
 
 //line views/readers.qtpl:138
-func Hypha(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents string) string {
+func Hypha(meta Meta, h hyphae.Hypha, contents string) string {
 //line views/readers.qtpl:138
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/readers.qtpl:138
-	WriteHypha(qb422016, rq, lc, h, contents)
+	WriteHypha(qb422016, meta, h, contents)
 //line views/readers.qtpl:138
 	qs422016 := string(qb422016.B)
 //line views/readers.qtpl:138
