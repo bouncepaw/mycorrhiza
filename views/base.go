@@ -1,6 +1,7 @@
 package views
 
 import (
+	"embed"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"io"
@@ -23,3 +24,6 @@ func MetaFrom(w http.ResponseWriter, rq *http.Request) Meta {
 		W:  w,
 	}
 }
+
+//go:embed *.html
+var fs embed.FS

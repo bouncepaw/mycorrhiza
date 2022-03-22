@@ -239,6 +239,7 @@ blockquote { border-left: 2px #999 solid; }
 .prevnext { border-top: #eee 1px solid; }
 td { border: #ddd 1px solid; }
 
+.categories-card__link:hover,
 .sibling-hyphae__link:hover { background-color: #eee; }
 
 /* Dark theme! */
@@ -249,7 +250,10 @@ main,  article, header, .layout-card { background-color: #343434; color: #ddd; }
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-.subhyphae__link:hover, .sibling-hyphae__link:hover { background-color: #444; }
+
+.categories-card__link:hover,
+.subhyphae__link:hover,
+.sibling-hyphae__link:hover { background-color: #444; }
 
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
 
@@ -279,10 +283,36 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
  * Categories
  */
 .categories-card__entries {
-	padding-left: 1rem;
+	padding: 0;
+	margin: 0;
 }
-.categories-card__remove-form {
-	float: right;
+.categories-card__entry {
+	display: flex;
+}
+.categories-card__link {
+	display: inline-block;
+	text-decoration: none;
+	padding: .25rem .5rem;
+	flex: 9;
+}
+.categories-card__add-to-cat {
+	width: 100%;
+}
+.categories-card__add-form {
+	width: 100%;
+	display: flex;
+}
+.categories-card .categories-card__btn {
+	display: block;
+	flex: 1;
+	border: none;
+	background: none;
+}
+.categories-card #_cat-name {
+	width: 100%;
+	margin: 0;
+	padding: 0 .5rem;
+	border: none;
 }
 
 /*

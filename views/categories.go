@@ -1,7 +1,6 @@
 package views
 
 import (
-	"embed"
 	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"html/template"
@@ -9,9 +8,6 @@ import (
 	"log"
 	"strings"
 )
-
-//go:embed categories.html
-var fs embed.FS
 
 const categoriesRu = `
 {{define "empty cat"}}Эта категория пуста.{{end}}
@@ -31,12 +27,17 @@ func init() {
 			template.FuncMap{
 				"beautifulName": util.BeautifulName,
 			}).
-		ParseFS(fs, "*"))
+		ParseFS(fs, "categories.html"))
 }
 
 func categoryCard(hyphaName string) string {
 	var buf strings.Builder
-	err := categoryT.ExecuteTemplate(&buf, "category card", struct {
+	t, err := categoryT.Clone()
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	err = t.ExecuteTemplate(&buf, "category card", struct {
 		HyphaName  string
 		Categories []string
 	}{
@@ -51,11 +52,19 @@ func categoryCard(hyphaName string) string {
 
 func CategoryPage(meta Meta, catName string) {
 	var buf strings.Builder
-	var t, _ = categoryT.Clone()
-	if meta.Lc.Locale == "ru" {
-		_, _ = t.Parse(categoriesRu)
+	var t, err = categoryT.Clone()
+	if err != nil {
+		log.Println(err)
+		return
 	}
-	err := t.ExecuteTemplate(&buf, "category page", struct {
+	if meta.Lc.Locale == "ru" {
+		_, err = t.Parse(categoriesRu)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	err = t.ExecuteTemplate(&buf, "category page", struct {
 		CatName string
 		Hyphae  []string
 	}{

@@ -215,7 +215,7 @@ func StreamBase(qw422016 *qt422016.Writer, title, body string, lc *l18n.Localize
 		</template>
 		`)
 //line views/stuff.qtpl:80
-	StreamCommonScripts(qw422016)
+	streamcommonScripts(qw422016)
 //line views/stuff.qtpl:80
 	qw422016.N().S(`
 		<script src="/static/view.js"></script>
@@ -618,7 +618,7 @@ func HyphaList(lc *l18n.Localizer) string {
 }
 
 //line views/stuff.qtpl:176
-func StreamCommonScripts(qw422016 *qt422016.Writer) {
+func streamcommonScripts(qw422016 *qt422016.Writer) {
 //line views/stuff.qtpl:176
 	qw422016.N().S(`
 `)
@@ -641,22 +641,22 @@ func StreamCommonScripts(qw422016 *qt422016.Writer) {
 }
 
 //line views/stuff.qtpl:180
-func WriteCommonScripts(qq422016 qtio422016.Writer) {
+func writecommonScripts(qq422016 qtio422016.Writer) {
 //line views/stuff.qtpl:180
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line views/stuff.qtpl:180
-	StreamCommonScripts(qw422016)
+	streamcommonScripts(qw422016)
 //line views/stuff.qtpl:180
 	qt422016.ReleaseWriter(qw422016)
 //line views/stuff.qtpl:180
 }
 
 //line views/stuff.qtpl:180
-func CommonScripts() string {
+func commonScripts() string {
 //line views/stuff.qtpl:180
 	qb422016 := qt422016.AcquireByteBuffer()
 //line views/stuff.qtpl:180
-	WriteCommonScripts(qb422016)
+	writecommonScripts(qb422016)
 //line views/stuff.qtpl:180
 	qs422016 := string(qb422016.B)
 //line views/stuff.qtpl:180

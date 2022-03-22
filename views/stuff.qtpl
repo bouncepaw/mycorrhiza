@@ -77,7 +77,7 @@
 				<div class="dialog__content"></div>
 			</div>
 		</template>
-		{%= CommonScripts() %}
+		{%= commonScripts() %}
 		<script src="/static/view.js"></script>
 	</body>
 </html>
@@ -173,7 +173,7 @@
 </div>
 {% endfunc %}
 
-{% func CommonScripts() %}
+{% func commonScripts() %}
 {% for _, scriptPath := range cfg.CommonScripts %}
 <script src="{%s scriptPath %}"></script>
 {% endfor %}

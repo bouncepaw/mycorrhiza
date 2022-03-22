@@ -10,16 +10,16 @@
 				<input type="hidden" name="cat" value="{{.}}">
 				<input type="hidden" name="hypha" value="{{$hyphaName}}">
 				<input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
-				<input type="submit" value="X">
+				<input type="submit" value="x" class="btn categories-card__btn">
 			</form>
 		</li>
 		{{end}}
 		<li class="categories-card__entry categories-card__add-to-cat">
 			<form method="POST" action="/add-to-category" class="categories-card__add-form">
-				<input type="text" name="cat" id="_cat-name" placeholder="Category name">
+				<input type="text" name="cat" id="_cat-name" placeholder="Category name...">
 				<input type="hidden" name="hypha" value="{{$hyphaName}}">
 				<input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
-				<input type="submit" value="Add to category">
+				<input type="submit" class="btn categories-card__btn" value="+">
 			</form>
 		</li>
 	</ul>
@@ -45,7 +45,7 @@
 				       placeholder="{{block `hypha name` .}}Hypha name{{end}}">
 				<input type="hidden" name="cat" value="{{$catName}}">
 				<input type="hidden" name="redirect-to" value="/category/{{$catName}}">
-				<input type="submit" value="{{block `add hypha` .}}Add to the category{{end}}">
+				<input type="submit" class="btn" value="{{block `add hypha` .}}Add to the category{{end}}">
 			</form>
 		</li>
 	</ul>
