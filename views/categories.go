@@ -15,40 +15,55 @@ const categoriesRu = `
 {{define "cat"}}Категория{{end}}
 {{define "hypha name"}}Имя гифы{{end}}
 {{define "categories"}}Категории{{end}}
-{{define "placeholder"}}Имя категории{{end}}
+{{define "placeholder"}}Имя категории...{{end}}
 {{define "remove from category title"}}Убрать гифу из этой категории{{end}}
-{{define "add to category"}}Добавить гифу в эту категорию{{end}}
+{{define "add to category title"}}Добавить гифу в эту категорию{{end}}
+{{define "category list heading"}}Список категорий{{end}}
+{{define "no categories"}}В этой вики нет категорий.{{end}}
+{{define "category x"}}Категория {{. | beautifulName}}{{end}}
 `
 
 var (
-	categoryT *template.Template
+	categoryTemplatesEn *template.Template
+	categoryTemplatesRu *template.Template
 )
 
 func init() {
-	categoryT = template.Must(template.
+	categoryTemplatesEn = template.Must(template.
 		New("category").
 		Funcs(
 			template.FuncMap{
 				"beautifulName": util.BeautifulName,
 			}).
 		ParseFS(fs, "categories.html"))
+	categoryTemplatesRu = template.Must(template.Must(categoryTemplatesEn.Clone()).Parse(categoriesRu))
 }
 
-func categoryCard(meta Meta, hyphaName string) string {
+func localizedTemplates(meta Meta) *template.Template {
+	if meta.Lc.Locale == "ru" {
+		return categoryTemplatesRu
+	}
+	return categoryTemplatesEn
+}
+
+func localizedTemplateAsString(meta Meta, name string, datum ...interface{}) string {
 	var buf strings.Builder
-	t, err := categoryT.Clone()
+	var err error
+	if len(datum) == 1 {
+		err = localizedTemplates(meta).ExecuteTemplate(&buf, name, datum[0])
+	} else {
+		err = localizedTemplates(meta).ExecuteTemplate(&buf, name, nil)
+	}
 	if err != nil {
 		log.Println(err)
 		return ""
 	}
-	if meta.Lc.Locale == "ru" {
-		_, err = t.Parse(categoriesRu)
-		if err != nil {
-			log.Println(err)
-			return ""
-		}
-	}
-	err = t.ExecuteTemplate(&buf, "category card", struct {
+	return buf.String()
+}
+
+func categoryCard(meta Meta, hyphaName string) string {
+	var buf strings.Builder
+	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
 		HyphaName  string
 		Categories []string
 	}{
@@ -63,19 +78,7 @@ func categoryCard(meta Meta, hyphaName string) string {
 
 func CategoryPage(meta Meta, catName string) {
 	var buf strings.Builder
-	var t, err = categoryT.Clone()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	if meta.Lc.Locale == "ru" {
-		_, err = t.Parse(categoriesRu)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}
-	err = t.ExecuteTemplate(&buf, "category page", struct {
+	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
 		CatName string
 		Hyphae  []string
 	}{
@@ -86,7 +89,7 @@ func CategoryPage(meta Meta, catName string) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
-		"Category "+util.BeautifulName(catName),
+		localizedTemplateAsString(meta, "category x", catName),
 		buf.String(),
 		meta.Lc,
 		meta.U,
@@ -98,7 +101,7 @@ func CategoryPage(meta Meta, catName string) {
 
 func CategoryList(meta Meta) {
 	var buf strings.Builder
-	err := categoryT.ExecuteTemplate(&buf, "category list", struct {
+	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category list", struct {
 		Categories []string
 	}{
 		categories.List(),
@@ -107,7 +110,7 @@ func CategoryList(meta Meta) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
-		"Category list",
+		localizedTemplateAsString(meta, "category list heading"),
 		buf.String(),
 		meta.Lc,
 		meta.U,

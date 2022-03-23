@@ -1,3 +1,5 @@
+{{define "category x"}}Category {{. | beautifulName}}{{end}}
+
 {{define "category card"}}
 {{$hyphaName := .HyphaName}}
 <aside class="layout-card categories-card">
@@ -22,7 +24,7 @@
 				<input type="hidden" name="hypha" value="{{$hyphaName}}">
 				<input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
 				<input type="submit" class="btn categories-card__btn" value="+"
-				       title="{{block `add to category` .}}Add the hypha to this category{{end}}">
+				       title="{{block `add to category title` .}}Add the hypha to this category{{end}}">
 			</form>
 		</li>
 	</ul>
@@ -57,7 +59,7 @@
 
 {{define "category list"}}
 <main class="main-width category-list">
-	<h1>Category list</h1>
+	<h1>{{block `category list heading` .}}Category list{{end}}</h1>
 	{{if len .Categories}}
 	<ul class="category-list__entries">
 		{{range .Categories}}
@@ -67,7 +69,7 @@
 		{{end}}
 	</ul>
 	{{else}}
-	<p>This wiki has no categories.</p>
+	<p>{{block `no categories` .}}This wiki has no categories.{{end}}</p>
 	{{end}}
 </main>
 {{end}}
