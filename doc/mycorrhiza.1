@@ -1,0 +1,73 @@
+.Dd March 24, 2022
+.Dt MYCORRHIZA 1
+.Os
+.Sh NAME
+.Nm mycorrhiza
+.Nd serve a wiki from mycomarkup pages in a git repo
+.Sh SYNOPSIS
+.Nm
+.Op Fl help
+.Op Fl create-admin Ar username
+.Op Fl listen-addr Ar addr
+.Ar wiki-path
+.Sh DESCRIPTION
+Mycorrhiza Wiki is a lightweight wiki engine. It uses Git repositories as a
+means of keeping history, and provides a custom-made markup language called
+Mycomarkup for authoring pages. The only runtime dependency is the
+.Nm git
+command-line program. The web interface provides viewing and editing
+capabilities, history, administration, and simple search.
+.Pp
+The
+.Nm
+program serves a web interface for the wiki located in
+.Ar wiki-path ,
+on the address specified by
+.Ar addr
+or the configuration file. If the wiki directory
+does not exist, it's automatically created, and the configuration is populated
+with default values. The default configuration file
+.Pq Pa config.ini
+includes comments describing different options.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl help
+Display help.
+.It Fl create-admin Ar username
+Create a new user with name set to
+.Ar username ,
+and give them administrative rights. The password is prompted in the terminal.
+.It Fl listen-addr Ar addr
+Listen on
+.Ar addr
+instead of the value specified in the configuration file.
+.Ar addr
+must be a valid socket address (either a path to a local Unix socket, or an
+address:port pair).
+.Sh FILES
+.Bl -tag -width wiki/users.json -compact
+.It Pa wiki/wiki.git/
+Git repository containing all hyphae (pages) in the wiki.
+.It Pa wiki/static/
+Directory holding static assets not tracked by Git and not editable by users.
+.It Pa wiki/cache/
+Storage for temporary files, such as session tokens.
+.It Pa wiki/config.ini
+Main configuration file with options required for operation. Not editable
+through the web interface.
+.It Pa wiki/users.json
+User database that contains basic user information and hashed passwords,
+serialized as a JSON file.
+.Sh SEE ALSO
+.Lk https://mycorrhiza.wiki/
+.Pp
+There's built-in documentation available. You can access it by visiting
+.Lk /help/
+on a live wiki, or by following the Help link in the default header, if
+available. For example:
+.Lk https://mycorrhiza.wiki/help/
+.Sh AUTHORS
+Created and maintained by
+.An Timur Ismagilov Aq Mt bouncepaw2@ya.ru
+with help from other contributors.
