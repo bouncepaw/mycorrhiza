@@ -1,19 +1,20 @@
 .POSIX:
-include config.example.mk
--include config.mk
+.SUFFIXES:
+
+PREFIX=/usr/local
+BINDIR=$(PREFIX)/bin
+MANDIR=$(PREFIX)/share/man
+GO=go
+
+all: mycorrhiza
 
 mycorrhiza:
-	go build .
+	$(GO) generate $(GOFLAGS)
+	$(GO) build $(GOFLAGS) . -o mycorrhiza
 
-generate:
-	go generate
+install:
+	mkdir -m755 -p $(DESTDIR)$(BINDIR) $(DESTDIR)$(MANDIR)/man1
+	install -m755 mycorrhiza $(DESTDIR)$(BINDIR)/mycorrhiza
+	install -m644 doc/mycorrhiza.1 $(DESTDIR)$(MANDIR)/man1/mycorrhiza.1
 
-run: mycorrhiza
-	./mycorrhiza ${WIKIPATH}
-
-dev: generate run
-
-check:
-	go test .
-
-.PHONY: mycorrhiza generate run dev check
+.PHONY: all mycorrhiza install

@@ -1,1 +1,0 @@
-WIKIPATH=~/src/example-wiki
