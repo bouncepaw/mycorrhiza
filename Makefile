@@ -2,7 +2,7 @@
 .SUFFIXES:
 
 PREFIX=/usr/local
-BINDIR=$(PREFIX)/bin
+SBINDIR=$(PREFIX)/sbin
 MANDIR=$(PREFIX)/share/man
 GO=go
 
@@ -13,8 +13,8 @@ mycorrhiza:
 	$(GO) build $(GOFLAGS) -o mycorrhiza .
 
 install:
-	mkdir -m755 -p $(DESTDIR)$(BINDIR) $(DESTDIR)$(MANDIR)/man1
-	install -m755 mycorrhiza $(DESTDIR)$(BINDIR)/mycorrhiza
+	mkdir -m755 -p $(DESTDIR)$(SBINDIR) $(DESTDIR)$(MANDIR)/man1
+	install -m755 mycorrhiza $(DESTDIR)$(SBINDIR)/mycorrhiza
 	install -m644 doc/mycorrhiza.1 $(DESTDIR)$(MANDIR)/man1/mycorrhiza.1
 
 .PHONY: all mycorrhiza install
