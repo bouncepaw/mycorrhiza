@@ -10,7 +10,7 @@ all: mycorrhiza
 
 mycorrhiza:
 	$(GO) generate $(GOFLAGS)
-	$(GO) build $(GOFLAGS) -o mycorrhiza .
+	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -o mycorrhiza .
 
 install:
 	mkdir -m755 -p $(DESTDIR)$(SBINDIR) $(DESTDIR)$(MANDIR)/man1
