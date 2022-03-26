@@ -31,20 +31,22 @@ type User struct {
 
 // Route — Right (more is more right)
 var minimalRights = map[string]int{
-	"text":                0,
-	"backlinks":           0,
-	"history":             0,
-	"media":               1,
-	"edit":                1,
-	"upload-binary":       1,
-	"upload-text":         1,
-	"rename":              2,
-	"remove-media":        2,
-	"update-header-links": 3,
-	"delete":              3,
-	"reindex":             4,
-	"admin":               4,
-	"admin/shutdown":      4,
+	"text":                 0,
+	"backlinks":            0,
+	"history":              0,
+	"media":                1,
+	"edit":                 1,
+	"upload-binary":        1,
+	"upload-text":          1,
+	"add-to-category":      1,
+	"remove-from-category": 1,
+	"rename":               2,
+	"remove-media":         2,
+	"update-header-links":  3,
+	"delete":               3,
+	"reindex":              4,
+	"admin":                4,
+	"admin/shutdown":       4,
 }
 
 var groups = []string{
