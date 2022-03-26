@@ -1,6 +1,6 @@
 module github.com/bouncepaw/mycorrhiza
 
-go 1.17
+go 1.18
 
 require (
 	github.com/bouncepaw/mycomarkup/v3 v3.6.2
