@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
 	"log"
@@ -54,26 +55,34 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	shorterURL := strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
+	revHash, slug, found := strings.Cut(shorterURL, "/")
+	if !found || len(revHash) < 7 || len(slug) < 1 {
+		http.Error(w, "403 bad request", http.StatusBadRequest)
+		return
+	}
+	paddedRevHash := revHash
+	if len(paddedRevHash)%2 != 0 {
+		paddedRevHash = paddedRevHash[:len(paddedRevHash)-1]
+	}
+	if _, err := hex.DecodeString(paddedRevHash); err != nil {
+		http.Error(w, "403 bad request", http.StatusBadRequest)
+		return
+	}
 	var (
-		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
-		firstSlashIndex = strings.IndexRune(shorterURL, '/')
-		revHash         = shorterURL[:firstSlashIndex]
-		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
-		h               = hyphae.ByName(hyphaName)
-		u               = user.FromRequest(rq)
-		lc              = l18n.FromRequest(rq)
+		hyphaName = util.CanonicalName(slug)
+		h         = hyphae.ByName(hyphaName)
+		user      = user.FromRequest(rq)
+		locale    = l18n.FromRequest(rq)
 	)
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
 		w.WriteHeader(http.StatusNotFound)
-		_, _ = io.WriteString(w, "404 not found")
+		io.WriteString(w, "404 not found")
 	case hyphae.ExistingHypha:
-		util.HTTP200Page(w,
-			views.Base(
-				lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-				views.PrimitiveDiff(rq, h, u, revHash),
-				lc,
-				u))
+		util.HTTP200Page(w, views.Base(
+			locale.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
+			views.PrimitiveDiff(rq, h, user, revHash), locale, user))
 	}
 }
 
