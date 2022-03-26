@@ -1,0 +1,9 @@
+= Categories
+A **category** is a means of organizing of hyphae in a non-hierarchical way. Each category has a name and one or more hyphae in it. Each hypha can be part of zero or more categories.
+
+On hypha pages, a card titled ‘Categories’ is shown. There, you can see the list of categories the hypha is part of. If you are authorized to, you can also modify them: remove the hypha from a category and add to a new one.
+
+Category names follow the same rules as hypha names: case-insensitive, spaces and underscores are the same.
+
+To see the list of all categories, see:
+=> /category

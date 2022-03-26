@@ -26,6 +26,7 @@ var helpTopicsL10n = map[string][]string{
 	"lock":           {"Lock", "Блокировка"}, // Не Замок ли?
 	"whitelist":      {"Whitelist", "Белый список"},
 	"telegram":       {"Telegram authentication", "Вход через Телеграм"},
+	"category":       {"Categories", "Категории"},
 }
 
 const helpTopicTemplate = `<aside class="help-topics layout-card">
@@ -38,6 +39,7 @@ const helpTopicTemplate = `<aside class="help-topics layout-card">
 			</ul>
 		</li>
 		<li>{{l "mycomarkup" | a "/mycomarkup"}}</li>
+		<li>{{l "category" | a "/category"}}</li>
 		<li>{{l "interface"}}
 			<ul>
 				<li>{{l "prevnext" | a "/prevnext"}}</li>
