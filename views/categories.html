@@ -46,7 +46,7 @@
 	<ul class="category__entries">
 		{{range .Hyphae}}
 		<li class="category__entry">
-			<a class="wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
+			<a class="category__link" href="/hypha/{{.}}">{{beautifulName .}}</a>
 		</li>
 		{{end}}
 		{{if .GivenPermissionToModify}}
@@ -71,7 +71,7 @@
 	<ul class="category-list__entries">
 		{{range .Categories}}
 		<li class="category-list__entry">
-			<a class="wikilink" href="/category/{{.}}">{{beautifulName .}}</a>
+			<a class="category-list__link" href="/category/{{.}}">{{beautifulName .}}</a>
 		</li>
 		{{end}}
 	</ul>
