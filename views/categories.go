@@ -64,11 +64,13 @@ func localizedCatTemplateAsString(meta Meta, name string, datum ...interface{}) 
 func categoryCard(meta Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
-		HyphaName  string
-		Categories []string
+		HyphaName               string
+		Categories              []string
+		GivenPermissionToModify bool
 	}{
 		hyphaName,
 		categories.WithHypha(hyphaName),
+		meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
 		log.Println(err)
@@ -79,11 +81,13 @@ func categoryCard(meta Meta, hyphaName string) string {
 func CategoryPage(meta Meta, catName string) {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
-		CatName string
-		Hyphae  []string
+		CatName                 string
+		Hyphae                  []string
+		GivenPermissionToModify bool
 	}{
 		catName,
 		categories.Contents(catName),
+		meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
 		log.Println(err)
