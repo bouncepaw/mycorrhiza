@@ -44,7 +44,7 @@ const aboutTemplateString = `<div class="layout">
 	<section>
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
 		<ul>
-			<li><b>{{ get .L.Version }}</b> 1.8.2</li>
+			<li><b>{{ get .L.Version }}</b> 1.9.0</li>
 		{{ if .Cfg.UseAuth }}
 			<li><b>{{ get .L.UserCount }}</b> {{ .UserCount }}</li>
 			<li><b>{{ get .L.HomePage }}</b> <a href="/">{{ .Cfg.HomeHypha }}</a></li>
