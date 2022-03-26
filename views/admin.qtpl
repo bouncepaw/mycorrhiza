@@ -4,38 +4,6 @@
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 
-{% func AdminPanel(lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width">
-	<h1>{%s lc.Get("admin.panel_title") %}</h1>
-	<section>
-		<h2>{%s lc.Get("admin.panel_safe") %}</h2>
-		<ul>
-			<li><a href="/about">{%s lc.Get("admin.panel_about") %}</a></li>
-			<li><a href="/user-list">{%s lc.Get("admin.panel_userlist") %}</a></li>
-			<li><a href="/update-header-links">{%s lc.Get("admin.panel_updateheader") %}</a></li>
-			<li><a href="/admin/users/">{%s lc.Get("admin.panel_users") %}</a></li>
-		</ul>
-	</section>
-	<section>
-		<h2>{%s lc.Get("admin.panel_unsafe") %}</h2>
-		<form action="/admin/shutdown" method="POST" style="float:left">
-			<fieldset>
-				<legend>{%s lc.Get("admin.panel_shutdown") %}</legend>
-				<input type="submit" class="btn">
-			</fieldset>
-		</form>
-		<form action="/reindex" method="GET" style="float:left">
-			<fieldset>
-				<legend>{%s lc.Get("admin.panel_reindex") %}</legend>
-				<input type="submit" class="btn">
-			</fieldset>
-		</form>
-	</section>
-</main>
-</div>
-{% endfunc %}
-
 {% func AdminUsersPanel(userList []*user.User, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width">

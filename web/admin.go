@@ -33,10 +33,9 @@ func initAdmin(r *mux.Router) {
 
 // handlerAdmin provides the admin panel.
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
-	var lc = l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, views.Base(lc.Get("admin.panel_title"), views.AdminPanel(lc), lc, user.FromRequest(rq)))
+	views.AdminPanel(views.MetaFrom(w, rq))
 }
 
 // handlerAdminShutdown kills the wiki.

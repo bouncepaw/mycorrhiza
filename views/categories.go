@@ -39,20 +39,20 @@ func init() {
 	categoryTemplatesRu = template.Must(template.Must(categoryTemplatesEn.Clone()).Parse(categoriesRu))
 }
 
-func localizedTemplates(meta Meta) *template.Template {
+func localizedCatTemplates(meta Meta) *template.Template {
 	if meta.Lc.Locale == "ru" {
 		return categoryTemplatesRu
 	}
 	return categoryTemplatesEn
 }
 
-func localizedTemplateAsString(meta Meta, name string, datum ...interface{}) string {
+func localizedCatTemplateAsString(meta Meta, name string, datum ...interface{}) string {
 	var buf strings.Builder
 	var err error
 	if len(datum) == 1 {
-		err = localizedTemplates(meta).ExecuteTemplate(&buf, name, datum[0])
+		err = localizedCatTemplates(meta).ExecuteTemplate(&buf, name, datum[0])
 	} else {
-		err = localizedTemplates(meta).ExecuteTemplate(&buf, name, nil)
+		err = localizedCatTemplates(meta).ExecuteTemplate(&buf, name, nil)
 	}
 	if err != nil {
 		log.Println(err)
@@ -63,7 +63,7 @@ func localizedTemplateAsString(meta Meta, name string, datum ...interface{}) str
 
 func categoryCard(meta Meta, hyphaName string) string {
 	var buf strings.Builder
-	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
+	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
 		HyphaName  string
 		Categories []string
 	}{
@@ -78,7 +78,7 @@ func categoryCard(meta Meta, hyphaName string) string {
 
 func CategoryPage(meta Meta, catName string) {
 	var buf strings.Builder
-	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
+	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
 		CatName string
 		Hyphae  []string
 	}{
@@ -89,7 +89,7 @@ func CategoryPage(meta Meta, catName string) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
-		localizedTemplateAsString(meta, "category x", catName),
+		localizedCatTemplateAsString(meta, "category x", catName),
 		buf.String(),
 		meta.Lc,
 		meta.U,
@@ -101,7 +101,7 @@ func CategoryPage(meta Meta, catName string) {
 
 func CategoryList(meta Meta) {
 	var buf strings.Builder
-	err := localizedTemplates(meta).ExecuteTemplate(&buf, "category list", struct {
+	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category list", struct {
 		Categories []string
 	}{
 		categories.List(),
@@ -110,7 +110,7 @@ func CategoryList(meta Meta) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
-		localizedTemplateAsString(meta, "category list heading"),
+		localizedCatTemplateAsString(meta, "category list heading"),
 		buf.String(),
 		meta.Lc,
 		meta.U,

@@ -1,14 +1,4 @@
 {
-  "panel_title": "Administrative functions",
-  "panel_safe": "Safe things",
-  "panel_unsafe": "Dangerous things",
-  "panel_about": "About this wiki",
-  "panel_userlist": "User list",
-  "panel_updateheader": "Update header links",
-  "panel_users": "Manage users",
-  "panel_shutdown": "Shutdown wiki",
-  "panel_reindex": "Reindex hyphae",
-
   "users_title": "Manage users",
   "users_create": "Create a new user",
   "users_reindex": "Reindex users",
