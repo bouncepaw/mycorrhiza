@@ -3,6 +3,7 @@ package views
 import (
 	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"html/template"
 	"io"
 	"log"
@@ -39,14 +40,14 @@ func init() {
 	categoryTemplatesRu = template.Must(template.Must(categoryTemplatesEn.Clone()).Parse(categoriesRu))
 }
 
-func localizedCatTemplates(meta Meta) *template.Template {
+func localizedCatTemplates(meta viewutil.Meta) *template.Template {
 	if meta.Lc.Locale == "ru" {
 		return categoryTemplatesRu
 	}
 	return categoryTemplatesEn
 }
 
-func localizedCatTemplateAsString(meta Meta, name string, datum ...interface{}) string {
+func localizedCatTemplateAsString(meta viewutil.Meta, name string, datum ...interface{}) string {
 	var buf strings.Builder
 	var err error
 	if len(datum) == 1 {
@@ -61,7 +62,7 @@ func localizedCatTemplateAsString(meta Meta, name string, datum ...interface{}) 
 	return buf.String()
 }
 
-func categoryCard(meta Meta, hyphaName string) string {
+func categoryCard(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
 		HyphaName               string
@@ -78,7 +79,7 @@ func categoryCard(meta Meta, hyphaName string) string {
 	return buf.String()
 }
 
-func CategoryPage(meta Meta, catName string) {
+func CategoryPage(meta viewutil.Meta, catName string) {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
 		CatName                 string
@@ -103,7 +104,7 @@ func CategoryPage(meta Meta, catName string) {
 	}
 }
 
-func CategoryList(meta Meta) {
+func CategoryList(meta viewutil.Meta) {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category list", struct {
 		Categories []string

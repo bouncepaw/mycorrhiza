@@ -1,0 +1,83 @@
+{{define "base"}}
+<!doctype html>
+<html lang="{{.Meta.Locale}}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{.Title}}</title>
+	<link rel="shortcut icon" href="/static/favicon.ico">
+	<link rel="stylesheet" href="/static/style.css">
+	<script src="/static/shortcuts.js"></script>
+	{{range .HeadElements}}{{.}}{{end}}
+</head>
+<body>
+<header>
+	<nav class="main-width top-bar">
+		<ul class="top-bar__wrapper">
+			<li class="top-bar__section top-bar__section_home">
+				<div class="top-bar__home-link-wrapper">
+					<a class="top-bar__home-link" href="/">{{block "wiki name" .}}{{end}}</a>
+				</div>
+			</li>
+			<li class="top-bar__section top-bar__section_search">
+				<form class="top-bar__search" method="GET" action="/title-search">
+					<input type="text" name="q" class="top-bar__search-bar"
+					       placeholder="{{block `search by title` .}}Search by title{{end}}">
+				</form>
+			</li>
+			<li class="top-bar__section top-bar__section_auth">
+                {{block "auth" .}}
+					<ul class="top-bar__auth auth-links">
+						<li class="auth-links__box auth-links__user-box">
+                            {{if .Meta.U.Group | eq "anon" }}
+								<a href="/login" class="auth-links__link auth-links__login-link">
+									{{block "login" .}}Login{{end}}
+								</a>
+                            {{else}}
+								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__link auth-links__user-link">
+									{{beautifulName .Meta.U.Name}}
+								</a>
+                            {{end}}
+						</li>
+                        {{block "registration" .}}
+	                        {{if .Meta.U.Group | eq "anon"}}
+	                            <li class="auth-links__box auth-links__register-box">
+		                            <a href="/register" class="auth-links__link auth-links__register-link">
+			                            {{block "register" .}}Register{{end}}
+		                            </a>
+	                            </li>
+							{{end}}
+                        {{end}}
+					</ul>
+                {{end}}
+			</li>
+			<li class="top-bar__section top-bar__section_highlights">
+				<ul class="top-bar__highlights">
+					{{range .HeaderLinks}}
+						<li class="top-bar__highlight">
+							<a class="top-bar__highlight-link" href="{{.Href}}">{{.Display}}</a>
+						</li>
+					{{end}}
+				</ul>
+			</li>
+		</ul>
+	</nav>
+</header>
+{{block "body" .}}{{end}}
+<template id="dialog-template">
+	<div class="dialog-backdrop"></div>
+	<div class="dialog" tabindex="0">
+		<div class="dialog__header">
+			<h1 class="dialog__title"></h1>
+			<button class="dialog__close-button" aria-label="{{block `close this dialog` .}}{{end}}"></button>
+		</div>
+
+		<div class="dialog__content"></div>
+	</div>
+</template>
+{{range .CommonScripts}}{{.}}{{end}}
+<script src="/static/view.js"></script>
+</body>
+</html>
+</html>
+{{end}}

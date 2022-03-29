@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
 	"net/http"
@@ -209,7 +210,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP404Page(w,
 			views.Base(
 				util.BeautifulName(hyphaName),
-				views.Hypha(views.MetaFrom(w, rq), h, contents),
+				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
 				lc,
 				u,
 				openGraph))
@@ -231,7 +232,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		util.HTTP200Page(w,
 			views.Base(
 				util.BeautifulName(hyphaName),
-				views.Hypha(views.MetaFrom(w, rq), h, contents),
+				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
 				lc,
 				u,
 				openGraph))

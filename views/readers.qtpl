@@ -10,6 +10,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
 
 {% func MediaMenu(rq *http.Request, h hyphae.Hypha, u *user.User) %}
 {% code
@@ -85,7 +86,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func Hypha(meta Meta, h hyphae.Hypha, contents string) %}
+{% func Hypha(meta viewutil.Meta, h hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	lc := meta.Lc

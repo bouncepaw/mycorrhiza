@@ -2,6 +2,7 @@ package views
 
 import (
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"html/template"
 	"io"
 	"log"
@@ -25,7 +26,7 @@ var (
 	adminTemplatesRu *template.Template
 )
 
-func localizedAdminTemplates(meta Meta) *template.Template {
+func localizedAdminTemplates(meta viewutil.Meta) *template.Template {
 	if meta.Lc.Locale == "ru" {
 		return adminTemplatesRu
 	}
@@ -59,7 +60,7 @@ func init() {
 		template.Must(adminTemplatesEn.Clone()).Parse(adminTranslationRu))
 }
 
-func AdminPanel(meta Meta) {
+func AdminPanel(meta viewutil.Meta) {
 	var buf strings.Builder
 	err := localizedAdminTemplates(meta).ExecuteTemplate(&buf, "panel", nil)
 	if err != nil {

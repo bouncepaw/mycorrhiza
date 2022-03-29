@@ -4,6 +4,7 @@
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
 
 {% func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action, displayText string) %}
 {% if u.CanProceed(action) %}
@@ -13,7 +14,7 @@
 {% endif %}
 {% endfunc %}
 
-{% func hyphaInfo(meta Meta, h hyphae.Hypha) %}
+{% func hyphaInfo(meta viewutil.Meta, h hyphae.Hypha) %}
 {% code
 	u := meta.U
 	lc := meta.Lc

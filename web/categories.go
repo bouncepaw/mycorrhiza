@@ -5,6 +5,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
 	"io"
 	"log"
@@ -21,7 +22,7 @@ func initCategories(r *mux.Router) {
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Viewing list of categories")
-	views.CategoryList(views.MetaFrom(w, rq))
+	views.CategoryList(viewutil.MetaFrom(w, rq))
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
@@ -32,7 +33,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	log.Println("Viewing category", catName)
-	views.CategoryPage(views.MetaFrom(w, rq), catName)
+	views.CategoryPage(viewutil.MetaFrom(w, rq), catName)
 }
 
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {

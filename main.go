@@ -7,6 +7,7 @@ package main
 import (
 	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
 	"github.com/bouncepaw/mycorrhiza/migration"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"os"
 
@@ -41,6 +42,7 @@ func main() {
 	log.Println("Using Git storage at", files.HyphaeDir())
 
 	// Init the subsystems:
+	viewutil.Init()
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()

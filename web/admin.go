@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
 	"mime"
@@ -35,7 +36,7 @@ func initAdmin(r *mux.Router) {
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	views.AdminPanel(views.MetaFrom(w, rq))
+	views.AdminPanel(viewutil.MetaFrom(w, rq))
 }
 
 // handlerAdminShutdown kills the wiki.
