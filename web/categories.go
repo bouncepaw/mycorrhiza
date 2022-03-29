@@ -7,7 +7,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/views"
 	"github.com/gorilla/mux"
 	"io"
+	"log"
 	"net/http"
+	"strings"
 )
 
 func initCategories(r *mux.Router) {
@@ -18,14 +20,18 @@ func initCategories(r *mux.Router) {
 }
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
+	log.Println("Viewing list of categories")
 	views.CategoryList(views.MetaFrom(w, rq))
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	var (
-		catName = util.HyphaNameFromRq(rq, "category")
-	)
+	catName := util.CanonicalName(strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/category"), "/"))
+	if catName == "" {
+		handlerListCategory(w, rq)
+		return
+	}
+	log.Println("Viewing category", catName)
 	views.CategoryPage(views.MetaFrom(w, rq), catName)
 }
 
