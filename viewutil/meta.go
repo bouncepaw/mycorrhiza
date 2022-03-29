@@ -23,6 +23,6 @@ func MetaFrom(w http.ResponseWriter, rq *http.Request) Meta {
 	}
 }
 
-func (m *Meta) Locale() string {
+func (m Meta) Locale() string {
 	return m.Lc.Locale
 }

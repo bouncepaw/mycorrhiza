@@ -2,7 +2,11 @@ package views
 
 import (
 	"embed"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
-//go:embed *.html
-var fs embed.FS
+var (
+	//go:embed *.html
+	fs   embed.FS
+	Base = viewutil.Base
+)

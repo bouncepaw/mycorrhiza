@@ -7,13 +7,14 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
-	"html/template"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"strings"
+	"text/template" // TODO: save the world
 )
 
 var (
-	//go:embed viewutil.go
+	//go:embed *.html
 	fs     embed.FS
 	BaseEn *template.Template
 	BaseRu *template.Template
@@ -31,7 +32,11 @@ func Init() {
 	dataText := fmt.Sprintf(`
 {{define "wiki name"}}%s{{end}}
 `, cfg.WikiName)
-	BaseEn = m(m(template.ParseFS(fs, "viewutil.go")).Parse(dataText))
+	BaseEn = m(m(template.New("").
+		Funcs(template.FuncMap{
+			"beautifulName": util.BeautifulName,
+		}).ParseFS(fs, "base.html")).
+		Parse(dataText))
 	if !cfg.UseAuth {
 		m(BaseEn.Parse(`{{define "auth"}}{{end}}`))
 	}
@@ -70,7 +75,7 @@ func Base(title, body string, lc *l18n.Localizer, u *user.User, headElements ...
 		W:  &w,
 	}
 	t := localizedBaseWithWeirdBody(meta)
-	err := t.Execute(&w, baseData{
+	err := t.ExecuteTemplate(&w, "base", baseData{
 		Meta:          meta,
 		Title:         title,
 		HeadElements:  headElements,

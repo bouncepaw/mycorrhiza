@@ -3,85 +3,8 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
-{% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
-
-{% func Base(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) %}
-<!doctype html>
-<html lang="{%s lc.Locale %}">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{%s title %}</title>
-		<link rel="shortcut icon" href="/static/favicon.ico">
-		<link rel="stylesheet" href="/static/style.css">
-		<script src="/static/shortcuts.js"></script>
-		{% for _, el := range headElements %}{%s= el %}{% endfor %}
-	</head>
-	<body>
-		<header>
-			<nav class="main-width top-bar">
-				<ul class="top-bar__wrapper">
-					<li class="top-bar__section top-bar__section_home">
-						<div class="top-bar__home-link-wrapper">
-							<a class="top-bar__home-link" href="/">{%s cfg.WikiName %}</a>
-						</div>
-					</li>
-					<li class="top-bar__section top-bar__section_search">
-						<form class="top-bar__search" method="GET" action="/title-search">
-							<input type="text" name="q" placeholder="{%s lc.Get("ui.title_search") %}" class="top-bar__search-bar">
-						</form>
-					</li>
-					<li class="top-bar__section top-bar__section_auth">
-					{% if cfg.UseAuth %}
-						<ul class="top-bar__auth auth-links">
-							<li class="auth-links__box auth-links__user-box">
-								{% if u.Group == "anon" %}
-								<a href="/login" class="auth-links__link auth-links__login-link">{%s lc.Get("ui.login") %}</a>
-								{% else %}
-								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__link auth-links__user-link">{%s util.BeautifulName(u.Name) %}</a>
-								{% endif %}
-							</li>
-							{% if cfg.AllowRegistration && u.Group == "anon" %}
-							<li class="auth-links__box auth-links__register-box">
-								<a href="/register" class="auth-links__link auth-links__register-link">{%s lc.Get("ui.register") %}</a>
-							</li>
-							{% endif %}
-						</ul>
-					{% endif %}
-					</li>
-					<li class="top-bar__section top-bar__section_highlights">
-						<ul class="top-bar__highlights">
-						{%- for _, link := range cfg.HeaderLinks -%}
-						{% if link.Href != "/" %}
-							<li class="top-bar__highlight">
-								<a class="top-bar__highlight-link" href="{%s link.Href %}">{%s link.Display %}</a>
-							</li>
-						{% endif %}
-						{%- endfor -%}
-						</ul>
-					</li>
-				</ul>
-			</nav>
-		</header>
-		{%s= body %}
-		<template id="dialog-template">
-			<div class="dialog-backdrop"></div>
-			<div class="dialog" tabindex="0">
-				<div class="dialog__header">
-					<h1 class="dialog__title"></h1>
-					<button class="dialog__close-button" aria-label="{%s lc.Get("ui.close_dialog") %}"></button>
-				</div>
-
-				<div class="dialog__content"></div>
-			</div>
-		</template>
-		{%= commonScripts() %}
-		<script src="/static/view.js"></script>
-	</body>
-</html>
-{% endfunc %}
 
 {% func TitleSearch(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
