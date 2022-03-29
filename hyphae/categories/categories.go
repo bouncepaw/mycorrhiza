@@ -73,10 +73,16 @@ func RemoveHyphaFromCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
 		node.removeCategory(catName)
+		if len(node.categoryList) == 0 {
+			delete(hyphaToCategories, hyphaName)
+		}
 	}
 
 	if node, ok := categoryToHyphae[catName]; ok {
 		node.removeHypha(hyphaName)
+		if len(node.hyphaList) == 0 {
+			delete(categoryToHyphae, catName)
+		}
 	}
 	mutex.Unlock()
 	go saveToDisk()
