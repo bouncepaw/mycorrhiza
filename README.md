@@ -36,7 +36,7 @@ See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on th
 ## Contributing
 
 * [GitHub](https://github.com/bouncepaw/mycorrhiza)
-* [SourceHut](https://sr.ht/~handlerug/mycorrhiza)
+* [SourceHut](https://sr.ht/~bouncepaw/mycorrhiza)
 * [#mycorrhiza on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza)
 * [#mycorrhiza-ru (Russian) on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza-ru)
 * [@mycorrhizadev (Russian) in Telegram](https://t.me/mycorrhizadev)
@@ -49,5 +49,5 @@ Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
 
 You can view the list of planned features on the [roadmap page].
 
-[mailing list]: https://lists.sr.ht/~handlerug/mycorrhiza-devel
+[mailing list]: https://lists.sr.ht/~bouncepaw/mycorrhiza-devel
 [roadmap page]: https://mycorrhiza.wiki/hypha/release/roadmap
