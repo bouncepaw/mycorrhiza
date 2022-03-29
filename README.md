@@ -38,7 +38,6 @@ See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on th
 * [GitHub](https://github.com/bouncepaw/mycorrhiza)
 * [SourceHut](https://sr.ht/~bouncepaw/mycorrhiza)
 * [#mycorrhiza on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza)
-* [#mycorrhiza-ru (Russian) on irc.libera.chat](irc://irc.libera.chat/#mycorrhiza-ru)
 * [@mycorrhizadev (Russian) in Telegram](https://t.me/mycorrhizadev)
 
 If you want to contribute with code, open a pull request on GitHub or send a
