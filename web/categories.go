@@ -47,6 +47,10 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(w, "403 Forbidden")
 		return
 	}
+	if hyphaName == "" || catName == "" {
+		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
+		return
+	}
 	categories.RemoveHyphaFromCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
@@ -61,6 +65,10 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 	if !user.FromRequest(rq).CanProceed("add-to-category") {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = io.WriteString(w, "403 Forbidden")
+		return
+	}
+	if hyphaName == "" || catName == "" {
+		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
 	categories.AddHyphaToCategory(hyphaName, catName)
