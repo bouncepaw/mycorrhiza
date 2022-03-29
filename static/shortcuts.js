@@ -330,6 +330,7 @@ window.addEventListener('load', () => {
             this.bindElement('a', '.hypha-info__link[href^="/media/"]', 'Go to media management');
             this.bindElement('h', '.hypha-info__link[href^="/history/"]', 'Go to history');
             this.bindElement('r', '.hypha-info__link[href^="/rename/"]', 'Rename this hypha');
+            this.bindElement('b', '.hypha-info__link[href^="/backlinks/"]', 'Backlinks');
         });
 
     } else {
