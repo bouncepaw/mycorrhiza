@@ -5,7 +5,7 @@
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/migration"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"

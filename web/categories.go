@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
