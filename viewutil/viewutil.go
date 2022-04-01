@@ -55,7 +55,7 @@ func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 	return m(m(t.Clone()).Parse(`{{define "body"}}{{.Body}}{{end}}`))
 }
 
-type baseData struct {
+type BaseData struct {
 	Meta          Meta
 	Title         string
 	HeadElements  []string
@@ -69,7 +69,7 @@ func Base(meta Meta, title, body string, headElements ...string) string {
 	var w strings.Builder
 	meta.W = &w
 	t := localizedBaseWithWeirdBody(meta)
-	err := t.ExecuteTemplate(&w, "base", baseData{
+	err := t.ExecuteTemplate(&w, "page", BaseData{
 		Meta:          meta,
 		Title:         title,
 		HeadElements:  headElements,

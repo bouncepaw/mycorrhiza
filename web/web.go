@@ -3,6 +3,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"mime"
@@ -109,7 +110,7 @@ func Handler() http.Handler {
 	initStuff(wikiRouter)
 	initSearch(wikiRouter)
 	initBacklinks(wikiRouter)
-	initCategories(wikiRouter)
+	categories.InitCategoriesHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {

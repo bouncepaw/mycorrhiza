@@ -5,6 +5,7 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/categories" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
@@ -132,7 +133,7 @@ If you rename .prevnext, change the docs too.
    		{%= hyphaInfo(meta, h) %}
 	</section>
 </main>
-{%s= categoryCard(meta, h.CanonicalName()) %}
+{%s= categories.CategoryCard(meta, h.CanonicalName()) %}
 {%= siblingHyphae(siblings, meta.Lc) %}
 </div>
 {%= viewScripts() %}

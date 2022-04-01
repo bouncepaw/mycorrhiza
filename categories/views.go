@@ -1,13 +1,14 @@
-package views
+package categories
 
 import (
-	"github.com/bouncepaw/mycorrhiza/categories"
+	"embed"
+	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"html/template"
 	"io"
 	"log"
 	"strings"
+	"text/template" // TODO: Fight
 )
 
 const categoriesRu = `
@@ -25,11 +26,15 @@ const categoriesRu = `
 `
 
 var (
-	categoryTemplatesEn *template.Template
-	categoryTemplatesRu *template.Template
+	//go:embed *.html
+	fs                             embed.FS
+	m                              = template.Must
+	baseEn, baseRu, listEn, listRu *template.Template
+	categoryTemplatesEn            *template.Template
+	categoryTemplatesRu            *template.Template
 )
 
-func init() {
+func prepareViews() {
 	categoryTemplatesEn = template.Must(template.
 		New("category").
 		Funcs(
@@ -38,6 +43,11 @@ func init() {
 			}).
 		ParseFS(fs, "categories.html"))
 	categoryTemplatesRu = template.Must(template.Must(categoryTemplatesEn.Clone()).Parse(categoriesRu))
+
+	baseEn = m(viewutil.BaseEn.Clone())
+	baseRu = m(viewutil.BaseEn.Clone())
+	listEn = m(m(baseEn.Clone()).ParseFS(fs, "view_list.html"))
+	listRu = m(m(m(baseRu.Clone()).ParseFS(fs, "view_list.html")).Parse(categoriesRu))
 }
 
 func localizedCatTemplates(meta viewutil.Meta) *template.Template {
@@ -62,7 +72,7 @@ func localizedCatTemplateAsString(meta viewutil.Meta, name string, datum ...inte
 	return buf.String()
 }
 
-func categoryCard(meta viewutil.Meta, hyphaName string) string {
+func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category card", struct {
 		HyphaName               string
@@ -70,7 +80,7 @@ func categoryCard(meta viewutil.Meta, hyphaName string) string {
 		GivenPermissionToModify bool
 	}{
 		hyphaName,
-		categories.WithHypha(hyphaName),
+		WithHypha(hyphaName),
 		meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
@@ -79,7 +89,7 @@ func categoryCard(meta viewutil.Meta, hyphaName string) string {
 	return buf.String()
 }
 
-func CategoryPage(meta viewutil.Meta, catName string) {
+func categoryPage(meta viewutil.Meta, catName string) {
 	var buf strings.Builder
 	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
 		CatName                 string
@@ -87,13 +97,13 @@ func CategoryPage(meta viewutil.Meta, catName string) {
 		GivenPermissionToModify bool
 	}{
 		catName,
-		categories.Contents(catName),
+		Contents(catName),
 		meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = io.WriteString(meta.W, Base(
+	_, err = io.WriteString(meta.W, viewutil.Base(
 		meta,
 		localizedCatTemplateAsString(meta, "category x", catName),
 		buf.String(),
@@ -103,22 +113,31 @@ func CategoryPage(meta viewutil.Meta, catName string) {
 	}
 }
 
-func CategoryList(meta viewutil.Meta) {
-	var buf strings.Builder
-	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category list", struct {
-		Categories []string
-	}{
-		categories.List(),
-	})
-	if err != nil {
-		log.Println(err)
+func loctmp(meta viewutil.Meta, en *template.Template, ru *template.Template) *template.Template {
+	switch meta.Locale() {
+	case "en":
+		return en
+	case "ru":
+		return ru
 	}
-	_, err = io.WriteString(meta.W, Base(
-		meta,
-		localizedCatTemplateAsString(meta, "category list heading"),
-		buf.String(),
-	))
-	if err != nil {
+	panic("aaa")
+}
+
+type listData struct {
+	viewutil.BaseData
+	Categories []string
+}
+
+func categoryList(meta viewutil.Meta) {
+	if err := loctmp(meta, listEn, listRu).ExecuteTemplate(meta.W, "page", listData{
+		BaseData: viewutil.BaseData{
+			Meta:          meta,
+			Title:         localizedCatTemplateAsString(meta, "category list heading"),
+			HeaderLinks:   cfg.HeaderLinks,
+			CommonScripts: cfg.CommonScripts,
+		},
+		Categories: List(),
+	}); err != nil {
 		log.Println(err)
 	}
 }
