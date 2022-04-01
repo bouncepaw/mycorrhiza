@@ -52,15 +52,18 @@ func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 		}
 		return BaseEn
 	}()
-	return m(m(t.Clone()).Parse(`{{define "body"}}{{.Body}}{{end}}`))
+	return m(m(t.Clone()).Parse(`
+{{define "body"}}{{.Body}}{{end}}
+{{define "title"}}{{.Title}}{{end}}
+`))
 }
 
 type BaseData struct {
 	Meta          Meta
-	Title         string
 	HeadElements  []string
 	HeaderLinks   []cfg.HeaderLink
 	CommonScripts []string
+	Title         string // TODO: remove
 	Body          string // TODO: remove
 }
 

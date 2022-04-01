@@ -1,6 +1,7 @@
+{{define "title"}}Category list{{end}}
 {{define "body"}}
 	<main class="main-width category-list">
-		<h1>{{block `category list heading` .}}Category list{{end}}</h1>
+		<h1>{{template "title"}}</h1>
         {{if len .Categories}}
 			<ul class="category-list__entries">
                 {{range .Categories}}
