@@ -1,4 +1,5 @@
-{{define "title"}}Category {{.CatName | beautifulName}}{{end}}
+{{define "category x"}}Category {{. | beautifulName}}{{end}}
+{{define "title"}}{{template "category x" .CatName}}{{end}}
 {{define "body"}}
     {{$catName := .CatName}}
 	<main class="main-width category">
