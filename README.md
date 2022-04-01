@@ -2,7 +2,7 @@
 
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
 
-<img src="https://mycorrhiza.wiki/binary/release/1.8/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="600">
+<img src="https://mycorrhiza.wiki/binary/release/1.9/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
 
 
 ## Features
@@ -10,7 +10,8 @@
 * **No database required.** Everything is stored in plain files. It makes installation super easy, and you can modify the content directly by yourself.
 * **Everything is hyphae.** A [hypha] is a unit of content such as a picture, video or a text article. Hyphae can [transclude][transclusion] and link each other resulting in a tight network of hypertext pages.
 * **Hyphae are authored in [Mycomarkup],** a markup language that's designed to be unambigious yet easy to use.
-* **Nesting of hyphae** is supported. A tree of related hyphae is shown on every page.
+* **Categories.**
+* **Nesting of hyphae** is also supported.
 * **History of changes** for textual parts of hyphae. Every change is safely stored in [Git]. Web feeds for recent changes included!
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
 * **Support for [authorization].**
