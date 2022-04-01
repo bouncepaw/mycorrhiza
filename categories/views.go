@@ -26,22 +26,13 @@ const categoriesRu = `
 
 var (
 	//go:embed *.html
-	fs                                             embed.FS
-	m                                              = template.Must
-	baseEn, baseRu, listEn, listRu, pageEn, pageRu *template.Template
-	categoryTemplatesEn                            *template.Template
-	categoryTemplatesRu                            *template.Template
+	fs                           embed.FS
+	m                            = template.Must
+	baseEn, baseRu               *template.Template
+	viewListChain, viewPageChain viewutil.Chain
+	categoryTemplatesEn          *template.Template
+	categoryTemplatesRu          *template.Template
 )
-
-func loctmp(meta viewutil.Meta, en *template.Template, ru *template.Template) *template.Template {
-	switch meta.Locale() {
-	case "en":
-		return en
-	case "ru":
-		return ru
-	}
-	panic("aaa")
-}
 
 func prepareViews() {
 	categoryTemplatesEn = template.Must(template.
@@ -55,10 +46,17 @@ func prepareViews() {
 
 	baseEn = m(viewutil.BaseEn.Clone())
 	baseRu = m(viewutil.BaseRu.Clone())
-	listEn = m(m(baseEn.Clone()).ParseFS(fs, "view_list.html"))
-	listRu = m(m(m(baseRu.Clone()).ParseFS(fs, "view_list.html")).Parse(categoriesRu))
-	pageEn = m(m(baseEn.Clone()).ParseFS(fs, "view_page.html"))
-	pageRu = m(m(m(baseRu.Clone()).ParseFS(fs, "view_page.html")).Parse(categoriesRu))
+
+	viewListChain = viewutil.
+		En(
+			m(m(baseEn.Clone()).ParseFS(fs, "view_list.html"))).
+		Ru(
+			m(m(m(baseRu.Clone()).ParseFS(fs, "view_list.html")).Parse(categoriesRu)))
+	viewPageChain = viewutil.
+		En(
+			m(m(baseEn.Clone()).ParseFS(fs, "view_page.html"))).
+		Ru(
+			m(m(m(baseRu.Clone()).ParseFS(fs, "view_page.html")).Parse(categoriesRu)))
 }
 
 func localizedCatTemplates(meta viewutil.Meta) *template.Template {
@@ -108,7 +106,7 @@ type pageData struct {
 }
 
 func categoryPage(meta viewutil.Meta, catName string) {
-	if err := loctmp(meta, pageEn, pageRu).ExecuteTemplate(meta.W, "page", pageData{
+	if err := viewPageChain.Get(meta).ExecuteTemplate(meta.W, "page", pageData{
 		BaseData: viewutil.BaseData{
 			Meta:          meta,
 			Title:         localizedCatTemplateAsString(meta, "category x", catName),
@@ -129,7 +127,7 @@ type listData struct {
 }
 
 func categoryList(meta viewutil.Meta) {
-	if err := loctmp(meta, listEn, listRu).ExecuteTemplate(meta.W, "page", listData{
+	if err := viewListChain.Get(meta).ExecuteTemplate(meta.W, "page", listData{
 		BaseData: viewutil.BaseData{
 			Meta:          meta,
 			Title:         localizedCatTemplateAsString(meta, "category list heading"),
