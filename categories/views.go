@@ -63,7 +63,7 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := viewCardChain.Get(meta).ExecuteTemplate(&buf, "category card", cardData{
 		hyphaName,
-		WithHypha(hyphaName),
+		categoriesWithHypha(hyphaName),
 		meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
@@ -87,7 +87,7 @@ func categoryPage(meta viewutil.Meta, catName string) {
 			CommonScripts: cfg.CommonScripts,
 		},
 		CatName:                 catName,
-		Hyphae:                  Contents(catName),
+		Hyphae:                  hyphaeInCategory(catName),
 		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
 	}); err != nil {
 		log.Println(err)
@@ -106,7 +106,7 @@ func categoryList(meta viewutil.Meta) {
 			HeaderLinks:   cfg.HeaderLinks,
 			CommonScripts: cfg.CommonScripts,
 		},
-		Categories: List(),
+		Categories: listOfCategories(),
 	}); err != nil {
 		log.Println(err)
 	}

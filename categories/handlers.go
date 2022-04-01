@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// InitCategoriesHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
 func InitCategoriesHandlers(r *mux.Router) {
 	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
 	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
@@ -51,7 +52,7 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	RemoveHyphaFromCategory(hyphaName, catName)
+	removeHyphaFromCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
 
@@ -71,6 +72,6 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	AddHyphaToCategory(hyphaName, catName)
+	addHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
