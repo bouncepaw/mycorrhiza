@@ -36,31 +36,3 @@
 	</ul>
 </aside>
 {{end}}
-
-{{define "category page"}}
-{{$catName := .CatName}}
-<main class="main-width category">
-	<h1>{{block "cat" .}}Category{{end}} <i>{{beautifulName $catName}}</i></h1>
-	{{if len .Hyphae | not}}
-	<p>{{block "empty cat" .}}This category is empty{{end}}</p>
-	{{end}}
-	<ul class="category__entries">
-		{{range .Hyphae}}
-		<li class="category__entry">
-			<a class="category__link" href="/hypha/{{.}}">{{beautifulName .}}</a>
-		</li>
-		{{end}}
-		{{if .GivenPermissionToModify}}
-		<li class="category__entry category__add-to-cat">
-			<form method="POST" action="/add-to-category" class="category__add-form">
-				<input type="text" name="hypha" id="_hypha-name"
-				       placeholder="{{block `hypha name` .}}Hypha name{{end}}">
-				<input type="hidden" name="cat" value="{{$catName}}">
-				<input type="hidden" name="redirect-to" value="/category/{{$catName}}">
-				<input type="submit" class="btn" value="{{block `add hypha` .}}Add to the category{{end}}">
-			</form>
-		</li>
-		{{end}}
-	</ul>
-</main>
-{{end}}

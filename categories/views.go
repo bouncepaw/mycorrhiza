@@ -5,7 +5,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"io"
 	"log"
 	"strings"
 	"text/template" // TODO: Fight
@@ -27,12 +26,22 @@ const categoriesRu = `
 
 var (
 	//go:embed *.html
-	fs                             embed.FS
-	m                              = template.Must
-	baseEn, baseRu, listEn, listRu *template.Template
-	categoryTemplatesEn            *template.Template
-	categoryTemplatesRu            *template.Template
+	fs                                             embed.FS
+	m                                              = template.Must
+	baseEn, baseRu, listEn, listRu, pageEn, pageRu *template.Template
+	categoryTemplatesEn                            *template.Template
+	categoryTemplatesRu                            *template.Template
 )
+
+func loctmp(meta viewutil.Meta, en *template.Template, ru *template.Template) *template.Template {
+	switch meta.Locale() {
+	case "en":
+		return en
+	case "ru":
+		return ru
+	}
+	panic("aaa")
+}
 
 func prepareViews() {
 	categoryTemplatesEn = template.Must(template.
@@ -45,9 +54,11 @@ func prepareViews() {
 	categoryTemplatesRu = template.Must(template.Must(categoryTemplatesEn.Clone()).Parse(categoriesRu))
 
 	baseEn = m(viewutil.BaseEn.Clone())
-	baseRu = m(viewutil.BaseEn.Clone())
+	baseRu = m(viewutil.BaseRu.Clone())
 	listEn = m(m(baseEn.Clone()).ParseFS(fs, "view_list.html"))
 	listRu = m(m(m(baseRu.Clone()).ParseFS(fs, "view_list.html")).Parse(categoriesRu))
+	pageEn = m(m(baseEn.Clone()).ParseFS(fs, "view_page.html"))
+	pageRu = m(m(m(baseRu.Clone()).ParseFS(fs, "view_page.html")).Parse(categoriesRu))
 }
 
 func localizedCatTemplates(meta viewutil.Meta) *template.Template {
@@ -89,38 +100,27 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	return buf.String()
 }
 
-func categoryPage(meta viewutil.Meta, catName string) {
-	var buf strings.Builder
-	err := localizedCatTemplates(meta).ExecuteTemplate(&buf, "category page", struct {
-		CatName                 string
-		Hyphae                  []string
-		GivenPermissionToModify bool
-	}{
-		catName,
-		Contents(catName),
-		meta.U.CanProceed("add-to-category"),
-	})
-	if err != nil {
-		log.Println(err)
-	}
-	_, err = io.WriteString(meta.W, viewutil.Base(
-		meta,
-		localizedCatTemplateAsString(meta, "category x", catName),
-		buf.String(),
-	))
-	if err != nil {
-		log.Println(err)
-	}
+type pageData struct {
+	viewutil.BaseData
+	CatName                 string
+	Hyphae                  []string
+	GivenPermissionToModify bool
 }
 
-func loctmp(meta viewutil.Meta, en *template.Template, ru *template.Template) *template.Template {
-	switch meta.Locale() {
-	case "en":
-		return en
-	case "ru":
-		return ru
+func categoryPage(meta viewutil.Meta, catName string) {
+	if err := loctmp(meta, pageEn, pageRu).ExecuteTemplate(meta.W, "page", pageData{
+		BaseData: viewutil.BaseData{
+			Meta:          meta,
+			Title:         localizedCatTemplateAsString(meta, "category x", catName),
+			HeaderLinks:   cfg.HeaderLinks,
+			CommonScripts: cfg.CommonScripts,
+		},
+		CatName:                 catName,
+		Hyphae:                  Contents(catName),
+		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
+	}); err != nil {
+		log.Println(err)
 	}
-	panic("aaa")
 }
 
 type listData struct {
