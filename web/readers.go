@@ -48,10 +48,9 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 	)
 	util.HTTP200Page(w,
 		views.Base(
+			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.MediaMenu(rq, h, u),
-			lc,
-			u))
+			views.MediaMenu(rq, h, u)))
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -74,7 +73,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = util.CanonicalName(slug)
 		h         = hyphae.ByName(hyphaName)
 		user      = user.FromRequest(rq)
-		locale    = l18n.FromRequest(rq)
+		lc        = l18n.FromRequest(rq)
 	)
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
@@ -82,8 +81,9 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		io.WriteString(w, "404 not found")
 	case hyphae.ExistingHypha:
 		util.HTTP200Page(w, views.Base(
-			locale.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-			views.PrimitiveDiff(rq, h, user, revHash), locale, user))
+			viewutil.MetaFrom(w, rq),
+			lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
+			views.PrimitiveDiff(rq, h, user, revHash)))
 	}
 }
 
@@ -134,7 +134,6 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
 		h               = hyphae.ByName(hyphaName)
 		contents        = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
-		u               = user.FromRequest(rq)
 	)
 	switch h := h.(type) {
 	case hyphae.ExistingHypha:
@@ -157,10 +156,9 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	_, _ = fmt.Fprint(
 		w,
 		views.Base(
+			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
-			lc,
-			u,
 		),
 	)
 }
@@ -201,7 +199,6 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		h         = hyphae.ByName(hyphaName)
 		contents  string
 		openGraph string
-		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
 	)
 
@@ -209,10 +206,9 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	case *hyphae.EmptyHypha:
 		util.HTTP404Page(w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
-				lc,
-				u,
 				openGraph))
 	case hyphae.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
@@ -231,10 +227,9 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 
 		util.HTTP200Page(w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
-				lc,
-				u,
 				openGraph))
 	}
 }

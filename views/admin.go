@@ -67,9 +67,8 @@ func AdminPanel(meta viewutil.Meta) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
+		meta,
 		templateAsString(localizedAdminTemplates(meta), "panel title"),
 		buf.String(),
-		meta.Lc,
-		meta.U,
 	))
 }

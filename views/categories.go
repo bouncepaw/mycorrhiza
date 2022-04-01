@@ -94,10 +94,9 @@ func CategoryPage(meta viewutil.Meta, catName string) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
+		meta,
 		localizedCatTemplateAsString(meta, "category x", catName),
 		buf.String(),
-		meta.Lc,
-		meta.U,
 	))
 	if err != nil {
 		log.Println(err)
@@ -115,10 +114,9 @@ func CategoryList(meta viewutil.Meta) {
 		log.Println(err)
 	}
 	_, err = io.WriteString(meta.W, Base(
+		meta,
 		localizedCatTemplateAsString(meta, "category list heading"),
 		buf.String(),
-		meta.Lc,
-		meta.U,
 	))
 	if err != nil {
 		log.Println(err)

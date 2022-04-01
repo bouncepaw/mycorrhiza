@@ -3,6 +3,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"mime"
 	"net/http"
@@ -21,12 +22,14 @@ import (
 var stylesheets = []string{"default.css", "custom.css"}
 
 // httpErr is used by many handlers to signal errors in a compact way.
-func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, errMsg string) {
-	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	w.WriteHeader(status)
+// TODO: get rid of this abomination
+func httpErr(meta viewutil.Meta, lc *l18n.Localizer, status int, name, errMsg string) {
+	meta.W.(http.ResponseWriter).Header().Set("Content-Type", mime.TypeByExtension(".html"))
+	meta.W.(http.ResponseWriter).WriteHeader(status)
 	fmt.Fprint(
-		w,
+		meta.W,
 		views.Base(
+			meta,
 			"Error",
 			fmt.Sprintf(
 				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
@@ -34,8 +37,6 @@ func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, errMsg
 				name,
 				lc.Get("ui.error_go_back"),
 			),
-			lc,
-			user.EmptyUser(),
 		),
 	)
 }
@@ -56,7 +57,7 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.Base(lc.Get("ui.users_title"), views.UserList(lc), lc, user.FromRequest(rq))))
+	w.Write([]byte(views.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), views.UserList(lc))))
 }
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {

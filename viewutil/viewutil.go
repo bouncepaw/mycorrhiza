@@ -5,8 +5,6 @@ import (
 	"embed"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"strings"
@@ -54,7 +52,7 @@ func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 		}
 		return BaseEn
 	}()
-	return m(m(t.Clone()).Parse(`{{define "body"}}.Body{{end}}`))
+	return m(m(t.Clone()).Parse(`{{define "body"}}{{.Body}}{{end}}`))
 }
 
 type baseData struct {
@@ -67,13 +65,9 @@ type baseData struct {
 }
 
 // Base is a temporary wrapper around BaseEn and BaseRu, meant to facilitate the migration from qtpl.
-func Base(title, body string, lc *l18n.Localizer, u *user.User, headElements ...string) string {
+func Base(meta Meta, title, body string, headElements ...string) string {
 	var w strings.Builder
-	meta := Meta{
-		Lc: lc,
-		U:  u,
-		W:  &w,
-	}
+	meta.W = &w
 	t := localizedBaseWithWeirdBody(meta)
 	err := t.ExecuteTemplate(&w, "base", baseData{
 		Meta:          meta,

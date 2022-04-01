@@ -3,6 +3,7 @@ package web
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
 	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
 	"math/rand"
@@ -58,10 +59,11 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		_, _ = io.WriteString(
 			w,
-			views.Base(lc.Get("help.entry_not_found"),
+			views.Base(
+				viewutil.MetaFrom(w, rq),
+				lc.Get("help.entry_not_found"),
 				views.Help(views.HelpEmptyError(lc), lang, lc),
-				lc,
-				user.FromRequest(rq)),
+			),
 		)
 		return
 	}
@@ -69,10 +71,11 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = io.WriteString(
 			w,
-			views.Base(err.Error(),
+			views.Base(
+				viewutil.MetaFrom(w, rq),
+				err.Error(),
 				views.Help(err.Error(), lang, lc),
-				lc,
-				user.FromRequest(rq)),
+			),
 		)
 		return
 	}
@@ -84,19 +87,23 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = io.WriteString(
 		w,
-		views.Base(lc.Get("help.title"),
+		views.Base(
+			viewutil.MetaFrom(w, rq),
+			lc.Get("help.title"),
 			views.Help(result, lang, lc),
-			lc,
-			user.FromRequest(rq)),
+		),
 	)
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
-	u := user.FromRequest(rq)
 	var lc = l18n.FromRequest(rq)
 	util.PrepareRq(rq)
-	util.HTTP200Page(w, views.Base(lc.Get("ui.list_title"), views.HyphaList(lc), lc, u))
+	util.HTTP200Page(w, views.Base(
+		viewutil.MetaFrom(w, rq),
+		lc.Get("ui.list_title"),
+		views.HyphaList(lc),
+	))
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
@@ -104,7 +111,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
+		httpErr(viewutil.MetaFrom(w, rq), lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -122,7 +129,7 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
+		httpErr(viewutil.MetaFrom(w, rq), lc, http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
@@ -139,7 +146,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	)
 	if amountOfHyphae == 0 {
 		var lc = l18n.FromRequest(rq)
-		httpErr(w, lc, http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae_tip"))
+		httpErr(viewutil.MetaFrom(w, rq), lc, http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae_tip"))
 		return
 	}
 	i := rand.Intn(amountOfHyphae)
@@ -160,7 +167,11 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 		lc    = l18n.FromRequest(rq)
 		title = lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName})
 	)
-	_, err := io.WriteString(w, views.Base(title, views.AboutHTML(lc), lc, user.FromRequest(rq)))
+	_, err := io.WriteString(w, views.Base(
+		viewutil.MetaFrom(w, rq),
+		title,
+		views.AboutHTML(lc),
+	))
 	if err != nil {
 		log.Println(err)
 	}

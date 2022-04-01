@@ -3,6 +3,7 @@ package web
 import (
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
 	"mime"
@@ -46,10 +47,9 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.register_title"),
 				views.Register(rq),
-				lc,
-				user.FromRequest(rq),
 			),
 		)
 	} else if rq.Method == http.MethodPost {
@@ -65,14 +65,13 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 			_, _ = io.WriteString(
 				w,
 				views.Base(
+					viewutil.MetaFrom(w, rq),
 					lc.Get("auth.register_title"),
 					fmt.Sprintf(
 						`<main class="main-width"><p>%s</p><p><a href="/register">%s<a></p></main>`,
 						err.Error(),
 						lc.Get("auth.try_again"),
 					),
-					lc,
-					user.FromRequest(rq),
 				),
 			)
 		} else {
@@ -101,7 +100,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		}
 		_, _ = io.WriteString(
 			w,
-			views.Base(lc.Get("auth.logout_title"), views.Logout(can, lc), lc, u),
+			views.Base(viewutil.MetaFrom(w, rq), lc.Get("auth.logout_title"), views.Logout(can, lc)),
 		)
 	} else if rq.Method == http.MethodPost {
 		user.LogoutFromRequest(w, rq)
@@ -118,10 +117,9 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.login_title"),
 				views.Login(lc),
-				lc,
-				user.EmptyUser(),
 			),
 		)
 	} else if rq.Method == http.MethodPost {
@@ -133,7 +131,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		if err != "" {
 			w.Header().Set("Content-Type", "text/html;charset=utf-8")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = io.WriteString(w, views.Base(err, views.LoginError(err, lc), lc, user.EmptyUser()))
+			_, _ = io.WriteString(w, views.Base(viewutil.MetaFrom(w, rq), err, views.LoginError(err, lc)))
 			return
 		}
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
@@ -172,6 +170,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				lc.Get("ui.error"),
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
@@ -179,8 +178,6 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 					err.Error(),
 					lc.Get("auth.go_login"),
 				),
-				lc,
-				user.FromRequest(rq),
 			),
 		)
 		return
@@ -193,6 +190,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			views.Base(
+				viewutil.MetaFrom(w, rq),
 				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
@@ -200,8 +198,6 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 					err.Error(),
 					lc.Get("auth.go_login"),
 				),
-				lc,
-				user.FromRequest(rq),
 			),
 		)
 		return

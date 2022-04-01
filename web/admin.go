@@ -71,7 +71,7 @@ func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 
 	var lc = l18n.FromRequest(rq)
 	html := views.AdminUsersPanel(userList, lc)
-	html = views.Base(lc.Get("admin.users_title"), html, lc, user.FromRequest(rq))
+	html = views.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.users_title"), html)
 
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	io.WriteString(w, html)
@@ -110,7 +110,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 
 	var lc = l18n.FromRequest(rq)
 	html := views.AdminUserEdit(u, f, lc)
-	html = views.Base(fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html, lc, user.FromRequest(rq))
+	html = views.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
 
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
@@ -140,7 +140,7 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 
 	var lc = l18n.FromRequest(rq)
 	html := views.AdminUserDelete(u, util.NewFormData(), lc)
-	html = views.Base(fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html, l18n.FromRequest(rq), user.FromRequest(rq))
+	html = views.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
 
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
@@ -154,7 +154,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		// New user form
 		html := views.AdminUserNew(util.NewFormData(), lc)
-		html = views.Base(lc.Get("admin.newuser_title"), html, lc, user.FromRequest(rq))
+		html = views.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
 
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 		io.WriteString(w, html)
@@ -166,7 +166,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 
 		if err != nil {
 			html := views.AdminUserNew(f.WithError(err), lc)
-			html = views.Base(lc.Get("admin.newuser_title"), html, lc, user.FromRequest(rq))
+			html = views.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
 
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
