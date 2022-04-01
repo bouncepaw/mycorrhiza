@@ -51,7 +51,7 @@ func main() {
 	history.InitGitRepo()
 	migration.MigrateRocketsMaybe()
 	shroom.SetHeaderLinks()
-	categories.InitCategories()
+	categories.Init()
 
 	// Static files:
 	static.InitFS(files.StaticFiles())

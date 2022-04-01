@@ -110,7 +110,7 @@ func Handler() http.Handler {
 	initStuff(wikiRouter)
 	initSearch(wikiRouter)
 	initBacklinks(wikiRouter)
-	categories.InitCategoriesHandlers(wikiRouter)
+	categories.InitHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {

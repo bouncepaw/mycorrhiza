@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-// InitCategoriesHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
-func InitCategoriesHandlers(r *mux.Router) {
+// InitHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
+func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
 	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
 	r.PathPrefix("/category/").HandlerFunc(handlerCategory).Methods("GET")
