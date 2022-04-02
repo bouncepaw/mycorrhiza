@@ -118,7 +118,7 @@ func (t Localizer) GetWithLocale(locale, key string, replacements ...*Replacemen
 
 	// If the str doesn't have any substitutions, no need to
 	// template.Execute.
-	if strings.Index(str, "}}") == -1 {
+	if strings.Contains(str, "}}") {
 		return str
 	}
 
@@ -145,7 +145,7 @@ func (t Localizer) GetPlural(key string, n int, replacements ...*Replacements) s
 
 	// As in the original, we skip templating if have nothing to replace
 	// (however, it's strange case for plurals)
-	if strings.Index(str, "}}") == -1 {
+	if strings.Contains(str, "}}") {
 		return str
 	}
 
@@ -164,7 +164,7 @@ func (t Localizer) GetPlural64(key string, n int64, replacements ...*Replacement
 
 	// As in the original, we skip templating if have nothing to replace
 	// (however, it's strange case for plurals)
-	if strings.Index(str, "}}") == -1 {
+	if strings.Contains(str, "}}") {
 		return str
 	}
 

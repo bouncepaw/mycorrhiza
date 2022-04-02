@@ -71,4 +71,7 @@ func AdminPanel(meta viewutil.Meta) {
 		templateAsString(localizedAdminTemplates(meta), "panel title"),
 		buf.String(),
 	))
+	if err != nil {
+		log.Println(err)
+	}
 }

@@ -97,7 +97,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		}
 
 		// TODO: that []byte(...) part should be removed
-		if bytes.Compare(data, []byte(oldText)) == 0 {
+		if bytes.Equal(data, []byte(oldText)) {
 			// No changes! Just like cancel button
 			hop.Abort()
 			return nil
@@ -118,7 +118,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		}
 
 		// TODO: that []byte(...) part should be removed
-		if bytes.Compare(data, []byte(oldText)) == 0 {
+		if bytes.Equal(data, []byte(oldText)) {
 			// No changes! Just like cancel button
 			hop.Abort()
 			return nil
