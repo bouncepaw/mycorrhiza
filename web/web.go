@@ -2,8 +2,8 @@
 package web
 
 import (
-	"fmt"
 	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/misc"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"mime"
@@ -21,26 +21,6 @@ import (
 )
 
 var stylesheets = []string{"default.css", "custom.css"}
-
-// httpErr is used by many handlers to signal errors in a compact way.
-// TODO: get rid of this abomination
-func httpErr(meta viewutil.Meta, lc *l18n.Localizer, status int, name, errMsg string) {
-	meta.W.(http.ResponseWriter).Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	meta.W.(http.ResponseWriter).WriteHeader(status)
-	fmt.Fprint(
-		meta.W,
-		views.Base(
-			meta,
-			"Error",
-			fmt.Sprintf(
-				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
-				errMsg,
-				name,
-				lc.Get("ui.error_go_back"),
-			),
-		),
-	)
-}
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
@@ -111,6 +91,7 @@ func Handler() http.Handler {
 	initSearch(wikiRouter)
 	initBacklinks(wikiRouter)
 	categories.InitHandlers(wikiRouter)
+	misc.InitHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {
