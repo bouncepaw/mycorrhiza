@@ -5,262 +5,176 @@
 package views
 
 //line views/stuff.qtpl:1
-import "fmt"
-
-//line views/stuff.qtpl:3
 import "github.com/bouncepaw/mycorrhiza/cfg"
 
-//line views/stuff.qtpl:4
-import "github.com/bouncepaw/mycorrhiza/util"
-
-//line views/stuff.qtpl:5
+//line views/stuff.qtpl:2
 import "github.com/bouncepaw/mycorrhiza/l18n"
 
-//line views/stuff.qtpl:7
+//line views/stuff.qtpl:4
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line views/stuff.qtpl:7
+//line views/stuff.qtpl:4
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/stuff.qtpl:7
-func StreamBacklinks(qw422016 *qt422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:7
-	qw422016.N().S(`
-<div class="layout">
-<main class="main-width backlinks">
-	<h1>`)
-//line views/stuff.qtpl:10
-	qw422016.N().S(lc.Get(
-		"ui.backlinks_heading",
-		&l18n.Replacements{
-			"hypha_link": fmt.Sprintf(
-				`<a href="/hypha/%s">%s</a>`,
-				hyphaName,
-				util.BeautifulName(hyphaName),
-			),
-		},
-	))
-//line views/stuff.qtpl:19
-	qw422016.N().S(`</h1>
-	<p>`)
-//line views/stuff.qtpl:20
-	qw422016.E().S(lc.Get("ui.backlinks_desc"))
-//line views/stuff.qtpl:20
-	qw422016.N().S(`</p>
-	<ul class="backlinks__list">
-	`)
-//line views/stuff.qtpl:22
-	for hyphaName := range generator(hyphaName) {
-//line views/stuff.qtpl:22
-		qw422016.N().S(`
-		<li class="backlinks__entry">
-			<a class="backlinks__link wikilink" href="/hypha/`)
-//line views/stuff.qtpl:24
-		qw422016.E().S(hyphaName)
-//line views/stuff.qtpl:24
-		qw422016.N().S(`">`)
-//line views/stuff.qtpl:24
-		qw422016.E().S(util.BeautifulName(hyphaName))
-//line views/stuff.qtpl:24
-		qw422016.N().S(`</a>
-		</li>
-	`)
-//line views/stuff.qtpl:26
-	}
-//line views/stuff.qtpl:26
-	qw422016.N().S(`
-	</ul>
-</main>
-</div>
-`)
-//line views/stuff.qtpl:30
-}
-
-//line views/stuff.qtpl:30
-func WriteBacklinks(qq422016 qtio422016.Writer, hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:30
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:30
-	StreamBacklinks(qw422016, hyphaName, generator, lc)
-//line views/stuff.qtpl:30
-	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:30
-}
-
-//line views/stuff.qtpl:30
-func Backlinks(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) string {
-//line views/stuff.qtpl:30
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:30
-	WriteBacklinks(qb422016, hyphaName, generator, lc)
-//line views/stuff.qtpl:30
-	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:30
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:30
-	return qs422016
-//line views/stuff.qtpl:30
-}
-
-//line views/stuff.qtpl:32
+//line views/stuff.qtpl:4
 func StreamHelp(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:32
+//line views/stuff.qtpl:4
 	qw422016.N().S(`
 <div class="layout">
 <main class="main-width help">
 	<article>
 	`)
-//line views/stuff.qtpl:36
+//line views/stuff.qtpl:8
 	qw422016.N().S(content)
-//line views/stuff.qtpl:36
+//line views/stuff.qtpl:8
 	qw422016.N().S(`
 	</article>
 </main>
 `)
-//line views/stuff.qtpl:39
+//line views/stuff.qtpl:11
 	qw422016.N().S(helpTopics(lang, lc))
-//line views/stuff.qtpl:39
+//line views/stuff.qtpl:11
 	qw422016.N().S(`
 </div>
 `)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 }
 
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 func WriteHelp(qq422016 qtio422016.Writer, content, lang string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	StreamHelp(qw422016, content, lang, lc)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 }
 
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 func Help(content, lang string, lc *l18n.Localizer) string {
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	WriteHelp(qb422016, content, lang, lc)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 	return qs422016
-//line views/stuff.qtpl:41
+//line views/stuff.qtpl:13
 }
 
-//line views/stuff.qtpl:43
+//line views/stuff.qtpl:15
 func StreamHelpEmptyError(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:43
+//line views/stuff.qtpl:15
 	qw422016.N().S(`
 <h1>`)
-//line views/stuff.qtpl:44
+//line views/stuff.qtpl:16
 	qw422016.E().S(lc.Get("help.empty_error_title"))
-//line views/stuff.qtpl:44
+//line views/stuff.qtpl:16
 	qw422016.N().S(`</h1>
 <p>`)
-//line views/stuff.qtpl:45
+//line views/stuff.qtpl:17
 	qw422016.E().S(lc.Get("help.empty_error_line_1"))
-//line views/stuff.qtpl:45
+//line views/stuff.qtpl:17
 	qw422016.N().S(`</p>
 <p>`)
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.E().S(lc.Get("help.empty_error_line_2a"))
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.N().S(` <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">`)
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.E().S(lc.Get("help.empty_error_link"))
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.N().S(`</a> `)
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.E().S(lc.Get("help.empty_error_line_2b"))
-//line views/stuff.qtpl:46
+//line views/stuff.qtpl:18
 	qw422016.N().S(`</p>
 `)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 }
 
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 func WriteHelpEmptyError(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	StreamHelpEmptyError(qw422016, lc)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 }
 
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 func HelpEmptyError(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	WriteHelpEmptyError(qb422016, lc)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 	return qs422016
-//line views/stuff.qtpl:47
+//line views/stuff.qtpl:19
 }
 
-//line views/stuff.qtpl:49
+//line views/stuff.qtpl:21
 func streamcommonScripts(qw422016 *qt422016.Writer) {
-//line views/stuff.qtpl:49
+//line views/stuff.qtpl:21
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:50
+//line views/stuff.qtpl:22
 	for _, scriptPath := range cfg.CommonScripts {
-//line views/stuff.qtpl:50
+//line views/stuff.qtpl:22
 		qw422016.N().S(`
 <script src="`)
-//line views/stuff.qtpl:51
+//line views/stuff.qtpl:23
 		qw422016.E().S(scriptPath)
-//line views/stuff.qtpl:51
+//line views/stuff.qtpl:23
 		qw422016.N().S(`"></script>
 `)
-//line views/stuff.qtpl:52
+//line views/stuff.qtpl:24
 	}
-//line views/stuff.qtpl:52
+//line views/stuff.qtpl:24
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 }
 
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 func writecommonScripts(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	streamcommonScripts(qw422016)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 }
 
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 func commonScripts() string {
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	writecommonScripts(qb422016)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 	return qs422016
-//line views/stuff.qtpl:53
+//line views/stuff.qtpl:25
 }

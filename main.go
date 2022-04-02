@@ -5,13 +5,12 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/migration"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"os"
-
-	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"

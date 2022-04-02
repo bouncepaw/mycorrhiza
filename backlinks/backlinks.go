@@ -9,8 +9,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// YieldHyphaBacklinks gets backlinks for the desired hypha, sorts and yields them one by one.
-func YieldHyphaBacklinks(hyphaName string) <-chan string {
+// yieldHyphaBacklinks gets backlinks for the desired hypha, sorts and yields them one by one.
+func yieldHyphaBacklinks(hyphaName string) <-chan string {
 	hyphaName = util.CanonicalName(hyphaName)
 	out := make(chan string)
 	sorted := hyphae.PathographicSort(out)
@@ -147,7 +147,7 @@ type backlinkIndexRenaming struct {
 	links   []string
 }
 
-// Apply changes backlink index respective to the operation data
+// apply changes backlink index respective to the operation data
 func (op backlinkIndexRenaming) apply() {
 	for _, link := range op.links {
 		if lSet, exists := backlinkIndex[link]; exists {

@@ -11,7 +11,7 @@ import "strings"
 import "github.com/bouncepaw/mycorrhiza/cfg"
 
 //line views/nav.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
+import "github.com/bouncepaw/mycorrhiza/backlinks"
 
 //line views/nav.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/l18n"

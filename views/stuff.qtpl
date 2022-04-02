@@ -1,33 +1,5 @@
-{% import "fmt" %}
-
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
-
-{% func Backlinks(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width backlinks">
-	<h1>{%s= lc.Get(
-		"ui.backlinks_heading",
-		&l18n.Replacements{
-			"hypha_link": fmt.Sprintf(
-				`<a href="/hypha/%s">%s</a>`,
-				hyphaName,
-				util.BeautifulName(hyphaName),
-			),
-		},
-	)%}</h1>
-	<p>{%s lc.Get("ui.backlinks_desc")%}</p>
-	<ul class="backlinks__list">
-	{% for hyphaName := range generator(hyphaName) %}
-		<li class="backlinks__entry">
-			<a class="backlinks__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
-		</li>
-	{% endfor %}
-	</ul>
-</main>
-</div>
-{% endfunc %}
 
 {% func Help(content, lang string, lc *l18n.Localizer) %}
 <div class="layout">

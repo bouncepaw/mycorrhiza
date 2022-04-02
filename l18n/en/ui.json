@@ -4,10 +4,6 @@
 	"title_search": "Search by title",
 	"admin_panel": "Admin panel",
 
-	"backlinks_title": "Backlinks to {{.hypha_name}}",
-	"backlinks_heading": "Backlinks to {{.hypha_link}}",
-	"backlinks_desc": "Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.",
-
 	"edit_link": "Edit text",
 	"logout_link": "Log out",
 	"history_link": "View history",

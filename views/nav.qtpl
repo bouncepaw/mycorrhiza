@@ -1,6 +1,6 @@
 {% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
-{% import "github.com/bouncepaw/mycorrhiza/hyphae/backlinks" %}
+{% import "github.com/bouncepaw/mycorrhiza/backlinks" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}

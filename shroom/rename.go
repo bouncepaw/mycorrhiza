@@ -3,7 +3,7 @@ package shroom
 import (
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
+	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
