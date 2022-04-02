@@ -7,7 +7,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-// YieldHyphaNamesContainingString picks hyphae with have a string in their title, sorts and iterates over them.
+// YieldHyphaNamesContainingString picks hyphae with have a string in their title, sorts and iterates over them in alphabetical order.
 func YieldHyphaNamesContainingString(query string) <-chan string {
 	query = util.CanonicalName(strings.TrimSpace(query))
 	out := make(chan string)

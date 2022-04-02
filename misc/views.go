@@ -12,10 +12,13 @@ import (
 
 var (
 	//go:embed *html
-	fs            embed.FS
-	chainList     viewutil.Chain
-	ruTranslation = `
+	fs                          embed.FS
+	chainList, chainTitleSearch viewutil.Chain
+	ruTranslation               = `
 {{define "list of hyphae"}}Список гиф{{end}}
+{{define "search:"}}Поиск:{{end}}
+{{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
+{{define "search desc"}}Название каждой из существующих гиф сопоставлено с запросом. Подходящие гифы приведены ниже.{{end}}
 `
 )
 
@@ -24,6 +27,9 @@ func initViews() {
 	chainList = viewutil.
 		En(viewutil.CopyEnWith(fs, "view_list.html")).
 		Ru(m(viewutil.CopyRuWith(fs, "view_list.html").Parse(ruTranslation)))
+	chainTitleSearch = viewutil.
+		En(viewutil.CopyEnWith(fs, "view_title_search.html")).
+		Ru(m(viewutil.CopyRuWith(fs, "view_title_search.html").Parse(ruTranslation)))
 }
 
 type listDatum struct {
@@ -63,6 +69,26 @@ func viewList(meta viewutil.Meta) {
 			CommonScripts: cfg.CommonScripts,
 		},
 		Entries: data,
+	}); err != nil {
+		log.Println(err)
+	}
+}
+
+type titleSearchData struct {
+	viewutil.BaseData
+	Query   string
+	Results []string
+}
+
+func viewTitleSearch(meta viewutil.Meta, query string, results []string) {
+	if err := chainTitleSearch.Get(meta).ExecuteTemplate(meta.W, "page", titleSearchData{
+		BaseData: viewutil.BaseData{
+			Meta:          meta,
+			HeaderLinks:   cfg.HeaderLinks,
+			CommonScripts: cfg.CommonScripts,
+		},
+		Query:   query,
+		Results: results,
 	}); err != nil {
 		log.Println(err)
 	}

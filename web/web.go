@@ -47,7 +47,6 @@ func Handler() http.Handler {
 	initMutators(wikiRouter)
 	initHistory(wikiRouter)
 	initHelp(wikiRouter)
-	initSearch(wikiRouter)
 	initBacklinks(wikiRouter)
 	categories.InitHandlers(wikiRouter)
 	misc.InitHandlers(wikiRouter)

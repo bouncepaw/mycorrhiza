@@ -4,21 +4,6 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
-{% func TitleSearch(query string, generator func(string) <-chan string, lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width title-search">
-	<h1>{%s lc.Get("ui.search_results_query", &l18n.Replacements{"query": query})%}</h1>
-	<p>{%s lc.Get("ui.search_results_desc")%}</p>
-	<ul class="title-search__results">
-	{% for hyphaName := range generator(query) %}
-		<li class="title-search__entry">
-			<a class="title-search__link wikilink" href="/hypha/{%s hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>
-		</li>
-	{% endfor %}
-</main>
-</div>
-{% endfunc %}
-
 {% func Backlinks(hyphaName string, generator func(string) <-chan string, lc *l18n.Localizer) %}
 <div class="layout">
 <main class="main-width backlinks">

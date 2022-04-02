@@ -34,6 +34,7 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
+	rtr.HandleFunc("/title-search/", handlerTitleSearch)
 	initViews()
 }
 
@@ -141,4 +142,18 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 		log.Println()
 	}
 	_ = file.Close()
+}
+
+func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
+	util.PrepareRq(rq)
+	_ = rq.ParseForm()
+	var (
+		query   = rq.FormValue("q")
+		results []string
+	)
+	for hyphaName := range shroom.YieldHyphaNamesContainingString(query) {
+		results = append(results, hyphaName)
+	}
+	w.WriteHeader(http.StatusOK)
+	viewTitleSearch(viewutil.MetaFrom(w, rq), query, results)
 }
