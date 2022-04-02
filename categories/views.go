@@ -30,25 +30,17 @@ var (
 )
 
 func prepareViews() {
-	var (
-		m          = template.Must
-		copyEnWith = func(f string) *template.Template {
-			return m(m(viewutil.BaseEn.Clone()).ParseFS(fs, f))
-		}
-		copyRuWith = func(f string) *template.Template {
-			return m(m(viewutil.BaseRu.Clone()).ParseFS(fs, f))
-		}
-	)
+	m := template.Must
 
 	viewCardChain = viewutil.
-		En(copyEnWith("view_card.html")).
-		Ru(m(copyRuWith("view_card.html").Parse(ruTranslation)))
+		En(viewutil.CopyEnWith(fs, "view_card.html")).
+		Ru(m(viewutil.CopyRuWith(fs, "view_card.html").Parse(ruTranslation)))
 	viewListChain = viewutil.
-		En(copyEnWith("view_list.html")).
-		Ru(m(copyRuWith("view_list.html").Parse(ruTranslation)))
+		En(viewutil.CopyEnWith(fs, "view_list.html")).
+		Ru(m(viewutil.CopyRuWith(fs, "view_list.html").Parse(ruTranslation)))
 	viewPageChain = viewutil.
-		En(copyEnWith("view_page.html")).
-		Ru(m(copyRuWith("view_page.html").Parse(ruTranslation)))
+		En(viewutil.CopyEnWith(fs, "view_page.html")).
+		Ru(m(viewutil.CopyRuWith(fs, "view_page.html").Parse(ruTranslation)))
 }
 
 type cardData struct {

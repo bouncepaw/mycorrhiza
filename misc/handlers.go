@@ -28,17 +28,13 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
 	})
+	initViews()
 }
 
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
-	var lc = l18n.FromRequest(rq)
 	util.PrepareRq(rq)
-	util.HTTP200Page(w, views.Base(
-		viewutil.MetaFrom(w, rq),
-		lc.Get("ui.list_title"),
-		views.HyphaList(lc),
-	))
+	viewList(viewutil.MetaFrom(w, rq))
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.

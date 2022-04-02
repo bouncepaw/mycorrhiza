@@ -1,8 +1,6 @@
 {% import "fmt" %}
-{% import "path/filepath" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
-{% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
@@ -61,39 +59,6 @@
 <h1>{%s lc.Get("help.empty_error_title") %}</h1>
 <p>{%s lc.Get("help.empty_error_line_1") %}</p>
 <p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
-{% endfunc %}
-
-{% func HyphaList(lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width">
-	<h1>{%s lc.Get("ui.list_heading") %}</h1>
-	<p>{%s lc.GetPlural("ui.list_desc", hyphae.Count()) %}</p>
-	<ul class="hypha-list">
-		{% code
-		hyphaNames := make(chan string)
-		sortedHypha := hyphae.PathographicSort(hyphaNames)
-		for hypha := range hyphae.YieldExistingHyphae() {
-			hyphaNames <- hypha.CanonicalName()
-		}
-		close(hyphaNames)
-		%}
-		{% for hyphaName := range sortedHypha %}
-		{% code h := hyphae.ByName(hyphaName) %}
-		<li class="hypha-list__entry">
-			<a class="hypha-list__link" href="/hypha/{%s h.CanonicalName() %}">
-				{%s util.BeautifulName(h.CanonicalName()) %}
-			</a>
-			{% switch h := h.(type) %}
-			{% case *hyphae.MediaHypha %}
-				<span class="hypha-list__amnt-type">
-					{%s filepath.Ext(h.MediaFilePath())[1:] %}
-				</span>
-			{% endswitch %}
-		</li>
-		{% endfor %}
-	</ul>
-</main>
-</div>
 {% endfunc %}
 
 {% func commonScripts() %}
