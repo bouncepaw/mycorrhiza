@@ -17,7 +17,7 @@ import (
 	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
 )
 
-func initStuff(r *mux.Router) {
+func initHelp(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
 }
 

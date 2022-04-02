@@ -20,6 +20,7 @@ import (
 )
 
 func initAuth(r *mux.Router) {
+	r.HandleFunc("/user-list", handlerUserList)
 	r.HandleFunc("/lock", handlerLock)
 	// The check below saves a lot of extra checks and lines of codes in other places in this file.
 	if !cfg.UseAuth {
@@ -33,6 +34,13 @@ func initAuth(r *mux.Router) {
 	}
 	r.HandleFunc("/login", handlerLogin)
 	r.HandleFunc("/logout", handlerLogout)
+}
+
+func handlerUserList(w http.ResponseWriter, rq *http.Request) {
+	lc := l18n.FromRequest(rq)
+	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(views.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), views.UserList(lc))))
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {

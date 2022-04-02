@@ -37,7 +37,7 @@ type listData struct {
 }
 
 func viewList(meta viewutil.Meta) {
-	// TODO: make this better, there are too many loops and vars
+	// TODO: make this more effective, there are too many loops and vars
 	var (
 		hyphaNames  = make(chan string)
 		sortedHypha = hyphae.PathographicSort(hyphaNames)
