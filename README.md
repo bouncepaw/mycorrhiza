@@ -10,7 +10,7 @@
 * **No database required.** Everything is stored in plain files. It makes installation super easy, and you can modify the content directly by yourself.
 * **Everything is hyphae.** A hypha is a unit of content such as a picture, video or a text article. Hyphae can [transclude] and link each other, forming a tight network of hypertext pages.
 * **Hyphae are authored in [Mycomarkup],** a markup language that's designed to be unambigious yet easy to use.
-* **Categories** let you organize hyphae without any hierarchy restrictions, with all the benefits of a tag system.
+* **Categories** let you organize hyphae without any hierarchy restrictions, with all the benefits of a category system.
 * **Nesting of hyphae** is also supported if you like hierarchies.
 * **History of changes** for textual parts of hyphae. Every change is safely stored in [Git]. Web feeds for recent changes included.
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
