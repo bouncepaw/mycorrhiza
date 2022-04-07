@@ -4,7 +4,7 @@
 package migration
 
 import (
-	"github.com/bouncepaw/mycomarkup/v3/tools"
+	"github.com/bouncepaw/mycomarkup/v4/tools"
 	"io"
 	"io/ioutil"
 	"log"

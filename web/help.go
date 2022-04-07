@@ -2,6 +2,8 @@ package web
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
+	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"net/http"
@@ -13,8 +15,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup/v3"
-	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
 )
 
 func initHelp(r *mux.Router) {
@@ -64,7 +65,7 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	// TODO: change for the function that uses byte array when there is such function in mycomarkup.
-	ctx, _ := mycocontext.ContextFromStringInput(articlePath, string(content))
+	ctx, _ := mycocontext.ContextFromStringInput(string(content), shroom.MarkupOptions(articlePath))
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
 	w.WriteHeader(http.StatusOK)

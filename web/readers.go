@@ -3,6 +3,8 @@ package web
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
@@ -13,7 +15,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
@@ -22,9 +23,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup/v3"
-	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v3/tools"
+	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v4/tools"
 )
 
 func initReaders(r *mux.Router) {
@@ -140,7 +140,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
 
 		if err == nil {
-			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, textContents)
+			ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
 			contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
 		}
 	}
@@ -213,8 +213,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	case hyphae.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
 		if errT == nil {
-			ctx, _ := mycocontext.ContextFromStringInput(hyphaName, string(fileContentsT))
-			ctx = mycocontext.WithWebSiteURL(ctx, cfg.URL)
+			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), shroom.MarkupOptions(hyphaName))
 			getOpenGraph, descVisitor, imgVisitor := tools.OpenGraphVisitors(ctx)
 			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
 			contents = mycomarkup.BlocksToHTML(ctx, ast)

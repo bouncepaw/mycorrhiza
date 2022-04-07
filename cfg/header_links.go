@@ -1,10 +1,10 @@
 package cfg
 
-// See https://mycorrhiza.wiki/hypha/configuration/header
 import (
-	"github.com/bouncepaw/mycomarkup/v3"
-	"github.com/bouncepaw/mycomarkup/v3/blocks"
-	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycomarkup/v4/blocks"
+	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v4/options"
 )
 
 // HeaderLinks is a list off current header links. Feel free to iterate it directly but do not modify it by yourself. Call ParseHeaderLinks if you need to set new header links.
@@ -24,7 +24,7 @@ func SetDefaultHeaderLinks() {
 // ParseHeaderLinks extracts all rocketlinks from the given text and saves them as header links.
 func ParseHeaderLinks(text string) {
 	HeaderLinks = []HeaderLink{}
-	ctx, _ := mycocontext.ContextFromStringInput("", text)
+	ctx, _ := mycocontext.ContextFromStringInput(text, options.Options{}.FillTheRest())
 	// We call for side-effects
 	_ = mycomarkup.BlockTree(ctx, func(block blocks.Block) {
 		switch launchpad := block.(type) {
