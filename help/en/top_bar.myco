@@ -15,6 +15,7 @@ On big screens, the top bar is spread onto two lines.
 ** All hyphae
 ** Random
 ** Help
+** Categories
 
 On small screens, the authorization section and the most-used-links section are hidden behind a menu. Click the button to see them. If your browser does not support JavaScript, they are always shown.
 
@@ -40,9 +41,11 @@ Reload the wiki.
 
 ----
 
-Edit the hypha. You can put any markup there. Rocket links will be used for generating the top bar:
+Edit the hypha. You can put any markup there. Only rocket links will be used for generating the top bar:
 
 ```myco
+This paragraph is unused.
+
 => /recent-changes | Recent changes
 => Highlights
 => Philosophy | Our views on life

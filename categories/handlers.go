@@ -1,10 +1,9 @@
-package web
+package categories
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
 	"io"
 	"log"
@@ -12,16 +11,18 @@ import (
 	"strings"
 )
 
-func initCategories(r *mux.Router) {
+// InitHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
+func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
 	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
 	r.PathPrefix("/category/").HandlerFunc(handlerCategory).Methods("GET")
 	r.PathPrefix("/category").HandlerFunc(handlerListCategory).Methods("GET")
+	prepareViews()
 }
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Viewing list of categories")
-	views.CategoryList(views.MetaFrom(w, rq))
+	categoryList(viewutil.MetaFrom(w, rq))
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
@@ -32,7 +33,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	log.Println("Viewing category", catName)
-	views.CategoryPage(views.MetaFrom(w, rq), catName)
+	categoryPage(viewutil.MetaFrom(w, rq), catName)
 }
 
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
@@ -51,7 +52,8 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	categories.RemoveHyphaFromCategory(hyphaName, catName)
+	log.Println(user.FromRequest(rq).Name, "removed", hyphaName, "from", catName)
+	removeHyphaFromCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
 
@@ -71,6 +73,7 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	categories.AddHyphaToCategory(hyphaName, catName)
+	log.Println(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
+	addHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }

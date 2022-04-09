@@ -175,7 +175,7 @@ func (rev *Revision) hyphaeAffected() (hyphae []string) {
 		filesAffected = rev.filesAffected()
 	)
 	for _, filename := range filesAffected {
-		if strings.IndexRune(filename, '.') >= 0 {
+		if strings.ContainsRune(filename, '.') {
 			dotPos := strings.LastIndexByte(filename, '.')
 			hyphaName := string([]byte(filename)[0:dotPos]) // is it safe?
 			if isNewName(hyphaName) {

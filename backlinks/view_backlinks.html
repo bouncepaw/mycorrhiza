@@ -1,0 +1,17 @@
+{{define "backlinks to text"}}Backlinks to {{.}}{{end}}
+{{define "title"}}{{template "backlinks to text" .HyphaName}}{{end}}
+{{define "body"}}
+<div class="layout">
+	<main class="main-width backlinks">
+		<h1>{{block "backlinks to link" .HyphaName}}Backlinks to <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}</h1>
+		<p>{{block "description" .}}Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.{{end}}</p>
+		<ul class="backlinks__list">
+			{{range .Backlinks}}
+			<li class="backlinks__entry">
+				<a class="backlinks__link wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
+			</li>
+			{{end}}
+			</ul>
+	</main>
+</div>
+{{end}}

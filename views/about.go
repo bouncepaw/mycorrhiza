@@ -47,7 +47,7 @@ const aboutTemplateString = `<div class="layout">
 			<li><b>{{ get .L.Version }}</b> 1.9.0</li>
 		{{ if .Cfg.UseAuth }}
 			<li><b>{{ get .L.UserCount }}</b> {{ .UserCount }}</li>
-			<li><b>{{ get .L.HomePage }}</b> <a href="/">{{ .Cfg.HomeHypha }}</a></li>
+			<li><b>{{ get .L.HomeHypha }}</b> <a href="/">{{ .Cfg.HomeHypha }}</a></li>
 			<li><b>{{ get .L.Admins }}</b> {{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
 				{{ if gt $i 0 }}<span aria-hidden="true">, </span>{{ end }}
 				<a href="/hypha/{{ $cfg.UserHypha }}/{{ $username }}">{{ $username }}</a>
@@ -71,7 +71,7 @@ var aboutData = struct {
 		"Title":       e().en("About %s").ru("О %s"),
 		"Version":     e().en("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version:").ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>:"),
 		"UserCount":   e().en("User count:").ru("Число пользователей:"),
-		"HomePage":    e().en("Home page:").ru("Домашняя гифа:"),
+		"HomeHypha":   e().en("Home hypha:").ru("Домашняя гифа:"),
 		"Admins":      e().en("Administrators:").ru("Администраторы:"),
 		"NoAuth":      e().en("This wiki does not use authorization").ru("На этой вики не используется авторизация"),
 		"AboutHyphae": e().en("See <a href=\"/list\">/list</a> for information about hyphae on this wiki.").ru("См. <a href=\"/list\">/list</a>, чтобы узнать о гифах в этой вики."),

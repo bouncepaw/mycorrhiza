@@ -5,12 +5,12 @@
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae/categories"
+	"github.com/bouncepaw/mycorrhiza/backlinks"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/migration"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"os"
-
-	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
@@ -41,6 +41,7 @@ func main() {
 	log.Println("Using Git storage at", files.HyphaeDir())
 
 	// Init the subsystems:
+	viewutil.Init()
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
@@ -49,7 +50,7 @@ func main() {
 	history.InitGitRepo()
 	migration.MigrateRocketsMaybe()
 	shroom.SetHeaderLinks()
-	categories.InitCategories()
+	categories.Init()
 
 	// Static files:
 	static.InitFS(files.StaticFiles())

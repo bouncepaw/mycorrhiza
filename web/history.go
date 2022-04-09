@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 )
@@ -42,10 +42,10 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 
 	var lc = l18n.FromRequest(rq)
 	util.HTTP200Page(w, views.Base(
+		viewutil.MetaFrom(w, rq),
 		fmt.Sprintf(lc.Get("ui.history_title"), util.BeautifulName(hyphaName)),
 		views.History(rq, hyphaName, list, lc),
-		lc,
-		user.FromRequest(rq)))
+	))
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.
@@ -57,10 +57,10 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	}
 	var lc = l18n.FromRequest(rq)
 	util.HTTP200Page(w, views.Base(
+		viewutil.MetaFrom(w, rq),
 		lc.GetPlural("ui.recent_title", n),
 		views.RecentChanges(n, lc),
-		lc,
-		user.FromRequest(rq)))
+	))
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.

@@ -1,10 +1,11 @@
 package backlinks
 
 import (
-	"github.com/bouncepaw/mycomarkup/v3"
-	"github.com/bouncepaw/mycomarkup/v3/links"
-	"github.com/bouncepaw/mycomarkup/v3/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v3/tools"
+	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycomarkup/v4/links"
+	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v4/options"
+	"github.com/bouncepaw/mycomarkup/v4/tools"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 )
 
@@ -34,7 +35,7 @@ func extractHyphaLinks(h hyphae.Hypha) []string {
 
 // extractHyphaLinksFromContent extracts local hypha links from the provided text.
 func extractHyphaLinksFromContent(hyphaName string, contents string) []string {
-	ctx, _ := mycocontext.ContextFromStringInput(hyphaName, contents)
+	ctx, _ := mycocontext.ContextFromStringInput(contents, options.Options{HyphaName: hyphaName}.FillTheRest())
 	linkVisitor, getLinks := tools.LinkVisitor(ctx)
 	// Ignore the result of BlockTree because we call it for linkVisitor.
 	_ = mycomarkup.BlockTree(ctx, linkVisitor)

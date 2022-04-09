@@ -3,21 +3,10 @@
 	"register": "Регистрация",
 	"title_search": "Поиск по названию",
 	"admin_panel": "Администрирование",
-	
-	"search_results_title": "Поиск: {{.query}}",
-	"search_results_query": "Результаты поиска для «{{.query}}»",
-	"search_results_desc": "Название каждой из существующих гиф сопоставлено с запросом. Подходящие гифы приведены ниже.",
-	
+
 	"backlinks_title": "Обратные ссылки на {{.hypha_name}}",
 	"backlinks_heading": "Обратные ссылки на {{.hypha_link}}",
 	"backlinks_desc": "Ниже перечислены гифы, на которых есть ссылка на эту гифу, трансклюзия этой гифы или эта гифа вставлена как изображение.",
-	
-	"list_title": "Список страниц",
-	"list_heading": "Список гиф",
-	"list_desc": "В этой вики {{.n}} %s.",
-	"list_desc+one": "гифа",
-	"list_desc+few": "гифы",
-	"list_desc+many": "гиф",
 
 	"edit_link": "Редактировать",
 	"logout_link": "Выйти",

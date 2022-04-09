@@ -5,11 +5,13 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/categories" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
 {% import "github.com/bouncepaw/mycorrhiza/tree" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
+{% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
 
 {% func MediaMenu(rq *http.Request, h hyphae.Hypha, u *user.User) %}
 {% code
@@ -85,7 +87,7 @@
 If `contents` == "", a helpful message is shown instead.
 
 If you rename .prevnext, change the docs too.
-{% func Hypha(meta Meta, h hyphae.Hypha, contents string) %}
+{% func Hypha(meta viewutil.Meta, h hyphae.Hypha, contents string) %}
 {% code
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	lc := meta.Lc
@@ -131,7 +133,7 @@ If you rename .prevnext, change the docs too.
    		{%= hyphaInfo(meta, h) %}
 	</section>
 </main>
-{%s= categoryCard(meta, h.CanonicalName()) %}
+{%s= categories.CategoryCard(meta, h.CanonicalName()) %}
 {%= siblingHyphae(siblings, meta.Lc) %}
 </div>
 {%= viewScripts() %}

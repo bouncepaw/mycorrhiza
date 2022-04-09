@@ -7,9 +7,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 )
 
-func rejectDeleteLog(h hyphae.Hypha, u *user.User, errmsg string) {
-	log.Printf("Reject delete ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
-}
 func rejectRenameLog(h hyphae.Hypha, u *user.User, errmsg string) {
 	log.Printf("Reject rename ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
 }

@@ -2,73 +2,20 @@
 package web
 
 import (
-	"fmt"
+	"github.com/bouncepaw/mycorrhiza/backlinks"
+	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/help"
+	"github.com/bouncepaw/mycorrhiza/misc"
 	"io"
-	"mime"
 	"net/http"
 	"net/url"
 
 	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 )
-
-var stylesheets = []string{"default.css", "custom.css"}
-
-// httpErr is used by many handlers to signal errors in a compact way.
-func httpErr(w http.ResponseWriter, lc *l18n.Localizer, status int, name, errMsg string) {
-	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	w.WriteHeader(status)
-	fmt.Fprint(
-		w,
-		views.Base(
-			"Error",
-			fmt.Sprintf(
-				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
-				errMsg,
-				name,
-				lc.Get("ui.error_go_back"),
-			),
-			lc,
-			user.EmptyUser(),
-		),
-	)
-}
-
-func handlerStyle(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
-	for _, name := range stylesheets {
-		file, err := static.FS.Open(name)
-		if err != nil {
-			continue
-		}
-		io.Copy(w, file)
-		file.Close()
-	}
-}
-
-func handlerUserList(w http.ResponseWriter, rq *http.Request) {
-	lc := l18n.FromRequest(rq)
-	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.Base(lc.Get("ui.users_title"), views.UserList(lc), lc, user.FromRequest(rq))))
-}
-
-func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-
-	file, err := static.FS.Open("robots.txt")
-	if err != nil {
-		return
-	}
-	io.Copy(w, file)
-	file.Close()
-}
 
 // Handler initializes and returns the HTTP router based on the configuration.
 func Handler() http.Handler {
@@ -86,10 +33,6 @@ func Handler() http.Handler {
 
 	// Public routes. They're always accessible regardless of the user status.
 	initAuth(router)
-	router.HandleFunc("/robots.txt", handlerRobotsTxt)
-	router.HandleFunc("/static/style.css", handlerStyle)
-	router.PathPrefix("/static/").
-		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 
 	// Wiki routes. They may be locked or restricted.
 	wikiRouter := router.PathPrefix("").Subrouter()
@@ -105,10 +48,10 @@ func Handler() http.Handler {
 	initReaders(wikiRouter)
 	initMutators(wikiRouter)
 	initHistory(wikiRouter)
-	initStuff(wikiRouter)
-	initSearch(wikiRouter)
-	initBacklinks(wikiRouter)
-	initCategories(wikiRouter)
+	help.InitHandlers(wikiRouter)
+	backlinks.InitHandlers(wikiRouter)
+	categories.InitHandlers(wikiRouter)
+	misc.InitHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {
@@ -116,9 +59,6 @@ func Handler() http.Handler {
 		adminRouter.Use(groupMiddleware("admin"))
 		initAdmin(adminRouter)
 	}
-
-	// Miscellaneous
-	wikiRouter.HandleFunc("/user-list", handlerUserList)
 
 	// Index page
 	wikiRouter.HandleFunc("/", func(w http.ResponseWriter, rq *http.Request) {

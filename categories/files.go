@@ -12,8 +12,8 @@ import (
 var categoryToHyphae = map[string]*categoryNode{}
 var hyphaToCategories = map[string]*hyphaNode{}
 
-// InitCategories initializes the category system. Call it after the Structure is initialized. This function might terminate the program in case of a bad mood or filesystem faults.
-func InitCategories() {
+// Init initializes the category system. Call it after the Structure is initialized. This function might terminate the program in case of a bad mood or filesystem faults.
+func Init() {
 	var (
 		record, err = readCategoriesFromDisk()
 	)

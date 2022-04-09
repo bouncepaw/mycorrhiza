@@ -1,4 +1,4 @@
-// Package categories provides category management. All operations in this package are mutexed.
+// Package categories provides category management.
 //
 // As per the long pondering, this is how categories (cats for short)
 // work in Mycorrhiza:
@@ -12,12 +12,19 @@
 //       cat operations are not mentioned on the recent changes page.
 //     - For cat A, if there are 0 hyphae in the cat, cat A does not
 //       exist. If there are 1 or more hyphae in the cat, cat A exists.
+//
+// List of things to do with categories later:
+//
+//     - Forbid / in cat names.
+//     - Rename categories.
+//     - Delete categories.
+//     - Bind hyphae.
 package categories
 
 import "sync"
 
-// List returns names of all categories.
-func List() (categoryList []string) {
+// listOfCategories returns names of all categories.
+func listOfCategories() (categoryList []string) {
 	mutex.RLock()
 	for cat, _ := range categoryToHyphae {
 		categoryList = append(categoryList, cat)
@@ -26,8 +33,8 @@ func List() (categoryList []string) {
 	return categoryList
 }
 
-// WithHypha returns what categories have the given hypha. The hypha name must be canonical.
-func WithHypha(hyphaName string) (categoryList []string) {
+// categoriesWithHypha returns what categories have the given hypha. The hypha name must be canonical.
+func categoriesWithHypha(hyphaName string) (categoryList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
@@ -37,8 +44,8 @@ func WithHypha(hyphaName string) (categoryList []string) {
 	}
 }
 
-// Contents returns what hyphae are in the category. If the returned slice is empty, the category does not exist, and vice versa. The category name must be canonical.
-func Contents(catName string) (hyphaList []string) {
+// hyphaeInCategory returns what hyphae are in the category. If the returned slice is empty, the category does not exist, and vice versa. The category name must be canonical.
+func hyphaeInCategory(catName string) (hyphaList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
 	if node, ok := categoryToHyphae[catName]; ok {
@@ -50,8 +57,8 @@ func Contents(catName string) (hyphaList []string) {
 
 var mutex sync.RWMutex
 
-// AddHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens. Pass canonical names.
-func AddHyphaToCategory(hyphaName, catName string) {
+// addHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens. Pass canonical names.
+func addHyphaToCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
 		node.storeCategory(catName)
@@ -68,8 +75,8 @@ func AddHyphaToCategory(hyphaName, catName string) {
 	go saveToDisk()
 }
 
-// RemoveHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens. Pass canonical names.
-func RemoveHyphaFromCategory(hyphaName, catName string) {
+// removeHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens. Pass canonical names.
+func removeHyphaFromCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
 		node.removeCategory(catName)

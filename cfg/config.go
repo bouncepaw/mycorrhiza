@@ -193,7 +193,7 @@ func ReadConfigFile(path string) error {
 	TelegramEnabled = (TelegramBotToken != "") && (TelegramBotName != "")
 
 	// This URL makes much more sense. If no URL is set or the protocol is forgotten, assume HTTP.
-	if (URL == "") || (strings.Index(URL, ":") == -1) {
+	if (URL == "") || !strings.Contains(URL, ":") {
 		URL = "http://" + ListenAddr
 	}
 

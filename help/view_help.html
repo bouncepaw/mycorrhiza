@@ -1,0 +1,50 @@
+{{define "title"}}Help{{end}}
+{{define "body"}}
+<div class="layout">
+	<main class="main-width help">
+		<article>
+			{{if .ContentsHTML}}
+				{{.ContentsHTML}}
+			{{else}}
+				<h1>{{block "entry not found" .}}Entry not found{{end}}</h1>
+				<p>{{block "entry not found invitation" .}}If you want to write this entry by yourself, consider <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">contributing</a> it directly.{{end}}</p>
+            {{end}}
+		</article>
+	</main>
+	<aside class="help-topics layout-card">
+		<h2 class="layout-card__title">{{block "topics" .}}Help topics{{end}}</h2>
+		<ul class="help-topics__list">
+			<li><a href="/help/en">{{block "main" .}}Main{{end}}</a></li>
+			<li><a href="/help/en/hypha">{{block "hypha" .}}Hypha{{end}}</a>
+				<ul>
+                    <a href="/help/en/media">{{block "media" .}}Media{{end}}</a>
+				</ul>
+			</li>
+			<li><a href="/help/en/mycomarkup">{{block "mycomarkup" .}}Mycomarkup{{end}}</a></li>
+			<li><a href="/help/en/category">{{block "category" .}}Categories{{end}}</a></li>
+			<li>{{block "interface" .}}Interface{{end}}
+				<ul>
+					<li><a href="/help/en/prevnext">{{block "prevnext" .}}Previous/next{{end}}</a></li>
+					<li><a href="/help/en/top_bar">{{block "top_bar" .}}Top bar{{end}}</a></li>
+					<li><a href="/help/en/sibling_hyphae_section">{{block "sibling_hyphae" .}}Sibling hyphae{{end}}</a></li>
+				</ul>
+			</li>
+			<li>{{block "special pages" .}}Special pages{{end}}
+				<ul>
+					<li><a href="/help/en/recent_changes">{{block "recent_changes" .}}Recent changes{{end}}</a></li>
+					<li><a href="/help/en/feeds">{{block "feeds" .}}Feeds{{end}}</a></li>
+				</ul>
+			</li>
+			<li>{{block "configuration" .}}Configuration (for administrators){{end}}
+				<ul>
+					<li><a href="/help/en/config_file">{{block "config_file" .}}Configuration file{{end}}</a></li>
+					<li><a href="/help/en/lock">{{block "lock" .}}Lock{{end}}</a></li>
+					<li><a href="/help/en/whitelist">{{block "whitelist" .}}Whitelist{{end}}</a></li>
+					<li><a href="/help/en/telegram">{{block "telegram" .}}Telegram authentication{{end}}</a></li>
+				</ul>
+			</li>
+		</ul>
+	</aside>
+</div>
+{{end}}
+

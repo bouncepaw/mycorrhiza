@@ -2,8 +2,7 @@ package shroom
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/hyphae/backlinks"
-
+	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/user"

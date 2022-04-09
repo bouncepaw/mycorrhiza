@@ -1,0 +1,18 @@
+{{define "category list"}}Category list{{end}}
+{{define "title"}}{{template "category list"}}{{end}}
+{{define "body"}}
+	<main class="main-width category-list">
+		<h1>{{template "title"}}</h1>
+        {{if len .Categories}}
+			<ul class="category-list__entries">
+                {{range .Categories}}
+					<li class="category-list__entry">
+						<a class="category-list__link" href="/category/{{.}}">{{beautifulName .}}</a>
+					</li>
+                {{end}}
+			</ul>
+        {{else}}
+			<p>{{block `no categories` .}}This wiki has no categories.{{end}}</p>
+        {{end}}
+	</main>
+{{end}}

@@ -3,20 +3,6 @@
 	"register": "Register",
 	"title_search": "Search by title",
 	"admin_panel": "Admin panel",
-	
-	"search_results_title": "Search: {{.query}}",
-	"search_results_query": "Search results for ‘{{.query}}’",
-	"search_results_desc": "Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.",
-	
-	"backlinks_title": "Backlinks to {{.hypha_name}}",
-	"backlinks_heading": "Backlinks to {{.hypha_link}}",
-	"backlinks_desc": "Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.",
-
-	"list_title": "List of pages",
-	"list_heading": "List of hyphae",
-	"list_desc": "This wiki has {{.n}} %s.",
-	"list_desc+one": "hypha",
-	"list_desc+other": "hyphae",
 
 	"edit_link": "Edit text",
 	"logout_link": "Log out",
