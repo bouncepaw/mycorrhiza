@@ -24,6 +24,7 @@ require (
 // but do not commit the change to the path:
 //  replace github.com/bouncepaw/mycomarkup/v4 v4.0.0 => "/Users/bouncepaw/GolandProjects/mycomarkup"
 
+
 // Use this utility every time Mycomarkup gets a major update:
 // https://github.com/marwan-at-work/mod
 // Or maybe just ⌘⇧R every time, the utility is kinda weird.

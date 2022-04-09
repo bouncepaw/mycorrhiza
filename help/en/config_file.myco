@@ -7,10 +7,10 @@ The file is generated automatically when you create a new wiki:
 
 ```
 # Generate a new wiki
-$ mycorrhiza bestWiki
+$ mycorrhiza best-wiki
 ...
 # See what's inside
-$ ls bestWiki
+$ ls best-wiki
 cache		config.ini	static		wiki.git
 ```
 
@@ -19,7 +19,7 @@ The file is written in the [[https://en.wikipedia.org/wiki/INI_file | .ini forma
 == Example configuration
 The auto-generated file is the best example (it has comments too).
 
-Here's another example:
+Here's an example of a configuration file adapted from the default:
 ```ini
 WikiName = My wiki
 NaviTitleIcon = 🐑
@@ -30,34 +30,44 @@ UserHypha = u
 HeaderLinksHypha = header-links
 
 [Network]
-HTTPPort = 8080
+ListenAddr = 0.0.0.0:8080
 URL = https://wiki
-GeminiCertificatePath = /home/wiki/gemcerts
 
 [Authorization]
-UseRegistration = true
+UseAuth = true
+AllowRegistration = true
 ```
 
 == Fields
 === Root section
 * `WikiName`: //string//. The name your wiki has. It is shown in the header by default and in other places. **Default:** `Mycorrhiza Wiki`.
 * `NaviTitleIcon`: //string//. The icon shown before the colon in the navigational titles above each hypha. You may want to use an emoji or HTML here. **Default:** `🍄` (mushroom emoji).
+* `UseSiblingHyphaeSidebar`: //boolean//. Whether to show the [[/help/en/sibling_hyphae_section | sibling hyphae sidebar]]. You are discouraged from using the sibling hyphae sidebar on new wikis. Enable it on old wikis that depend on it heavily. **Default:** `false`.
 
 === [Hyphae]
 * `HomeHypha`: //string//. The name your home hypha has. **Default:** `home`.
 * `UserHypha`: //string//. The name of the hypha that is parent of all user hyphae. **Default:** `u`.
-* `HeaderLinkHypha`: //string//. The name of the hypha where you can configure the header. There is no default.
+* `HeaderLinkHypha`: //string//. The name of the hypha where you can configure the header. See [[/help/en/top_bar]]. There is no default.
 
 === [Network]
-* `HTTPPort`: //number//. What port is used for serving the web interface of Mycorrhiza. **Default:** `1737`.
+* `ListenAddr`: //number//. What port is used for serving the web interface of Mycorrhiza. **Default:** `1737`.
 * `URL`: //url//. What URL is used for Opengraph and Web feed in the web interface. There is no default and you really should set it to something.
 
 === [Authorization]
-* `UseRegistration`: //boolean//. Whether you want unregistered visitors to be able to register themselves using the web form. **Default:** `false`.
-* `LimitRegistration`: //number//. There cannot be more registered users than this number. If the number is zero, there is no limit. Makes sense only when `UseRegistration` is `true`. **Default:** `0`.
+* `UseAuth`: //boolean//. Whether to enable authorization system. **Default:** `false`.
+* `AllowRegistration`: //boolean//. Whether you want unregistered visitors to be able to register themselves using the web form. **Default:** `false`.
+* `RegistrationLimit`: //number//. There cannot be more registered users than this number. If the number is zero, there is no limit. Makes sense only when `UseRegistration` is `true`. **Default:** `0`.
+* `Locked`: //boolean//. Whether the users have to authorize first to access the wiki. **Default:** `false`.
+* `UseWhiteList`: //boolean//. Whether to use a whitelist to allow specific users in. **Default:** `false`.
+* `WhiteList`: //list of strings//. Usernames of people to allow in, if `UseWhiteList` is turned on. **Default:** `[]`.
 
 === [CustomScripts]
 You can specify URLs of JavaScript files you want to load.
 * `CommonScripts`: //list of url//. Comma-separated list of unquoted URLs to JS files to load on //all// pages.
 * `ViewScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on //view// pages: `/hypha`, `/rev`.
 * `EditScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on the `/edit` page.
+
+=== [Telegram]
+You can set up Telegram-based authorization. You have to define both parameters.
+* `TelegramBotToken`: //string// Token of your bot. There is no default.
+* `TelegramBotName`: //string// Username of your bot, sans @. There is no default.
