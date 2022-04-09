@@ -4,6 +4,7 @@ package web
 import (
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"io"
 	"net/http"
@@ -47,7 +48,7 @@ func Handler() http.Handler {
 	initReaders(wikiRouter)
 	initMutators(wikiRouter)
 	initHistory(wikiRouter)
-	initHelp(wikiRouter)
+	help.InitHandlers(wikiRouter)
 	backlinks.InitHandlers(wikiRouter)
 	categories.InitHandlers(wikiRouter)
 	misc.InitHandlers(wikiRouter)

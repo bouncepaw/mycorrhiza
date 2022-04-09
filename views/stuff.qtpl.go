@@ -7,174 +7,64 @@ package views
 //line views/stuff.qtpl:1
 import "github.com/bouncepaw/mycorrhiza/cfg"
 
-//line views/stuff.qtpl:2
-import "github.com/bouncepaw/mycorrhiza/l18n"
-
-//line views/stuff.qtpl:4
+//line views/stuff.qtpl:3
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line views/stuff.qtpl:4
+//line views/stuff.qtpl:3
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/stuff.qtpl:4
-func StreamHelp(qw422016 *qt422016.Writer, content, lang string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:4
-	qw422016.N().S(`
-<div class="layout">
-<main class="main-width help">
-	<article>
-	`)
-//line views/stuff.qtpl:8
-	qw422016.N().S(content)
-//line views/stuff.qtpl:8
-	qw422016.N().S(`
-	</article>
-</main>
-`)
-//line views/stuff.qtpl:11
-	qw422016.N().S(helpTopics(lang, lc))
-//line views/stuff.qtpl:11
-	qw422016.N().S(`
-</div>
-`)
-//line views/stuff.qtpl:13
-}
-
-//line views/stuff.qtpl:13
-func WriteHelp(qq422016 qtio422016.Writer, content, lang string, lc *l18n.Localizer) {
-//line views/stuff.qtpl:13
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:13
-	StreamHelp(qw422016, content, lang, lc)
-//line views/stuff.qtpl:13
-	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:13
-}
-
-//line views/stuff.qtpl:13
-func Help(content, lang string, lc *l18n.Localizer) string {
-//line views/stuff.qtpl:13
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:13
-	WriteHelp(qb422016, content, lang, lc)
-//line views/stuff.qtpl:13
-	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:13
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:13
-	return qs422016
-//line views/stuff.qtpl:13
-}
-
-//line views/stuff.qtpl:15
-func StreamHelpEmptyError(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:15
-	qw422016.N().S(`
-<h1>`)
-//line views/stuff.qtpl:16
-	qw422016.E().S(lc.Get("help.empty_error_title"))
-//line views/stuff.qtpl:16
-	qw422016.N().S(`</h1>
-<p>`)
-//line views/stuff.qtpl:17
-	qw422016.E().S(lc.Get("help.empty_error_line_1"))
-//line views/stuff.qtpl:17
-	qw422016.N().S(`</p>
-<p>`)
-//line views/stuff.qtpl:18
-	qw422016.E().S(lc.Get("help.empty_error_line_2a"))
-//line views/stuff.qtpl:18
-	qw422016.N().S(` <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">`)
-//line views/stuff.qtpl:18
-	qw422016.E().S(lc.Get("help.empty_error_link"))
-//line views/stuff.qtpl:18
-	qw422016.N().S(`</a> `)
-//line views/stuff.qtpl:18
-	qw422016.E().S(lc.Get("help.empty_error_line_2b"))
-//line views/stuff.qtpl:18
-	qw422016.N().S(`</p>
-`)
-//line views/stuff.qtpl:19
-}
-
-//line views/stuff.qtpl:19
-func WriteHelpEmptyError(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/stuff.qtpl:19
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:19
-	StreamHelpEmptyError(qw422016, lc)
-//line views/stuff.qtpl:19
-	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:19
-}
-
-//line views/stuff.qtpl:19
-func HelpEmptyError(lc *l18n.Localizer) string {
-//line views/stuff.qtpl:19
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:19
-	WriteHelpEmptyError(qb422016, lc)
-//line views/stuff.qtpl:19
-	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:19
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:19
-	return qs422016
-//line views/stuff.qtpl:19
-}
-
-//line views/stuff.qtpl:21
+//line views/stuff.qtpl:3
 func streamcommonScripts(qw422016 *qt422016.Writer) {
-//line views/stuff.qtpl:21
+//line views/stuff.qtpl:3
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:22
+//line views/stuff.qtpl:4
 	for _, scriptPath := range cfg.CommonScripts {
-//line views/stuff.qtpl:22
+//line views/stuff.qtpl:4
 		qw422016.N().S(`
 <script src="`)
-//line views/stuff.qtpl:23
+//line views/stuff.qtpl:5
 		qw422016.E().S(scriptPath)
-//line views/stuff.qtpl:23
+//line views/stuff.qtpl:5
 		qw422016.N().S(`"></script>
 `)
-//line views/stuff.qtpl:24
+//line views/stuff.qtpl:6
 	}
-//line views/stuff.qtpl:24
+//line views/stuff.qtpl:6
 	qw422016.N().S(`
 `)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 }
 
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 func writecommonScripts(qq422016 qtio422016.Writer) {
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	streamcommonScripts(qw422016)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	qt422016.ReleaseWriter(qw422016)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 }
 
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 func commonScripts() string {
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	writecommonScripts(qb422016)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	qs422016 := string(qb422016.B)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 	return qs422016
-//line views/stuff.qtpl:25
+//line views/stuff.qtpl:7
 }

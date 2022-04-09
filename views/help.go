@@ -81,7 +81,7 @@ func helpTopicsLocalizedTopic(lang string) func(string) string {
 	}
 }
 
-func helpTopics(lang string, lc *l18n.Localizer) string {
+func HelpTopics(lang string, lc *l18n.Localizer) string {
 	temp, err := template.
 		New("help topics").
 		Funcs(template.FuncMap{

@@ -1,0 +1,16 @@
+{{define "title"}}Help{{end}}
+{{define "body"}}
+<div class="layout">
+	<main class="main-width help">
+		<article>
+			{{if .ContentsHTML}}
+				{{.ContentsHTML}}
+			{{else}}
+				<h1>{{block "entry not found" .}}Entry not found{{end}}</h1>
+				<p>{{block "entry not found invitation" .}}If you want to write this entry by yourself, consider <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">contributing</a> it directly.{{end}}</p>
+            {{end}}
+		</article>
+	</main>
+	{{.HelpTopicsHTML}}
+</div>
+{{end}}

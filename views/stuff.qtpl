@@ -1,22 +1,4 @@
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
-{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
-
-{% func Help(content, lang string, lc *l18n.Localizer) %}
-<div class="layout">
-<main class="main-width help">
-	<article>
-	{%s= content %}
-	</article>
-</main>
-{%s= helpTopics(lang, lc) %}
-</div>
-{% endfunc %}
-
-{% func HelpEmptyError(lc *l18n.Localizer) %}
-<h1>{%s lc.Get("help.empty_error_title") %}</h1>
-<p>{%s lc.Get("help.empty_error_line_1") %}</p>
-<p>{%s lc.Get("help.empty_error_line_2a") %} <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">{%s lc.Get("help.empty_error_link") %}</a> {%s lc.Get("help.empty_error_line_2b") %}</p>
-{% endfunc %}
 
 {% func commonScripts() %}
 {% for _, scriptPath := range cfg.CommonScripts %}
