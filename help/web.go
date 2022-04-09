@@ -14,8 +14,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/bouncepaw/mycorrhiza/views"
-
 	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
 )
 
@@ -25,6 +23,25 @@ var (
 {{define "title"}}Справка{{end}}
 {{define "entry not found"}}Статья не найдена{{end}}
 {{define "entry not found invitation"}}Если вы хотите написать эту статью сами, то будем рады вашим правкам <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">в репозитории Миокризы</a>.{{end}}
+
+{{define "topics"}}Темы справки{{end}}
+{{define "main"}}Введение{{end}}
+{{define "hypha"}}Гифа{{end}}
+{{define "media"}}Медиа{{end}}
+{{define "mycomarkup"}}Микоразметка{{end}}
+{{define "category"}}Категории{{end}}
+{{define "interface"}}Интерфейс{{end}}
+{{define "prevnext"}}Пред/след{{end}}
+{{define "top_bar"}}Верхняя панель{{end}}
+{{define "sibling_hyphae"}}Гифы-сиблинги{{end}}
+{{define "special pages"}}Специальные страницы{{end}}
+{{define "recent_changes"}}Недавние изменения{{end}}
+{{define "feeds"}}Ленты{{end}}
+{{define "configuration"}}Конфигурация (для администраторов){{end}}
+{{define "config_file"}}Файл конфигурации{{end}}
+{{define "lock"}}Замок{{end}}
+{{define "whitelist"}}Белый список{{end}}
+{{define "telegram"}}Вход через Телеграм{{end}}
 `
 )
 
@@ -75,9 +92,8 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 
 type helpData struct {
 	viewutil.BaseData
-	ContentsHTML   string
-	HelpTopicsHTML string
-	Lang           string
+	ContentsHTML string
+	Lang         string
 }
 
 func viewHelp(meta viewutil.Meta, lang, contentsHTML string) {
@@ -87,9 +103,8 @@ func viewHelp(meta viewutil.Meta, lang, contentsHTML string) {
 			HeaderLinks:   cfg.HeaderLinks,
 			CommonScripts: cfg.CommonScripts,
 		},
-		ContentsHTML:   contentsHTML,
-		HelpTopicsHTML: views.HelpTopics(lang, meta.Lc),
-		Lang:           lang,
+		ContentsHTML: contentsHTML,
+		Lang:         lang,
 	}); err != nil {
 		log.Println(err)
 	}

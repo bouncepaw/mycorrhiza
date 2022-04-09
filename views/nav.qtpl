@@ -53,3 +53,9 @@
 </section>
 {% endif %}
 {% endfunc %}
+
+{% func commonScripts() %}
+{% for _, scriptPath := range cfg.CommonScripts %}
+<script src="{%s scriptPath %}"></script>
+{% endfor %}
+{% endfunc %}

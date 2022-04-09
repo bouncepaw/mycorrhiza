@@ -292,3 +292,52 @@ func Subhyphae(subhyphae string, lc *l18n.Localizer) string {
 	return qs422016
 //line views/nav.qtpl:55
 }
+
+//line views/nav.qtpl:57
+func streamcommonScripts(qw422016 *qt422016.Writer) {
+//line views/nav.qtpl:57
+	qw422016.N().S(`
+`)
+//line views/nav.qtpl:58
+	for _, scriptPath := range cfg.CommonScripts {
+//line views/nav.qtpl:58
+		qw422016.N().S(`
+<script src="`)
+//line views/nav.qtpl:59
+		qw422016.E().S(scriptPath)
+//line views/nav.qtpl:59
+		qw422016.N().S(`"></script>
+`)
+//line views/nav.qtpl:60
+	}
+//line views/nav.qtpl:60
+	qw422016.N().S(`
+`)
+//line views/nav.qtpl:61
+}
+
+//line views/nav.qtpl:61
+func writecommonScripts(qq422016 qtio422016.Writer) {
+//line views/nav.qtpl:61
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/nav.qtpl:61
+	streamcommonScripts(qw422016)
+//line views/nav.qtpl:61
+	qt422016.ReleaseWriter(qw422016)
+//line views/nav.qtpl:61
+}
+
+//line views/nav.qtpl:61
+func commonScripts() string {
+//line views/nav.qtpl:61
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/nav.qtpl:61
+	writecommonScripts(qb422016)
+//line views/nav.qtpl:61
+	qs422016 := string(qb422016.B)
+//line views/nav.qtpl:61
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/nav.qtpl:61
+	return qs422016
+//line views/nav.qtpl:61
+}
