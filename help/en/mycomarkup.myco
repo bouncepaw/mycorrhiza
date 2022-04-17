@@ -11,7 +11,7 @@ A Mycomarkup document (which is most often a hypha's text part) consists of //bl
 => /help/en/mycomarkup#Rocket_link     | Rocket link
 => /help/en/mycomarkup#Heading         | Heading
 => /help/en/mycomarkup#Codeblock       | Codeblock
-=> /help/en/mycomarkup#Horizontal_line | Horizontal line
+=> /help/en/mycomarkup#Thematic_break  | Thematic break
 => /help/en/mycomarkup#Image_gallery   | Image gallery
 => /help/en/mycomarkup#List            | List
 => /help/en/mycomarkup#Quote           | Quote
@@ -150,8 +150,8 @@ this is preformatted
    see
 ```
 
-== Horizontal line
-Write four hyphens to insert a **horizontal line**.
+== Thematic break
+Write four hyphens to insert a **thematic break**, represented by a horizontal line. Use it to break a theme.
 
 * {```
 ----
