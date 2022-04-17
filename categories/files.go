@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"golang.org/x/exp/slices"
 	"log"
 	"os"
+	"sort"
 	"sync"
 )
 
@@ -29,6 +31,7 @@ func Init() {
 		for i, hyphaName := range cat.Hyphae {
 			cat.Hyphae[i] = util.CanonicalName(hyphaName)
 		}
+		sort.Strings(cat.Hyphae)
 		categoryToHyphae[cat.Name] = &categoryNode{hyphaList: cat.Hyphae}
 	}
 
@@ -46,49 +49,44 @@ func Init() {
 }
 
 type categoryNode struct {
-	// TODO: ensure this is sorted
 	hyphaList []string
 }
 
 func (cn *categoryNode) storeHypha(hypname string) {
-	for _, hyphaName := range cn.hyphaList {
-		if hyphaName == hypname {
-			return
-		}
+	i, found := slices.BinarySearch(cn.hyphaList, hypname)
+	if found {
+		return
 	}
-	cn.hyphaList = append(cn.hyphaList, hypname)
+	cn.hyphaList = slices.Insert(cn.hyphaList, i, hypname)
 }
 
 func (cn *categoryNode) removeHypha(hypname string) {
-	for i, hyphaName := range cn.hyphaList {
-		if hyphaName == hypname {
-			cn.hyphaList[i] = cn.hyphaList[len(cn.hyphaList)-1]
-			cn.hyphaList = cn.hyphaList[:len(cn.hyphaList)-1]
-		}
+	i, found := slices.BinarySearch(cn.hyphaList, hypname)
+	if !found {
+		return
 	}
+	cn.hyphaList = slices.Delete(cn.hyphaList, i, i+1)
 }
 
 type hyphaNode struct {
-	// TODO: ensure this is sorted
 	categoryList []string
 }
 
+// inserts sorted
 func (hn *hyphaNode) storeCategory(cat string) {
-	for _, category := range hn.categoryList {
-		if category == cat {
-			return
-		}
+	i, found := slices.BinarySearch(hn.categoryList, cat)
+	if found {
+		return
 	}
-	hn.categoryList = append(hn.categoryList, cat)
+	hn.categoryList = slices.Insert(hn.categoryList, i, cat)
 }
 
 func (hn *hyphaNode) removeCategory(cat string) {
-	for i, category := range hn.categoryList {
-		if category == cat {
-			hn.categoryList[i] = hn.categoryList[len(hn.categoryList)-1]
-			hn.categoryList = hn.categoryList[:len(hn.categoryList)-1]
-		}
+	i, found := slices.BinarySearch(hn.categoryList, cat)
+	if !found {
+		return
 	}
+	hn.categoryList = slices.Delete(hn.categoryList, i, i+1)
 }
 
 type catFileRecord struct {

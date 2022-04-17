@@ -9,6 +9,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
+	golang.org/x/exp v0.0.0-20220414153411-bcd21879b8fd
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	golang.org/x/text v0.3.7
 )
@@ -23,7 +24,6 @@ require (
 // Use this trick to test local Mycomarkup changes, replace the path with yours,
 // but do not commit the change to the path:
 //  replace github.com/bouncepaw/mycomarkup/v4 v4.0.0 => "/Users/bouncepaw/GolandProjects/mycomarkup"
-
 
 // Use this utility every time Mycomarkup gets a major update:
 // https://github.com/marwan-at-work/mod
