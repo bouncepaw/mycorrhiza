@@ -75,10 +75,10 @@ header { width: 100%; }
 	header { grid-column: 1 / span 3; grid-row: 1 / span 1; margin: 0; }
 	.layout-card {max-width: 18rem;}
 	.main-width { margin: 0 auto; }
-	main { grid-column: 2 / span 1; grid-row: 2 / span 3; }
+	main.main-width { grid-column: 2 / span 1; grid-row: 2 / span 3; margin: 0; }
 	.sibling-hyphae, .markup-toolbar, .help-topics { grid-column: 3 / span 1; margin-left: -.5rem; grid-row: 2 / span 2; }
 	.markup-toolbar { grid-column: 3 / span 1; grid-row: 2 / span 2; margin-left: -.5rem; }
-	.action-toolbar, .categories-card { grid-column: 1 / span 1; grid-row: 2 / span 1; margin-left: .5rem; }
+	.action-toolbar, .categories-card { grid-column: 1 / span 1; grid-row: 2 / span 1; margin: 0 -.5rem 0 .5rem; justify-self: end; }
 	.edit-toolbar__buttons { grid-template-columns: 1fr; }
 }
 
