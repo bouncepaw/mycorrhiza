@@ -45,7 +45,7 @@ const aboutTemplateString = `<div class="layout">
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
 		<dl>
 			<dt>{{ get .L.Version }}</dt>
-			<dd>1.9.0</dd>
+			<dd>1.10.0</dd>
 		{{ if .Cfg.UseAuth }}
 			<dt>{{ get .L.UserCount }}</dt>
 			<dd>{{ .UserCount }}</dd>
