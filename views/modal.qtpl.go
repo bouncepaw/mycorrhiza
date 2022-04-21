@@ -272,113 +272,111 @@ func modalReallyWant(hyphaName, verb string, lc *l18n.Localizer) string {
 func streammodalBegin(qw422016 *qt422016.Writer, path, hyphaName, formAttrs, legend string) {
 //line views/modal.qtpl:57
 	qw422016.N().S(`
-<div class="layout">
 <main class="main-width">
 	<form class="modal" action="/`)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.E().S(path)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.N().S(`/`)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.N().S(`"`)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.N().S(formAttrs)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:59
 	qw422016.N().S(`>
 		<fieldset class="modal__fieldset">
 			<legend class="modal__title">`)
-//line views/modal.qtpl:62
+//line views/modal.qtpl:61
 	qw422016.N().S(legend)
-//line views/modal.qtpl:62
+//line views/modal.qtpl:61
 	qw422016.N().S(`</legend>
 `)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 }
 
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 func writemodalBegin(qq422016 qtio422016.Writer, path, hyphaName, formAttrs, legend string) {
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	streammodalBegin(qw422016, path, hyphaName, formAttrs, legend)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	qt422016.ReleaseWriter(qw422016)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 }
 
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 func modalBegin(path, hyphaName, formAttrs, legend string) string {
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	writemodalBegin(qb422016, path, hyphaName, formAttrs, legend)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	qs422016 := string(qb422016.B)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 	return qs422016
-//line views/modal.qtpl:63
+//line views/modal.qtpl:62
 }
 
-//line views/modal.qtpl:65
+//line views/modal.qtpl:64
 func streammodalEnd(qw422016 *qt422016.Writer, hyphaName string, shouldFocusOnConfirm bool, lc *l18n.Localizer) {
-//line views/modal.qtpl:65
+//line views/modal.qtpl:64
 	qw422016.N().S(`
 			<button type="submit" value="Confirm" class="btn" `)
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 	if shouldFocusOnConfirm {
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 		qw422016.N().S(`autofocus`)
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 	}
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 	qw422016.N().S(`>`)
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 	qw422016.E().S(lc.Get("ui.confirm"))
-//line views/modal.qtpl:66
+//line views/modal.qtpl:65
 	qw422016.N().S(`</button>
 			<a href="/hypha/`)
-//line views/modal.qtpl:67
+//line views/modal.qtpl:66
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:67
+//line views/modal.qtpl:66
 	qw422016.N().S(`" class="btn btn_weak">`)
-//line views/modal.qtpl:67
+//line views/modal.qtpl:66
 	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/modal.qtpl:67
+//line views/modal.qtpl:66
 	qw422016.N().S(`</a>
 		</fieldset>
 	</form>
 </main>
-</div>
 `)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 }
 
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 func writemodalEnd(qq422016 qtio422016.Writer, hyphaName string, shouldFocusOnConfirm bool, lc *l18n.Localizer) {
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	streammodalEnd(qw422016, hyphaName, shouldFocusOnConfirm, lc)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	qt422016.ReleaseWriter(qw422016)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 }
 
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 func modalEnd(hyphaName string, shouldFocusOnConfirm bool, lc *l18n.Localizer) string {
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	writemodalEnd(qb422016, hyphaName, shouldFocusOnConfirm, lc)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	qs422016 := string(qb422016.B)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 	return qs422016
-//line views/modal.qtpl:72
+//line views/modal.qtpl:70
 }

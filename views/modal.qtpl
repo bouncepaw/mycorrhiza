@@ -55,7 +55,6 @@ bloody hell !!
 {% endfunc %}
 
 {% func modalBegin(path, hyphaName, formAttrs, legend string) %}
-<div class="layout">
 <main class="main-width">
 	<form class="modal" action="/{%s path %}/{%s hyphaName %}"{%s= formAttrs %}>
 		<fieldset class="modal__fieldset">
@@ -68,5 +67,4 @@ bloody hell !!
 		</fieldset>
 	</form>
 </main>
-</div>
 {% endfunc %}

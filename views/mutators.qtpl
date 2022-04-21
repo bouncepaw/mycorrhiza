@@ -69,7 +69,6 @@
 {% code
 	lc := l18n.FromRequest(rq)
 %}
-<div class="layout">
 <main class="main-width edit edit_no-preview">
 	<h1 class="edit__title">{%s= fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)) %}</h1>
 	{%s= warning %}
@@ -86,7 +85,6 @@
 	</form>
 </main>
 {%s= Toolbar(user.FromRequest(rq), lc) %}
-</div>
 {%= editScripts() %}
 {% endfunc %}
 
@@ -94,7 +92,6 @@
 {% code
 	lc := l18n.FromRequest(rq)
 %}
-<div class="layout">
 <main class="main-width edit edit_with-preview">
 	<h1 class="edit__title">{%s= fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)) %}</h1>
 	{%s= warning %}
@@ -113,7 +110,6 @@
 	<article class="edit__preview">{%s= renderedPage %}</article>
 </main>
 {%s= Toolbar(user.FromRequest(rq), lc) %}
-</div>
 {%= editScripts() %}
 {% endfunc %}
 

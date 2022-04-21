@@ -17,7 +17,6 @@
 {% code
 	lc := l18n.FromRequest(rq)
 %}
-<div class="layout">
 <main class="main-width media-tab">
 	<h1>{%s= lc.Get("ui.media_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName())}) %}</h1>
 	{% switch h.(type) %}
@@ -81,7 +80,6 @@
 
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 If `contents` == "", a helpful message is shown instead.
@@ -92,7 +90,6 @@ If you rename .prevnext, change the docs too.
 	siblings, subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
 	lc := meta.Lc
 %}
-<div class="layout">
 <main class="main-width">
 	<section id="hypha">
 		{% if meta.U.CanProceed("edit") %}
@@ -135,12 +132,10 @@ If you rename .prevnext, change the docs too.
 </main>
 {%s= categories.CategoryCard(meta, h.CanonicalName()) %}
 {%= siblingHyphae(siblings, meta.Lc) %}
-</div>
 {%= viewScripts() %}
 {% endfunc %}
 
 {% func Revision(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
-<div class="layout">
 <main class="main-width">
 	<section>
 		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.CanonicalName() %}">{%s lc.Get("ui.revision_link") %}</a></p>
@@ -148,7 +143,6 @@ If you rename .prevnext, change the docs too.
 		{%s= contents %}
 	</section>
 </main>
-</div>
 {%= viewScripts() %}
 {% endfunc %}
 

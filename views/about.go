@@ -30,7 +30,7 @@ func (e l10nEntry) get(lang string) string {
 	return e._en
 }
 
-const aboutTemplateString = `<div class="layout">
+const aboutTemplateString = `
 <main class="main-width">
 	<section class="about-page">
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
@@ -59,8 +59,7 @@ const aboutTemplateString = `<div class="layout">
 		{{ end }}
 		</dl>
 	</section>
-</main>
-</div>`
+</main>`
 
 var aboutData = struct {
 	L         map[string]l10nEntry

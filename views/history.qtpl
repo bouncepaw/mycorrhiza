@@ -17,18 +17,15 @@ if err != nil {
 	text = err.Error()
 }
 %}
-<div class="layout">
 <main class="main-width">
 	<article>
 		<h1>{%s= lc.Get("ui.diff_title", &l18n.Replacements{"name": beautifulLink(h.CanonicalName()), "rev": hash}) %}</h1>
 		<pre class="codeblock"><code>{%s text %}</code></pre>
 	</article>
 </main>
-</div>
 {% endfunc %}
 
 {% func RecentChanges(n int, lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width recent-changes">
 	<h1>{%s lc.Get("ui.recent_heading") %}</h1>
 
@@ -84,7 +81,6 @@ if err != nil {
 	{% endif %}
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 {% func recentChanges(rev history.Revision) %}
@@ -111,12 +107,10 @@ if err != nil {
 {% endfunc %}
 
 {% func History(rq *http.Request, hyphaName, list string, lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width">
 	<article class="history">
 		<h1>{%s= fmt.Sprintf(lc.Get("ui.history_title"), beautifulLink(hyphaName)) %}</h1>
 		{%s= list %}
 	</article>
 </main>
-</div>
 {% endfunc %}

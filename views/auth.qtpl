@@ -8,7 +8,6 @@
 {% code
   lc := l18n.FromRequest(rq)
 %}
-<div class="layout">
 <main class="main-width">
 	<section>
 	{% if cfg.AllowRegistration %}
@@ -39,11 +38,9 @@
 	{% endif %}
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 {% func Login(lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width">
 	<section>
 	{% if cfg.UseAuth %}
@@ -69,7 +66,6 @@
 	{% endif %}
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 Telegram auth widget was requested by Yogurt. As you can see, we don't offer user administrators control over it. Of course we don't.
@@ -81,7 +77,6 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 {% endfunc %}
 
 {% func LoginError(err string, lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width">
 	<section>
 	{% switch err %}
@@ -95,11 +90,9 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 		<p><a href="/login">← {%s lc.Get("auth.try_again") %}</a></p>
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 {% func Logout(can bool, lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width">
 	<section>
 	{% if can %}
@@ -115,7 +108,6 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 	{% endif %}
 	</section>
 </main>
-</div>
 {% endfunc %}
 
 {% func Lock(lc *l18n.Localizer) %}
@@ -161,7 +153,6 @@ var userListL10n = map[string]l10nEntry{
 %}
 
 {% func UserList(lc *l18n.Localizer) %}
-<div class="layout">
 <main class="main-width user-list">
 {% code
 var get = func(key string) string {
@@ -208,5 +199,4 @@ sort.Strings(editors)
 		{% endfor %}</ol>
 	</section>
 </main>
-</div>
 {% endfunc %}
