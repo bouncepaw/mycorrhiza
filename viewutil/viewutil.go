@@ -24,13 +24,14 @@ const ruText = `
 {{define "search by title"}}Поиск по названию{{end}}
 {{define "close this dialog"}}Закрыть этот диалог{{end}}
 {{define "login"}}Войти{{end}}
-{{define "Register"}}Регистрация{{end}}
+{{define "register"}}Регистрация{{end}}
 `
 
 func Init() {
 	dataText := fmt.Sprintf(`
 {{define "wiki name"}}%s{{end}}
-`, cfg.WikiName)
+{{define "user hypha"}}%s{{end}}
+`, cfg.WikiName, cfg.UserHypha)
 	BaseEn = m(m(template.New("").
 		Funcs(template.FuncMap{
 			"beautifulName": util.BeautifulName,

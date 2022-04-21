@@ -34,7 +34,7 @@
 									{{block "login" .}}Login{{end}}
 								</a>
                             {{else}}
-								<a href="/hypha/{%s cfg.UserHypha %}/{%s u.Name %}" class="auth-links__link auth-links__user-link">
+								<a href="/hypha/{{block "user hypha" .}}{{end}}/{{.Meta.U.Name}}" class="auth-links__link auth-links__user-link">
 									{{beautifulName .Meta.U.Name}}
 								</a>
                             {{end}}

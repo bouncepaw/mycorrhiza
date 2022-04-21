@@ -101,7 +101,6 @@ func AboutHTML(lc *l18n.Localizer) string {
 		"UseAuth":   cfg.UseAuth,
 		"WikiName":  cfg.WikiName,
 		"HomeHypha": cfg.HomeHypha,
-		"UserHypha": cfg.UserHypha,
 	}
 	var out strings.Builder
 	err = temp.Execute(&out, data)
