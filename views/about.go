@@ -43,19 +43,26 @@ const aboutTemplateString = `<div class="layout">
 <main class="main-width">
 	<section>
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
-		<ul>
-			<li><b>{{ get .L.Version }}</b> 1.9.0</li>
+		<dl>
+			<dt>{{ get .L.Version }}</dt>
+			<dd>1.9.0</dd>
 		{{ if .Cfg.UseAuth }}
-			<li><b>{{ get .L.UserCount }}</b> {{ .UserCount }}</li>
-			<li><b>{{ get .L.HomeHypha }}</b> <a href="/">{{ .Cfg.HomeHypha }}</a></li>
-			<li><b>{{ get .L.Admins }}</b> {{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
-				{{ if gt $i 0 }}<span aria-hidden="true">, </span>{{ end }}
-				<a href="/hypha/{{ $cfg.UserHypha }}/{{ $username }}">{{ $username }}</a>
-			{{ end }}</li>
+			<dt>{{ get .L.UserCount }}</dt>
+			<dd>{{ .UserCount }}</dd>
+
+			<dt>{{ get .L.HomeHypha }}</dt>
+			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
+
+			<dt>{{ get .L.Admins }}</dt>
+			{{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
+				<dd><a href="/hypha/{{ $cfg.UserHypha }}/{{ $username }}">{{ $username }}</a></dd>
+			{{ end }}
+
 		{{ else }}
-			<li>{{ get .L.NoAuth }}</li>
+			<dt>{{get .L.Auth}}</dt>
+			<dd>{{ get .L.NoAuth }}</dd>
 		{{ end }}
-		</ul>
+		</dl>
 		<p>{{ get .L.AboutHyphae }}</p>
 	</section>
 </main>
@@ -75,6 +82,7 @@ var aboutData = struct {
 		"Admins":      e().en("Administrators:").ru("Администраторы:"),
 		"NoAuth":      e().en("This wiki does not use authorization").ru("На этой вики не используется авторизация"),
 		"AboutHyphae": e().en("See <a href=\"/list\">/list</a> for information about hyphae on this wiki.").ru("См. <a href=\"/list\">/list</a>, чтобы узнать о гифах в этой вики."),
+		"Auth":        e().en("Authentication is set up").ru("Аутентификация настроена"),
 	},
 }
 
