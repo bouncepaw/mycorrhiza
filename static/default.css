@@ -867,3 +867,13 @@ kbd {
 	display: inline-block;
 	text-decoration: none;
 }
+
+/*
+ * About page
+ */
+.about-page dt {
+	font-weight: bold;
+}
+.about-page dd + dt {
+	margin-top: .5rem;
+}

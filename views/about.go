@@ -15,20 +15,11 @@ type l10nEntry struct {
 }
 
 func en(v string) l10nEntry {
-	return e().en(v)
-}
-
-func e() l10nEntry {
-	return l10nEntry{}
+	return l10nEntry{_en: v}
 }
 
 func (e l10nEntry) ru(v string) l10nEntry {
 	e._ru = v
-	return e
-}
-
-func (e l10nEntry) en(v string) l10nEntry {
-	e._en = v
 	return e
 }
 
@@ -41,17 +32,21 @@ func (e l10nEntry) get(lang string) string {
 
 const aboutTemplateString = `<div class="layout">
 <main class="main-width">
-	<section>
+	<section class="about-page">
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
 		<dl>
 			<dt>{{ get .L.Version }}</dt>
 			<dd>1.10.0</dd>
 		{{ if .Cfg.UseAuth }}
-			<dt>{{ get .L.UserCount }}</dt>
-			<dd>{{ .UserCount }}</dd>
-
 			<dt>{{ get .L.HomeHypha }}</dt>
 			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
+
+			<dt>{{get .L.Auth}}</dt>
+			<dd>{{ get .L.AuthOn }}</dd>
+			{{if .Cfg.TelegramEnabled}}<dd>{{get .L.TelegramOn}}</dd>{{end}}
+
+			<dt>{{ get .L.UserCount }}</dt>
+			<dd>{{ .UserCount }}</dd>
 
 			<dt>{{ get .L.Admins }}</dt>
 			{{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
@@ -60,10 +55,9 @@ const aboutTemplateString = `<div class="layout">
 
 		{{ else }}
 			<dt>{{get .L.Auth}}</dt>
-			<dd>{{ get .L.NoAuth }}</dd>
+			<dd>{{ get .L.AuthOff }}</dd>
 		{{ end }}
 		</dl>
-		<p>{{ get .L.AboutHyphae }}</p>
 	</section>
 </main>
 </div>`
@@ -75,14 +69,16 @@ var aboutData = struct {
 	UserCount uint64
 }{
 	L: map[string]l10nEntry{
-		"Title":       e().en("About %s").ru("О %s"),
-		"Version":     e().en("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version:").ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>:"),
-		"UserCount":   e().en("User count:").ru("Число пользователей:"),
-		"HomeHypha":   e().en("Home hypha:").ru("Домашняя гифа:"),
-		"Admins":      e().en("Administrators:").ru("Администраторы:"),
-		"NoAuth":      e().en("This wiki does not use authorization").ru("На этой вики не используется авторизация"),
-		"AboutHyphae": e().en("See <a href=\"/list\">/list</a> for information about hyphae on this wiki.").ru("См. <a href=\"/list\">/list</a>, чтобы узнать о гифах в этой вики."),
-		"Auth":        e().en("Authentication is set up").ru("Аутентификация настроена"),
+		"Title":     en("About %s").ru("О %s"),
+		"Version":   en("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version").ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>"),
+		"UserCount": en("User count").ru("Число пользователей"),
+		"HomeHypha": en("Home hypha").ru("Домашняя гифа"),
+		"Admins":    en("Administrators").ru("Администраторы"),
+
+		"Auth":       en("Authentication").ru("Аутентификация"),
+		"AuthOn":     en("Authentication is on").ru("Аутентификация включена"),
+		"AuthOff":    en("Authentication is off").ru("Аутентификация не включена"),
+		"TelegramOn": en("Telegram authentication is on").ru("Вход через Телеграм включён"),
 	},
 }
 
@@ -98,9 +94,10 @@ func AboutHTML(lc *l18n.Localizer) string {
 	data.Admins = user.ListUsersWithGroup("admin")
 	data.UserCount = user.Count()
 	data.Cfg = map[string]interface{}{
-		"UseAuth":   cfg.UseAuth,
-		"WikiName":  cfg.WikiName,
-		"HomeHypha": cfg.HomeHypha,
+		"UseAuth":         cfg.UseAuth,
+		"WikiName":        cfg.WikiName,
+		"HomeHypha":       cfg.HomeHypha,
+		"TelegramEnabled": cfg.TelegramEnabled,
 	}
 	var out strings.Builder
 	err = temp.Execute(&out, data)
