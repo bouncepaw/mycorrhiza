@@ -51,6 +51,7 @@ func viewBacklinks(meta viewutil.Meta, hyphaName string, backlinks []string) {
 	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", backlinksData{
 		BaseData: viewutil.BaseData{
 			Meta:          meta,
+			Addr:          "/backlinks/" + hyphaName,
 			HeaderLinks:   cfg.HeaderLinks,
 			CommonScripts: cfg.CommonScripts,
 		},

@@ -65,6 +65,7 @@ type BaseData struct {
 	HeadElements  []string
 	HeaderLinks   []cfg.HeaderLink
 	CommonScripts []string
+	Addr          string
 	Title         string // TODO: remove
 	Body          string // TODO: remove
 }

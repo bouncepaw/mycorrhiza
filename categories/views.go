@@ -53,9 +53,9 @@ type cardData struct {
 func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := viewCardChain.Get(meta).ExecuteTemplate(&buf, "category card", cardData{
-		hyphaName,
-		categoriesWithHypha(hyphaName),
-		meta.U.CanProceed("add-to-category"),
+		HyphaName:               hyphaName,
+		Categories:              categoriesWithHypha(hyphaName),
+		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {
 		log.Println(err)
@@ -76,6 +76,7 @@ func categoryPage(meta viewutil.Meta, catName string) {
 			Meta:          meta,
 			HeaderLinks:   cfg.HeaderLinks,
 			CommonScripts: cfg.CommonScripts,
+			Addr:          "/category/" + catName,
 		},
 		CatName:                 catName,
 		Hyphae:                  hyphaeInCategory(catName),

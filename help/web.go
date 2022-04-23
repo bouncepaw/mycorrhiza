@@ -73,12 +73,12 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	content, err := Get(articlePath)
 	if err != nil && strings.HasPrefix(err.Error(), "open") {
 		w.WriteHeader(http.StatusNotFound)
-		viewHelp(meta, lang, "")
+		viewHelp(meta, lang, "", articlePath)
 		return
 	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		viewHelp(meta, lang, err.Error())
+		viewHelp(meta, lang, err.Error(), articlePath)
 		return
 	}
 
@@ -87,7 +87,7 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
 	w.WriteHeader(http.StatusOK)
-	viewHelp(meta, lang, result)
+	viewHelp(meta, lang, result, articlePath)
 }
 
 type helpData struct {
@@ -96,12 +96,13 @@ type helpData struct {
 	Lang         string
 }
 
-func viewHelp(meta viewutil.Meta, lang, contentsHTML string) {
+func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
 	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", helpData{
 		BaseData: viewutil.BaseData{
 			Meta:          meta,
 			HeaderLinks:   cfg.HeaderLinks,
 			CommonScripts: cfg.CommonScripts,
+			Addr:          "/help/" + articlePath,
 		},
 		ContentsHTML: contentsHTML,
 		Lang:         lang,
