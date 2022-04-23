@@ -1,5 +1,4 @@
 {% import "path/filepath" %}
-{% import "strings" %}
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
@@ -45,34 +44,6 @@
 	</div>
 	{% endif %}
 </section>
-{% endfunc %}
-
-{% func NaviTitle(h hyphae.Hypha) %}
-{% code 
-	var (
-		prevAcc = "/hypha/"
-		parts = strings.Split(h.CanonicalName(), "/")
-	)
-%}
-<h1 class="navi-title">
-{% stripspace %}
-	<a href="/hypha/{%s cfg.HomeHypha %}">
-		{%-s= cfg.NaviTitleIcon -%}
-		<span aria-hidden="true" class="navi-title__colon">:</span>
-	</a>
-
-	{% for i, part := range parts %}
-		{% if i > 0 %}
-			<span aria-hidden="true" class="navi-title__separator">/</span>
-		{% endif %}
-
-			<a href="{%s prevAcc + part %}" rel="{% if i == len(parts) - 1 %}bookmark{% else %}up{% endif %}">
-				{%s= util.BeautifulName(part) %}
-			</a>
-		{% code prevAcc += part + "/" %}
-	{% endfor %}
-{% endstripspace %}
-</h1>
 {% endfunc %}
 
 {% func MediaRaw(h *hyphae.MediaHypha) %}{%= Media(h, l18n.New("en", "en")) %}{% endfunc %}

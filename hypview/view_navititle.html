@@ -1,0 +1,17 @@
+{{define "navititle"}}
+<h1 class="navi-title">
+    {{- $withParents := .HyphaNamePartsWithParents -}}
+    {{- $parts := .HyphaNameParts -}}
+	<a href="/hypha/{{.HomeHypha}}">
+		{{- .Icon -}}
+		<span aria-hidden="true" class="navi-title__colon">:</span></a>
+	{{- range $i, $part := .HyphaNameParts -}}
+		{{- if gt $i 0 -}}
+			<span aria-hidden="true" class="navi-title__separator">/</span>
+		{{- end -}}
+		<a href="{{index $withParents $i}}" rel="{{if len $parts | eq (inc $i)}}bookmark{{else}}up{{end}}">
+			{{- beautifulName $part -}}
+		</a>
+	{{- end}}
+</h1>
+{{end}}

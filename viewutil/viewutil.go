@@ -35,6 +35,7 @@ func Init() {
 	BaseEn = m(m(template.New("").
 		Funcs(template.FuncMap{
 			"beautifulName": util.BeautifulName,
+			"inc":           func(i int) int { return i + 1 },
 		}).ParseFS(fsys, "base.html")).
 		Parse(dataText))
 	if !cfg.UseAuth {

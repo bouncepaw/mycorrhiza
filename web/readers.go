@@ -145,8 +145,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 	page := views.Revision(
-		rq,
-		lc,
+		viewutil.MetaFrom(w, rq),
 		h,
 		contents,
 		revHash,

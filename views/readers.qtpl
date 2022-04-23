@@ -5,6 +5,7 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/hypview" %}
 {% import "github.com/bouncepaw/mycorrhiza/categories" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
@@ -109,7 +110,7 @@ If you rename .prevnext, change the docs too.
 		{% endif %}
 		{% endif %}
 
-		{%s= NaviTitle(h) %}
+		{%s= hypview.NaviTitle(meta, h.CanonicalName()) %}
 		{% switch h.(type) %}
 			{% case *hyphae.EmptyHypha %}
 				{%= nonExistentHyphaNotice(h, meta.U, meta.Lc) %}
@@ -135,11 +136,11 @@ If you rename .prevnext, change the docs too.
 {%= viewScripts() %}
 {% endfunc %}
 
-{% func Revision(rq *http.Request, lc *l18n.Localizer, h hyphae.Hypha, contents, revHash string) %}
+{% func Revision(meta viewutil.Meta, h hyphae.Hypha, contents, revHash string) %}
 <main class="main-width">
 	<section>
-		<p>{%s lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.CanonicalName() %}">{%s lc.Get("ui.revision_link") %}</a></p>
-		{%s= NaviTitle(h) %}
+		<p>{%s meta.Lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.CanonicalName() %}">{%s meta.Lc.Get("ui.revision_link") %}</a></p>
+		{%s= hypview.NaviTitle(meta, h.CanonicalName()) %}
 		{%s= contents %}
 	</section>
 </main>
