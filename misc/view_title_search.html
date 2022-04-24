@@ -5,13 +5,13 @@
 	<h1>{{block "search results for" .Query}}Search results for ‘{{.}}’{{end}}</h1>
 	{{if len .Results}}
 		<p>{{block "search desc" .}}Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.{{end}}</p>
-		<ul class="title-search__results">
+		<ol class="title-search__results">
         {{range .Results}}
 			<li class="title-search__entry">
 				<a class="title-search__link wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
 			</li>
         {{end}}
-		</ul>
+		</ol>
     {{else}}
 	    <p>{{block "search no results" .}}No results{{end}}</p>
     {{end}}
