@@ -3,13 +3,17 @@
 {{define "body"}}
 <main class="main-width title-search">
 	<h1>{{block "search results for" .Query}}Search results for ‘{{.}}’{{end}}</h1>
-	<p>{{block "search desc" .}}Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.{{end}}</p>
-	<ul class="title-search__results">
-      {{range .Results}}
-		<li class="title-search__entry">
-          <a class="title-search__link wikilink" href="/hypha/{%s hyphaName %}">{{beautifulName .}}</a>
-		</li>
-	  {{end}}
-	</ul>
+	{{if len .Results}}
+		<p>{{block "search desc" .}}Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.{{end}}</p>
+		<ul class="title-search__results">
+        {{range .Results}}
+			<li class="title-search__entry">
+				<a class="title-search__link wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
+			</li>
+        {{end}}
+		</ul>
+    {{else}}
+	    <p>{{block "search no results" .}}No results{{end}}</p>
+    {{end}}
 </main>
 {{end}}
