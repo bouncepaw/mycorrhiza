@@ -70,18 +70,19 @@
 	lc := l18n.FromRequest(rq)
 %}
 <main class="main-width edit edit_no-preview">
-	<h1 class="edit__title">{%s= fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)) %}</h1>
-	{%s= warning %}
 	<form method="post" class="edit-form"
 			action="/upload-text/{%s hyphaName %}">
+		<h1 class="edit__title">{%s= fmt.Sprintf(lc.Get("edit.title"), beautifulLink(hyphaName)) %}</h1>
+		{%s= warning %}
 		<textarea name="text" class="edit-form__textarea" autofocus>{%s textAreaFill %}</textarea>
-		<br><br>
-		<label for="text">{%s lc.Get("edit.tag") %}</label><br>
-		<input id="text" type="text" name="message" class="edit-form__message">
-		<br><br>
-		<button type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">{%s lc.Get("edit.save") %}</button>
-		<button type="submit" name="action" class="btn edit-form__preview" value="Preview">{%s lc.Get("edit.preview") %}</button>
-		<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">{%s lc.Get("ui.cancel") %}</a>
+		<p class="edit-form__message-zone">
+			<input id="text" type="text" name="message" class="edit-form__message" placeholder="{%s lc.Get("edit.tag") %}" aria-label="{%s lc.Get("edit.tag") %}">
+		</p>
+		<p class="edit-form__buttons">
+			<button type="submit" name="action" class="btn btn_accent edit-form__save" value="Save">{%s lc.Get("edit.save") %}</button>
+			<button type="submit" name="action" class="btn edit-form__preview" value="Preview">{%s lc.Get("edit.preview") %}</button>
+			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">{%s lc.Get("ui.cancel") %}</a>
+		</p>
 	</form>
 </main>
 {%s= Toolbar(user.FromRequest(rq), lc) %}

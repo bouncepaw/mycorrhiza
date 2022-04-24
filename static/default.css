@@ -92,19 +92,15 @@ body { margin: 0; font-size:16px; font-family: sans-serif; color: black; }
 input, kbd { font: inherit; color: inherit; }
 textarea {font-size:16px; font-family: inherit; line-height: 150%; }
 
-.edit { min-height: 80vh; }
+.edit { height: 90vh; }
 .edit__title { margin-top: 0; }
 .edit__preview { border: 2px dashed #ddd; padding: 10px; }
-.edit-form__textarea { width: 100%; height: calc(100% - 8rem); min-height: 4rem; }
+.edit-form__textarea { width: 100%; height: 80vh; min-height: 4rem; }
+.edit-form p { margin: .25rem 0; }
 .edit-form__message { width: 100%; margin: 0.25em 0; }
 .edit-form__save { font-weight: bold; }
 .edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
-@media screen and (max-height: 500px) {
-	.edit-form { height: 90vh; }
-}
-@media screen and (min-height: 501px) {
-	.edit-form { height: 80vh; }
-}
+.edit-form { height: 100%; display: flex; flex-direction: column; }
 
 .icon {margin-right: .25rem; vertical-align: bottom; }
 
