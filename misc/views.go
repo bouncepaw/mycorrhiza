@@ -19,6 +19,7 @@ var (
 {{define "search:"}}Поиск:{{end}}
 {{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
 {{define "search desc"}}Название каждой из существующих гиф сопоставлено с запросом. Подходящие гифы приведены ниже.{{end}}
+{{define "search no results"}}Ничего не найдено{{end}}
 `
 )
 
