@@ -1,7 +1,5 @@
-{% import "strings" %}
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/backlinks" %}
-{% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
 {% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
@@ -30,28 +28,6 @@
 		{%= hyphaInfoEntry(h, u, "backlinks", lc.GetPlural("ui.backlinks_link", backs)) %}
 	</ul>
 </nav>
-{% endfunc %}
-
-{% func siblingHyphae(siblings string, lc *l18n.Localizer) %}
-{% if cfg.UseSiblingHyphaeSidebar %}
-<aside class="sibling-hyphae layout-card">
-	<h2 class="sibling-hyphae__title layout-card__title">{%s lc.Get("ui.sibling_hyphae") %}</h2>
-	{%s= siblings %}
-</aside>
-{% endif %}
-{% endfunc %}
-
-{% func Subhyphae(subhyphae string, lc *l18n.Localizer) %}
-{% if strings.TrimSpace(subhyphae) != "" %}
-<section class="subhyphae">
-	<h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>
-	<nav class="subhyphae__nav">
-		<ul class="subhyphae__list">
-		{%s= subhyphae %}
-		</ul>
-	</nav>
-</section>
-{% endif %}
 {% endfunc %}
 
 {% func commonScripts() %}

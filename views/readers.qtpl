@@ -113,7 +113,7 @@ If you rename .prevnext, change the docs too.
 		{%s= hypview.NaviTitle(meta, h.CanonicalName()) %}
 		{% switch h.(type) %}
 			{% case *hyphae.EmptyHypha %}
-				{%= nonExistentHyphaNotice(h, meta.U, meta.Lc) %}
+				{%s= hypview.EmptyHypha(meta, h.CanonicalName()) %}
 			{% default %}
 				{%s= contents %}
 		{% endswitch %}
@@ -126,13 +126,27 @@ If you rename .prevnext, change the docs too.
 		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
 		{% endif %}
 	</section>
-{%= Subhyphae(subhyphae, meta.Lc) %}
+{% if strings.TrimSpace(subhyphae) != "" %}
+<section class="subhyphae">
+	<h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>
+	<nav class="subhyphae__nav">
+		<ul class="subhyphae__list">
+		{%s= subhyphae %}
+		</ul>
+	</nav>
+</section>
+{% endif %}
 	<section id="hypha-bottom">
    		{%= hyphaInfo(meta, h) %}
 	</section>
 </main>
 {%s= categories.CategoryCard(meta, h.CanonicalName()) %}
-{%= siblingHyphae(siblings, meta.Lc) %}
+{% if cfg.UseSiblingHyphaeSidebar %}
+<aside class="sibling-hyphae layout-card">
+	<h2 class="sibling-hyphae__title layout-card__title">{%s lc.Get("ui.sibling_hyphae") %}</h2>
+	{%s= siblings %}
+</aside>
+{% endif %}
 {%= viewScripts() %}
 {% endfunc %}
 

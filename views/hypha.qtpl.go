@@ -8,409 +8,227 @@ package views
 import "path/filepath"
 
 //line views/hypha.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/cfg"
-
-//line views/hypha.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/hyphae"
 
-//line views/hypha.qtpl:5
+//line views/hypha.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/l18n"
 
-//line views/hypha.qtpl:6
-import "github.com/bouncepaw/mycorrhiza/user"
-
-//line views/hypha.qtpl:7
+//line views/hypha.qtpl:5
 import "github.com/bouncepaw/mycorrhiza/util"
 
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 import (
 	qtio422016 "io"
 
 	qt422016 "github.com/valyala/quicktemplate"
 )
 
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
 
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 func streambeautifulLink(qw422016 *qt422016.Writer, hyphaName string) {
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016.N().S(`<a href="/hypha/`)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016.N().S(hyphaName)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016.N().S(`">`)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016.E().S(util.BeautifulName(hyphaName))
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016.N().S(`</a>`)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 }
 
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 func writebeautifulLink(qq422016 qtio422016.Writer, hyphaName string) {
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	streambeautifulLink(qw422016, hyphaName)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 }
 
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 func beautifulLink(hyphaName string) string {
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	writebeautifulLink(qb422016, hyphaName)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:9
+//line views/hypha.qtpl:7
 	qt422016.ReleaseByteBuffer(qb422016)
+//line views/hypha.qtpl:7
+	return qs422016
+//line views/hypha.qtpl:7
+}
+
 //line views/hypha.qtpl:9
-	return qs422016
-//line views/hypha.qtpl:9
-}
-
-//line views/hypha.qtpl:11
-func streammycoLink(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/hypha.qtpl:11
-	qw422016.N().S(`<a href="/help/en/mycomarkup" class="shy-link">`)
-//line views/hypha.qtpl:11
-	qw422016.E().S(lc.Get("ui.notexist_write_myco"))
-//line views/hypha.qtpl:11
-	qw422016.N().S(`</a>`)
-//line views/hypha.qtpl:11
-}
-
-//line views/hypha.qtpl:11
-func writemycoLink(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/hypha.qtpl:11
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:11
-	streammycoLink(qw422016, lc)
-//line views/hypha.qtpl:11
-	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:11
-}
-
-//line views/hypha.qtpl:11
-func mycoLink(lc *l18n.Localizer) string {
-//line views/hypha.qtpl:11
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:11
-	writemycoLink(qb422016, lc)
-//line views/hypha.qtpl:11
-	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:11
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:11
-	return qs422016
-//line views/hypha.qtpl:11
-}
-
-//line views/hypha.qtpl:13
-func streamnonExistentHyphaNotice(qw422016 *qt422016.Writer, h hyphae.Hypha, u *user.User, lc *l18n.Localizer) {
-//line views/hypha.qtpl:13
-	qw422016.N().S(`
-<section class="non-existent-hypha">
-	<h2 class="non-existent-hypha__title">`)
-//line views/hypha.qtpl:15
-	qw422016.E().S(lc.Get("ui.notexist_heading"))
-//line views/hypha.qtpl:15
-	qw422016.N().S(`</h2>
-	`)
-//line views/hypha.qtpl:16
-	if cfg.UseAuth && u.Group == "anon" {
-//line views/hypha.qtpl:16
-		qw422016.N().S(`
-	<p>`)
-//line views/hypha.qtpl:17
-		qw422016.E().S(lc.Get("ui.notexist_norights"))
-//line views/hypha.qtpl:17
-		qw422016.N().S(`</p>
-	<ul>
-		<li><a href="/login">`)
-//line views/hypha.qtpl:19
-		qw422016.E().S(lc.Get("ui.notexist_login"))
-//line views/hypha.qtpl:19
-		qw422016.N().S(`</a></li>
-		`)
-//line views/hypha.qtpl:20
-		if cfg.AllowRegistration {
-//line views/hypha.qtpl:20
-			qw422016.N().S(`<li><a href="/register">`)
-//line views/hypha.qtpl:20
-			qw422016.E().S(lc.Get("ui.notexist_register"))
-//line views/hypha.qtpl:20
-			qw422016.N().S(`</a></li>`)
-//line views/hypha.qtpl:20
-		}
-//line views/hypha.qtpl:20
-		qw422016.N().S(`
-	</ul>
-	`)
-//line views/hypha.qtpl:22
-	} else {
-//line views/hypha.qtpl:22
-		qw422016.N().S(`
-
-	<div class="non-existent-hypha__ways">
-	<section class="non-existent-hypha__way">
-		<h3 class="non-existent-hypha__subtitle">📝 `)
-//line views/hypha.qtpl:26
-		qw422016.E().S(lc.Get("ui.notexist_write"))
-//line views/hypha.qtpl:26
-		qw422016.N().S(`</h3>
-		<p>`)
-//line views/hypha.qtpl:27
-		qw422016.N().S(lc.Get("ui.notexist_write_tip1", &l18n.Replacements{"myco": mycoLink(lc)}))
-//line views/hypha.qtpl:27
-		qw422016.N().S(`</p>
-		<p>`)
-//line views/hypha.qtpl:28
-		qw422016.E().S(lc.Get("ui.notexist_write_tip2"))
-//line views/hypha.qtpl:28
-		qw422016.N().S(`</p>
-		<a class="btn btn_accent stick-to-bottom" href="/edit/`)
-//line views/hypha.qtpl:29
-		qw422016.E().S(h.CanonicalName())
-//line views/hypha.qtpl:29
-		qw422016.N().S(`">`)
-//line views/hypha.qtpl:29
-		qw422016.E().S(lc.Get("ui.notexist_write_button"))
-//line views/hypha.qtpl:29
-		qw422016.N().S(`</a>
-	</section>
-
-	<section class="non-existent-hypha__way">
-		<h3 class="non-existent-hypha__subtitle">🖼 `)
-//line views/hypha.qtpl:33
-		qw422016.E().S(lc.Get("ui.notexist_media"))
-//line views/hypha.qtpl:33
-		qw422016.N().S(`</h3>
-		<p>`)
-//line views/hypha.qtpl:34
-		qw422016.E().S(lc.Get("ui.notexist_media_tip1"))
-//line views/hypha.qtpl:34
-		qw422016.N().S(`</p>
-		<form action="/upload-binary/`)
-//line views/hypha.qtpl:35
-		qw422016.E().S(h.CanonicalName())
-//line views/hypha.qtpl:35
-		qw422016.N().S(`"
-        		method="post" enctype="multipart/form-data"
-        		class="upload-binary">
-        	<label for="upload-binary__input"></label>
-        	<input type="file" id="upload-binary__input" name="binary">
-
-        	<button type="submit" class="btn stick-to-bottom" value="Upload">`)
-//line views/hypha.qtpl:41
-		qw422016.E().S(lc.Get("ui.media_upload"))
-//line views/hypha.qtpl:41
-		qw422016.N().S(`</button>
-        </form>
-	</section>
-	</div>
-	`)
-//line views/hypha.qtpl:45
-	}
-//line views/hypha.qtpl:45
-	qw422016.N().S(`
-</section>
-`)
-//line views/hypha.qtpl:47
-}
-
-//line views/hypha.qtpl:47
-func writenonExistentHyphaNotice(qq422016 qtio422016.Writer, h hyphae.Hypha, u *user.User, lc *l18n.Localizer) {
-//line views/hypha.qtpl:47
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:47
-	streamnonExistentHyphaNotice(qw422016, h, u, lc)
-//line views/hypha.qtpl:47
-	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:47
-}
-
-//line views/hypha.qtpl:47
-func nonExistentHyphaNotice(h hyphae.Hypha, u *user.User, lc *l18n.Localizer) string {
-//line views/hypha.qtpl:47
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:47
-	writenonExistentHyphaNotice(qb422016, h, u, lc)
-//line views/hypha.qtpl:47
-	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:47
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:47
-	return qs422016
-//line views/hypha.qtpl:47
-}
-
-//line views/hypha.qtpl:49
 func StreamMediaRaw(qw422016 *qt422016.Writer, h *hyphae.MediaHypha) {
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	StreamMedia(qw422016, h, l18n.New("en", "en"))
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 }
 
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 func WriteMediaRaw(qq422016 qtio422016.Writer, h *hyphae.MediaHypha) {
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	StreamMediaRaw(qw422016, h)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 }
 
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 func MediaRaw(h *hyphae.MediaHypha) string {
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	WriteMediaRaw(qb422016, h)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 	return qs422016
-//line views/hypha.qtpl:49
+//line views/hypha.qtpl:9
 }
 
-//line views/hypha.qtpl:51
+//line views/hypha.qtpl:11
 func StreamMedia(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
-//line views/hypha.qtpl:51
+//line views/hypha.qtpl:11
 	qw422016.N().S(`
 	`)
-//line views/hypha.qtpl:52
+//line views/hypha.qtpl:12
 	switch filepath.Ext(h.MediaFilePath()) {
-//line views/hypha.qtpl:54
+//line views/hypha.qtpl:14
 	case ".jpg", ".gif", ".png", ".webp", ".svg", ".ico":
-//line views/hypha.qtpl:54
+//line views/hypha.qtpl:14
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-img">
 		<a href="/binary/`)
-//line views/hypha.qtpl:56
+//line views/hypha.qtpl:16
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:56
+//line views/hypha.qtpl:16
 		qw422016.N().S(`"><img src="/binary/`)
-//line views/hypha.qtpl:56
+//line views/hypha.qtpl:16
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:56
+//line views/hypha.qtpl:16
 		qw422016.N().S(`"/></a>
 	</div>
 
 	`)
-//line views/hypha.qtpl:59
+//line views/hypha.qtpl:19
 	case ".ogg", ".webm", ".mp4":
-//line views/hypha.qtpl:59
+//line views/hypha.qtpl:19
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-video">
 		<video controls>
 			<source src="/binary/`)
-//line views/hypha.qtpl:62
+//line views/hypha.qtpl:22
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:62
+//line views/hypha.qtpl:22
 		qw422016.N().S(`"/>
 			<p>`)
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.E().S(lc.Get("ui.media_novideo"))
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.N().S(` <a href="/binary/`)
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.N().S(`">`)
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.E().S(lc.Get("ui.media_novideo_link"))
-//line views/hypha.qtpl:63
+//line views/hypha.qtpl:23
 		qw422016.N().S(`</a></p>
 		</video>
 	</div>
 
 	`)
-//line views/hypha.qtpl:67
+//line views/hypha.qtpl:27
 	case ".mp3":
-//line views/hypha.qtpl:67
+//line views/hypha.qtpl:27
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-audio">
 		<audio controls>
 			<source src="/binary/`)
-//line views/hypha.qtpl:70
+//line views/hypha.qtpl:30
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:70
+//line views/hypha.qtpl:30
 		qw422016.N().S(`"/>
 			<p>`)
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.E().S(lc.Get("ui.media_noaudio"))
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.N().S(` <a href="/binary/`)
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.N().S(`">`)
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.E().S(lc.Get("ui.media_noaudio_link"))
-//line views/hypha.qtpl:71
+//line views/hypha.qtpl:31
 		qw422016.N().S(`</a></p>
 		</audio>
 	</div>
 
 	`)
-//line views/hypha.qtpl:75
+//line views/hypha.qtpl:35
 	default:
-//line views/hypha.qtpl:75
+//line views/hypha.qtpl:35
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-nothing">
 		<p><a href="/binary/`)
-//line views/hypha.qtpl:77
+//line views/hypha.qtpl:37
 		qw422016.N().S(h.CanonicalName())
-//line views/hypha.qtpl:77
+//line views/hypha.qtpl:37
 		qw422016.N().S(`">`)
-//line views/hypha.qtpl:77
+//line views/hypha.qtpl:37
 		qw422016.E().S(lc.Get("ui.media_download"))
-//line views/hypha.qtpl:77
+//line views/hypha.qtpl:37
 		qw422016.N().S(`</a></p>
 	</div>
 `)
-//line views/hypha.qtpl:79
+//line views/hypha.qtpl:39
 	}
-//line views/hypha.qtpl:79
+//line views/hypha.qtpl:39
 	qw422016.N().S(`
 `)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 }
 
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 func WriteMedia(qq422016 qtio422016.Writer, h *hyphae.MediaHypha, lc *l18n.Localizer) {
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	StreamMedia(qw422016, h, lc)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	qt422016.ReleaseWriter(qw422016)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 }
 
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	WriteMedia(qb422016, h, lc)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	qs422016 := string(qb422016.B)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 	return qs422016
-//line views/hypha.qtpl:80
+//line views/hypha.qtpl:40
 }

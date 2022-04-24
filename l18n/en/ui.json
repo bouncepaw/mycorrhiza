@@ -84,18 +84,6 @@
 	"reindex_no_rights": "You must be an admin to reindex hyphae.",
 	"header_no_rights": "You must be a moderator to update header links.",
 
-	"notexist_heading": "This hypha does not exist",
-	"notexist_norights": "You are not authorized to create new hyphae. Here is what you can do:",
-	"notexist_login": "Log in to your account, if you have one",
-	"notexist_register": "Register a new account",
-	"notexist_write": "Write a text",
-	"notexist_write_tip1": "Write a note, a diary, an article, a story or anything textual using {{.myco}}. Full history of edits to the document will be saved.",
-	"notexist_write_myco": "Mycomarkup",
-	"notexist_write_tip2": "Make sure to follow this wiki's writing conventions if there are any.",
-	"notexist_write_button": "Create",
-	"notexist_media": "Upload a media",
-	"notexist_media_tip1": "Upload a picture, a video or an audio. Most common formats can be accessed from the browser, others can be only downloaded afterwards. You can write a description for the media later.",
-	
 	"media_download": "Download media",
 	"media_novideo": "Your browser does not support video.",
 	"media_novideo_link": "Download video",
