@@ -38,11 +38,36 @@ func Init() {
 			"inc":           func(i int) int { return i + 1 },
 		}).ParseFS(fsys, "base.html")).
 		Parse(dataText))
-	if !cfg.UseAuth {
-		m(BaseEn.Parse(`{{define "auth"}}{{end}}`))
+	if cfg.UseAuth {
+		BaseEn = m(BaseEn.Parse(`
+{{define "auth"}}
+<ul class="top-bar__auth auth-links">
+	<li class="auth-links__box auth-links__user-box">
+		{{if .Meta.U.Group | eq "anon" }}
+			<a href="/login" class="auth-links__link auth-links__login-link">
+				{{block "login" .}}Login{{end}}
+			</a>
+		{{else}}
+			<a href="/hypha/{{block "user hypha" .}}{{end}}/{{.Meta.U.Name}}" class="auth-links__link auth-links__user-link">
+				{{beautifulName .Meta.U.Name}}
+			</a>
+		{{end}}
+	</li>
+	{{block "registration" .}}{{end}}
+</ul>
+{{end}}
+`))
 	}
-	if !cfg.AllowRegistration {
-		m(BaseEn.Parse(`{{define "registration"}}{{end}}`))
+	if cfg.AllowRegistration {
+		m(BaseEn.Parse(`{{define "registration"}}
+{{if .Meta.U.Group | eq "anon"}}
+	 <li class="auth-links__box auth-links__register-box">
+		 <a href="/register" class="auth-links__link auth-links__register-link">
+			 {{block "register" .}}Register{{end}}
+		 </a>
+	 </li>
+{{end}}
+{{end}}`))
 	}
 	BaseRu = m(m(BaseEn.Clone()).Parse(ruText))
 }
