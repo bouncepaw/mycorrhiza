@@ -39,6 +39,7 @@ func Init() {
 }
 
 type emptyHyphaData struct {
+	Meta              viewutil.Meta
 	HyphaName         string
 	AllowRegistration bool
 	UseAuth           bool
@@ -47,6 +48,7 @@ type emptyHyphaData struct {
 func EmptyHypha(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	if err := chainEmptyHypha.Get(meta).ExecuteTemplate(&buf, "empty hypha card", emptyHyphaData{
+		Meta:              meta,
 		HyphaName:         hyphaName,
 		AllowRegistration: cfg.AllowRegistration,
 		UseAuth:           cfg.UseAuth,
