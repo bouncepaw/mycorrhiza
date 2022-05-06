@@ -37,6 +37,7 @@ var (
 {{define "special pages"}}Специальные страницы{{end}}
 {{define "recent_changes"}}Недавние изменения{{end}}
 {{define "feeds"}}Ленты{{end}}
+{{define "orphans"}}Гифы-сироты{{end}}
 {{define "configuration"}}Конфигурация (для администраторов){{end}}
 {{define "config_file"}}Файл конфигурации{{end}}
 {{define "lock"}}Замок{{end}}
