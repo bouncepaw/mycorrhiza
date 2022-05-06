@@ -3,19 +3,25 @@ package backlinks
 import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"sort"
 	"text/template"
 )
 
 func InitHandlers(rtr *mux.Router) {
 	rtr.PathPrefix("/backlinks/").HandlerFunc(handlerBacklinks)
-	chain = viewutil.
+	rtr.PathPrefix("/orphans").HandlerFunc(handlerOrphans)
+	chainBacklinks = viewutil.
 		En(viewutil.CopyEnWith(fs, "view_backlinks.html")).
 		Ru(template.Must(viewutil.CopyRuWith(fs, "view_backlinks.html").Parse(ruTranslation)))
+	chainOrphans = viewutil.
+		En(viewutil.CopyEnWith(fs, "view_orphans.html")).
+		Ru(template.Must(viewutil.CopyRuWith(fs, "view_orphans.html").Parse(ruTranslation)))
 }
 
 // handlerBacklinks lists all backlinks to a hypha.
@@ -30,6 +36,17 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 	viewBacklinks(viewutil.MetaFrom(w, rq), hyphaName, backlinks)
 }
 
+func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
+	var orphans []string
+	for h := range hyphae.YieldExistingHyphae() {
+		if BacklinksCount(h) == 0 {
+			orphans = append(orphans, h.CanonicalName())
+		}
+	}
+	sort.Strings(orphans)
+	viewOrphans(viewutil.MetaFrom(w, rq), orphans)
+}
+
 var (
 	//go:embed *.html
 	fs            embed.FS
@@ -37,8 +54,11 @@ var (
 {{define "backlinks to text"}}Обратные ссылки на {{.}}{{end}}
 {{define "backlinks to link"}}Обратные ссылки на <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
 {{define "description"}}Ниже перечислены гифы, на которых есть ссылка на эту гифу, трансклюзия этой гифы или эта гифа вставлена как изображение.{{end}}
+{{define "orphaned hyphae"}}Гифы-сироты{{end}}
+{{define "orphan description"}}Ниже перечислены гифы без ссылок на них.{{end}}
 `
-	chain viewutil.Chain
+	chainBacklinks viewutil.Chain
+	chainOrphans   viewutil.Chain
 )
 
 type backlinksData struct {
@@ -48,7 +68,7 @@ type backlinksData struct {
 }
 
 func viewBacklinks(meta viewutil.Meta, hyphaName string, backlinks []string) {
-	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", backlinksData{
+	if err := chainBacklinks.Get(meta).ExecuteTemplate(meta.W, "page", backlinksData{
 		BaseData: viewutil.BaseData{
 			Meta:          meta,
 			Addr:          "/backlinks/" + hyphaName,
@@ -57,6 +77,25 @@ func viewBacklinks(meta viewutil.Meta, hyphaName string, backlinks []string) {
 		},
 		HyphaName: hyphaName,
 		Backlinks: backlinks,
+	}); err != nil {
+		log.Println(err)
+	}
+}
+
+type orphansData struct {
+	viewutil.BaseData
+	Orphans []string
+}
+
+func viewOrphans(meta viewutil.Meta, orphans []string) {
+	if err := chainOrphans.Get(meta).ExecuteTemplate(meta.W, "page", orphansData{
+		BaseData: viewutil.BaseData{
+			Meta:          meta,
+			Addr:          "/orphans",
+			HeaderLinks:   cfg.HeaderLinks,
+			CommonScripts: cfg.CommonScripts,
+		},
+		Orphans: orphans,
 	}); err != nil {
 		log.Println(err)
 	}
