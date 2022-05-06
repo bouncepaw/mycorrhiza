@@ -2,6 +2,7 @@ User-agent: *
 Allow: /help/
 Allow: /hypha/
 Allow: /recent-changes
+Allow: /list
 Disallow: /page/
 Disallow: /admin/
 Disallow: /lock
@@ -16,7 +17,7 @@ Disallow: /delete/
 Disallow: /rename/
 Disallow: /remove-media/
 Disallow: /history/
-Disallow: /list
+Disallow: /orphans
 Disallow: /random
 Disallow: /title-search/
 Disallow: /backlinks/
