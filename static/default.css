@@ -14,9 +14,9 @@
 .modal__title_small { font-size: 1.5rem; }
 .modal__confirmation-msg { margin: 0 0 .5rem 0; }
 
-.hypha-list__link, .title-search__link, .backlinks__link, .category-list__link, .category__link { text-decoration: none; display: inline-block; padding: .25rem; }
-.hypha-list__link:hover, .title-search__link:hover, .backlinks__link:hover, .category-list__link:hover, .category__link:hover { text-decoration: underline; }
-.hypha-list__amnt-type { font-size: smaller; color: #999; }
+ol:not(.mycomarkup-doc ol) a { text-decoration: none; display: inline-block; padding: .25rem; }
+ol:not(.mycomarkup-doc ol) a:hover { text-decoration: underline; }
+.media-type-badge { font-size: smaller; color: #999; }
 
 /* General element positions, from small to big */
 /* Phones and whatnot */
@@ -262,12 +262,6 @@ main,  article, header, .layout-card { background-color: #343434; color: #ddd; }
 a, .wikilink_external { color: #f1fa8c; }
 a:visited, .wikilink_external:visited { color: #ffb86c; }
 .wikilink_new, .wikilink_new:visited { color: #dd4444; }
-
-.categories-card__link:hover,
-.subhyphae__link:hover,
-.sibling-hyphae__link:hover,
-.category-list__link:hover,
-.category__link:hover { background-color: #444; }
 
 .prevnext__el, .prevnext__el:visited { color: #ddd; }
 

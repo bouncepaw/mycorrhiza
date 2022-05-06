@@ -1,14 +1,14 @@
 {{define "search:"}}Search: {{.}}{{end}}
 {{define "title"}}{{template "search:" .Query}}{{end}}
 {{define "body"}}
-<main class="main-width title-search">
+<main class="main-width">
 	<h1>{{block "search results for" .Query}}Search results for ‘{{.}}’{{end}}</h1>
 	{{if len .Results}}
 		<p>{{block "search desc" .}}Every hypha name has been compared with the query. Hyphae that have matched the query are listed below.{{end}}</p>
-		<ol class="title-search__results">
+		<ol>
         {{range .Results}}
-			<li class="title-search__entry">
-				<a class="title-search__link wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
+			<li>
+				<a class="wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
 			</li>
         {{end}}
 		</ol>

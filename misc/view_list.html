@@ -3,15 +3,11 @@
 {{define "body"}}
 <main class="main-width">
 	<h1>{{template "list of hyphae"}}</h1>
-	<ol class="hypha-list">
+	<ol>
 		{{range .Entries}}
-			<li class="hypha-list__entry">
-				<a class="hypha-list__link" href="/hypha/{{.Name}}">
-					{{beautifulName .Name}}
-				</a>
-				{{if .Ext}}
-				<span class="hypha-list__amnt-type">{{.Ext}}</span>
-				{{end}}
+			<li>
+				<a href="/hypha/{{.Name}}">{{beautifulName .Name}}</a>
+				{{if .Ext}}<span class="media-type-badge">{{.Ext}}</span>{{end}}
 			</li>
 		{{end}}
 	</ol>

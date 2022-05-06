@@ -7,14 +7,14 @@
         {{if len .Hyphae | not}}
 			<p>{{block "empty cat" .}}This category is empty{{end}}</p>
         {{end}}
-		<ol class="category__entries">
+		<ol>
             {{range .Hyphae}}
-				<li class="category__entry">
-					<a class="category__link" href="/hypha/{{.}}">{{beautifulName .}}</a>
+				<li>
+					<a class="wikilink" href="/hypha/{{.}}">{{beautifulName .}}</a>
 				</li>
             {{end}}
             {{if .GivenPermissionToModify}}
-				<li class="category__entry category__add-to-cat">
+				<li class="category__add-to-cat">
 					<form method="POST" action="/add-to-category" class="category__add-form">
 						<input type="text" name="hypha" id="_hypha-name"
 						       placeholder="{{block `hypha name` .}}Hypha name{{end}}">
