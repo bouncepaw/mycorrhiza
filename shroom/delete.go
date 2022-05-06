@@ -18,7 +18,11 @@ func Delete(u *user.User, h hyphae.ExistingHypha) error {
 	originalText, _ := FetchTextFile(h)
 	switch h := h.(type) {
 	case *hyphae.MediaHypha:
-		hop.WithFilesRemoved(h.MediaFilePath(), h.TextFilePath())
+		if h.HasTextFile() {
+			hop.WithFilesRemoved(h.MediaFilePath(), h.TextFilePath())
+		} else {
+			hop.WithFilesRemoved(h.MediaFilePath())
+		}
 	case *hyphae.TextualHypha:
 		hop.WithFilesRemoved(h.TextFilePath())
 	}
