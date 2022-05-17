@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -136,7 +135,6 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 
 // IsValidUsername checks if the given username is valid.
 func IsValidUsername(username string) bool {
-	fmt.Println("Is", username, "ok")
 	for _, r := range username {
 		if strings.ContainsRune("?!:#@><*|\"'&%{}/", r) {
 			return false
