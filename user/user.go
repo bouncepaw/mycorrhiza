@@ -1,8 +1,8 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -10,8 +10,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var usernamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}/]+`)
 
 // User contains information about a given user required for identification.
 type User struct {
@@ -138,8 +136,14 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 
 // IsValidUsername checks if the given username is valid.
 func IsValidUsername(username string) bool {
-	return username != "anon" && username != "wikimind" &&
-		usernamePattern.MatchString(strings.TrimSpace(username)) &&
+	fmt.Println("Is", username, "ok")
+	for _, r := range username {
+		if strings.ContainsRune("?!:#@><*|\"'&%{}/", r) {
+			return false
+		}
+	}
+	return username != "anon" &&
+		username != "wikimind" &&
 		usernameIsWhiteListed(username)
 }
 

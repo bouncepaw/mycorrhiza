@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -41,6 +42,9 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 
 // Register registers the given user. If it fails, a non-nil error is returned.
 func Register(username, password, group, source string, force bool) error {
+	if !IsValidUsername(username) {
+		return fmt.Errorf("illegal username ‘%s’", username)
+	}
 	username = util.CanonicalName(username)
 
 	switch {
@@ -75,26 +79,26 @@ func Register(username, password, group, source string, force bool) error {
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.
 //
 // The HTTP parameters are used for setting header status (bad request, if it is bad) and saving a cookie.
-func LoginDataHTTP(w http.ResponseWriter, rq *http.Request, username, password string) string {
+func LoginDataHTTP(w http.ResponseWriter, username, password string) error {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if !HasUsername(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("Unknown username", username, "was entered")
-		return "unknown username"
+		return errors.New("unknown username")
 	}
 	if !CredentialsOK(username, password) {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("A wrong password was entered for username", username)
-		return "wrong password"
+		return errors.New("wrong password")
 	}
 	token, err := AddSession(username)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		return err.Error()
+		return err
 	}
 	http.SetCookie(w, cookie("token", token, time.Now().Add(365*24*time.Hour)))
-	return ""
+	return nil
 }
 
 // AddSession saves a session for `username` and returns a token to use.
