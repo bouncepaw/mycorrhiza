@@ -5,7 +5,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
-	"github.com/bouncepaw/mycorrhiza/history/histview"
+	"github.com/bouncepaw/mycorrhiza/history/histweb"
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"io"
@@ -49,13 +49,12 @@ func Handler() http.Handler {
 
 	initReaders(wikiRouter)
 	initMutators(wikiRouter)
-	initHistory(wikiRouter)
 	help.InitHandlers(wikiRouter)
 	backlinks.InitHandlers(wikiRouter)
 	categories.InitHandlers(wikiRouter)
 	misc.InitHandlers(wikiRouter)
 	hypview.Init()
-	histview.InitHandlers(wikiRouter)
+	histweb.InitHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {

@@ -1,5 +1,5 @@
-// Package histview provides web stuff for history
-package histview
+// Package histweb provides web stuff for history
+package histweb
 
 import (
 	"embed"
