@@ -22,11 +22,13 @@ func (c Chain) ru(ru *template.Template) Chain {
 }
 
 // Get returns an appropriate language representation for the given locale in meta.
+//
+// TODO: Get rid of this
 func (c Chain) Get(meta Meta) *template.Template {
 	switch meta.Locale() {
-	case "_en":
+	case "en":
 		return c._en
-	case "_ru":
+	case "ru":
 		return c._ru
 	}
 	panic("unknown language " + meta.Locale())
