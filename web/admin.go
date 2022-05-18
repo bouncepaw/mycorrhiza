@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/admin"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
@@ -20,23 +21,23 @@ import (
 )
 
 // initAdmin sets up /admin routes if auth is used. Call it after you have decided if you want to use auth.
-func initAdmin(r *mux.Router) {
-	r.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
-	r.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
+func initAdmin(rtr *mux.Router) {
+	rtr.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
+	rtr.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
 
-	r.HandleFunc("/new-user", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
-	r.HandleFunc("/users/{username}/edit", handlerAdminUserEdit).Methods(http.MethodGet, http.MethodPost)
-	r.HandleFunc("/users/{username}/delete", handlerAdminUserDelete).Methods(http.MethodGet, http.MethodPost)
-	r.HandleFunc("/users", handlerAdminUsers)
+	rtr.HandleFunc("/new-user", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
+	rtr.HandleFunc("/users/{username}/edit", handlerAdminUserEdit).Methods(http.MethodGet, http.MethodPost)
+	rtr.HandleFunc("/users/{username}/delete", handlerAdminUserDelete).Methods(http.MethodGet, http.MethodPost)
+	rtr.HandleFunc("/users", handlerAdminUsers)
 
-	r.HandleFunc("/", handlerAdmin)
+	rtr.HandleFunc("/", handlerAdmin)
 }
 
 // handlerAdmin provides the admin panel.
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	views.AdminPanel(viewutil.MetaFrom(w, rq))
+	admin.AdminPanel(viewutil.MetaFrom(w, rq))
 }
 
 // handlerAdminShutdown kills the wiki.

@@ -2,6 +2,7 @@
 package web
 
 import (
+	"github.com/bouncepaw/mycorrhiza/admin"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
@@ -61,6 +62,7 @@ func Handler() http.Handler {
 		adminRouter := wikiRouter.PathPrefix("/admin").Subrouter()
 		adminRouter.Use(groupMiddleware("admin"))
 		initAdmin(adminRouter)
+		admin.Init(adminRouter)
 	}
 
 	// Index page
