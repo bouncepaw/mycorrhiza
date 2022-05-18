@@ -72,10 +72,9 @@ func Init() {
 	BaseRu = m(m(BaseEn.Clone()).Parse(ruText))
 }
 
-// TODO: get rid of this
 func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 	t := func() *template.Template {
-		if meta.Locale() == "_ru" {
+		if meta.Locale() == "ru" {
 			return BaseRu
 		}
 		return BaseEn
@@ -103,6 +102,7 @@ func (bd *BaseData) withBaseValues(meta Meta, headerLinks []cfg.HeaderLink, comm
 }
 
 // Base is a temporary wrapper around BaseEn and BaseRu, meant to facilitate the migration from qtpl.
+// TODO: get rid of this
 func Base(meta Meta, title, body string, headElements ...string) string {
 	var w strings.Builder
 	meta.W = &w
