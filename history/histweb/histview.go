@@ -122,6 +122,9 @@ var (
 	//go:embed *.html
 	fs            embed.FS
 	ruTranslation = `
+{{define "history of title"}}История «{{.}}»{{end}}
+{{define "history of heading"}}История <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
+
 {{define "diff for at title"}}Разница для {{beautifulName .HyphaName}} для {{.Hash}}{{end}}
 {{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
 

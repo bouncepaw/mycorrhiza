@@ -57,8 +57,6 @@
 	"ask_delete_verb": "delete",
 	"ask_remove_media_verb": "remove_media",
 	
-	"history_title": "History of %s",
-	
 	"diff_title": "Diff of {{.name}} at {{.rev}}",
 	
 	"revision_title": "{{.name}} at {{.rev}}",
