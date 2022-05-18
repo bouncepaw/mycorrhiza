@@ -4,6 +4,7 @@ package histview
 import (
 	"embed"
 	"encoding/hex"
+	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
@@ -23,6 +24,9 @@ func InitHandlers(rtr *mux.Router) {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	})
 	rtr.PathPrefix("/history/").HandlerFunc(handlerHistory)
+	rtr.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
+	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
+	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
 	chainPrimitiveDiff = viewutil.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
 	chainRecentChanges = viewutil.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
@@ -81,6 +85,37 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
 	historyView(viewutil.MetaFrom(w, rq), hyphaName, list)
+}
+
+// genericHandlerOfFeeds is a helper function for the web feed handlers.
+func genericHandlerOfFeeds(w http.ResponseWriter, rq *http.Request, f func(history.FeedOptions) (string, error), name string, contentType string) {
+	opts, err := history.ParseFeedOptions(rq.URL.Query())
+	var content string
+	if err == nil {
+		content, err = f(opts)
+	}
+
+	if err != nil {
+		w.Header().Set("Content-Type", "text/plain;charset=utf-8")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "An error while generating "+name+": "+err.Error())
+	} else {
+		w.Header().Set("Content-Type", fmt.Sprintf("%s;charset=utf-8", contentType))
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, content)
+	}
+}
+
+func handlerRecentChangesRSS(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesRSS, "RSS", "application/rss+xml")
+}
+
+func handlerRecentChangesAtom(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesAtom, "Atom", "application/atom+xml")
+}
+
+func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
+	genericHandlerOfFeeds(w, rq, history.RecentChangesJSON, "JSON feed", "application/json")
 }
 
 var (
