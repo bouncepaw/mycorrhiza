@@ -6,7 +6,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"strings"
-	"text/template"
 )
 
 var (
@@ -30,12 +29,8 @@ var (
 )
 
 func Init() {
-	chainNaviTitle = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_navititle.html")).
-		Ru(viewutil.CopyRuWith(fs, "view_navititle.html")) // no text inside
-	chainEmptyHypha = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_empty_hypha.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_empty_hypha.html").Parse(ruTranslation)))
+	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
+	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
 }
 
 type emptyHyphaData struct {

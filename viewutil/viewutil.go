@@ -75,7 +75,7 @@ func Init() {
 // TODO: get rid of this
 func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 	t := func() *template.Template {
-		if meta.Locale() == "ru" {
+		if meta.Locale() == "_ru" {
 			return BaseRu
 		}
 		return BaseEn
@@ -121,11 +121,16 @@ func Base(meta Meta, title, body string, headElements ...string) string {
 	return w.String()
 }
 
-func CopyEnWith(fsys fs.FS, f string) *template.Template {
+func CopyEnRuWith(fsys fs.FS, filename, ruTranslation string) Chain {
+	return en(copyEnWith(fsys, filename)).
+		ru(template.Must(copyRuWith(fsys, filename).Parse(ruTranslation)))
+}
+
+func copyEnWith(fsys fs.FS, f string) *template.Template {
 	return m(m(BaseEn.Clone()).ParseFS(fsys, f))
 }
 
-func CopyRuWith(fsys fs.FS, f string) *template.Template {
+func copyRuWith(fsys fs.FS, f string) *template.Template {
 	return m(m(BaseRu.Clone()).ParseFS(fsys, f))
 }
 

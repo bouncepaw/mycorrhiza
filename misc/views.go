@@ -3,7 +3,6 @@ package misc
 import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"text/template"
 )
 
 var (
@@ -20,13 +19,8 @@ var (
 )
 
 func initViews() {
-	m := template.Must
-	chainList = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_list.html")).
-		Ru(m(viewutil.CopyRuWith(fs, "view_list.html").Parse(ruTranslation)))
-	chainTitleSearch = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_title_search.html")).
-		Ru(m(viewutil.CopyRuWith(fs, "view_title_search.html").Parse(ruTranslation)))
+	chainList = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
+	chainTitleSearch = viewutil.CopyEnRuWith(fs, "view_title_search.html", ruTranslation)
 }
 
 type listDatum struct {

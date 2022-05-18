@@ -5,12 +5,10 @@ import (
 	"github.com/bouncepaw/mycomarkup/v4"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 	"strings"
-	"text/template"
-
-	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
 )
@@ -46,9 +44,7 @@ var (
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	chain = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_help.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_help.html").Parse(ruTranslation)))
+	chain = viewutil.CopyEnRuWith(fs, "view_help.html", ruTranslation)
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.

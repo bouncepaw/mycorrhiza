@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"text/template"
 )
 
 func InitHandlers(rtr *mux.Router) {
@@ -23,12 +22,8 @@ func InitHandlers(rtr *mux.Router) {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	})
 
-	chainPrimitiveDiff = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_primitive_diff.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_primitive_diff.html").Parse(ruTranslation)))
-	chainRecentChanges = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_recent_changes.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_recent_changes.html").Parse(ruTranslation)))
+	chainPrimitiveDiff = viewutil.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
+	chainRecentChanges = viewutil.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {

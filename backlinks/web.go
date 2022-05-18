@@ -8,18 +8,13 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"sort"
-	"text/template"
 )
 
 func InitHandlers(rtr *mux.Router) {
 	rtr.PathPrefix("/backlinks/").HandlerFunc(handlerBacklinks)
 	rtr.PathPrefix("/orphans").HandlerFunc(handlerOrphans)
-	chainBacklinks = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_backlinks.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_backlinks.html").Parse(ruTranslation)))
-	chainOrphans = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_orphans.html")).
-		Ru(template.Must(viewutil.CopyRuWith(fs, "view_orphans.html").Parse(ruTranslation)))
+	chainBacklinks = viewutil.CopyEnRuWith(fs, "view_backlinks.html", ruTranslation)
+	chainOrphans = viewutil.CopyEnRuWith(fs, "view_orphans.html", ruTranslation)
 }
 
 // handlerBacklinks lists all backlinks to a hypha.

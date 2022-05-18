@@ -5,7 +5,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"strings"
-	"text/template" // TODO: Fight
 )
 
 const ruTranslation = `
@@ -29,17 +28,9 @@ var (
 )
 
 func prepareViews() {
-	m := template.Must
-
-	viewCardChain = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_card.html")).
-		Ru(m(viewutil.CopyRuWith(fs, "view_card.html").Parse(ruTranslation)))
-	viewListChain = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_list.html")).
-		Ru(m(viewutil.CopyRuWith(fs, "view_list.html").Parse(ruTranslation)))
-	viewPageChain = viewutil.
-		En(viewutil.CopyEnWith(fs, "view_page.html")).
-		Ru(m(viewutil.CopyRuWith(fs, "view_page.html").Parse(ruTranslation)))
+	viewCardChain = viewutil.CopyEnRuWith(fs, "view_card.html", ruTranslation)
+	viewListChain = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
+	viewPageChain = viewutil.CopyEnRuWith(fs, "view_page.html", ruTranslation)
 }
 
 type cardData struct {
