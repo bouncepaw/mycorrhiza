@@ -96,6 +96,12 @@ type BaseData struct {
 	Body          string // TODO: remove
 }
 
+func (bd *BaseData) withBaseValues(meta Meta, headerLinks []cfg.HeaderLink, commonScripts []string) {
+	bd.Meta = meta
+	bd.HeaderLinks = headerLinks
+	bd.CommonScripts = commonScripts
+}
+
 // Base is a temporary wrapper around BaseEn and BaseRu, meant to facilitate the migration from qtpl.
 func Base(meta Meta, title, body string, headElements ...string) string {
 	var w strings.Builder
@@ -121,4 +127,14 @@ func CopyEnWith(fsys fs.FS, f string) *template.Template {
 
 func CopyRuWith(fsys fs.FS, f string) *template.Template {
 	return m(m(BaseRu.Clone()).ParseFS(fsys, f))
+}
+
+// ExecutePage executes template page in the given chain with the given data that has BaseData nested. It also sets some common BaseData fields
+func ExecutePage(meta Meta, chain Chain, data interface {
+	withBaseValues(meta Meta, headerLinks []cfg.HeaderLink, commonScripts []string)
+}) {
+	data.withBaseValues(meta, cfg.HeaderLinks, cfg.CommonScripts)
+	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", data); err != nil {
+		log.Println(err)
+	}
 }

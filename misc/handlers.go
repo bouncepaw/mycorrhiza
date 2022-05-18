@@ -19,6 +19,7 @@ import (
 	"math/rand"
 	"mime"
 	"net/http"
+	"path/filepath"
 )
 
 func InitHandlers(rtr *mux.Router) {
@@ -41,7 +42,25 @@ func InitHandlers(rtr *mux.Router) {
 // handlerList shows a list of all hyphae in the wiki in random order.
 func handlerList(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	viewList(viewutil.MetaFrom(w, rq))
+	// TODO: make this more effective, there are too many loops and vars
+	var (
+		hyphaNames  = make(chan string)
+		sortedHypha = hyphae.PathographicSort(hyphaNames)
+		entries     []listDatum
+	)
+	for hypha := range hyphae.YieldExistingHyphae() {
+		hyphaNames <- hypha.CanonicalName()
+	}
+	close(hyphaNames)
+	for hyphaName := range sortedHypha {
+		switch h := hyphae.ByName(hyphaName).(type) {
+		case *hyphae.TextualHypha:
+			entries = append(entries, listDatum{h.CanonicalName(), ""})
+		case *hyphae.MediaHypha:
+			entries = append(entries, listDatum{h.CanonicalName(), filepath.Ext(h.MediaFilePath())[1:]})
+		}
+	}
+	viewList(viewutil.MetaFrom(w, rq), entries)
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.

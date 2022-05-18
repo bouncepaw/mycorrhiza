@@ -2,7 +2,6 @@ package categories
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"strings"
@@ -64,42 +63,33 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 }
 
 type pageData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	CatName                 string
 	Hyphae                  []string
 	GivenPermissionToModify bool
 }
 
 func categoryPage(meta viewutil.Meta, catName string) {
-	if err := viewPageChain.Get(meta).ExecuteTemplate(meta.W, "page", pageData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
-			Addr:          "/category/" + catName,
+	viewutil.ExecutePage(meta, viewPageChain, pageData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/category/" + catName,
 		},
 		CatName:                 catName,
 		Hyphae:                  hyphaeInCategory(catName),
 		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }
 
 type listData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	Categories []string
 }
 
 func categoryList(meta viewutil.Meta) {
-	if err := viewListChain.Get(meta).ExecuteTemplate(meta.W, "page", listData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
+	viewutil.ExecutePage(meta, viewListChain, listData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/category",
 		},
 		Categories: listOfCategories(),
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }

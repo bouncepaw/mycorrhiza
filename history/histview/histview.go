@@ -10,7 +10,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -79,12 +78,13 @@ var (
 {{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
 
 `
+	// TODO: translate recent changes
 	chainPrimitiveDiff viewutil.Chain
 	chainRecentChanges viewutil.Chain
 )
 
 type recentChangesData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	EditCount int
 	Changes   []history.Revision
 	UserHypha string
@@ -92,41 +92,27 @@ type recentChangesData struct {
 }
 
 func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
-	if err := chainRecentChanges.Get(meta).ExecuteTemplate(meta.W, "page", recentChangesData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			Addr:          "/recent-changes/" + strconv.Itoa(editCount),
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
-		},
+	viewutil.ExecutePage(meta, chainRecentChanges, recentChangesData{
+		BaseData:  &viewutil.BaseData{},
 		EditCount: editCount,
 		Changes:   changes,
 		UserHypha: cfg.UserHypha,
 		Stops:     []int{20, 50, 100},
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }
 
 type primitiveDiffData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	HyphaName string
 	Hash      string
 	Text      string
 }
 
 func primitiveDiff(meta viewutil.Meta, h hyphae.ExistingHypha, hash, text string) {
-	if err := chainPrimitiveDiff.Get(meta).ExecuteTemplate(meta.W, "page", primitiveDiffData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			Addr:          "/primitive-diff/" + hash + "/" + h.CanonicalName(),
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
-		},
+	viewutil.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
+		BaseData:  &viewutil.BaseData{},
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
 		Text:      text,
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }

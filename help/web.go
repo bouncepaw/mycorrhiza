@@ -3,11 +3,9 @@ package help
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
 	"github.com/bouncepaw/mycomarkup/v4"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -92,22 +90,17 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 }
 
 type helpData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	ContentsHTML string
 	Lang         string
 }
 
 func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
-	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", helpData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
-			Addr:          "/help/" + articlePath,
+	viewutil.ExecutePage(meta, chain, helpData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/help/" + articlePath,
 		},
 		ContentsHTML: contentsHTML,
 		Lang:         lang,
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }

@@ -2,12 +2,10 @@ package backlinks
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"sort"
 	"text/template"
@@ -62,41 +60,31 @@ var (
 )
 
 type backlinksData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	HyphaName string
 	Backlinks []string
 }
 
 func viewBacklinks(meta viewutil.Meta, hyphaName string, backlinks []string) {
-	if err := chainBacklinks.Get(meta).ExecuteTemplate(meta.W, "page", backlinksData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			Addr:          "/backlinks/" + hyphaName,
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
+	viewutil.ExecutePage(meta, chainBacklinks, backlinksData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/backlinks/" + hyphaName,
 		},
 		HyphaName: hyphaName,
 		Backlinks: backlinks,
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }
 
 type orphansData struct {
-	viewutil.BaseData
+	*viewutil.BaseData
 	Orphans []string
 }
 
 func viewOrphans(meta viewutil.Meta, orphans []string) {
-	if err := chainOrphans.Get(meta).ExecuteTemplate(meta.W, "page", orphansData{
-		BaseData: viewutil.BaseData{
-			Meta:          meta,
-			Addr:          "/orphans",
-			HeaderLinks:   cfg.HeaderLinks,
-			CommonScripts: cfg.CommonScripts,
+	viewutil.ExecutePage(meta, chainOrphans, orphansData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/orphans",
 		},
 		Orphans: orphans,
-	}); err != nil {
-		log.Println(err)
-	}
+	})
 }
