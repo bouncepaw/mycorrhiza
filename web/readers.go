@@ -1,7 +1,6 @@
 package web
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v4"
 	"github.com/bouncepaw/mycorrhiza/shroom"
@@ -34,7 +33,6 @@ func initReaders(r *mux.Router) {
 	r.PathPrefix("/binary/").HandlerFunc(handlerBinary)
 	r.PathPrefix("/rev/").HandlerFunc(handlerRevision)
 	r.PathPrefix("/rev-text/").HandlerFunc(handlerRevisionText)
-	r.PathPrefix("/primitive-diff/").HandlerFunc(handlerPrimitiveDiff)
 	r.PathPrefix("/media/").HandlerFunc(handlerMedia)
 }
 
@@ -51,40 +49,6 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
 			views.MediaMenu(rq, h, u)))
-}
-
-func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
-	util.PrepareRq(rq)
-	shorterURL := strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
-	revHash, slug, found := strings.Cut(shorterURL, "/")
-	if !found || len(revHash) < 7 || len(slug) < 1 {
-		http.Error(w, "403 bad request", http.StatusBadRequest)
-		return
-	}
-	paddedRevHash := revHash
-	if len(paddedRevHash)%2 != 0 {
-		paddedRevHash = paddedRevHash[:len(paddedRevHash)-1]
-	}
-	if _, err := hex.DecodeString(paddedRevHash); err != nil {
-		http.Error(w, "403 bad request", http.StatusBadRequest)
-		return
-	}
-	var (
-		hyphaName = util.CanonicalName(slug)
-		h         = hyphae.ByName(hyphaName)
-		user      = user.FromRequest(rq)
-		lc        = l18n.FromRequest(rq)
-	)
-	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
-		w.WriteHeader(http.StatusNotFound)
-		io.WriteString(w, "404 not found")
-	case hyphae.ExistingHypha:
-		util.HTTP200Page(w, views.Base(
-			viewutil.MetaFrom(w, rq),
-			lc.Get("ui.diff_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-			views.PrimitiveDiff(rq, h, user, revHash)))
-	}
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
