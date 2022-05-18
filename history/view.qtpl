@@ -26,7 +26,7 @@ WithRevisions returns an html representation of `revs` that is meant to be inser
 	{% code
     currentYear := grp[0].Time.Year()
     currentMonth := grp[0].Time.Month()
-    sectionId := fmt.Sprintf("%d-%d", currentYear, currentMonth)
+    sectionId := fmt.Sprintf("%04d-%02d", currentYear, currentMonth)
     %}
 <section class="history__month">
 	<a href="#{%s sectionId %}" class="history__month-anchor">

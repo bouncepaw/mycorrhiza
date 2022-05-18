@@ -156,7 +156,7 @@ func StreamWithRevisions(qw422016 *qt422016.Writer, hyphaName string, revs []Rev
 //line history/view.qtpl:27
 		currentYear := grp[0].Time.Year()
 		currentMonth := grp[0].Time.Month()
-		sectionId := fmt.Sprintf("%d-%d", currentYear, currentMonth)
+		sectionId := fmt.Sprintf("%04d-%02d", currentYear, currentMonth)
 
 //line history/view.qtpl:30
 		qw422016.N().S(`
