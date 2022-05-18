@@ -2,43 +2,17 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func initHistory(r *mux.Router) {
-	r.PathPrefix("/history/").HandlerFunc(handlerHistory)
 
 	r.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
 	r.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	r.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
-}
-
-// handlerHistory lists all revisions of a hypha.
-func handlerHistory(w http.ResponseWriter, rq *http.Request) {
-	hyphaName := util.HyphaNameFromRq(rq, "history")
-	var list string
-
-	// History can be found for files that do not exist anymore.
-	revs, err := history.Revisions(hyphaName)
-	if err == nil {
-		list = history.WithRevisions(hyphaName, revs)
-	}
-	log.Println("Found", len(revs), "revisions for", hyphaName)
-
-	var lc = l18n.FromRequest(rq)
-	util.HTTP200Page(w, views.Base(
-		viewutil.MetaFrom(w, rq),
-		fmt.Sprintf(lc.Get("ui.history_title"), util.BeautifulName(hyphaName)),
-		views.History(rq, hyphaName, list, lc),
-	))
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.

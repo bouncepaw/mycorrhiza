@@ -1,0 +1,9 @@
+{{define "history of title"}}History of {{.}}{{end}}
+{{define "body"}}
+<main class="main-width">
+	<article class="history">
+		<h1>{{block "history of heading" .HyphaName}}History of <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}</h1>
+		{{.Contents}}
+	</article>
+</main>
+{{end}}

@@ -10,6 +10,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,9 +22,11 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes/", func(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
 	})
+	rtr.PathPrefix("/history/").HandlerFunc(handlerHistory)
 
 	chainPrimitiveDiff = viewutil.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
 	chainRecentChanges = viewutil.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
+	chainHistory = viewutil.CopyEnRuWith(fs, "view_history.html", ruTranslation)
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -65,6 +68,21 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	recentChanges(viewutil.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
 }
 
+// handlerHistory lists all revisions of a hypha.
+func handlerHistory(w http.ResponseWriter, rq *http.Request) {
+	hyphaName := util.HyphaNameFromRq(rq, "history")
+	var list string
+
+	// History can be found for files that do not exist anymore.
+	revs, err := history.Revisions(hyphaName)
+	if err == nil {
+		list = history.WithRevisions(hyphaName, revs)
+	}
+	log.Println("Found", len(revs), "revisions for", hyphaName)
+
+	historyView(viewutil.MetaFrom(w, rq), hyphaName, list)
+}
+
 var (
 	//go:embed *.html
 	fs            embed.FS
@@ -79,8 +97,7 @@ var (
 {{define "n recent changes"}}{{.}} недавн{{if eq . 1}}ее изменение{{else if le . 4}}недавних изменения{{else}}недавних изменений{{end}}{{end}}
 {{define "recent empty"}}Правки не найдены.{{end}}
 `
-	chainPrimitiveDiff viewutil.Chain
-	chainRecentChanges viewutil.Chain
+	chainPrimitiveDiff, chainRecentChanges, chainHistory viewutil.Chain
 )
 
 type recentChangesData struct {
@@ -114,5 +131,21 @@ func primitiveDiff(meta viewutil.Meta, h hyphae.ExistingHypha, hash, text string
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
 		Text:      text,
+	})
+}
+
+type historyData struct {
+	*viewutil.BaseData
+	HyphaName string
+	Contents  string
+}
+
+func historyView(meta viewutil.Meta, hyphaName, contents string) {
+	viewutil.ExecutePage(meta, chainHistory, historyData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/history/" + util.CanonicalName(hyphaName),
+		},
+		HyphaName: hyphaName,
+		Contents:  contents,
 	})
 }
