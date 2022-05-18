@@ -12,15 +12,24 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"text/template"
 )
 
 func InitHandlers(rtr *mux.Router) {
 	rtr.PathPrefix("/primitive-diff/").HandlerFunc(handlerPrimitiveDiff)
+	rtr.HandleFunc("/recent-changes/{count:[0-9]+}", handlerRecentChanges)
+	rtr.HandleFunc("/recent-changes/", func(w http.ResponseWriter, rq *http.Request) {
+		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
+	})
+
 	chainPrimitiveDiff = viewutil.
 		En(viewutil.CopyEnWith(fs, "view_primitive_diff.html")).
 		Ru(template.Must(viewutil.CopyRuWith(fs, "view_primitive_diff.html").Parse(ruTranslation)))
+	chainRecentChanges = viewutil.
+		En(viewutil.CopyEnWith(fs, "view_recent_changes.html")).
+		Ru(template.Must(viewutil.CopyRuWith(fs, "view_recent_changes.html").Parse(ruTranslation)))
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -52,6 +61,16 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+// handlerRecentChanges displays the /recent-changes/ page.
+func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
+	// Error ignored: filtered by regex
+	editCount, _ := strconv.Atoi(mux.Vars(rq)["count"])
+	if editCount > 100 {
+		return
+	}
+	recentChanges(viewutil.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
+}
+
 var (
 	//go:embed *.html
 	fs            embed.FS
@@ -61,7 +80,33 @@ var (
 
 `
 	chainPrimitiveDiff viewutil.Chain
+	chainRecentChanges viewutil.Chain
 )
+
+type recentChangesData struct {
+	viewutil.BaseData
+	EditCount int
+	Changes   []history.Revision
+	UserHypha string
+	Stops     []int
+}
+
+func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
+	if err := chainRecentChanges.Get(meta).ExecuteTemplate(meta.W, "page", recentChangesData{
+		BaseData: viewutil.BaseData{
+			Meta:          meta,
+			Addr:          "/recent-changes/" + strconv.Itoa(editCount),
+			HeaderLinks:   cfg.HeaderLinks,
+			CommonScripts: cfg.CommonScripts,
+		},
+		EditCount: editCount,
+		Changes:   changes,
+		UserHypha: cfg.UserHypha,
+		Stops:     []int{20, 50, 100},
+	}); err != nil {
+		log.Println(err)
+	}
+}
 
 type primitiveDiffData struct {
 	viewutil.BaseData

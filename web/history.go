@@ -3,11 +3,9 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/l18n"
@@ -17,11 +15,6 @@ import (
 
 func initHistory(r *mux.Router) {
 	r.PathPrefix("/history/").HandlerFunc(handlerHistory)
-
-	r.HandleFunc("/recent-changes/{count:[0-9]+}", handlerRecentChanges)
-	r.HandleFunc("/recent-changes/", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/recent-changes/20", http.StatusSeeOther)
-	})
 
 	r.HandleFunc("/recent-changes-rss", handlerRecentChangesRSS)
 	r.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
@@ -45,21 +38,6 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 		viewutil.MetaFrom(w, rq),
 		fmt.Sprintf(lc.Get("ui.history_title"), util.BeautifulName(hyphaName)),
 		views.History(rq, hyphaName, list, lc),
-	))
-}
-
-// handlerRecentChanges displays the /recent-changes/ page.
-func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
-	// Error ignored: filtered by regex
-	n, _ := strconv.Atoi(mux.Vars(rq)["count"])
-	if n > 100 {
-		return
-	}
-	var lc = l18n.FromRequest(rq)
-	util.HTTP200Page(w, views.Base(
-		viewutil.MetaFrom(w, rq),
-		lc.GetPlural("ui.recent_title", n),
-		views.RecentChanges(n, lc),
 	))
 }
 

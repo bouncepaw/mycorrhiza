@@ -59,16 +59,6 @@
 	
 	"history_title": "History of %s",
 	
-	"recent_title": "{{.n}} recent change%s",
-	"recent_title+one": "",
-	"recent_title+other": "s",
-	"recent_heading": "Recent Changes",
-	"recent_count_pre": "See",
-	"recent_count_post": "recent changes",
-	"recent_subscribe": "Subscribe via {{.rss}}, {{.atom}} or {{.json}}",
-	"recent_subscribe_json": "JSON feed",
-	"recent_empty": "Could not find any recent changes.",
-	
 	"diff_title": "Diff of {{.name}} at {{.rev}}",
 	
 	"revision_title": "{{.name}} at {{.rev}}",

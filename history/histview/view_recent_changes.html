@@ -1,0 +1,70 @@
+{{define "subscribe via"}}{{end}}
+{{define "recent changes"}}Recent changes{{end}}
+{{define "n recent changes"}}{{.}} recent change{{if ne . 1}}s{{end}}{{end}}
+{{define "title"}}{{template "n recent changes" .EditCount}}{{end}}
+
+{{define "body"}}
+<main class="main-width recent-changes">
+	<h1>{{template "recent changes"}}</h1>
+
+	<p class="recent-changes__count">
+		{{block "count pre" .}}See{{end}}
+		{{ $editCount := .EditCount }}
+		{{range $i, $m := .Stops }}
+			{{if $i | gt 0}}
+				<span aria-hidden="true">|</span>
+			{{end}}
+			{{if $m | eq $editCount}}
+				<b>{{$m}}</b>
+			{{else}}
+				<a href="/recent-changes/{{$m}}">{{$m}}</a>
+			{{end}}
+		{{end}}
+		{{block "count post" .}}recent changes{{end}}
+	</p>
+
+	<p>
+		<img class="icon" width="20" height="20" src="/static/icon/feed.svg" aria-hidden="true" alt="RSS icon">
+		{{block "subscribe via" .}}Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.{{end}}
+	</p>
+
+	{{$userHypha := .UserHypha}}
+	{{$year := 0}}{{$month := 0}}{{$day := 0}}
+	<section class="recent-changes__list" role="feed">
+		{{range $i, $entry := .Changes}}
+			{{$time := $entry.Time.UTC}}
+			{{$y := $time.Year}}{{$m := $time.Month}}{{$d := $time.Day}}
+			{{if or (ne $d $day) (ne $m $month) (ne $y $year)}}
+				<h2 class="recent-changes__heading">
+					{{printf "%04d-%02d-%02d" $y $m $d}}
+				</h2>
+				{{$year = $y}}{{$month = $m}}{{$day = $d}}
+			{{end}}
+
+			<div class="recent-changes__entry">
+				<div>
+					<time class="recent-changes__entry__time">
+                        {{ $time.Format "15:04 UTC" }}
+					</time>
+					<span class="recent-changes__entry__message">{{$entry.Hash}}</span>
+                    {{ if $entry.Username | ne "anon" }}
+						<span class="recent-changes__entry__author">
+							&mdash; <a href="/hypha/{{$userHypha}}/{{$entry.Username}}" rel="author">{{$entry.Username}}</a>
+						</span>
+                    {{end}}
+				</div>
+				<div>
+					<span class="recent-changes__entry__links">
+						{{$entry.HyphaeLinksHTML}}
+					</span>
+					<span class="recent-changes__entry__message">
+						{{$entry.Message}}
+					</span>
+				</div>
+			</div>
+		{{else}}
+			<p>{{block "recent empty" .}}No recent changes found.{{end}}</p>
+		{{end}}
+	</section>
+</main>
+{{end}}
