@@ -38,7 +38,6 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Wiki directory is", cfg.WikiDir)
-	log.Println("Using Git storage at", files.HyphaeDir())
 
 	// Init the subsystems:
 	viewutil.Init()
