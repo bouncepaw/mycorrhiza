@@ -48,6 +48,7 @@ func main() {
 	history.Start()
 	history.InitGitRepo()
 	migration.MigrateRocketsMaybe()
+	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
 	categories.Init()
 
