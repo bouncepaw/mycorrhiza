@@ -132,8 +132,6 @@ There are four levels of **headings**. They consist of some equal signs followed
 
 There is an invisible link that shows the § sign near every heading right after the heading text. You can reveal it with a mouse. If you click it, the URL in the browser will change to the URL leading to that very heading. Try that on headings in this article.
 
-**NB.** There is the legacy syntax for headings: `# ` to `###### `, similar to Markdown. You should not use them.
-
 == Codeblock
 Use **codeblocks** to show code or any other preformatted text. Codeblocks start with triple backticks on column 1 and end similarly. You can write any text after the backticks, it is ignored. Put the preformatted text between them.
 
