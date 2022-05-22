@@ -51,6 +51,7 @@ func main() {
 	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
 	categories.Init()
+	// interwiki.Init()
 
 	// Static files:
 	static.InitFS(files.StaticFiles())
