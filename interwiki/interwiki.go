@@ -20,7 +20,7 @@ func Init() {
 		theMap.list = append(theMap.list, &wiki)
 		for _, prefix := range wiki.Names {
 			if _, found := theMap.byName[prefix]; found {
-				log.Fatalf("There are multiple interwiki map entries having the same prefix ‘%s’\n", prefix)
+				log.Fatalf("There are multiple uses of the same prefix ‘%s’\n", prefix)
 			} else {
 				theMap.byName[prefix] = &wiki
 			}
