@@ -7,6 +7,7 @@ package main
 import (
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/migration"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
@@ -51,7 +52,7 @@ func main() {
 	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
 	categories.Init()
-	// interwiki.Init()
+	interwiki.Init()
 
 	// Static files:
 	static.InitFS(files.StaticFiles())

@@ -1,0 +1,34 @@
+{{define "interwiki map"}}Interwiki map{{end}}
+{{define "title"}}{{template "interwiki map"}}{{end}}
+
+{{define "body"}}
+	<main class="main-width">
+		<h1>{{template "interwiki map"}}</h1>{{$emojies := .Emojies}}
+		{{if len .Entries}}
+			<ul>
+			{{range $i, $wiki := .Entries}}
+				<li>
+					<dl>
+						<dt>Names</dt>
+						{{range .Names}}<dd>{{.}}</dd>{{end}}
+
+						<dt>Description</dt>
+						<dd>{{.Description}}</dd>
+
+						<dt>Engine</dt>
+						<dd>{{index $emojies $i}}</dd>
+
+						<dt>URL</dt>
+						<dd><a href="{{.URL}}">{{.URL}}</a></dd>
+
+						<dt>Link format</dt>
+						<dd>{{.LinkFormat}}</dd>
+					</dl>
+				</li>
+			{{end}}
+			</ul>
+		{{else}}
+			<p>No interwiki map set.</p>
+		{{end}}
+	</main>
+{{end}}

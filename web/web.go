@@ -8,6 +8,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/history/histweb"
 	"github.com/bouncepaw/mycorrhiza/hypview"
+	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"io"
 	"net/http"
@@ -56,6 +57,7 @@ func Handler() http.Handler {
 	misc.InitHandlers(wikiRouter)
 	hypview.Init()
 	histweb.InitHandlers(wikiRouter)
+	interwiki.InitHandlers(wikiRouter)
 
 	// Admin routes.
 	if cfg.UseAuth {

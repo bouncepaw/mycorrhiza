@@ -857,11 +857,11 @@ kbd {
 }
 
 /*
- * About page
+ * Definition list
  */
-.about-page dt {
+dt {
 	font-weight: bold;
 }
-.about-page dd + dt {
+dd + dt {
 	margin-top: .5rem;
 }

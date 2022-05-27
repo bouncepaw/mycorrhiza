@@ -16,6 +16,7 @@ func Init() {
 		log.Fatalln(err)
 	}
 	for _, wiki := range record {
+		wiki := wiki // This line is required
 		wiki.canonize()
 		theMap.list = append(theMap.list, &wiki)
 		for _, prefix := range wiki.Names {

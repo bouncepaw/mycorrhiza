@@ -20,6 +20,26 @@ const (
 	Generic
 )
 
+// EmojiWithName returns a Unicode emoji that kinda represents the engine and the engine name. One day we might move to actual images. OK for now.
+func (we WikiEngine) EmojiWithName() string {
+	switch we {
+	case Mycorrhiza:
+		return "🍄 Mycorrhiza"
+	case OddMuse:
+		return "🐫 OddMuse"
+	case MediaWiki:
+		return "🌻 MediaWiki"
+	case MoinMoin1:
+		return "Ⓜ️ MoinMoin 1.9"
+	case MoinMoin2:
+		return "Ⓜ️ MoinMoin 2.*"
+	case DokuWiki:
+		return "📝 DokuWiki"
+	default:
+		return "🌐 Generic"
+	}
+}
+
 // Wiki is an entry in the interwiki map.
 type Wiki struct {
 	// Names is a slice of link prefices that correspond to this wiki.
