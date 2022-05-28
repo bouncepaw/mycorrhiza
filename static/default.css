@@ -242,6 +242,7 @@ main { background-color: white; }
 .shy-link { color: black; }
 
 blockquote { border-left: 2px #999 solid; }
+.wikilink_interwiki {color:#080;}
 .wikilink_new {color:#a55858;}
 .transclusion code, .transclusion .codeblock {background-color:#ddd;}
 .transclusion__link { color: black; }

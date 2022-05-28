@@ -30,6 +30,13 @@ func Init() {
 	log.Printf("Loaded %d interwiki entries\n", len(theMap.list))
 }
 
+func HrefLinkFormatFor(prefix string) string {
+	if wiki, ok := theMap.byName[prefix]; ok {
+		return wiki.LinkFormat
+	}
+	return "{NAME}"
+}
+
 func readInterwiki() ([]Wiki, error) {
 	var (
 		record            []Wiki

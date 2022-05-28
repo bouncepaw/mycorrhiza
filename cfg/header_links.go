@@ -31,8 +31,8 @@ func ParseHeaderLinks(text string) {
 		case blocks.LaunchPad:
 			for _, rocket := range launchpad.Rockets {
 				HeaderLinks = append(HeaderLinks, HeaderLink{
-					Href:    rocket.Href(),
-					Display: rocket.Display(),
+					Href:    rocket.LinkHref(ctx),
+					Display: rocket.DisplayedText(),
 				})
 			}
 		}
