@@ -32,9 +32,16 @@ func Init() {
 
 func HrefLinkFormatFor(prefix string) string {
 	if wiki, ok := theMap.byName[prefix]; ok {
-		return wiki.LinkFormat
+		return wiki.LinkHrefFormat
 	}
-	return "{NAME}"
+	return "{NAME}" // TODO: error
+}
+
+func ImgSrcFormatFor(prefix string) string {
+	if wiki, ok := theMap.byName[prefix]; ok {
+		return wiki.ImgSrcFormat
+	}
+	return "{NAME}" // TODO: error
 }
 
 func readInterwiki() ([]Wiki, error) {

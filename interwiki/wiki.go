@@ -48,12 +48,12 @@ type Wiki struct {
 	// URL is the address of the wiki.
 	URL string `json:"url"`
 
-	// LinkFormat is a format string for incoming interwiki links. The format strings should look like this:
-	//     http://wiki.example.org/view/%s
-	// where %s is where text will be inserted. No other % instructions are supported yet. They will be added once we learn of their use cases.
+	// LinkHrefFormat is a format string for interwiki links. See Mycomarkup internal docs hidden deep inside for more information.
 	//
-	// This field is optional. For other wikis, it is automatically set to <URL>/%s; for Mycorrhiza wikis, it is automatically set to <URL>/hypha/%s.
-	LinkFormat string `json:"link_format"`
+	// This field is optional. For other wikis, it is automatically set to <URL>/{NAME}; for Mycorrhiza wikis, it is automatically set to <URL>/hypha/{NAME}}.
+	LinkHrefFormat string `json:"link_href_format"`
+
+	ImgSrcFormat string `json:"img_src_format"`
 
 	// Description is a plain-text description of the wiki.
 	Description string `json:"description"`
@@ -95,12 +95,21 @@ func (w *Wiki) canonize() {
 		w.Names[i] = util.CanonicalName(prefix)
 	}
 
-	if w.LinkFormat == "" {
+	if w.LinkHrefFormat == "" {
 		switch w.Engine {
 		case Mycorrhiza:
-			w.LinkFormat = fmt.Sprintf("%s/hypha/%%s", w.URL)
+			w.LinkHrefFormat = fmt.Sprintf("%s/hypha/{NAME}", w.URL)
 		default:
-			w.LinkFormat = fmt.Sprintf("%s/%%s", w.URL)
+			w.LinkHrefFormat = fmt.Sprintf("%s/{NAME}", w.URL)
+		}
+	}
+
+	if w.ImgSrcFormat == "" {
+		switch w.Engine {
+		case Mycorrhiza:
+			w.ImgSrcFormat = fmt.Sprintf("%s/binary/{NAME}", w.URL)
+		default:
+			w.ImgSrcFormat = fmt.Sprintf("%s/{NAME}", w.URL)
 		}
 	}
 }

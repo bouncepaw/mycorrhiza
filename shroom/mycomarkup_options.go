@@ -48,6 +48,6 @@ func MarkupOptions(hyphaName string) options.Options {
 			return "/binary/" + util.CanonicalName(hyphaName)
 		},
 		LinkHrefFormatForInterwikiPrefix: interwiki.HrefLinkFormatFor,
-		ImgSrcFormatForInterwikiPrefix:   interwiki.HrefLinkFormatFor, // TODO: dewrong
+		ImgSrcFormatForInterwikiPrefix:   interwiki.ImgSrcFormatFor,
 	}.FillTheRest()
 }
