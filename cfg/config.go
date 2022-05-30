@@ -102,7 +102,7 @@ type CustomScripts struct {
 type Authorization struct {
 	UseAuth           bool
 	AllowRegistration bool
-	AllowEmailAsLogin bool
+	AllowEmailAsLogin bool     `comment:"This field is not currently in use."`
 	RegistrationLimit uint64   `comment:"This field controls the maximum amount of allowed registrations."`
 	Locked            bool     `comment:"Set if users have to authorize to see anything on the wiki."`
 	UseWhiteList      bool     `comment:"If true, WhiteList is used. Else it is not used."`
@@ -144,11 +144,11 @@ func ReadConfigFile(path string) error {
 			URL:        "",
 		},
 		Authorization: Authorization{
-			UseAuth:           true,
-			AllowRegistration: true,
-			AllowEmailAsLogin: true,
+			UseAuth:           false,
+			AllowRegistration: false,
+			AllowEmailAsLogin: false,
 			RegistrationLimit: 0,
-			Locked:            true,
+			Locked:            false,
 			UseWhiteList:      false,
 			WhiteList:         []string{},
 		},
