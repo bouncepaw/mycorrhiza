@@ -1,0 +1,31 @@
+= OpenID Connect integration
+//This article is intended for wiki administrators.//
+
+If you want, you can let users log in to your wiki using any OIDC provider, such as your own Keycloak instance
+
+== Setting up OIDC integration
+
+In `config.ini`, in `[Oidc]` section, fill following config lines:
+
+```
+[Oidc]
+OidcEnabled = true
+OidcClientId = your_client_id
+OidcClientSecret = your_client_secret
+OidcProvider = provider_name_lowercase
+OidcProviderUri = https://example.com
+OidcPlusSeparatedScopes = openid+profile+email
+```
+
+Reload the wiki.
+
+If all fields are filled properly, the engine will enable OpenID Connect integration.
+
+== Using
+TODO: document usage
+
+== Limitations
+* Your OIDC provider MUST support `/.well-known/openid-configuration` distribution
+* Users without confirmed email cannot authorize.
+* Users with email that is already taken by other `source` on the wiki cannot authorize.
+* Overall, this is an experimental feature. Use on your own risk.

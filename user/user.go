@@ -73,9 +73,10 @@ func ValidGroup(group string) bool {
 	return false
 }
 
+// TODO: why this even exists?
 // ValidSource checks whether provided user source name exists.
 func ValidSource(source string) bool {
-	return source == "local" || source == "telegram"
+	return source == "local" || source == "telegram" || source == "oidc"
 }
 
 // EmptyUser constructs an anonymous user.
@@ -135,6 +136,7 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 
 // IsValidUsername checks if the given username is valid.
 func IsValidUsername(username string) bool {
+	// TODO: allow emails
 	for _, r := range username {
 		if strings.ContainsRune("?!:#@><*|\"'&%{}/", r) {
 			return false

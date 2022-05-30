@@ -30,6 +30,8 @@ var (
 
 	UseAuth           bool
 	AllowRegistration bool
+	// AllowEmailAsLogin TODO: is not currently in use, "@" characted is banned in mycomarkup
+	AllowEmailAsLogin bool
 	RegistrationLimit uint64
 	Locked            bool
 	UseWhiteList      bool
@@ -43,6 +45,14 @@ var (
 	TelegramEnabled  bool
 	TelegramBotToken string
 	TelegramBotName  string
+
+	// OIDC config
+	OidcEnabled             bool
+	OidcClientId            string
+	OidcClientSecret        string
+	OidcProvider            string
+	OidcProviderUri         string
+	OidcPlusSeparatedScopes string
 )
 
 // WikiDir is a full path to the wiki storage directory, which also must be a
@@ -60,6 +70,7 @@ type Config struct {
 	Authorization
 	CustomScripts `comment:"You can specify additional scripts to load on different kinds of pages, delimited by a comma ',' sign."`
 	Telegram      `comment:"You can enable Telegram authorization. Follow these instructions: https://core.telegram.org/widgets/login#setting-up-a-bot"`
+	Oidc
 }
 
 // Hyphae is a section of Config which has fields related to special hyphae.
@@ -91,6 +102,7 @@ type CustomScripts struct {
 type Authorization struct {
 	UseAuth           bool
 	AllowRegistration bool
+	AllowEmailAsLogin bool
 	RegistrationLimit uint64   `comment:"This field controls the maximum amount of allowed registrations."`
 	Locked            bool     `comment:"Set if users have to authorize to see anything on the wiki."`
 	UseWhiteList      bool     `comment:"If true, WhiteList is used. Else it is not used."`
@@ -105,6 +117,15 @@ type Telegram struct {
 	TelegramBotName  string `comment:"Username of your bot, sans @."`
 }
 
+type Oidc struct {
+	OidcEnabled             bool   `comment:"true."`
+	OidcClientId            string `comment:"Oauth2 client_id "`
+	OidcClientSecret        string `comment:"Oauth2 cient_secret "`
+	OidcProvider            string `comment:"Oauth2 provider name "`
+	OidcProviderUri         string `comment:"Oauth2 provider base URI "`
+	OidcPlusSeparatedScopes string `comment:"Oauth2 scopes, plus-separated "`
+}
+
 // ReadConfigFile reads a config on the given path and stores the
 // configuration. Call it sometime during the initialization.
 func ReadConfigFile(path string) error {
@@ -112,6 +133,7 @@ func ReadConfigFile(path string) error {
 		WikiName:                "Mycorrhiza Wiki",
 		NaviTitleIcon:           "🍄",
 		UseSiblingHyphaeSidebar: false,
+
 		Hyphae: Hyphae{
 			HomeHypha:        "home",
 			UserHypha:        "u",
@@ -122,10 +144,11 @@ func ReadConfigFile(path string) error {
 			URL:        "",
 		},
 		Authorization: Authorization{
-			UseAuth:           false,
-			AllowRegistration: false,
+			UseAuth:           true,
+			AllowRegistration: true,
+			AllowEmailAsLogin: true,
 			RegistrationLimit: 0,
-			Locked:            false,
+			Locked:            true,
 			UseWhiteList:      false,
 			WhiteList:         []string{},
 		},
@@ -137,6 +160,15 @@ func ReadConfigFile(path string) error {
 		Telegram: Telegram{
 			TelegramBotToken: "",
 			TelegramBotName:  "",
+		},
+
+		Oidc: Oidc{
+			OidcEnabled:             false,
+			OidcClientId:            "",
+			OidcClientSecret:        "",
+			OidcProvider:            "",
+			OidcProviderUri:         "",
+			OidcPlusSeparatedScopes: "",
 		},
 	}
 
@@ -181,6 +213,7 @@ func ReadConfigFile(path string) error {
 	URL = cfg.URL
 	UseAuth = cfg.UseAuth
 	AllowRegistration = cfg.AllowRegistration
+	AllowEmailAsLogin = cfg.AllowEmailAsLogin
 	RegistrationLimit = cfg.RegistrationLimit
 	Locked = cfg.Locked && cfg.UseAuth // Makes no sense to have the lock but no auth
 	UseWhiteList = cfg.UseWhiteList
@@ -191,6 +224,13 @@ func ReadConfigFile(path string) error {
 	TelegramBotToken = cfg.TelegramBotToken
 	TelegramBotName = cfg.TelegramBotName
 	TelegramEnabled = (TelegramBotToken != "") && (TelegramBotName != "")
+
+	OidcEnabled = cfg.OidcEnabled
+	OidcClientId = cfg.OidcClientId
+	OidcClientSecret = cfg.OidcClientSecret
+	OidcProvider = cfg.OidcProvider
+	OidcProviderUri = cfg.OidcProviderUri
+	OidcPlusSeparatedScopes = cfg.OidcPlusSeparatedScopes
 
 	// This URL makes much more sense. If no URL is set or the protocol is forgotten, assume HTTP.
 	if (URL == "") || !strings.Contains(URL, ":") {
