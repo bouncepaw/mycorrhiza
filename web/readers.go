@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
@@ -99,15 +100,22 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		h               = hyphae.ByName(hyphaName)
 		contents        = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 	)
+
+	var (
+		textContents string
+		err          error
+	)
 	switch h := h.(type) {
 	case hyphae.ExistingHypha:
-		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
-
-		if err == nil {
-			ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
-			contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
-		}
+		textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
+	case *hyphae.EmptyHypha:
+		textContents, err = history.FileAtRevision(filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"), revHash)
 	}
+	if err == nil {
+		ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
+		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
+	}
+
 	page := views.Revision(
 		viewutil.MetaFrom(w, rq),
 		h,
