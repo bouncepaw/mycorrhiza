@@ -67,8 +67,18 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		log.Printf(`Hypha ‘%s’ does not exist`)
-		w.WriteHeader(http.StatusNotFound)
+		var mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
+		var textContents, err = history.FileAtRevision(mycoFilePath, revHash)
+
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+			_, _ = io.WriteString(w, "Error: "+err.Error())
+			return
+		}
+		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, mycoFilePath, revHash)
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, textContents)
 	case hyphae.ExistingHypha:
 		if !h.HasTextFile() {
 			log.Printf(`Media hypha ‘%s’ has no text`)
