@@ -104,13 +104,15 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	var (
 		textContents string
 		err          error
+		mycoFilePath string
 	)
 	switch h := h.(type) {
 	case hyphae.ExistingHypha:
-		textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
+		mycoFilePath = h.TextFilePath()
 	case *hyphae.EmptyHypha:
-		textContents, err = history.FileAtRevision(filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"), revHash)
+		mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 	}
+	textContents, err = history.FileAtRevision(mycoFilePath, revHash)
 	if err == nil {
 		ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
 		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))

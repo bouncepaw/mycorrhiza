@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -13,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -49,17 +51,22 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		http.Error(w, "403 bad request", http.StatusBadRequest)
 		return
 	}
-	switch h := hyphae.ByName(util.CanonicalName(slug)).(type) {
-	case *hyphae.EmptyHypha:
-		http.Error(w, "404 not found", http.StatusNotFound)
+	var (
+		mycoFilePath string
+		h            = hyphae.ByName(util.CanonicalName(slug))
+	)
+	switch h := h.(type) {
 	case hyphae.ExistingHypha:
-		text, err := history.PrimitiveDiffAtRevision(h.TextFilePath(), revHash)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		primitiveDiff(viewutil.MetaFrom(w, rq), h, revHash, text)
+		mycoFilePath = h.TextFilePath()
+	case *hyphae.EmptyHypha:
+		mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 	}
+	text, err := history.PrimitiveDiffAtRevision(mycoFilePath, revHash)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	primitiveDiff(viewutil.MetaFrom(w, rq), h, revHash, text)
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.
@@ -163,7 +170,7 @@ type primitiveDiffData struct {
 	Text      string
 }
 
-func primitiveDiff(meta viewutil.Meta, h hyphae.ExistingHypha, hash, text string) {
+func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
 	viewutil.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
 		BaseData:  &viewutil.BaseData{},
 		HyphaName: h.CanonicalName(),
