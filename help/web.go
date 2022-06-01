@@ -39,6 +39,7 @@ var (
 {{define "lock"}}Замок{{end}}
 {{define "whitelist"}}Белый список{{end}}
 {{define "telegram"}}Вход через Телеграм{{end}}
+{{define "oidc"}}Интеграция OpenID Connect{{end}}
 `
 )
 

@@ -29,6 +29,7 @@
 			</fieldset>
 		</form>
 		{%= telegramWidget(lc) %}
+		{%= oidcWidget(lc) %}
 	{% elseif cfg.UseAuth %}
 		<p>{%s lc.Get("auth.noregister") %}</p>
 		<p><a href="/{%s rq.URL.RawQuery %}">← {%s lc.Get("auth.go_back") %}</a></p>
@@ -60,6 +61,7 @@
 			</fieldset>
 		</form>
 		{%= telegramWidget(lc) %}
+		{%= oidcWidget(lc) %}
 	{% else %}
 		<p>{%s lc.Get("auth.noauth") %}</p>
 		<p><a class="btn btn_weak" href="/">← {%s lc.Get("auth.go_home") %}</a></p>
@@ -73,6 +75,15 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 {% if cfg.TelegramEnabled %}
 <p class="telegram-notice">{%s lc.Get("auth.telegram_tip") %}</p>
 <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="{%s cfg.TelegramBotName %}" data-size="medium" data-userpic="false" data-auth-url="{%s cfg.URL %}/telegram-login"></script>
+{% endif %}
+{% endfunc %}
+
+OIDC sign-in widget. TODO: beautify
+{% func oidcWidget(lc *l18n.Localizer) %}
+{% if cfg.OidcEnabled %}
+<a href="/oauth/login">
+   <button>{%s lc.Get("auth.login_oidc_button") %}{%s cfg.OidcProvider %}</button>
+</a>
 {% endif %}
 {% endfunc %}
 
@@ -137,6 +148,7 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 				<button class="btn" type="submit" value="Log in">{%s lc.Get("auth.login_button") %}</button>
 			</form>
 			{%= telegramWidget(lc) %}
+			{%= oidcWidget(lc) %}
 		</section>
 	</main>
 </body>

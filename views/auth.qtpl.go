@@ -107,416 +107,481 @@ func StreamRegister(qw422016 *qt422016.Writer, rq *http.Request) {
 		streamtelegramWidget(qw422016, lc)
 //line views/auth.qtpl:31
 		qw422016.N().S(`
-	`)
+		`)
 //line views/auth.qtpl:32
+		streamoidcWidget(qw422016, lc)
+//line views/auth.qtpl:32
+		qw422016.N().S(`
+	`)
+//line views/auth.qtpl:33
 	} else if cfg.UseAuth {
-//line views/auth.qtpl:32
+//line views/auth.qtpl:33
 		qw422016.N().S(`
 		<p>`)
-//line views/auth.qtpl:33
+//line views/auth.qtpl:34
 		qw422016.E().S(lc.Get("auth.noregister"))
-//line views/auth.qtpl:33
+//line views/auth.qtpl:34
 		qw422016.N().S(`</p>
 		<p><a href="/`)
-//line views/auth.qtpl:34
+//line views/auth.qtpl:35
 		qw422016.E().S(rq.URL.RawQuery)
-//line views/auth.qtpl:34
+//line views/auth.qtpl:35
 		qw422016.N().S(`">← `)
-//line views/auth.qtpl:34
+//line views/auth.qtpl:35
 		qw422016.E().S(lc.Get("auth.go_back"))
-//line views/auth.qtpl:34
+//line views/auth.qtpl:35
 		qw422016.N().S(`</a></p>
 	`)
-//line views/auth.qtpl:35
+//line views/auth.qtpl:36
 	} else {
-//line views/auth.qtpl:35
+//line views/auth.qtpl:36
 		qw422016.N().S(`
 		<p>`)
-//line views/auth.qtpl:36
+//line views/auth.qtpl:37
 		qw422016.E().S(lc.Get("auth.noauth"))
-//line views/auth.qtpl:36
+//line views/auth.qtpl:37
 		qw422016.N().S(`</p>
 		<p><a href="/`)
-//line views/auth.qtpl:37
+//line views/auth.qtpl:38
 		qw422016.E().S(rq.URL.RawQuery)
-//line views/auth.qtpl:37
+//line views/auth.qtpl:38
 		qw422016.N().S(`">← `)
-//line views/auth.qtpl:37
+//line views/auth.qtpl:38
 		qw422016.E().S(lc.Get("auth.go_back"))
-//line views/auth.qtpl:37
+//line views/auth.qtpl:38
 		qw422016.N().S(`</a></p>
 	`)
-//line views/auth.qtpl:38
+//line views/auth.qtpl:39
 	}
-//line views/auth.qtpl:38
+//line views/auth.qtpl:39
 	qw422016.N().S(`
 	</section>
 </main>
 `)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 }
 
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 func WriteRegister(qq422016 qtio422016.Writer, rq *http.Request) {
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	StreamRegister(qw422016, rq)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 }
 
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 func Register(rq *http.Request) string {
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	WriteRegister(qb422016, rq)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 	return qs422016
-//line views/auth.qtpl:41
+//line views/auth.qtpl:42
 }
 
-//line views/auth.qtpl:43
+//line views/auth.qtpl:44
 func StreamLogin(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:43
+//line views/auth.qtpl:44
 	qw422016.N().S(`
 <main class="main-width">
 	<section>
 	`)
-//line views/auth.qtpl:46
+//line views/auth.qtpl:47
 	if cfg.UseAuth {
-//line views/auth.qtpl:46
+//line views/auth.qtpl:47
 		qw422016.N().S(`
 		<form class="modal" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 			<fieldset class="modal__fieldset">
 				<legend class="modal__title">`)
-//line views/auth.qtpl:49
+//line views/auth.qtpl:50
 		qw422016.E().S(lc.Get("auth.login_header", &l18n.Replacements{"name": cfg.WikiName}))
-//line views/auth.qtpl:49
+//line views/auth.qtpl:50
 		qw422016.N().S(`</legend>
 				<label for="login-form__username">`)
-//line views/auth.qtpl:50
+//line views/auth.qtpl:51
 		qw422016.E().S(lc.Get("auth.username"))
-//line views/auth.qtpl:50
+//line views/auth.qtpl:51
 		qw422016.N().S(`</label>
 				<br>
 				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
 				<br>
 				<label for="login-form__password">`)
-//line views/auth.qtpl:54
+//line views/auth.qtpl:55
 		qw422016.E().S(lc.Get("auth.password"))
-//line views/auth.qtpl:54
+//line views/auth.qtpl:55
 		qw422016.N().S(`</label>
 				<br>
 				<input type="password" required name="password" autocomplete="current-password">
 				<p>`)
-//line views/auth.qtpl:57
+//line views/auth.qtpl:58
 		qw422016.E().S(lc.Get("auth.cookie_tip"))
-//line views/auth.qtpl:57
+//line views/auth.qtpl:58
 		qw422016.N().S(`</p>
 				<button class="btn" type="submit" value="Log in">`)
-//line views/auth.qtpl:58
+//line views/auth.qtpl:59
 		qw422016.E().S(lc.Get("auth.login_button"))
-//line views/auth.qtpl:58
+//line views/auth.qtpl:59
 		qw422016.N().S(`</button>
 				<a class="btn btn_weak" href="/">`)
-//line views/auth.qtpl:59
+//line views/auth.qtpl:60
 		qw422016.E().S(lc.Get("ui.cancel"))
-//line views/auth.qtpl:59
+//line views/auth.qtpl:60
 		qw422016.N().S(`</a>
 			</fieldset>
 		</form>
 		`)
-//line views/auth.qtpl:62
+//line views/auth.qtpl:63
 		streamtelegramWidget(qw422016, lc)
-//line views/auth.qtpl:62
+//line views/auth.qtpl:63
+		qw422016.N().S(`
+		`)
+//line views/auth.qtpl:64
+		streamoidcWidget(qw422016, lc)
+//line views/auth.qtpl:64
 		qw422016.N().S(`
 	`)
-//line views/auth.qtpl:63
+//line views/auth.qtpl:65
 	} else {
-//line views/auth.qtpl:63
+//line views/auth.qtpl:65
 		qw422016.N().S(`
 		<p>`)
-//line views/auth.qtpl:64
+//line views/auth.qtpl:66
 		qw422016.E().S(lc.Get("auth.noauth"))
-//line views/auth.qtpl:64
+//line views/auth.qtpl:66
 		qw422016.N().S(`</p>
 		<p><a class="btn btn_weak" href="/">← `)
-//line views/auth.qtpl:65
+//line views/auth.qtpl:67
 		qw422016.E().S(lc.Get("auth.go_home"))
-//line views/auth.qtpl:65
+//line views/auth.qtpl:67
 		qw422016.N().S(`</a></p>
 	`)
-//line views/auth.qtpl:66
+//line views/auth.qtpl:68
 	}
-//line views/auth.qtpl:66
+//line views/auth.qtpl:68
 	qw422016.N().S(`
 	</section>
 </main>
 `)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 }
 
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 func WriteLogin(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	StreamLogin(qw422016, lc)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 }
 
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 func Login(lc *l18n.Localizer) string {
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	WriteLogin(qb422016, lc)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 	return qs422016
-//line views/auth.qtpl:69
+//line views/auth.qtpl:71
 }
 
 // Telegram auth widget was requested by Yogurt. As you can see, we don't offer user administrators control over it. Of course we don't.
 
-//line views/auth.qtpl:72
+//line views/auth.qtpl:74
 func streamtelegramWidget(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:72
+//line views/auth.qtpl:74
 	qw422016.N().S(`
 `)
-//line views/auth.qtpl:73
+//line views/auth.qtpl:75
 	if cfg.TelegramEnabled {
-//line views/auth.qtpl:73
+//line views/auth.qtpl:75
 		qw422016.N().S(`
 <p class="telegram-notice">`)
-//line views/auth.qtpl:74
+//line views/auth.qtpl:76
 		qw422016.E().S(lc.Get("auth.telegram_tip"))
-//line views/auth.qtpl:74
+//line views/auth.qtpl:76
 		qw422016.N().S(`</p>
 <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="`)
-//line views/auth.qtpl:75
+//line views/auth.qtpl:77
 		qw422016.E().S(cfg.TelegramBotName)
-//line views/auth.qtpl:75
+//line views/auth.qtpl:77
 		qw422016.N().S(`" data-size="medium" data-userpic="false" data-auth-url="`)
-//line views/auth.qtpl:75
+//line views/auth.qtpl:77
 		qw422016.E().S(cfg.URL)
-//line views/auth.qtpl:75
+//line views/auth.qtpl:77
 		qw422016.N().S(`/telegram-login"></script>
 `)
-//line views/auth.qtpl:76
+//line views/auth.qtpl:78
 	}
-//line views/auth.qtpl:76
+//line views/auth.qtpl:78
 	qw422016.N().S(`
 `)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 }
 
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 func writetelegramWidget(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	streamtelegramWidget(qw422016, lc)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 }
 
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 func telegramWidget(lc *l18n.Localizer) string {
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	writetelegramWidget(qb422016, lc)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 	return qs422016
-//line views/auth.qtpl:77
+//line views/auth.qtpl:79
 }
 
-//line views/auth.qtpl:79
+// OIDC sign-in widget. TODO: beautify
+
+//line views/auth.qtpl:82
+func streamoidcWidget(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
+//line views/auth.qtpl:82
+	qw422016.N().S(`
+`)
+//line views/auth.qtpl:83
+	if cfg.OidcEnabled {
+//line views/auth.qtpl:83
+		qw422016.N().S(`
+<a href="/oauth/login">
+   <button>`)
+//line views/auth.qtpl:85
+		qw422016.E().S(lc.Get("auth.login_oidc_button"))
+//line views/auth.qtpl:85
+		qw422016.E().S(cfg.OidcProvider)
+//line views/auth.qtpl:85
+		qw422016.N().S(`</button>
+</a>
+`)
+//line views/auth.qtpl:87
+	}
+//line views/auth.qtpl:87
+	qw422016.N().S(`
+`)
+//line views/auth.qtpl:88
+}
+
+//line views/auth.qtpl:88
+func writeoidcWidget(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
+//line views/auth.qtpl:88
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line views/auth.qtpl:88
+	streamoidcWidget(qw422016, lc)
+//line views/auth.qtpl:88
+	qt422016.ReleaseWriter(qw422016)
+//line views/auth.qtpl:88
+}
+
+//line views/auth.qtpl:88
+func oidcWidget(lc *l18n.Localizer) string {
+//line views/auth.qtpl:88
+	qb422016 := qt422016.AcquireByteBuffer()
+//line views/auth.qtpl:88
+	writeoidcWidget(qb422016, lc)
+//line views/auth.qtpl:88
+	qs422016 := string(qb422016.B)
+//line views/auth.qtpl:88
+	qt422016.ReleaseByteBuffer(qb422016)
+//line views/auth.qtpl:88
+	return qs422016
+//line views/auth.qtpl:88
+}
+
+//line views/auth.qtpl:90
 func StreamLoginError(qw422016 *qt422016.Writer, err string, lc *l18n.Localizer) {
-//line views/auth.qtpl:79
+//line views/auth.qtpl:90
 	qw422016.N().S(`
 <main class="main-width">
 	<section>
 	`)
-//line views/auth.qtpl:82
+//line views/auth.qtpl:93
 	switch err {
-//line views/auth.qtpl:83
+//line views/auth.qtpl:94
 	case "unknown username":
-//line views/auth.qtpl:83
+//line views/auth.qtpl:94
 		qw422016.N().S(`
 		<p class="error">`)
-//line views/auth.qtpl:84
+//line views/auth.qtpl:95
 		qw422016.E().S(lc.Get("auth.error_username"))
-//line views/auth.qtpl:84
+//line views/auth.qtpl:95
 		qw422016.N().S(`</p>
 	`)
-//line views/auth.qtpl:85
+//line views/auth.qtpl:96
 	case "wrong password":
-//line views/auth.qtpl:85
+//line views/auth.qtpl:96
 		qw422016.N().S(`
 		<p class="error">`)
-//line views/auth.qtpl:86
+//line views/auth.qtpl:97
 		qw422016.E().S(lc.Get("auth.error_password"))
-//line views/auth.qtpl:86
+//line views/auth.qtpl:97
 		qw422016.N().S(`</p>
 	`)
-//line views/auth.qtpl:87
+//line views/auth.qtpl:98
 	default:
-//line views/auth.qtpl:87
+//line views/auth.qtpl:98
 		qw422016.N().S(`
 		<p class="error">`)
-//line views/auth.qtpl:88
+//line views/auth.qtpl:99
 		qw422016.E().S(err)
-//line views/auth.qtpl:88
+//line views/auth.qtpl:99
 		qw422016.N().S(`</p>
 	`)
-//line views/auth.qtpl:89
+//line views/auth.qtpl:100
 	}
-//line views/auth.qtpl:89
+//line views/auth.qtpl:100
 	qw422016.N().S(`
 		<p><a href="/login">← `)
-//line views/auth.qtpl:90
+//line views/auth.qtpl:101
 	qw422016.E().S(lc.Get("auth.try_again"))
-//line views/auth.qtpl:90
+//line views/auth.qtpl:101
 	qw422016.N().S(`</a></p>
 	</section>
 </main>
 `)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 }
 
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 func WriteLoginError(qq422016 qtio422016.Writer, err string, lc *l18n.Localizer) {
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	StreamLoginError(qw422016, err, lc)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 }
 
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 func LoginError(err string, lc *l18n.Localizer) string {
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	WriteLoginError(qb422016, err, lc)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 	return qs422016
-//line views/auth.qtpl:93
+//line views/auth.qtpl:104
 }
 
-//line views/auth.qtpl:95
+//line views/auth.qtpl:106
 func StreamLogout(qw422016 *qt422016.Writer, can bool, lc *l18n.Localizer) {
-//line views/auth.qtpl:95
+//line views/auth.qtpl:106
 	qw422016.N().S(`
 <main class="main-width">
 	<section>
 	`)
-//line views/auth.qtpl:98
+//line views/auth.qtpl:109
 	if can {
-//line views/auth.qtpl:98
+//line views/auth.qtpl:109
 		qw422016.N().S(`
 		<h1>`)
-//line views/auth.qtpl:99
+//line views/auth.qtpl:110
 		qw422016.E().S(lc.Get("auth.logout_header"))
-//line views/auth.qtpl:99
+//line views/auth.qtpl:110
 		qw422016.N().S(`</h1>
 		<form method="POST" action="/logout">
 			<input class="btn btn_accent" type="submit" value="`)
-//line views/auth.qtpl:101
+//line views/auth.qtpl:112
 		qw422016.E().S(lc.Get("auth.logout_button"))
-//line views/auth.qtpl:101
+//line views/auth.qtpl:112
 		qw422016.N().S(`"/>
 			<a class="btn btn_weak" href="/">`)
-//line views/auth.qtpl:102
+//line views/auth.qtpl:113
 		qw422016.E().S(lc.Get("auth.go_home"))
-//line views/auth.qtpl:102
+//line views/auth.qtpl:113
 		qw422016.N().S(`</a>
 		</form>
 	`)
-//line views/auth.qtpl:104
+//line views/auth.qtpl:115
 	} else {
-//line views/auth.qtpl:104
+//line views/auth.qtpl:115
 		qw422016.N().S(`
 		<p>`)
-//line views/auth.qtpl:105
+//line views/auth.qtpl:116
 		qw422016.E().S(lc.Get("auth.logout_anon"))
-//line views/auth.qtpl:105
+//line views/auth.qtpl:116
 		qw422016.N().S(`</p>
 		<p><a href="/login">`)
-//line views/auth.qtpl:106
+//line views/auth.qtpl:117
 		qw422016.E().S(lc.Get("auth.login_title"))
-//line views/auth.qtpl:106
+//line views/auth.qtpl:117
 		qw422016.N().S(`</a></p>
 		<p><a href="/">← `)
-//line views/auth.qtpl:107
+//line views/auth.qtpl:118
 		qw422016.E().S(lc.Get("auth.go_home"))
-//line views/auth.qtpl:107
+//line views/auth.qtpl:118
 		qw422016.N().S(`</a></p>
 	`)
-//line views/auth.qtpl:108
+//line views/auth.qtpl:119
 	}
-//line views/auth.qtpl:108
+//line views/auth.qtpl:119
 	qw422016.N().S(`
 	</section>
 </main>
 `)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 }
 
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 func WriteLogout(qq422016 qtio422016.Writer, can bool, lc *l18n.Localizer) {
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	StreamLogout(qw422016, can, lc)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 }
 
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 func Logout(can bool, lc *l18n.Localizer) string {
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	WriteLogout(qb422016, can, lc)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 	return qs422016
-//line views/auth.qtpl:111
+//line views/auth.qtpl:122
 }
 
-//line views/auth.qtpl:113
+//line views/auth.qtpl:124
 func StreamLock(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:113
+//line views/auth.qtpl:124
 	qw422016.N().S(`
 <!doctype html>
 <html>
@@ -524,9 +589,9 @@ func StreamLock(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>🔒 `)
-//line views/auth.qtpl:119
+//line views/auth.qtpl:130
 	qw422016.E().S(lc.Get("auth.lock_title"))
-//line views/auth.qtpl:119
+//line views/auth.qtpl:130
 	qw422016.N().S(`</title>
 	<link rel="shortcut icon" href="/static/favicon.ico">
 	<link rel="stylesheet" href="/static/style.css">
@@ -536,73 +601,78 @@ func StreamLock(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		<section class="locked-notice__message">
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">`)
-//line views/auth.qtpl:127
+//line views/auth.qtpl:138
 	qw422016.E().S(lc.Get("auth.lock_title"))
-//line views/auth.qtpl:127
+//line views/auth.qtpl:138
 	qw422016.N().S(`</h1>
 			<form class="locked-notice__login-form" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
 				<label for="login-form__username">`)
-//line views/auth.qtpl:129
+//line views/auth.qtpl:140
 	qw422016.E().S(lc.Get("auth.username"))
-//line views/auth.qtpl:129
+//line views/auth.qtpl:140
 	qw422016.N().S(`</label>
 				<br>
 				<input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
 				<br>
 				<label for="login-form__password">`)
-//line views/auth.qtpl:133
+//line views/auth.qtpl:144
 	qw422016.E().S(lc.Get("auth.password"))
-//line views/auth.qtpl:133
+//line views/auth.qtpl:144
 	qw422016.N().S(`</label>
 				<br>
 				<input type="password" required name="password" autocomplete="current-password">
 				<br>
 				<button class="btn" type="submit" value="Log in">`)
-//line views/auth.qtpl:137
+//line views/auth.qtpl:148
 	qw422016.E().S(lc.Get("auth.login_button"))
-//line views/auth.qtpl:137
+//line views/auth.qtpl:148
 	qw422016.N().S(`</button>
 			</form>
 			`)
-//line views/auth.qtpl:139
+//line views/auth.qtpl:150
 	streamtelegramWidget(qw422016, lc)
-//line views/auth.qtpl:139
+//line views/auth.qtpl:150
+	qw422016.N().S(`
+			`)
+//line views/auth.qtpl:151
+	streamoidcWidget(qw422016, lc)
+//line views/auth.qtpl:151
 	qw422016.N().S(`
 		</section>
 	</main>
 </body>
 </html>
 `)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 }
 
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 func WriteLock(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	StreamLock(qw422016, lc)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 }
 
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 func Lock(lc *l18n.Localizer) string {
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	WriteLock(qb422016, lc)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 	return qs422016
-//line views/auth.qtpl:144
+//line views/auth.qtpl:156
 }
 
-//line views/auth.qtpl:147
+//line views/auth.qtpl:159
 var userListL10n = map[string]l10nEntry{
 	"heading":        en("List of users").ru("Список пользователей"),
 	"administrators": en("Administrators").ru("Администраторы"),
@@ -610,13 +680,13 @@ var userListL10n = map[string]l10nEntry{
 	"editors":        en("Editors").ru("Редакторы"),
 }
 
-//line views/auth.qtpl:155
+//line views/auth.qtpl:167
 func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:155
+//line views/auth.qtpl:167
 	qw422016.N().S(`
 <main class="main-width user-list">
 `)
-//line views/auth.qtpl:158
+//line views/auth.qtpl:170
 	var get = func(key string) string {
 		return userListL10n[key].get(lc.Locale)
 	}
@@ -641,130 +711,130 @@ func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	sort.Strings(moderators)
 	sort.Strings(editors)
 
-//line views/auth.qtpl:181
+//line views/auth.qtpl:193
 	qw422016.N().S(`
 	<h1>`)
-//line views/auth.qtpl:182
+//line views/auth.qtpl:194
 	qw422016.E().S(get("heading"))
-//line views/auth.qtpl:182
+//line views/auth.qtpl:194
 	qw422016.N().S(`</h1>
 	<section>
 		<h2>`)
-//line views/auth.qtpl:184
+//line views/auth.qtpl:196
 	qw422016.E().S(get("administrators"))
-//line views/auth.qtpl:184
+//line views/auth.qtpl:196
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/auth.qtpl:185
+//line views/auth.qtpl:197
 	for _, name := range admins {
-//line views/auth.qtpl:185
+//line views/auth.qtpl:197
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.E().S(cfg.UserHypha)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.N().S(`/`)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.E().S(name)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.N().S(`">`)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.E().S(name)
-//line views/auth.qtpl:186
+//line views/auth.qtpl:198
 		qw422016.N().S(`</a></li>
 		`)
-//line views/auth.qtpl:187
+//line views/auth.qtpl:199
 	}
-//line views/auth.qtpl:187
+//line views/auth.qtpl:199
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line views/auth.qtpl:190
+//line views/auth.qtpl:202
 	qw422016.E().S(get("moderators"))
-//line views/auth.qtpl:190
+//line views/auth.qtpl:202
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/auth.qtpl:191
+//line views/auth.qtpl:203
 	for _, name := range moderators {
-//line views/auth.qtpl:191
+//line views/auth.qtpl:203
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.E().S(cfg.UserHypha)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.N().S(`/`)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.E().S(name)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.N().S(`">`)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.E().S(name)
-//line views/auth.qtpl:192
+//line views/auth.qtpl:204
 		qw422016.N().S(`</a></li>
 		`)
-//line views/auth.qtpl:193
+//line views/auth.qtpl:205
 	}
-//line views/auth.qtpl:193
+//line views/auth.qtpl:205
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line views/auth.qtpl:196
+//line views/auth.qtpl:208
 	qw422016.E().S(get("editors"))
-//line views/auth.qtpl:196
+//line views/auth.qtpl:208
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line views/auth.qtpl:197
+//line views/auth.qtpl:209
 	for _, name := range editors {
-//line views/auth.qtpl:197
+//line views/auth.qtpl:209
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.E().S(cfg.UserHypha)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.N().S(`/`)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.E().S(name)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.N().S(`">`)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.E().S(name)
-//line views/auth.qtpl:198
+//line views/auth.qtpl:210
 		qw422016.N().S(`</a></li>
 		`)
-//line views/auth.qtpl:199
+//line views/auth.qtpl:211
 	}
-//line views/auth.qtpl:199
+//line views/auth.qtpl:211
 	qw422016.N().S(`</ol>
 	</section>
 </main>
 `)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 }
 
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 func WriteUserList(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	StreamUserList(qw422016, lc)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	qt422016.ReleaseWriter(qw422016)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 }
 
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 func UserList(lc *l18n.Localizer) string {
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	WriteUserList(qb422016, lc)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	qs422016 := string(qb422016.B)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 	return qs422016
-//line views/auth.qtpl:202
+//line views/auth.qtpl:214
 }
