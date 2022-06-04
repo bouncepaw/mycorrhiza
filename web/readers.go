@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
@@ -23,8 +23,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/views"
 
-	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v4/tools"
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/tools"
 )
 
 func initReaders(r *mux.Router) {

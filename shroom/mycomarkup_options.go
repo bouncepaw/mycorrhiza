@@ -2,7 +2,7 @@ package shroom
 
 import (
 	"errors"
-	"github.com/bouncepaw/mycomarkup/v4/options"
+	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
@@ -42,6 +42,7 @@ func MarkupOptions(hyphaName string) options.Options {
 			}
 			return
 		},
+		LocalTargetCanonicalName: util.CanonicalName,
 		LocalLinkHref: func(hyphaName string) string {
 			return "/hypha/" + util.CanonicalName(hyphaName)
 		},

@@ -1,10 +1,10 @@
 package cfg
 
 import (
-	"github.com/bouncepaw/mycomarkup/v4"
-	"github.com/bouncepaw/mycomarkup/v4/blocks"
-	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v4/options"
+	"github.com/bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycomarkup/v5/blocks"
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/options"
 )
 
 // HeaderLinks is a list off current header links. Feel free to iterate it directly but do not modify it by yourself. Call ParseHeaderLinks if you need to set new header links.

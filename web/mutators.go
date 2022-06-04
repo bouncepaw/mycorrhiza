@@ -2,12 +2,12 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"net/http"
 
-	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
 
 	"github.com/gorilla/mux"
 
