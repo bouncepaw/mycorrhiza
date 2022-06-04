@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bouncepaw/mycomarkup/v4/util"
+	"github.com/bouncepaw/mycomarkup/v5/util"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 

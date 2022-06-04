@@ -1,11 +1,11 @@
 package backlinks
 
 import (
-	"github.com/bouncepaw/mycomarkup/v4"
-	"github.com/bouncepaw/mycomarkup/v4/links"
-	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v4/options"
-	"github.com/bouncepaw/mycomarkup/v4/tools"
+	"github.com/bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycomarkup/v5/links"
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/options"
+	"github.com/bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 )
 

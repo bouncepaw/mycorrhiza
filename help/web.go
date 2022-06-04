@@ -2,7 +2,7 @@ package help
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
-	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bouncepaw/mycomarkup/v4/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
 )
 
 var (

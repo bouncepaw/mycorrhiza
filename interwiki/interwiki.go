@@ -3,7 +3,7 @@ package interwiki
 
 import (
 	"encoding/json"
-	"github.com/bouncepaw/mycomarkup/v4/options"
+	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"os"
