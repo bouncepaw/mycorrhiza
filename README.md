@@ -2,7 +2,7 @@
 
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
 
-<img src="https://mycorrhiza.wiki/binary/release/1.9/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
+<img src="https://mycorrhiza.wiki/binary/release/1.10/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
 
 
 ## Features
@@ -20,7 +20,7 @@
 [transclude]: https://mycorrhiza.wiki/hypha/feature/transclusion
 [Mycomarkup]: https://mycorrhiza.wiki/help/en/mycomarkup
 [Git]: https://mycorrhiza.wiki/hypha/integration/git
-[authorization]: https://mycorrhiza.wiki/hypha/feature/authorization
+[authorization]: https://mycorrhiza.wiki/hypha/authorization
 [Telegram]: https://mycorrhiza.wiki/help/en/telegram
 [Open Graph]: https://mycorrhiza.wiki/hypha/opengraph
 
@@ -29,7 +29,7 @@ Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatri
 
 ## Installing
 
-See [the deployment guide](https://mycorrhiza.wiki/hypha/guide/deployment) on the wiki.
+See [the deployment guide](https://mycorrhiza.wiki/hypha/deployment) on the wiki.
 
 
 ## Contributing

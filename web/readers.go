@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v4"
+	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
@@ -66,8 +67,18 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		log.Printf(`Hypha ‘%s’ does not exist`)
-		w.WriteHeader(http.StatusNotFound)
+		var mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
+		var textContents, err = history.FileAtRevision(mycoFilePath, revHash)
+
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+			_, _ = io.WriteString(w, "Error: "+err.Error())
+			return
+		}
+		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, mycoFilePath, revHash)
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, textContents)
 	case hyphae.ExistingHypha:
 		if !h.HasTextFile() {
 			log.Printf(`Media hypha ‘%s’ has no text`)
@@ -99,15 +110,24 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		h               = hyphae.ByName(hyphaName)
 		contents        = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 	)
+
+	var (
+		textContents string
+		err          error
+		mycoFilePath string
+	)
 	switch h := h.(type) {
 	case hyphae.ExistingHypha:
-		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
-
-		if err == nil {
-			ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
-			contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
-		}
+		mycoFilePath = h.TextFilePath()
+	case *hyphae.EmptyHypha:
+		mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 	}
+	textContents, err = history.FileAtRevision(mycoFilePath, revHash)
+	if err == nil {
+		ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
+		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
+	}
+
 	page := views.Revision(
 		viewutil.MetaFrom(w, rq),
 		h,
