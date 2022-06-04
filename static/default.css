@@ -249,7 +249,7 @@ blockquote { border-left: 2px #999 solid; }
 .wikilink_new:visited {color:#a55858;}
 .navi-title { border-bottom: #eee 1px solid; }
 .upload-amnt { border: #eee 1px solid; }
-.prevnext { border-top: #eee 1px solid; }
+.prevnext { border-top: #eee 1px solid; clear: both; }
 td { border: #ddd 1px solid; }
 
 .categories-card__link:hover,

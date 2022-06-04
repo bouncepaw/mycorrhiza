@@ -3,6 +3,7 @@ package interwiki
 
 import (
 	"encoding/json"
+	"github.com/bouncepaw/mycomarkup/v4/options"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"os"
@@ -30,18 +31,18 @@ func Init() {
 	log.Printf("Loaded %d interwiki entries\n", len(theMap.list))
 }
 
-func HrefLinkFormatFor(prefix string) string {
+func HrefLinkFormatFor(prefix string) (string, options.InterwikiError) {
 	if wiki, ok := theMap.byName[prefix]; ok {
-		return wiki.LinkHrefFormat
+		return wiki.LinkHrefFormat, options.Ok
 	}
-	return "{NAME}" // TODO: error
+	return "", options.UnknownPrefix
 }
 
-func ImgSrcFormatFor(prefix string) string {
+func ImgSrcFormatFor(prefix string) (string, options.InterwikiError) {
 	if wiki, ok := theMap.byName[prefix]; ok {
-		return wiki.ImgSrcFormat
+		return wiki.ImgSrcFormat, options.Ok
 	}
-	return "{NAME}" // TODO: error
+	return "", options.UnknownPrefix
 }
 
 func readInterwiki() ([]Wiki, error) {
