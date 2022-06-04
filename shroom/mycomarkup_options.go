@@ -16,6 +16,7 @@ func MarkupOptions(hyphaName string) options.Options {
 		WebSiteURL:            cfg.URL,
 		TransclusionSupported: true,
 		RedLinksSupported:     true,
+		InterwikiSupported:    true,
 		HyphaExists: func(hyphaName string) bool {
 			switch hyphae.ByName(hyphaName).(type) {
 			case *hyphae.EmptyHypha:
