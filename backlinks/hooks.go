@@ -42,8 +42,9 @@ func extractHyphaLinksFromContent(hyphaName string, contents string) []string {
 	foundLinks := getLinks()
 	var result []string
 	for _, link := range foundLinks {
-		if link.OfKind(links.LinkLocalHypha) {
-			result = append(result, link.TargetHypha())
+		switch link := link.(type) {
+		case *links.LocalLink:
+			result = append(result, link.Target(ctx))
 		}
 	}
 	return result
