@@ -36,7 +36,7 @@ const aboutTemplateString = `
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
 		<dl>
 			<dt>{{ get .L.Version }}</dt>
-			<dd>1.10.0</dd>
+			<dd>1.11.0</dd>
 		{{ if .Cfg.UseAuth }}
 			<dt>{{ get .L.HomeHypha }}</dt>
 			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
