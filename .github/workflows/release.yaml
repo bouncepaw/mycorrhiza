@@ -10,13 +10,11 @@ jobs:
       matrix:
         # build and publish in parallel a lot of binaries
         # https://golang.org/doc/install/source#environment See supported Go OS/Arch pairs here
-        goos: [linux, darwin, freebsd, openbsd, windows]
+        goos: [linux, darwin, openbsd, windows]
         goarch: ["386", amd64, arm64]
         exclude:
           - goarch: "386"
             goos: darwin
-          - goarch: arm64
-            goos: freebsd
           - goarch: arm64
             goos: windows
     steps:
@@ -27,4 +25,4 @@ jobs:
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         binary_name: "mycorrhiza"
-        extra_files: LICENSE README.md
+        extra_files: LICENSE README.md help/mycorrhiza.1
