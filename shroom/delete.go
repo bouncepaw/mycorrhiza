@@ -15,7 +15,7 @@ func Delete(u *user.User, h hyphae.ExistingHypha) error {
 		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
 		WithUser(u)
 
-	originalText, _ := FetchTextFile(h)
+	originalText, _ := hyphae.FetchMycomarkupFile(h)
 	switch h := h.(type) {
 	case *hyphae.MediaHypha:
 		if h.HasTextFile() {

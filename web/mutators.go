@@ -171,7 +171,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	case *hyphae.EmptyHypha:
 		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
 	default:
-		textAreaFill, err = shroom.FetchTextFile(h)
+		textAreaFill, err = hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			log.Println(err)
 			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.error_text_fetch"))

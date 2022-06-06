@@ -90,7 +90,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		hyphae.Insert(H)
 		backlinks.UpdateBacklinksAfterEdit(H, "")
 	case *hyphae.MediaHypha:
-		oldText, err := FetchTextFile(h)
+		oldText, err := hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			hop.Abort()
 			return err
@@ -111,7 +111,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 
 		backlinks.UpdateBacklinksAfterEdit(h, oldText)
 	case *hyphae.TextualHypha:
-		oldText, err := FetchTextFile(h)
+		oldText, err := hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			hop.Abort()
 			return err

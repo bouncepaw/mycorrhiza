@@ -35,9 +35,9 @@ func MarkupOptions(hyphaName string) options.Options {
 			case *hyphae.EmptyHypha:
 				err = errors.New("Hypha " + hyphaName + " does not exist")
 			case *hyphae.TextualHypha:
-				rawText, err = FetchTextFile(h)
+				rawText, err = hyphae.FetchMycomarkupFile(h)
 			case *hyphae.MediaHypha:
-				rawText, err = FetchTextFile(h)
+				rawText, err = hyphae.FetchMycomarkupFile(h)
 				binaryBlock = views.MediaRaw(h)
 			}
 			return

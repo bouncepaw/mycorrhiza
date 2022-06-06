@@ -1,3 +1,4 @@
+// Package hyphae manages hypha storage and hypha types.
 package hyphae
 
 import (
