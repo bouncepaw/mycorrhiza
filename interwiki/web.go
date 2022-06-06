@@ -29,6 +29,7 @@ type interwikiData struct {
 	// Emojies contains emojies that represent wiki engines. Emojies[i] is an emoji for Entries[i].Engine
 	Emojies []string
 	CanEdit bool
+	Error   string
 }
 
 func viewInterwiki(meta viewutil.Meta) {
@@ -37,6 +38,7 @@ func viewInterwiki(meta viewutil.Meta) {
 		Entries:  theMap.list,
 		Emojies:  emojiesForEngines(theMap.list),
 		CanEdit:  meta.U.Group == "admin",
+		Error:    "",
 	})
 }
 

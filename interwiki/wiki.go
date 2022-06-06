@@ -11,21 +11,20 @@ type WikiEngine int
 
 const (
 	Mycorrhiza WikiEngine = iota
-	OddMuse
-	MediaWiki
-	MoinMoin1
-	MoinMoin2
-	DokuWiki
+	Agora
 	// Generic is any website.
 	Generic
 )
 
 // EmojiWithName returns a Unicode emoji that kinda represents the engine and the engine name. One day we might move to actual images. OK for now.
+// TODO: reconsider
 func (we WikiEngine) EmojiWithName() string {
 	switch we {
 	case Mycorrhiza:
 		return "🍄 Mycorrhiza"
-	case OddMuse:
+	case Agora:
+		return "ἀ Agora"
+	/*case OddMuse: Might return them in the future
 		return "🐫 OddMuse"
 	case MediaWiki:
 		return "🌻 MediaWiki"
@@ -34,7 +33,7 @@ func (we WikiEngine) EmojiWithName() string {
 	case MoinMoin2:
 		return "Ⓜ️ MoinMoin 2.*"
 	case DokuWiki:
-		return "📝 DokuWiki"
+		return "📝 DokuWiki"*/
 	default:
 		return "🌐 Generic"
 	}
@@ -67,11 +66,7 @@ type Wiki struct {
 
 var wikiEnginesLookup = map[string]WikiEngine{
 	"mycorrhiza": Mycorrhiza,
-	"oddmuse":    OddMuse,
-	"mediawiki":  MediaWiki,
-	"moin1":      MoinMoin1,
-	"moin2":      MoinMoin2,
-	"dokuwiki":   DokuWiki,
+	"agora":      Agora,
 	"generic":    Generic,
 }
 

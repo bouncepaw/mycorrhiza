@@ -866,3 +866,20 @@ dt {
 dd + dt {
 	margin-top: .5rem;
 }
+
+/*
+ * Interwiki page
+ * A possible improvement: show those two fields when Generic is selected, hide otherwise
+ */
+body[data-rrh-addr^="/interwiki"] label,
+body[data-rrh-addr^="/interwiki"] input[type="text"],
+body[data-rrh-addr^="/interwiki"] input[type="url"] {
+	display: block;
+	width: 100%;
+	max-width: 20rem;
+}
+.required-field::after {
+	color: red;
+	content: "*";
+	margin-left: .25rem;
+}

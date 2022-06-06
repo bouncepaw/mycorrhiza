@@ -1,16 +1,14 @@
 {{define "interwiki map"}}Interwiki map{{end}}
 {{define "title"}}{{template "interwiki map"}}{{end}}
 
-{{define "body"}}
-	<main class="main-width">
-		<h1>{{template "interwiki map"}}</h1>{{$emojies := .Emojies}}
-		{{if len .Entries}}
-			<ul>
-			{{range $i, $wiki := .Entries}}
+{{define "static map"}}{{$emojies := .Emojies}}
+    {{if len .Entries}}
+		<ul>
+            {{range $i, $wiki := .Entries}}
 				<li>
 					<dl>
 						<dt>Names</dt>
-						{{range .Names}}<dd>{{.}}</dd>{{end}}
+                        {{range .Names}}<dd>{{.}}</dd>{{end}}
 
 						<dt>Description</dt>
 						<dd>{{.Description}}</dd>
@@ -21,14 +19,68 @@
 						<dt>URL</dt>
 						<dd><a href="{{.URL}}">{{.URL}}</a></dd>
 
-						<dt>Link format</dt>
-						<dd>{{.LinkFormat}}</dd>
+						<dt>Link href format</dt>
+						<dd>{{.LinkHrefFormat}}</dd>
+
+						<dt>Img src format</dt>
+						<dd>{{.ImgSrcFormat}}</dd>
 					</dl>
 				</li>
-			{{end}}
-			</ul>
+            {{end}}
+		</ul>
+    {{else}}
+		<p>No interwiki map set.</p>
+    {{end}}
+{{end}}
+
+{{define "authorized map"}}
+	{{if .Error}}
+		<p class="error">{{.Error}}</p>
+	{{end}}
+	{{template "static map" .}}
+	<form method="post" action="/interwiki/add-entry">
+		<h2>Add interwiki entry</h2>
+		<p><a href="/help/en/interwiki">Documentation.</a></p>
+		<p>
+			<label for="names" class="required-field">Names (separated by commas):</label>
+			<input type="text" id="names" name="names" required
+			       placeholder="home_wiki, hw">
+		</p>
+		<p>
+			<label for="url" class="required-field">URL:</label>
+			<input type="url" id="url" name="url" required
+			       placeholder="https://wiki.example.org">
+		</p>
+		<p>
+			<label for="engine" class="required-field">Engine:</label>
+			<select name="engine" id="engine" required>
+				<option value="mycorrhiza">Mycorrhiza 🍄</option>
+				<option value="agora">Agora ἀ</option>
+				<option value="generic">Generic (any website)</option>
+			</select>
+		</p>
+		<p>Fill the next two fields if you have chosen <kbd>Generic</kbd> in the previous field.</p>
+		<p>
+			<label for="link-href-format">Link href attribute format string:</label>
+			<input type="url" id="link-href-format" name="link-href-format"
+			       placeholder="https://wiki.example.org/view/{NAME}">
+		</p>
+		<p>
+			<label for="img-src-format">Image src attribute format string:</label>
+			<input type="url" id="img-src-format" name="img-src-format"
+			       placeholder="https://wiki.example.org/media/{NAME}">
+		</p>
+		<input type="submit">
+	</form>
+{{end}}
+
+{{define "body"}}
+	<main class="main-width">
+		<h1>{{template "interwiki map"}}</h1>
+		{{if .CanEdit}}
+			{{template "authorized map" .}}
 		{{else}}
-			<p>No interwiki map set.</p>
+			{{template "static map" .}}
 		{{end}}
 	</main>
 {{end}}
