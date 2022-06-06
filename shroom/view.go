@@ -40,14 +40,14 @@ func FetchTextFile(h hyphae.Hypha) (string, error) {
 func SetHeaderLinks() {
 	switch userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha).(type) {
 	case *hyphae.EmptyHypha:
-		cfg.SetDefaultHeaderLinks()
+		SetDefaultHeaderLinks()
 	case hyphae.ExistingHypha:
 		contents, err := os.ReadFile(userLinksHypha.TextFilePath())
 		if err != nil || len(contents) == 0 {
-			cfg.SetDefaultHeaderLinks()
+			SetDefaultHeaderLinks()
 		} else {
 			text := string(contents)
-			cfg.ParseHeaderLinks(text)
+			ParseHeaderLinks(text)
 		}
 	}
 }

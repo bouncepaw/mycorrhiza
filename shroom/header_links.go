@@ -1,18 +1,15 @@
-package cfg
+package shroom
 
 import (
 	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycomarkup/v5/blocks"
 	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v5/options"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
-
-// HeaderLinks is a list off current header links. Feel free to iterate it directly but do not modify it by yourself. Call ParseHeaderLinks if you need to set new header links.
-var HeaderLinks []HeaderLink
 
 // SetDefaultHeaderLinks sets the header links to the default list of: home hypha, recent changes, hyphae list, random hypha.
 func SetDefaultHeaderLinks() {
-	HeaderLinks = []HeaderLink{
+	viewutil.HeaderLinks = []viewutil.HeaderLink{
 		{"/recent-changes", "Recent changes"},
 		{"/list", "All hyphae"},
 		{"/random", "Random"},
@@ -23,26 +20,18 @@ func SetDefaultHeaderLinks() {
 
 // ParseHeaderLinks extracts all rocketlinks from the given text and saves them as header links.
 func ParseHeaderLinks(text string) {
-	HeaderLinks = []HeaderLink{}
-	ctx, _ := mycocontext.ContextFromStringInput(text, options.Options{}.FillTheRest())
+	viewutil.HeaderLinks = []viewutil.HeaderLink{}
+	ctx, _ := mycocontext.ContextFromStringInput(text, MarkupOptions(""))
 	// We call for side-effects
 	_ = mycomarkup.BlockTree(ctx, func(block blocks.Block) {
 		switch launchpad := block.(type) {
 		case blocks.LaunchPad:
 			for _, rocket := range launchpad.Rockets {
-				HeaderLinks = append(HeaderLinks, HeaderLink{
+				viewutil.HeaderLinks = append(viewutil.HeaderLinks, viewutil.HeaderLink{
 					Href:    rocket.LinkHref(ctx),
 					Display: rocket.DisplayedText(),
 				})
 			}
 		}
 	})
-}
-
-// HeaderLink represents a header link. Header links are the links shown in the top gray bar.
-type HeaderLink struct {
-	// Href is the URL of the link. It goes <a href="here">...</a>.
-	Href string
-	// Display is what is shown when the link is rendered. It goes <a href="...">here</a>.
-	Display string
 }
