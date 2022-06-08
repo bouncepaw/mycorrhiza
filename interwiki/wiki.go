@@ -42,9 +42,6 @@ type Wiki struct {
 
 	ImgSrcFormat string `json:"img_src_format"`
 
-	// Description is a plain-text description of the wiki. Can be empty.
-	Description string `json:"description,omitempty"`
-
 	// Engine is the engine of the wiki. Invalid values will result in a start-up error.
 	Engine WikiEngine `json:"engine"`
 }
