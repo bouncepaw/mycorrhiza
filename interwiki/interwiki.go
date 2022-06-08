@@ -20,11 +20,11 @@ func Init() {
 		wiki := wiki // This line is required
 		wiki.canonize()
 		theMap.list = append(theMap.list, &wiki)
-		for _, prefix := range wiki.Names {
-			if _, found := theMap.byName[prefix]; found {
-				log.Fatalf("There are multiple uses of the same prefix ‘%s’\n", prefix)
+		for _, name := range append(wiki.Aliases, wiki.Name) {
+			if _, found := theMap.byName[name]; found {
+				log.Fatalf("There are multiple uses of the same name ‘%s’\n", name)
 			} else {
-				theMap.byName[prefix] = &wiki
+				theMap.byName[name] = &wiki
 			}
 		}
 	}

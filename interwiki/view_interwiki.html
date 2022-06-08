@@ -1,20 +1,23 @@
 {{define "interwiki map"}}Interwiki map{{end}}
 {{define "title"}}{{template "interwiki map"}}{{end}}
 
-{{define "static map"}}{{$emojies := .Emojies}}
+{{define "static map"}}
     {{if len .Entries}}
 		<ul>
             {{range $i, $wiki := .Entries}}
 				<li>
 					<dl>
-						<dt>Names</dt>
-                        {{range .Names}}<dd>{{.}}</dd>{{end}}
+						<dt>Name</dt>
+						<dd>{{.Name}}</dd>
+
+						<dt>Aliases</dt>
+                        {{range .Aliases}}<dd>{{.}}</dd>{{end}}
 
 						<dt>Description</dt>
 						<dd>{{.Description}}</dd>
 
 						<dt>Engine</dt>
-						<dd>{{index $emojies $i}}</dd>
+						<dd>{{.Engine}}</dd>
 
 						<dt>URL</dt>
 						<dd><a href="{{.URL}}">{{.URL}}</a></dd>
@@ -37,14 +40,22 @@
 	{{if .Error}}
 		<p class="error">{{.Error}}</p>
 	{{end}}
-	{{template "static map" .}}
+	{{if len .Entries}}
+		{{range $i, $wiki := .Entries}}
+<!-- todo -->
+		{{end}}
+	{{end}}
 	<form method="post" action="/interwiki/add-entry">
 		<h2>Add interwiki entry</h2>
-		<p><a href="/help/en/interwiki">Documentation.</a></p>
 		<p>
-			<label for="names" class="required-field">Names (separated by commas):</label>
-			<input type="text" id="names" name="names" required
-			       placeholder="home_wiki, hw">
+			<label for="name" class="required-field">Name:</label>
+			<input type="text" id="name" name="name" required
+			       placeholder="home_wiki">
+		</p>
+		<p>
+			<label for="aliases">Aliases (separated by commas):</label>
+			<input type="text" id="aliases" name="aliases"
+			       placeholder="homewiki, hw">
 		</p>
 		<p>
 			<label for="url" class="required-field">URL:</label>
@@ -77,6 +88,7 @@
 {{define "body"}}
 	<main class="main-width">
 		<h1>{{template "interwiki map"}}</h1>
+		<p><a href="/help/en/interwiki">Documentation.</a></p>
 		{{if .CanEdit}}
 			{{template "authorized map" .}}
 		{{else}}

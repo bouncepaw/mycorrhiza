@@ -7,93 +7,69 @@ import (
 )
 
 // WikiEngine is an enumeration of supported interwiki targets.
-type WikiEngine int
+type WikiEngine string
 
 const (
-	Mycorrhiza WikiEngine = iota
-	Agora
+	Mycorrhiza WikiEngine = "mycorrhiza"
+	Agora      WikiEngine = "agora"
 	// Generic is any website.
-	Generic
+	Generic WikiEngine = "generic"
 )
 
-// EmojiWithName returns a Unicode emoji that kinda represents the engine and the engine name. One day we might move to actual images. OK for now.
-// TODO: reconsider
-func (we WikiEngine) EmojiWithName() string {
+func (we WikiEngine) Valid() bool {
 	switch we {
-	case Mycorrhiza:
-		return "🍄 Mycorrhiza"
-	case Agora:
-		return "ἀ Agora"
-	/*case OddMuse: Might return them in the future
-		return "🐫 OddMuse"
-	case MediaWiki:
-		return "🌻 MediaWiki"
-	case MoinMoin1:
-		return "Ⓜ️ MoinMoin 1.9"
-	case MoinMoin2:
-		return "Ⓜ️ MoinMoin 2.*"
-	case DokuWiki:
-		return "📝 DokuWiki"*/
-	default:
-		return "🌐 Generic"
+	case Mycorrhiza, Agora, Generic:
+		return true
 	}
+	return false
 }
 
 // Wiki is an entry in the interwiki map.
 type Wiki struct {
-	// Names is a slice of link prefices that correspond to this wiki.
-	Names []string `json:"names"`
+	// Name is the name of the wiki, and is also one of the possible prefices.
+	Name string `json:"name"`
+
+	// Aliases are alternative prefices you can use instead of Name. This slice can be empty.
+	Aliases []string `json:"aliases,omitempty"`
 
 	// URL is the address of the wiki.
 	URL string `json:"url"`
 
 	// LinkHrefFormat is a format string for interwiki links. See Mycomarkup internal docs hidden deep inside for more information.
 	//
-	// This field is optional. For other wikis, it is automatically set to <URL>/{NAME}; for Mycorrhiza wikis, it is automatically set to <URL>/hypha/{NAME}}.
+	// This field is optional. If it is not set, it is derived from other data. See the code.
 	LinkHrefFormat string `json:"link_href_format"`
 
 	ImgSrcFormat string `json:"img_src_format"`
 
-	// Description is a plain-text description of the wiki.
-	Description string `json:"description"`
+	// Description is a plain-text description of the wiki. Can be empty.
+	Description string `json:"description,omitempty"`
 
-	// Engine is the engine of the wiki. This field is not set in JSON.
-	Engine WikiEngine `json:"-"`
-
-	// EngineString is a string name of the engine. It is then converted to Engine. See the code to learn the supported values. All other values will result in an error.
-	EngineString string `json:"engine"`
-}
-
-var wikiEnginesLookup = map[string]WikiEngine{
-	"mycorrhiza": Mycorrhiza,
-	"agora":      Agora,
-	"generic":    Generic,
+	// Engine is the engine of the wiki. Invalid values will result in a start-up error.
+	Engine WikiEngine `json:"engine"`
 }
 
 func (w *Wiki) canonize() {
-	if engine, ok := wikiEnginesLookup[w.EngineString]; ok {
-		w.Engine = engine
-		w.EngineString = "" // Ain't gonna need it anymore
-	} else {
-		log.Fatalf("Unknown engine ‘%s’\n", w.EngineString)
-	}
-
-	if len(w.Names) == 0 {
+	switch {
+	case w.Name == "":
 		log.Fatalln("Cannot have a wiki in the interwiki map with no name")
+	case w.URL == "":
+		log.Fatalf("Wiki ‘%s’ has no URL\n", w.Name)
+	case !w.Engine.Valid():
+		log.Fatalf("Unknown engine ‘%s’ for wiki ‘%s’\n", w.Engine, w.Name)
 	}
 
-	if w.URL == "" {
-		log.Fatalf("Wiki ‘%s’ has no URL\n", w.Names[0])
-	}
-
-	for i, prefix := range w.Names {
-		w.Names[i] = util.CanonicalName(prefix)
+	w.Name = util.CanonicalName(w.Name)
+	for i, alias := range w.Aliases {
+		w.Aliases[i] = util.CanonicalName(alias)
 	}
 
 	if w.LinkHrefFormat == "" {
 		switch w.Engine {
 		case Mycorrhiza:
 			w.LinkHrefFormat = fmt.Sprintf("%s/hypha/{NAME}", w.URL)
+		case Agora:
+			w.LinkHrefFormat = fmt.Sprintf("%s/node/{NAME}", w.URL)
 		default:
 			w.LinkHrefFormat = fmt.Sprintf("%s/{NAME}", w.URL)
 		}

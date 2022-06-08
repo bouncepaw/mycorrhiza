@@ -26,8 +26,6 @@ func handlerInterwiki(w http.ResponseWriter, rq *http.Request) {
 type interwikiData struct {
 	*viewutil.BaseData
 	Entries []*Wiki
-	// Emojies contains emojies that represent wiki engines. Emojies[i] is an emoji for Entries[i].Engine
-	Emojies []string
 	CanEdit bool
 	Error   string
 }
@@ -36,15 +34,7 @@ func viewInterwiki(meta viewutil.Meta) {
 	viewutil.ExecutePage(meta, chainInterwiki, interwikiData{
 		BaseData: &viewutil.BaseData{},
 		Entries:  theMap.list,
-		Emojies:  emojiesForEngines(theMap.list),
 		CanEdit:  meta.U.Group == "admin",
 		Error:    "",
 	})
-}
-
-func emojiesForEngines(list []*Wiki) (emojies []string) {
-	for _, entry := range list {
-		emojies = append(emojies, entry.Engine.EmojiWithName())
-	}
-	return emojies
 }
