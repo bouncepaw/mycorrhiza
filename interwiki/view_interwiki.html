@@ -39,7 +39,42 @@
 	{{end}}
 	{{if len .Entries}}
 		{{range $i, $wiki := .Entries}}
-<!-- todo -->
+			<form method="post" action="/interwiki/modify-entry/{{.Name}}">
+				<p>
+					<label for="name{{$i}}" class="required-field">Name:</label>
+					<input type="text" id="name" name="name{{$i}}" required
+					       value="{{.Name}}">
+				</p>
+				<p>
+					<label for="aliases{{$i}}">Aliases (separated by commas):</label>
+					<input type="text" id="aliases{{$i}}" name="aliases"
+					       value="{{range $j, $alias := .Aliases}}{{if gt $j 0}}, {{end}}{{.}}{{end}}">
+				</p>
+				<p>
+					<label for="url{{$i}}" class="required-field">URL:</label>
+					<input type="url" id="url{{$i}}" name="url" required
+					       value="{{.URL}}">
+				</p>
+				<p>
+					<label for="engine{{$i}}" class="required-field">Engine:</label>
+					<select name="engine" id="engine{{$i}}" required>
+						<option value="mycorrhiza" {{if eq .Engine "mycorrhiza"}}selected{{end}}>Mycorrhiza 🍄</option>
+						<option value="agora" {{if eq .Engine "agora"}}selected{{end}}>Agora ἀ</option>
+						<option value="generic" {{if eq .Engine "generic"}}selected{{end}}>Generic (any website)</option>
+					</select>
+				</p>
+				<p>
+					<label for="link-href-format{{$i}}">Link href attribute format string:</label>
+					<input type="url" id="link-href-format{{$i}}" name="link-href-format"
+					       value="{{.LinkHrefFormat}}">
+				</p>
+				<p>
+					<label for="img-src-format{{$i}}">Image src attribute format string:</label>
+					<input type="url" id="img-src-format{{$i}}" name="img-src-format"
+					       value="{{.ImgSrcFormat}}">
+				</p>
+				<input type="submit" class="btn" value="Save">
+			</form>
 		{{end}}
 	{{end}}
 	<form method="post" action="/interwiki/add-entry">
@@ -67,7 +102,6 @@
 				<option value="generic">Generic (any website)</option>
 			</select>
 		</p>
-		<p>Fill the next two fields if you have chosen <kbd>Generic</kbd> in the previous field.</p>
 		<p>
 			<label for="link-href-format">Link href attribute format string:</label>
 			<input type="url" id="link-href-format" name="link-href-format"
@@ -78,17 +112,18 @@
 			<input type="url" id="img-src-format" name="img-src-format"
 			       placeholder="https://wiki.example.org/media/{NAME}">
 		</p>
-		<input type="submit">
+		<input type="submit" class="btn">
 	</form>
 {{end}}
 
 {{define "body"}}
 	<main class="main-width">
 		<h1>{{template "interwiki map"}}</h1>
-		<p><a href="/help/en/interwiki">Documentation.</a></p>
 		{{if .CanEdit}}
-			{{template "authorized map" .}}
+			<p><a href="/help/en/interwiki">Documentation.</a> Edit and save every entry separately.</p>
+            {{template "authorized map" .}}
 		{{else}}
+			<p><a href="/help/en/interwiki">Documentation.</a></p>
 			{{template "static map" .}}
 		{{end}}
 	</main>
