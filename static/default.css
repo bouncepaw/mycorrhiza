@@ -880,9 +880,12 @@ body[data-rrh-addr^="/interwiki"] input[type="url"] {
 	max-width: 35rem;
 }
 body[data-rrh-addr^="/interwiki"] main form {
-	padding: 0 1rem 1rem 1rem;
-	margin: 0 -1rem 1rem -1rem;
+	padding: 0 16px 16px 16px;
+	margin: 0 -16px 16px -16px;
 	border: 2px solid #999;
+}
+body[data-rrh-addr^="/interwiki"] main form + form {
+	margin-top: -18px;
 }
 .required-field::after {
 	color: red;
