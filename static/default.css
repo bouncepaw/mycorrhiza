@@ -220,7 +220,6 @@ caption { caption-side: top; font-size: small; }
 
 p code,
 article .codeblock,
-.recent-changes__entry,
 table,
 .transclusion_stand-out {
 	background-color: rgba(220, 220, 220, 0.5);
@@ -275,7 +274,6 @@ input[type="text"], input[type="password"],
 .btn,
 article code, 
 article .codeblock,
-.recent-changes__entry,
 .history__entry,
 .upload-amnt,
 textarea,
@@ -579,9 +577,12 @@ kbd {
 }
 
 .recent-changes__entry {
-	margin: 12px 0;
-	padding: 8px 6px;
-	border-radius: 2px;
+	padding: 8px 16px;
+	border: 2px solid #999;
+	margin: 0 -16px;
+}
+.recent-changes__entry + .recent-changes__entry {
+	margin-top: -2px;
 }
 
 .recent-changes__entry * + * {
