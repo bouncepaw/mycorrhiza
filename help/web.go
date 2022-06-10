@@ -3,7 +3,7 @@ package help
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
 	"github.com/bouncepaw/mycomarkup/v5"
-	"github.com/bouncepaw/mycorrhiza/shroom"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
 	"io"
@@ -78,7 +78,7 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	// TODO: change for the function that uses byte array when there is such function in mycomarkup.
-	ctx, _ := mycocontext.ContextFromStringInput(string(content), shroom.MarkupOptions(articlePath))
+	ctx, _ := mycocontext.ContextFromStringInput(string(content), mycoopts.MarkupOptions(articlePath))
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
 	w.WriteHeader(http.StatusOK)

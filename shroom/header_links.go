@@ -6,6 +6,7 @@ import (
 	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"os"
 )
@@ -40,7 +41,7 @@ func setDefaultHeaderLinks() {
 // parseHeaderLinks extracts all rocketlinks from the given text and saves them as header links.
 func parseHeaderLinks(text string) {
 	viewutil.HeaderLinks = []viewutil.HeaderLink{}
-	ctx, _ := mycocontext.ContextFromStringInput(text, MarkupOptions(""))
+	ctx, _ := mycocontext.ContextFromStringInput(text, mycoopts.MarkupOptions(""))
 	// We call for side-effects
 	_ = mycomarkup.BlockTree(ctx, func(block blocks.Block) {
 		switch launchpad := block.(type) {

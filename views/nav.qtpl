@@ -1,7 +1,8 @@
-{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/backlinks" %}
-{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
+{% import "github.com/bouncepaw/mycorrhiza/user" %}
+{% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
 
 {% func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action, displayText string) %}
@@ -35,3 +36,5 @@
 <script src="{%s scriptPath %}"></script>
 {% endfor %}
 {% endfunc %}
+
+{% func beautifulLink(hyphaName string) %}<a href="/hypha/{%s= hyphaName %}">{%s util.BeautifulName(hyphaName) %}</a>{% endfunc %}

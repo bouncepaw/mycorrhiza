@@ -4,9 +4,9 @@ import (
 	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycomarkup/v5/links"
 	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 )
 
 // UpdateBacklinksAfterEdit is a creation/editing hook for backlinks index
@@ -35,7 +35,7 @@ func extractHyphaLinks(h hyphae.Hypha) []string {
 
 // extractHyphaLinksFromContent extracts local hypha links from the provided text.
 func extractHyphaLinksFromContent(hyphaName string, contents string) []string {
-	ctx, _ := mycocontext.ContextFromStringInput(contents, options.Options{HyphaName: hyphaName}.FillTheRest())
+	ctx, _ := mycocontext.ContextFromStringInput(contents, mycoopts.MarkupOptions(hyphaName))
 	linkVisitor, getLinks := tools.LinkVisitor(ctx)
 	// Ignore the result of BlockTree because we call it for linkVisitor.
 	_ = mycomarkup.BlockTree(ctx, linkVisitor)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/shroom"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
 	"log"
@@ -124,7 +124,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	}
 	textContents, err = history.FileAtRevision(mycoFilePath, revHash)
 	if err == nil {
-		ctx, _ := mycocontext.ContextFromStringInput(textContents, shroom.MarkupOptions(hyphaName))
+		ctx, _ := mycocontext.ContextFromStringInput(textContents, mycoopts.MarkupOptions(hyphaName))
 		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
 	}
 
@@ -196,7 +196,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	case hyphae.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
 		if errT == nil {
-			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), shroom.MarkupOptions(hyphaName))
+			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), mycoopts.MarkupOptions(hyphaName))
 			getOpenGraph, descVisitor, imgVisitor := tools.OpenGraphVisitors(ctx)
 			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
 			contents = mycomarkup.BlocksToHTML(ctx, ast)
@@ -204,7 +204,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 		switch h := h.(type) {
 		case *hyphae.MediaHypha:
-			contents = views.Media(h, lc) + contents
+			contents = mycoopts.Media(h, lc) + contents
 		}
 
 		util.HTTP200Page(w,

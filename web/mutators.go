@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"net/http"
@@ -208,7 +209,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if action == "Preview" {
-		ctx, _ := mycocontext.ContextFromStringInput(textData, shroom.MarkupOptions(hyphaName))
+		ctx, _ := mycocontext.ContextFromStringInput(textData, mycoopts.MarkupOptions(hyphaName))
 
 		util.HTTP200Page(
 			w,
