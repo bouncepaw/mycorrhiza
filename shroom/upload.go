@@ -62,17 +62,16 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		return errors.New("invalid hypha name")
 	}
 
+	oldText, err := hyphae.FetchMycomarkupFile(h)
+	if err != nil {
+		hop.Abort()
+		return err
+	}
+
 	// Empty data check
-	if len(bytes.TrimSpace(data)) == 0 { // if nothing but whitespace
-		switch h.(type) {
-		case *hyphae.EmptyHypha, *hyphae.MediaHypha:
-			// Writing no description, it's ok, just like cancel button.
-			hop.Abort()
-			return nil
-		case *hyphae.TextualHypha:
-			// What do you want passing nothing for a textual hypha?
-			return errors.New("No data passed")
-		}
+	if len(bytes.TrimSpace(data)) == 0 && len(oldText) == 0 { // if nothing but whitespace
+		hop.Abort()
+		return nil
 	}
 
 	// At this point, we have a savable user-generated Mycomarkup document. Gotta save it.
@@ -90,12 +89,6 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		hyphae.Insert(H)
 		backlinks.UpdateBacklinksAfterEdit(H, "")
 	case *hyphae.MediaHypha:
-		oldText, err := hyphae.FetchMycomarkupFile(h)
-		if err != nil {
-			hop.Abort()
-			return err
-		}
-
 		// TODO: that []byte(...) part should be removed
 		if bytes.Equal(data, []byte(oldText)) {
 			// No changes! Just like cancel button

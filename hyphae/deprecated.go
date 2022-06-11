@@ -1,7 +1,6 @@
 package hyphae
 
 import (
-	"errors"
 	"os"
 )
 
@@ -11,7 +10,7 @@ import (
 func FetchMycomarkupFile(h Hypha) (string, error) {
 	switch h := h.(type) {
 	case *EmptyHypha:
-		return "", errors.New("empty hyphae have no text")
+		return "", nil
 	case *MediaHypha:
 		if !h.HasTextFile() {
 			return "", nil
