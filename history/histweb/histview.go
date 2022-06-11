@@ -136,10 +136,10 @@ var (
 {{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
 
 {{define "count pre"}}Отобразить{{end}}
-{{define "count post"}}свежих правок{{end}}
+{{define "count post"}}свежих правок.{{end}}
 {{define "subscribe via"}}Подписаться через <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> или <a href="/recent-changes-json">JSON-ленту</a>.{{end}}
 {{define "recent changes"}}Свежие правки{{end}}
-{{define "n recent changes"}}{{.}} недавн{{if eq . 1}}ее изменение{{else if le . 4}}их изменения{{else}}их изменений{{end}}{{end}}
+{{define "n recent changes"}}{{.}} свеж{{if eq . 1}}ая правка{{else if le . 4}}их правок{{else}}их правок{{end}}{{end}}
 {{define "recent empty"}}Правки не найдены.{{end}}
 `
 	chainPrimitiveDiff, chainRecentChanges, chainHistory viewutil.Chain
