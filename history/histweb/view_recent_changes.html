@@ -6,27 +6,6 @@
 <main class="main-width recent-changes">
 	<h1>{{template "recent changes"}}</h1>
 
-	<p class="recent-changes__count">
-		{{block "count pre" .}}See{{end}}
-		{{ $editCount := .EditCount }}
-		{{range $i, $m := .Stops }}
-			{{if gt $i 0}}
-				<span aria-hidden="true">|</span>
-			{{end}}
-			{{if $m | eq $editCount}}
-				<b>{{$m}}</b>
-			{{else}}
-				<a href="/recent-changes/{{$m}}">{{$m}}</a>
-			{{end}}
-		{{end}}
-		{{block "count post" .}}recent changes{{end}}
-	</p>
-
-	<p>
-		<img class="icon" width="20" height="20" src="/static/icon/feed.svg" aria-hidden="true" alt="RSS icon">
-		{{block "subscribe via" .}}Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.{{end}}
-	</p>
-
 	{{$userHypha := .UserHypha}}
 	{{$year := 0}}{{$month := 0}}{{$day := 0}}
 	<section class="recent-changes__list" role="feed">
@@ -65,5 +44,26 @@
 			<p>{{block "recent empty" .}}No recent changes found.{{end}}</p>
 		{{end}}
 	</section>
+
+	<p class="recent-changes__count">
+        {{block "count pre" .}}See{{end}}
+        {{ $editCount := .EditCount }}
+        {{range $i, $m := .Stops }}
+            {{if gt $i 0}}
+				<span aria-hidden="true">|</span>
+            {{end}}
+            {{if $m | eq $editCount}}
+				<b>{{$m}}</b>
+            {{else}}
+				<a href="/recent-changes/{{$m}}">{{$m}}</a>
+            {{end}}
+        {{end}}
+        {{block "count post" .}}recent changes{{end}}
+	</p>
+
+	<p>
+		<img class="icon" width="20" height="20" src="/static/icon/feed.svg" aria-hidden="true" alt="RSS icon">
+        {{block "subscribe via" .}}Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.{{end}}
+	</p>
 </main>
 {{end}}
