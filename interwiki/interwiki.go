@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"os"
 )
@@ -32,6 +33,7 @@ func Init() {
 }
 
 func HrefLinkFormatFor(prefix string) (string, options.InterwikiError) {
+	prefix = util.CanonicalName(prefix)
 	if wiki, ok := theMap.byName[prefix]; ok {
 		return wiki.LinkHrefFormat, options.Ok
 	}
@@ -39,6 +41,7 @@ func HrefLinkFormatFor(prefix string) (string, options.InterwikiError) {
 }
 
 func ImgSrcFormatFor(prefix string) (string, options.InterwikiError) {
+	prefix = util.CanonicalName(prefix)
 	if wiki, ok := theMap.byName[prefix]; ok {
 		return wiki.ImgSrcFormat, options.Ok
 	}
