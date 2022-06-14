@@ -36,7 +36,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u    = user.FromRequest(rq)
 		lc   = l18n.FromRequest(rq)
-		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
+		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
 	if !u.CanProceed("remove-media") {
@@ -62,6 +62,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 			return
 		}
 	}
+	http.Redirect(w, rq, "/hypha/"+h.CanonicalName(), http.StatusSeeOther)
 }
 
 func handlerDelete(w http.ResponseWriter, rq *http.Request) {

@@ -11,8 +11,10 @@
 	hyphaName,
 	` method="post"`,
 	fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName))) %}
-{%= modalReallyWant(hyphaName, lc.Get("ui.ask_delete_verb"), lc) %}
-		<p>{%s lc.Get("ui.ask_delete_tip") %}</p>
+<p class="modal__confirmation-msg">
+	{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_delete_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
+</p>
+<p>{%s lc.Get("ui.ask_delete_tip") %}</p>
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
 
@@ -25,7 +27,9 @@
 	hyphaName,
 	` method="post"`,
 	fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName))) %}
-{%= modalReallyWant(hyphaName, lc.Get("ui.ask_remove_media_verb"), lc) %}
+<p class="modal__confirmation-msg">
+	{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_remove_media_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
+</p>
 {%= modalEnd(hyphaName, true, lc) %}
 {% endfunc %}
 
@@ -48,10 +52,6 @@ bloody hell !!
 
 			<p>{%s lc.Get("ui.rename_tip") %}</p>
 {%= modalEnd(hyphaName, false, lc) %}
-{% endfunc %}
-
-{% func modalReallyWant(hyphaName, verb string, lc *l18n.Localizer) %}
-			<p class="modal__confirmation-msg">{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": verb, "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}</p>
 {% endfunc %}
 
 {% func modalBegin(path, hyphaName, formAttrs, legend string) %}
