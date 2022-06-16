@@ -28,25 +28,42 @@ var (
 {{define "delete [[hypha]]?"}}Удалить <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
 {{define "want to delete?"}}Вы действительно хотите удалить эту гифу?{{end}}
 {{define "delete tip"}}Нельзя отменить удаление гифы, но её история останется доступной.{{end}}
+
+{{define "rename hypha?"}}Переименовать {{beautifulName .}}?{{end}}
+{{define "rename [[hypha]]?"}}Переименовать <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
+{{define "new name"}}Новое название:{{end}}
+{{define "rename recursively"}}Также переименовать подгифы{{end}}
+{{define "rename tip"}}Если вы переименуете эту гифу, сломаются все ссылки, ведущие на неё, а также исходящие относительные ссылки. Также вы потеряете всю текущую историю для нового названия. Переименовывайте аккуратно.{{end}}
 `
 	chainNaviTitle   viewutil.Chain
 	chainEmptyHypha  viewutil.Chain
 	chainDeleteHypha viewutil.Chain
+	chainRenameHypha viewutil.Chain
 )
 
 func Init() {
 	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
 	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
 	chainDeleteHypha = viewutil.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
+	chainRenameHypha = viewutil.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
 }
 
-type deleteData struct {
+type deleteRenameData struct {
 	*viewutil.BaseData
 	HyphaName string
 }
 
+func RenameHypha(meta viewutil.Meta, hyphaName string) {
+	viewutil.ExecutePage(meta, chainRenameHypha, deleteRenameData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/rename/" + hyphaName,
+		},
+		HyphaName: hyphaName,
+	})
+}
+
 func DeleteHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainDeleteHypha, deleteData{
+	viewutil.ExecutePage(meta, chainDeleteHypha, deleteRenameData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/delete/" + hyphaName,
 		},

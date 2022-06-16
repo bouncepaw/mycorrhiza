@@ -1,0 +1,26 @@
+{{define "rename hypha?"}}Rename {{beautifulName .}}?{{end}}
+{{define "title"}}{{template "rename hypha?" .HyphaName}}{{end}}
+{{define "body"}}
+<main class="main-width">
+	<form class="modal" action="/rename/{{.HyphaName}}" method="post" enctype="multipart/form-data">
+		<fieldset class="modal__fieldset">
+			<legend class="modal__title">
+				{{block "rename [[hypha]]?" .HyphaName}}Rename <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
+			</legend>
+			<label for="new-name">{{block "new name" .}}New name:{{end}}</label>
+			<input type="text" value="{{.HyphaName}}" required autofocus id="new-name" name="new-name"/>
+
+			<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
+			<label for="recursive">{{block "rename recursively" .}}Rename subhyphae too{{end}}</label>
+
+			<p>{{block "rename tip" .}}If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.{{end}}</p>
+			<button type="submit" value="Confirm" class="btn">
+				{{template "confirm"}}
+			</button>
+			<a href="/hypha/{{.HyphaName}}" class="btn btn_weak">
+				{{template "cancel"}}
+			</a>
+		</fieldset>
+	</form>
+</main>
+{{end}}

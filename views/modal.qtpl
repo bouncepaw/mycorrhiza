@@ -26,30 +26,3 @@
 </main>
 {% endfunc %}
 
-{% func RenameAsk(rq *http.Request, hyphaName string) %}
-{% code 
-  lc := l18n.FromRequest(rq)
-%}
-<main class="main-width">
-	<form class="modal" action="/rename/{%s hyphaName %}" method="post" enctype="multipart/form-data">
-		<fieldset class="modal__fieldset">
-			<legend class="modal__title">
-				{%s= fmt.Sprintf(lc.Get("ui.ask_rename"), beautifulLink(hyphaName)) %}
-			</legend>
-			<label for="new-name">{%s lc.Get("ui.rename_to") %}</label>
-			<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
-
-			<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
-			<label for="recursive">{%s lc.Get("ui.rename_recurse") %}</label>
-
-			<p>{%s lc.Get("ui.rename_tip") %}</p>
-			<button type="submit" value="Confirm" class="btn">
-				{%s lc.Get("ui.confirm") %}
-			</button>
-			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">
-				{%s lc.Get("ui.cancel") %}
-			</a>
-		</fieldset>
-	</form>
-</main>
-{% endfunc %}

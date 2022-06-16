@@ -130,12 +130,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if rq.Method == "GET" {
-		util.HTTP200Page(
-			w,
-			views.Base(
-				meta,
-				fmt.Sprintf(lc.Get("ui.ask_rename"), util.BeautifulName(oldHypha.CanonicalName())),
-				views.RenameAsk(rq, oldHypha.CanonicalName())))
+		hypview.RenameHypha(meta, h.CanonicalName())
 		return
 	}
 
