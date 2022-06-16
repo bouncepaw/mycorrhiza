@@ -6,44 +6,61 @@
 {% code 
   lc := l18n.FromRequest(rq)
 %}
-{%= modalBegin(
-	"delete",
-	hyphaName,
-	` method="post"`,
-	fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName))) %}
-<p class="modal__confirmation-msg">
-	{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_delete_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
-</p>
-<p>{%s lc.Get("ui.ask_delete_tip") %}</p>
-{%= modalEnd(hyphaName, true, lc) %}
+<main class="main-width">
+	<form class="modal" action="/delete/{%s hyphaName %}" method="post">
+		<fieldset class="modal__fieldset">
+			<legend class="modal__title">
+				{%s= fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName)) %}
+			</legend>
+			<p class="modal__confirmation-msg">
+				{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_delete_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
+			</p>
+			<p>{%s lc.Get("ui.ask_delete_tip") %}</p>
+			<button type="submit" value="Confirm" class="btn" autofocus>
+				{%s lc.Get("ui.confirm") %}
+			</button>
+			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">
+				{%s lc.Get("ui.cancel") %}
+			</a>
+		</fieldset>
+	</form>
+</main>
 {% endfunc %}
 
 {% func RemoveMediaAsk(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
-{%= modalBegin(
-	"remove-media",
-	hyphaName,
-	` method="post"`,
-	fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName))) %}
-<p class="modal__confirmation-msg">
-	{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_remove_media_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
-</p>
-{%= modalEnd(hyphaName, true, lc) %}
+<main class="main-width">
+	<form class="modal" action="/remove-media/{%s hyphaName %}" method="post">
+		<fieldset class="modal__fieldset">
+			<legend class="modal__title">
+				{%s= fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName)) %}
+			</legend>
+			<p class="modal__confirmation-msg">
+				{%s= lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_remove_media_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}) %}
+			</p>
+			<button type="submit" value="Confirm" class="btn" autofocus>
+				{%s lc.Get("ui.confirm") %}
+			</button>
+			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">
+				{%s lc.Get("ui.cancel") %}
+			</a>
+		</fieldset>
+	</form>
+</main>
 {% endfunc %}
-
-bloody hell !!
 
 {% func RenameAsk(rq *http.Request, hyphaName string) %}
 {% code 
   lc := l18n.FromRequest(rq)
 %}
-{%= modalBegin(
-	"rename",
-	hyphaName,
-	` method="post" enctype="multipart/form-data"`,
-	fmt.Sprintf(lc.Get("ui.ask_rename"), beautifulLink(hyphaName))) %}
+<main class="main-width">
+	<form class="modal" action="/rename/{%s hyphaName %}" method="post" enctype="multipart/form-data">
+		<fieldset class="modal__fieldset">
+			<legend class="modal__title">
+				{%s= fmt.Sprintf(lc.Get("ui.ask_rename"), beautifulLink(hyphaName)) %}
+			</legend>
 			<label for="new-name">{%s lc.Get("ui.rename_to") %}</label>
 			<input type="text" value="{%s hyphaName %}" required autofocus id="new-name" name="new-name"/>
 
@@ -51,19 +68,12 @@ bloody hell !!
 			<label for="recursive">{%s lc.Get("ui.rename_recurse") %}</label>
 
 			<p>{%s lc.Get("ui.rename_tip") %}</p>
-{%= modalEnd(hyphaName, false, lc) %}
-{% endfunc %}
-
-{% func modalBegin(path, hyphaName, formAttrs, legend string) %}
-<main class="main-width">
-	<form class="modal" action="/{%s path %}/{%s hyphaName %}"{%s= formAttrs %}>
-		<fieldset class="modal__fieldset">
-			<legend class="modal__title">{%s= legend %}</legend>
-{% endfunc %}
-
-{% func modalEnd(hyphaName string, shouldFocusOnConfirm bool, lc *l18n.Localizer) %}
-			<button type="submit" value="Confirm" class="btn" {% if shouldFocusOnConfirm %}autofocus{% endif %}>{%s lc.Get("ui.confirm") %}</button>
-			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">{%s lc.Get("ui.cancel") %}</a>
+			<button type="submit" value="Confirm" class="btn">
+				{%s lc.Get("ui.confirm") %}
+			</button>
+			<a href="/hypha/{%s hyphaName %}" class="btn btn_weak">
+				{%s lc.Get("ui.cancel") %}
+			</a>
 		</fieldset>
 	</form>
 </main>
