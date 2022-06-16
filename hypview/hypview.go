@@ -23,14 +23,35 @@ var (
 {{define "upload a media"}}Загрузить медиа{{end}}
 {{define "upload a media tip"}}Загрузите изображение, видео или аудио. Распространённые форматы можно просматривать из браузера, остальные – просто скачать. Позже вы можете дописать пояснение к этому медиа.{{end}}
 {{define "upload a media btn"}}Загрузить{{end}}
+
+{{define "delete hypha?"}}Удалить {{beautifulName .}}?{{end}}
+{{define "delete [[hypha]]?"}}Удалить <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
+{{define "want to delete?"}}Вы действительно хотите удалить эту гифу?{{end}}
+{{define "delete tip"}}Нельзя отменить удаление гифы, но её история останется доступной.{{end}}
 `
-	chainNaviTitle  viewutil.Chain
-	chainEmptyHypha viewutil.Chain
+	chainNaviTitle   viewutil.Chain
+	chainEmptyHypha  viewutil.Chain
+	chainDeleteHypha viewutil.Chain
 )
 
 func Init() {
 	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
 	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
+	chainDeleteHypha = viewutil.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
+}
+
+type deleteData struct {
+	*viewutil.BaseData
+	HyphaName string
+}
+
+func DeleteHypha(meta viewutil.Meta, hyphaName string) {
+	viewutil.ExecutePage(meta, chainDeleteHypha, deleteData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/delete/" + hyphaName,
+		},
+		HyphaName: hyphaName,
+	})
 }
 
 type emptyHyphaData struct {

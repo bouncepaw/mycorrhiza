@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
@@ -69,7 +70,6 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u    = user.FromRequest(rq)
-		lc   = l18n.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
@@ -89,12 +89,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if rq.Method == "GET" {
-		util.HTTP200Page(
-			w,
-			views.Base(
-				meta,
-				fmt.Sprintf(lc.Get("ui.ask_delete"), util.BeautifulName(h.CanonicalName())),
-				views.DeleteAsk(rq, h.CanonicalName())))
+		hypview.DeleteHypha(meta, h.CanonicalName())
 		return
 	}
 

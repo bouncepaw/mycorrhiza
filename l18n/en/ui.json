@@ -50,8 +50,6 @@
 	"act_norights_edit": "You must be an editor to edit a hypha",
 	"act_norights_upload_media": "You must be an editor to upload media",
 
-	"ask_delete": "Delete %s?",
-	"ask_delete_tip": "In this version of Mycorrhiza Wiki you cannot undelete a deleted hypha but the history can still be accessed.",
 	"ask_remove_media": "Remove media from %s?",
 	"ask_really": "Do you really want to {{.verb}} hypha {{.name}}?",
 	"ask_delete_verb": "delete",

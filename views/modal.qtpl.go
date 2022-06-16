@@ -27,7 +27,7 @@ var (
 )
 
 //line views/modal.qtpl:5
-func StreamDeleteAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
+func StreamRemoveMediaAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
 //line views/modal.qtpl:5
 	qw422016.N().S(`
 `)
@@ -37,7 +37,7 @@ func StreamDeleteAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName stri
 //line views/modal.qtpl:8
 	qw422016.N().S(`
 <main class="main-width">
-	<form class="modal" action="/delete/`)
+	<form class="modal" action="/remove-media/`)
 //line views/modal.qtpl:10
 	qw422016.E().S(hyphaName)
 //line views/modal.qtpl:10
@@ -46,245 +46,162 @@ func StreamDeleteAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName stri
 			<legend class="modal__title">
 				`)
 //line views/modal.qtpl:13
-	qw422016.N().S(fmt.Sprintf(lc.Get("ui.ask_delete"), beautifulLink(hyphaName)))
+	qw422016.N().S(fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName)))
 //line views/modal.qtpl:13
 	qw422016.N().S(`
 			</legend>
 			<p class="modal__confirmation-msg">
 				`)
 //line views/modal.qtpl:16
-	qw422016.N().S(lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_delete_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}))
+	qw422016.N().S(lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_remove_media_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}))
 //line views/modal.qtpl:16
 	qw422016.N().S(`
 			</p>
-			<p>`)
-//line views/modal.qtpl:18
-	qw422016.E().S(lc.Get("ui.ask_delete_tip"))
-//line views/modal.qtpl:18
-	qw422016.N().S(`</p>
 			<button type="submit" value="Confirm" class="btn" autofocus>
 				`)
-//line views/modal.qtpl:20
+//line views/modal.qtpl:19
 	qw422016.E().S(lc.Get("ui.confirm"))
-//line views/modal.qtpl:20
+//line views/modal.qtpl:19
 	qw422016.N().S(`
 			</button>
 			<a href="/hypha/`)
-//line views/modal.qtpl:22
+//line views/modal.qtpl:21
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:22
+//line views/modal.qtpl:21
 	qw422016.N().S(`" class="btn btn_weak">
 				`)
-//line views/modal.qtpl:23
+//line views/modal.qtpl:22
 	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/modal.qtpl:23
+//line views/modal.qtpl:22
 	qw422016.N().S(`
 			</a>
 		</fieldset>
 	</form>
 </main>
 `)
-//line views/modal.qtpl:28
+//line views/modal.qtpl:27
 }
 
-//line views/modal.qtpl:28
-func WriteDeleteAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
-//line views/modal.qtpl:28
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/modal.qtpl:28
-	StreamDeleteAsk(qw422016, rq, hyphaName)
-//line views/modal.qtpl:28
-	qt422016.ReleaseWriter(qw422016)
-//line views/modal.qtpl:28
-}
-
-//line views/modal.qtpl:28
-func DeleteAsk(rq *http.Request, hyphaName string) string {
-//line views/modal.qtpl:28
-	qb422016 := qt422016.AcquireByteBuffer()
-//line views/modal.qtpl:28
-	WriteDeleteAsk(qb422016, rq, hyphaName)
-//line views/modal.qtpl:28
-	qs422016 := string(qb422016.B)
-//line views/modal.qtpl:28
-	qt422016.ReleaseByteBuffer(qb422016)
-//line views/modal.qtpl:28
-	return qs422016
-//line views/modal.qtpl:28
-}
-
-//line views/modal.qtpl:30
-func StreamRemoveMediaAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
-//line views/modal.qtpl:30
-	qw422016.N().S(`
-`)
-//line views/modal.qtpl:32
-	lc := l18n.FromRequest(rq)
-
-//line views/modal.qtpl:33
-	qw422016.N().S(`
-<main class="main-width">
-	<form class="modal" action="/remove-media/`)
-//line views/modal.qtpl:35
-	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:35
-	qw422016.N().S(`" method="post">
-		<fieldset class="modal__fieldset">
-			<legend class="modal__title">`)
-//line views/modal.qtpl:37
-	qw422016.N().S(fmt.Sprintf(lc.Get("ui.ask_remove_media"), beautifulLink(hyphaName)))
-//line views/modal.qtpl:37
-	qw422016.N().S(`</legend>
-			<p class="modal__confirmation-msg">
-				`)
-//line views/modal.qtpl:39
-	qw422016.N().S(lc.Get("ui.ask_really", &l18n.Replacements{"verb": lc.Get("ui.ask_remove_media_verb"), "name": fmt.Sprintf("<em>%s</em>", hyphaName)}))
-//line views/modal.qtpl:39
-	qw422016.N().S(`
-			</p>
-			<button type="submit" value="Confirm" class="btn" autofocus>
-				`)
-//line views/modal.qtpl:42
-	qw422016.E().S(lc.Get("ui.confirm"))
-//line views/modal.qtpl:42
-	qw422016.N().S(`
-			</button>
-			<a href="/hypha/`)
-//line views/modal.qtpl:44
-	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:44
-	qw422016.N().S(`" class="btn btn_weak">
-				`)
-//line views/modal.qtpl:45
-	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/modal.qtpl:45
-	qw422016.N().S(`
-			</a>
-		</fieldset>
-	</form>
-</main>
-`)
-//line views/modal.qtpl:50
-}
-
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 func WriteRemoveMediaAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	StreamRemoveMediaAsk(qw422016, rq, hyphaName)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	qt422016.ReleaseWriter(qw422016)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 }
 
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 func RemoveMediaAsk(rq *http.Request, hyphaName string) string {
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	WriteRemoveMediaAsk(qb422016, rq, hyphaName)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	qs422016 := string(qb422016.B)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 	return qs422016
-//line views/modal.qtpl:50
+//line views/modal.qtpl:27
 }
 
-//line views/modal.qtpl:52
+//line views/modal.qtpl:29
 func StreamRenameAsk(qw422016 *qt422016.Writer, rq *http.Request, hyphaName string) {
-//line views/modal.qtpl:52
+//line views/modal.qtpl:29
 	qw422016.N().S(`
 `)
-//line views/modal.qtpl:54
+//line views/modal.qtpl:31
 	lc := l18n.FromRequest(rq)
 
-//line views/modal.qtpl:55
+//line views/modal.qtpl:32
 	qw422016.N().S(`
 <main class="main-width">
 	<form class="modal" action="/rename/`)
-//line views/modal.qtpl:57
+//line views/modal.qtpl:34
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:57
+//line views/modal.qtpl:34
 	qw422016.N().S(`" method="post" enctype="multipart/form-data">
 		<fieldset class="modal__fieldset">
-			<legend class="modal__title">`)
-//line views/modal.qtpl:59
+			<legend class="modal__title">
+				`)
+//line views/modal.qtpl:37
 	qw422016.N().S(fmt.Sprintf(lc.Get("ui.ask_rename"), beautifulLink(hyphaName)))
-//line views/modal.qtpl:59
-	qw422016.N().S(`</legend>
+//line views/modal.qtpl:37
+	qw422016.N().S(`
+			</legend>
 			<label for="new-name">`)
-//line views/modal.qtpl:60
+//line views/modal.qtpl:39
 	qw422016.E().S(lc.Get("ui.rename_to"))
-//line views/modal.qtpl:60
+//line views/modal.qtpl:39
 	qw422016.N().S(`</label>
 			<input type="text" value="`)
-//line views/modal.qtpl:61
+//line views/modal.qtpl:40
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:61
+//line views/modal.qtpl:40
 	qw422016.N().S(`" required autofocus id="new-name" name="new-name"/>
 
 			<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
 			<label for="recursive">`)
-//line views/modal.qtpl:64
+//line views/modal.qtpl:43
 	qw422016.E().S(lc.Get("ui.rename_recurse"))
-//line views/modal.qtpl:64
+//line views/modal.qtpl:43
 	qw422016.N().S(`</label>
 
 			<p>`)
-//line views/modal.qtpl:66
+//line views/modal.qtpl:45
 	qw422016.E().S(lc.Get("ui.rename_tip"))
-//line views/modal.qtpl:66
+//line views/modal.qtpl:45
 	qw422016.N().S(`</p>
 			<button type="submit" value="Confirm" class="btn">
 				`)
-//line views/modal.qtpl:68
+//line views/modal.qtpl:47
 	qw422016.E().S(lc.Get("ui.confirm"))
-//line views/modal.qtpl:68
+//line views/modal.qtpl:47
 	qw422016.N().S(`
 			</button>
 			<a href="/hypha/`)
-//line views/modal.qtpl:70
+//line views/modal.qtpl:49
 	qw422016.E().S(hyphaName)
-//line views/modal.qtpl:70
+//line views/modal.qtpl:49
 	qw422016.N().S(`" class="btn btn_weak">
 				`)
-//line views/modal.qtpl:71
+//line views/modal.qtpl:50
 	qw422016.E().S(lc.Get("ui.cancel"))
-//line views/modal.qtpl:71
+//line views/modal.qtpl:50
 	qw422016.N().S(`
 			</a>
 		</fieldset>
 	</form>
 </main>
 `)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 }
 
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 func WriteRenameAsk(qq422016 qtio422016.Writer, rq *http.Request, hyphaName string) {
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	StreamRenameAsk(qw422016, rq, hyphaName)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	qt422016.ReleaseWriter(qw422016)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 }
 
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 func RenameAsk(rq *http.Request, hyphaName string) string {
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	qb422016 := qt422016.AcquireByteBuffer()
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	WriteRenameAsk(qb422016, rq, hyphaName)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	qs422016 := string(qb422016.B)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	qt422016.ReleaseByteBuffer(qb422016)
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 	return qs422016
-//line views/modal.qtpl:76
+//line views/modal.qtpl:55
 }

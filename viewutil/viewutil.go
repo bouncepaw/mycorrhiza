@@ -25,6 +25,8 @@ const ruText = `
 {{define "close this dialog"}}Закрыть этот диалог{{end}}
 {{define "login"}}Войти{{end}}
 {{define "register"}}Регистрация{{end}}
+{{define "confirm"}}Подтвердить{{end}}
+{{define "cancel"}}Отмена{{end}}
 `
 
 func Init() {
