@@ -3,11 +3,13 @@ package interwiki
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"os"
+	"sync"
 )
 
 func Init() {
@@ -20,21 +22,47 @@ func Init() {
 	for _, wiki := range record {
 		wiki := wiki // This line is required
 		wiki.canonize()
-		theMap.list = append(theMap.list, &wiki)
-		for _, name := range append(wiki.Aliases, wiki.Name) {
-			if _, found := theMap.byName[name]; found {
-				log.Fatalf("There are multiple uses of the same name ‘%s’\n", name)
-			} else {
-				theMap.byName[name] = &wiki
-			}
+		if err := addEntry(&wiki); err != nil {
+			log.Fatalln(err.Error())
 		}
 	}
-	log.Printf("Loaded %d interwiki entries\n", len(theMap.list))
+	log.Printf("Loaded %d interwiki entries\n", len(listOfEntries))
+}
+
+func areNamesFree(names []string) (bool, string) {
+	for _, name := range names {
+		if _, found := entriesByName[name]; found {
+			return false, name
+		}
+	}
+	return true, ""
+}
+
+var mutex sync.Mutex
+
+func addEntry(wiki *Wiki) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	var (
+		names    = append(wiki.Aliases, wiki.Name)
+		ok, name = areNamesFree(names)
+	)
+	if !ok {
+		log.Printf("There are multiple uses of the same name ‘%s’\n", name)
+		return errors.New(name)
+	}
+
+	listOfEntries = append(listOfEntries, wiki)
+	for _, name := range names {
+		entriesByName[name] = wiki
+	}
+	return nil
 }
 
 func HrefLinkFormatFor(prefix string) (string, options.InterwikiError) {
 	prefix = util.CanonicalName(prefix)
-	if wiki, ok := theMap.byName[prefix]; ok {
+	if wiki, ok := entriesByName[prefix]; ok {
 		return wiki.LinkHrefFormat, options.Ok
 	}
 	return "", options.UnknownPrefix
@@ -42,7 +70,7 @@ func HrefLinkFormatFor(prefix string) (string, options.InterwikiError) {
 
 func ImgSrcFormatFor(prefix string) (string, options.InterwikiError) {
 	prefix = util.CanonicalName(prefix)
-	if wiki, ok := theMap.byName[prefix]; ok {
+	if wiki, ok := entriesByName[prefix]; ok {
 		return wiki.ImgSrcFormat, options.Ok
 	}
 	return "", options.UnknownPrefix
@@ -65,4 +93,15 @@ func readInterwiki() ([]Wiki, error) {
 		return nil, err
 	}
 	return record, nil
+}
+
+func saveInterwikiJson() {
+	// Trust me, wiki crashing when an admin takes an administrative action totally makes sense.
+	if data, err := json.MarshalIndent(listOfEntries, "", "\t"); err != nil {
+		log.Fatalln(err)
+	} else if err = os.WriteFile(files.InterwikiJSON(), data, 0666); err != nil {
+		log.Fatalln(err)
+	} else {
+		log.Println("Saved interwiki.json")
+	}
 }

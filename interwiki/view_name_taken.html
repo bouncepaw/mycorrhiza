@@ -1,0 +1,43 @@
+{{define "body"}}
+	<main class="main-width">
+		<h1>{{block "heading" .}}Name taken{{end}}</h1>
+		<p>{{block "tip" .TakenName}}Name <kbd>{{.}}</kbd> is already taken, please choose a different one.{{end}}</p>
+		<form method="post" action="/interwiki/add-entry">
+			<p>
+				<label for="name" class="required-field">Name:</label>
+				<input type="text" id="name" name="name" required
+				       value="{{.Name}}">
+			</p>
+			<p>
+				<label for="aliases">Aliases (separated by commas):</label>
+				<input type="text" id="aliases" name="aliases"
+				       value="{{range $j, $alias := .Aliases}}{{if gt $j 0}}, {{end}}{{.}}{{end}}">
+			</p>
+			<p>
+				<label for="url" class="required-field">URL:</label>
+				<input type="url" id="url" name="url" required
+				       value="{{.URL}}">
+			</p>
+			<p>
+				<label for="engine" class="required-field">Engine:</label>
+				<select name="engine" id="engine" required>
+					<option value="mycorrhiza" {{if eq .Engine "mycorrhiza"}}selected{{end}}>Mycorrhiza 🍄</option>
+					<option value="agora" {{if eq .Engine "agora"}}selected{{end}}>Agora ἀ</option>
+					<option value="generic" {{if eq .Engine "generic"}}selected{{end}}>Generic (any website)</option>
+				</select>
+			</p>
+			<p>
+				<label for="link-href-format">Link href attribute format string:</label>
+				<input type="url" id="link-href-format" name="link-href-format"
+				       value="{{.LinkHrefFormat}}">
+			</p>
+			<p>
+				<label for="img-src-format">Image src attribute format string:</label>
+				<input type="url" id="img-src-format" name="img-src-format"
+				       value="{{.ImgSrcFormat}}">
+			</p>
+			<input type="submit" class="btn" value="Save">
+			<a class="btn btn_weak" href="/interwiki">{{template "cancel"}}</a>
+		</form>
+	</main>
+{{end}}
