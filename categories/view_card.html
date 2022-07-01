@@ -1,4 +1,5 @@
 {{define "category card"}}
+{{if or .GivenPermissionToModify (len .Categories)}}
     {{$hyphaName := .HyphaName}}
     {{$givenPermission := .GivenPermissionToModify}}
 	<aside class="layout-card categories-card">
@@ -32,4 +33,4 @@
             {{end}}
 		</ul>
 	</aside>
-{{end}}
+{{end}}{{end}}
