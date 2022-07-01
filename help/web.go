@@ -30,6 +30,7 @@ var (
 {{define "prevnext"}}Пред/след{{end}}
 {{define "top_bar"}}Верхняя панель{{end}}
 {{define "sibling_hyphae"}}Гифы-сиблинги{{end}}
+{{define "rename"}}Переименовывание{{end}}
 {{define "special pages"}}Специальные страницы{{end}}
 {{define "recent_changes"}}Свежие правки{{end}}
 {{define "feeds"}}Ленты{{end}}

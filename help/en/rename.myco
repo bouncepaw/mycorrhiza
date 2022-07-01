@@ -1,0 +1,21 @@
+= Renaming
+You can **rename** existing hyphae. On the bottom of the hyphae, there is a //Rename// link. Follow it to open the renaming dialog.
+
+> You can also access the dialog by pressing `r` or visiting URL `/rename/<hypha name>`.
+
+Set the new name there. If you don't change it, submitting the form does nothing. Two options are set by default.
+
+*. **Rename subhyphae too.** If on, subhyphae will remain subhyphae after the renaming. {
+For example, if you had hyphae //Apple// and //Apple/red// and renamed //Apple// to //Malum//, //Apple/red// would also be renamed to //Malum/red//.
+}
+*. **Leave redirections.** If on, the old name will not remain empty. Rather than that, a hypha with a link to the new name is left. This hypha is called a **redirection hypha**. This option also combines with the other option, i/e subhyphae will receive their corresponding redirection hyphae.
+
+== Redirection hyphae category
+All redirection hyphae are added to a specific category. By default, the category is [[/category/redirection | Redirection]]. This way, you can find all redirections and modify them.
+
+=== How to change the category
+//This section is for wiki administrators only.//
+
+*. Edit `config.ini`
+*. Change the `RedirectionCategory` value in the `[Hyphae]` section.
+*. Save the file, restart the wiki.
