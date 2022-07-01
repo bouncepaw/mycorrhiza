@@ -124,9 +124,10 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	var (
-		oldHypha  = h.(hyphae.ExistingHypha)
-		newName   = util.CanonicalName(rq.PostFormValue("new-name"))
-		recursive = rq.PostFormValue("recursive") == "true"
+		oldHypha          = h.(hyphae.ExistingHypha)
+		newName           = util.CanonicalName(rq.PostFormValue("new-name"))
+		recursive         = rq.PostFormValue("recursive") == "true"
+		leaveRedirections = rq.PostFormValue("redirection") == "true"
 	)
 
 	if rq.Method == "GET" {
@@ -134,7 +135,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	if err := shroom.Rename(oldHypha, newName, recursive, u); err != nil {
+	if err := shroom.Rename(oldHypha, newName, recursive, leaveRedirections, u); err != nil {
 		log.Printf("%s tries to rename ‘%s’: %s", u.Name, oldHypha.CanonicalName(), err.Error())
 		viewutil.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), lc.Get(err.Error())) // TODO: localize
 		return

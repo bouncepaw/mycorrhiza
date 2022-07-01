@@ -74,6 +74,6 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	log.Println(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
-	addHyphaToCategory(hyphaName, catName)
+	AddHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }

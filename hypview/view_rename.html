@@ -12,8 +12,11 @@
 
 			<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
 			<label for="recursive">{{block "rename recursively" .}}Rename subhyphae too{{end}}</label>
+			<br>
+			<input type="checkbox" id="redirection" name="redirection" value="true" checked/>
+			<label for="redirection">{{block "leave redirections" .}}Leave redirections{{end}}</label>
 
-			<p>{{block "rename tip" .}}If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.{{end}}</p>
+			<p>{{block "rename tip" .}}Rename carefully. <a href="/help/en/rename">Documentation.</a>{{end}}</p>
 			<button type="submit" value="Confirm" class="btn">
 				{{template "confirm"}}
 			</button>

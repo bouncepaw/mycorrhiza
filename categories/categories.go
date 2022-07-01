@@ -57,8 +57,8 @@ func hyphaeInCategory(catName string) (hyphaList []string) {
 
 var mutex sync.RWMutex
 
-// addHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens. Pass canonical names.
-func addHyphaToCategory(hyphaName, catName string) {
+// AddHyphaToCategory adds the hypha to the category and updates the records on the disk. If the hypha is already in the category, nothing happens. Pass canonical names.
+func AddHyphaToCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
 		node.storeCategory(catName)
@@ -109,4 +109,5 @@ func RenameHyphaInAllCategories(oldName, newName string) {
 			}
 		}
 	}
+	go saveToDisk()
 }

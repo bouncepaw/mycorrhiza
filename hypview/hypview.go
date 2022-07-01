@@ -33,7 +33,8 @@ var (
 {{define "rename [[hypha]]?"}}Переименовать <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
 {{define "new name"}}Новое название:{{end}}
 {{define "rename recursively"}}Также переименовать подгифы{{end}}
-{{define "rename tip"}}Если вы переименуете эту гифу, сломаются все ссылки, ведущие на неё, а также исходящие относительные ссылки. Также вы потеряете всю текущую историю для нового названия. Переименовывайте аккуратно.{{end}}
+{{define "rename tip"}}Переименовывайте аккуратно. <a href="/help/en/rename">Документация на английском.</a>{{end}}
+{{define "leave redirections"}}Оставить перенаправления{{end}}
 `
 	chainNaviTitle   viewutil.Chain
 	chainEmptyHypha  viewutil.Chain

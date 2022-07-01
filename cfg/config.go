@@ -21,9 +21,10 @@ var (
 	NaviTitleIcon           string
 	UseSiblingHyphaeSidebar bool
 
-	HomeHypha        string
-	UserHypha        string
-	HeaderLinksHypha string
+	HomeHypha           string
+	UserHypha           string
+	HeaderLinksHypha    string
+	RedirectionCategory string
 
 	ListenAddr string
 	URL        string
@@ -64,9 +65,10 @@ type Config struct {
 
 // Hyphae is a section of Config which has fields related to special hyphae.
 type Hyphae struct {
-	HomeHypha        string `comment:"This hypha will be the main (index) page of your wiki, served on /."`
-	UserHypha        string `comment:"This hypha is used as a prefix for user hyphae."`
-	HeaderLinksHypha string `comment:"You can also specify a hypha to populate your own custom header links from."`
+	HomeHypha           string `comment:"This hypha will be the main (index) page of your wiki, served on /."`
+	UserHypha           string `comment:"This hypha is used as a prefix for user hyphae."`
+	HeaderLinksHypha    string `comment:"You can also specify a hypha to populate your own custom header links from."`
+	RedirectionCategory string `comment:"Redirection hyphae will be added to this category. Default: redirection."`
 }
 
 // Network is a section of Config that has fields related to network stuff.
@@ -113,9 +115,10 @@ func ReadConfigFile(path string) error {
 		NaviTitleIcon:           "🍄",
 		UseSiblingHyphaeSidebar: false,
 		Hyphae: Hyphae{
-			HomeHypha:        "home",
-			UserHypha:        "u",
-			HeaderLinksHypha: "",
+			HomeHypha:           "home",
+			UserHypha:           "u",
+			HeaderLinksHypha:    "",
+			RedirectionCategory: "redirection",
 		},
 		Network: Network{
 			ListenAddr: "127.0.0.1:1737",
@@ -175,6 +178,7 @@ func ReadConfigFile(path string) error {
 	HomeHypha = cfg.HomeHypha
 	UserHypha = cfg.UserHypha
 	HeaderLinksHypha = cfg.HeaderLinksHypha
+	RedirectionCategory = cfg.RedirectionCategory
 	if ListenAddr == "" {
 		ListenAddr = cfg.ListenAddr
 	}

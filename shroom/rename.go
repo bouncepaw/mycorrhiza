@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/files"
+	"path/filepath"
 	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -14,7 +17,8 @@ import (
 )
 
 // Rename renames the old hypha to the new name and makes a history record about that. Call if and only if the user has the permission to rename.
-func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *user.User) error {
+func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *user.User) error {
+	// * bouncepaw hates this function and related renaming functions
 	if newName == "" {
 		rejectRenameLog(oldHypha, u, "no new name given")
 		return errors.New("ui.rename_noname_tip")
@@ -62,7 +66,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *us
 			newName))
 	}
 
-	hop.WithFilesRenamed(renameMap).Apply()
+	hop.WithFilesRenamed(renameMap)
 
 	if len(hop.Errs) != 0 {
 		return hop.Errs[0]
@@ -76,9 +80,34 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *us
 		hyphae.RenameHyphaTo(h, newName, replaceName)
 		backlinks.UpdateBacklinksAfterRename(h, oldName)
 		categories.RenameHyphaInAllCategories(oldName, newName)
+		if leaveRedirections {
+			if err := leaveRedirection(oldName, newName, hop); err != nil {
+				hop.WithErrAbort(err)
+				return err
+			}
+		}
 	}
 
+	hop.Apply()
+
 	return nil
+}
+
+func leaveRedirection(oldName, newName string, hop *history.Op) error {
+	var (
+		text       = fmt.Sprintf("=> %s | ✏️ %s\n", newName, util.BeautifulName(newName))
+		emptyHypha = hyphae.ByName(oldName)
+	)
+	switch emptyHypha := emptyHypha.(type) {
+	case *hyphae.EmptyHypha:
+		h := hyphae.ExtendEmptyToTextual(emptyHypha, filepath.Join(files.HyphaeDir(), oldName+".myco"))
+		hyphae.Insert(h)
+		categories.AddHyphaToCategory(oldName, cfg.RedirectionCategory)
+		defer backlinks.UpdateBacklinksAfterEdit(h, "")
+		return writeTextToDisk(h, []byte(text), hop)
+	default:
+		return errors.New("invalid state for hypha " + oldName + " renamed to " + newName)
+	}
 }
 
 func findHyphaeToRename(superhypha hyphae.ExistingHypha, recursive bool) []hyphae.ExistingHypha {
