@@ -94,3 +94,19 @@ func removeHyphaFromCategory(hyphaName, catName string) {
 	mutex.Unlock()
 	go saveToDisk()
 }
+
+// RenameHyphaInAllCategories finds all mentions of oldName and replaces them with newName. Pass canonical names. Make sure newName is not taken. If oldName is not in any category, RenameHyphaInAllCategories is a no-op.
+func RenameHyphaInAllCategories(oldName, newName string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	if node, ok := hyphaToCategories[oldName]; ok {
+		hyphaToCategories[newName] = node
+		delete(hyphaToCategories, oldName) // node should still be in memory 🙏
+		for _, catName := range node.categoryList {
+			if catNode, ok := categoryToHyphae[catName]; ok {
+				catNode.removeHypha(oldName)
+				catNode.storeHypha(newName)
+			}
+		}
+	}
+}

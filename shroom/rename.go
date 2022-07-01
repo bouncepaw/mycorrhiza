@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"regexp"
 
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -36,6 +37,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *us
 	var (
 		re          = regexp.MustCompile(`(?i)` + oldHypha.CanonicalName())
 		replaceName = func(str string) string {
+			// Can we drop that util.CanonicalName?
 			return re.ReplaceAllString(util.CanonicalName(str), newName)
 		}
 		hyphaeToRename = findHyphaeToRename(oldHypha, recursive)
@@ -67,9 +69,13 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, u *us
 	}
 
 	for _, h := range hyphaeToRename {
-		oldName := h.CanonicalName()
-		hyphae.RenameHyphaTo(h, replaceName(h.CanonicalName()), replaceName)
+		var (
+			oldName = h.CanonicalName()
+			newName = replaceName(oldName)
+		)
+		hyphae.RenameHyphaTo(h, newName, replaceName)
 		backlinks.UpdateBacklinksAfterRename(h, oldName)
+		categories.RenameHyphaInAllCategories(oldName, newName)
 	}
 
 	return nil
