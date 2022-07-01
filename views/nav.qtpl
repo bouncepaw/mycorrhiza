@@ -5,8 +5,13 @@
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/viewutil" %}
 
-{% func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action, displayText string) %}
-{% if u.CanProceed(action) %}
+{% func hyphaInfoEntry(h hyphae.Hypha, u *user.User, action string, hasToExist bool, displayText string) %}
+{% code flag := true %}
+{% switch h.(type) %}
+{% case *hyphae.EmptyHypha %}
+	{% code flag = !hasToExist %}
+{% endswitch %}
+{% if u.CanProceed(action) && flag %}
 <li class="hypha-info__entry hypha-info__entry_{%s action %}">
 	<a class="hypha-info__link" href="/{%s action %}/{%s h.CanonicalName() %}">{%s displayText %}</a>
 </li>
@@ -21,12 +26,12 @@
 %}
 <nav class="hypha-info">
 	<ul class="hypha-info__list">
-		{%= hyphaInfoEntry(h, u, "history", lc.Get("ui.history_link")) %}
-		{%= hyphaInfoEntry(h, u, "rename", lc.Get("ui.rename_link")) %}
-		{%= hyphaInfoEntry(h, u, "delete", lc.Get("ui.delete_link")) %}
-		{%= hyphaInfoEntry(h, u, "text", lc.Get("ui.text_link")) %}
-		{%= hyphaInfoEntry(h, u, "media", lc.Get("ui.media_link")) %}
-		{%= hyphaInfoEntry(h, u, "backlinks", lc.GetPlural("ui.backlinks_link", backs)) %}
+		{%= hyphaInfoEntry(h, u, "history", false, lc.Get("ui.history_link")) %}
+		{%= hyphaInfoEntry(h, u, "rename", true, lc.Get("ui.rename_link")) %}
+		{%= hyphaInfoEntry(h, u, "delete", true, lc.Get("ui.delete_link")) %}
+		{%= hyphaInfoEntry(h, u, "text", true, lc.Get("ui.text_link")) %}
+		{%= hyphaInfoEntry(h, u, "media", true, lc.Get("ui.media_link")) %}
+		{%= hyphaInfoEntry(h, u, "backlinks", false, lc.GetPlural("ui.backlinks_link", backs)) %}
 	</ul>
 </nav>
 {% endfunc %}
