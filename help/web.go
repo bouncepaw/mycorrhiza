@@ -18,7 +18,7 @@ var (
 	ruTranslation = `
 {{define "title"}}Справка{{end}}
 {{define "entry not found"}}Статья не найдена{{end}}
-{{define "entry not found invitation"}}Если вы хотите написать эту статью сами, то будем рады вашим правкам <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">в репозитории Миокризы</a>.{{end}}
+{{define "entry not found invitation"}}Если вы хотите написать эту статью сами, то будем рады вашим правкам <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">в репозитории Микоризы</a>.{{end}}
 
 {{define "topics"}}Темы справки{{end}}
 {{define "main"}}Введение{{end}}
@@ -40,6 +40,7 @@ var (
 {{define "lock"}}Замок{{end}}
 {{define "whitelist"}}Белый список{{end}}
 {{define "telegram"}}Вход через Телеграм{{end}}
+{{define "interwiki"}}Интервики{{end}}
 `
 )
 
