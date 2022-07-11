@@ -23,7 +23,7 @@ package categories
 
 import "sync"
 
-// listOfCategories returns names of all categories.
+// listOfCategories returns unsorted names of all categories.
 func listOfCategories() (categoryList []string) {
 	mutex.RLock()
 	for cat, _ := range categoryToHyphae {

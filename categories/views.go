@@ -4,6 +4,7 @@ import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
+	"sort"
 	"strings"
 )
 
@@ -77,10 +78,12 @@ type listData struct {
 }
 
 func categoryList(meta viewutil.Meta) {
+	cats := listOfCategories()
+	sort.Strings(cats)
 	viewutil.ExecutePage(meta, viewListChain, listData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/category",
 		},
-		Categories: listOfCategories(),
+		Categories: cats,
 	})
 }
