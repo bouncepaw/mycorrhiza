@@ -45,12 +45,26 @@ func addEntry(wiki *Wiki) error {
 	defer mutex.Unlock()
 
 	var (
-		names    = append(wiki.Aliases, wiki.Name)
+		// non-empty names only
+		names = func(names []string) []string {
+			var result []string
+			for _, name := range names {
+				if name != "" {
+					result = append(result, name)
+				}
+			}
+			return result
+		}(append(wiki.Aliases, wiki.Name))
 		ok, name = areNamesFree(names)
 	)
 	if !ok {
 		log.Printf("There are multiple uses of the same name ‘%s’\n", name)
 		return errors.New(name)
+	}
+	if len(names) == 0 {
+		log.Println("No names passed for a new interwiki entry")
+		// There is something clearly wrong with error-returning in this function.
+		return errors.New("")
 	}
 
 	listOfEntries = append(listOfEntries, wiki)
