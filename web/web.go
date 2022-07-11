@@ -63,7 +63,6 @@ func Handler() http.Handler {
 	if cfg.UseAuth {
 		adminRouter := wikiRouter.PathPrefix("/admin").Subrouter()
 		adminRouter.Use(groupMiddleware("admin"))
-		initAdmin(adminRouter)
 		admin.Init(adminRouter)
 	}
 

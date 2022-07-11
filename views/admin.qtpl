@@ -1,52 +1,7 @@
 {% import "fmt" %}
-{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/user" %}
 {% import "github.com/bouncepaw/mycorrhiza/util" %}
-
-{% func AdminUsersPanel(userList []*user.User, lc *l18n.Localizer) %}
-<main class="main-width">
-	<h1>{%s lc.Get("admin.users_title") %}</h1>
-
-	<form action="/admin/reindex-users" method="post">
-		<a class="btn" href="/admin/new-user">{%s lc.Get("admin.users_create") %}</a>
-		<button class="btn" type="submit">{%s lc.Get("admin.users_reindex") %}</button>
-	</form>
-
-	<br>
-
-	<table class="users-table">
-	<thead>
-		<tr>
-			<th>{%s lc.Get("admin.users_name") %}</th>
-			<th>{%s lc.Get("admin.users_group") %}</th>
-			<th>{%s lc.Get("admin.users_registered") %}</th>
-			<th aria-label="{%s lc.Get("admin.users_actions") %}"></th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for _, u := range userList %}
-		<tr>
-			<td class="table-cell--fill">
-				<a href="/hypha/{%u cfg.UserHypha %}/{%u u.Name %}">{%s u.Name %}</a>
-			</td>
-			<td>{%s u.Group %}</td>
-			<td>
-				{% if u.RegisteredAt.IsZero() %}
-					{%s lc.Get("admin.users_notime") %}
-				{% else %}
-					{%s u.RegisteredAt.UTC().Format("2006-01-02 15:04") %}
-				{% endif %}
-			</td>
-			<td>
-				<a href="/admin/users/{%u u.Name %}/edit">{%s lc.Get("admin.users_edit") %}</a>
-			</td>
-		</tr>
-	{% endfor %}
-	</tbody>
-	</table>
-</main>
-{% endfunc %}
 
 {% func AdminUserNew(f util.FormData, lc *l18n.Localizer) %}
 <main class="main-width form-wrap">

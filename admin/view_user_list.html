@@ -1,0 +1,43 @@
+{{define "manage users"}}Manage users{{end}}
+{{define "title"}}{{template "manage users"}}{{end}}
+{{define "body"}}
+<main class="main-width">
+	<h1>{{template "manage users"}}</h1>
+
+	<form action="/admin/reindex-users" method="post">
+		<a class="btn" href="/admin/new-user">{{block "create user" .}}Create a new user{{end}}</a>
+		<button class="btn" type="submit">{{block "reindex users" .}}Reindex users{{end}}</button>
+	</form>
+
+	<table class="users-table">
+		<thead>
+		<tr>
+			<th>{{block "name" .}}Name{{end}}</th>
+			<th>{{block "group" .}}Group{{end}}</th>
+			<th>{{block "registered at" .}}Registered at{{end}}</th>
+			<th aria-label="{{block `actions` .}}Actions{{end}}"></th>
+		</tr>
+		</thead>
+		<tbody>{{$userHypha := .UserHypha}}
+		{{range .Users}}
+		<tr>
+			<td class="table-cell--fill">
+				<a href="/hypha/{{$userHypha}}/{{.Name}}">{{.Name}}</a>
+			</td>
+			<td>{{.Group}}</td>
+			<td>
+				{{if .RegisteredAt.IsZero}}
+					{{block "unknown registration time" .}}Unknown{{end}}
+				{{else}}
+					{{.RegisteredAt.UTC.Format "2006-01-02 15:04" }}
+				{{end}}
+			</td>
+			<td>
+				<a href="/admin/users/{{.Name}}/edit">{{block "edit" .}}Edit{{end}}</a>
+			</td>
+		</tr>
+		{{end}}
+		</tbody>
+	</table>
+</main>
+{{end}}

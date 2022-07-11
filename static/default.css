@@ -892,3 +892,10 @@ body[data-rrh-addr^="/interwiki"] main form + form {
 	content: "*";
 	margin-left: .25rem;
 }
+
+/*
+ * Admin pages
+ */
+.users-table {
+	margin-top: 1rem;
+}
