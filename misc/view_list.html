@@ -3,6 +3,7 @@
 {{define "body"}}
 <main class="main-width">
 	<h1>{{template "list of hyphae"}}</h1>
+	<p>{{block "x total" .HyphaCount}}{{.}} total.{{end}}</p>
 	<ol>
 		{{range .Entries}}
 			<li>

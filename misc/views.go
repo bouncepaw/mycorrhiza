@@ -2,6 +2,7 @@ package misc
 
 import (
 	"embed"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
@@ -15,6 +16,7 @@ var (
 {{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
 {{define "search desc"}}Название каждой из существующих гиф сопоставлено с запросом. Подходящие гифы приведены ниже.{{end}}
 {{define "search no results"}}Ничего не найдено{{end}}
+{{define "x total"}}{{.}} всего.{{end}}
 `
 )
 
@@ -30,13 +32,15 @@ type listDatum struct {
 
 type listData struct {
 	*viewutil.BaseData
-	Entries []listDatum
+	Entries    []listDatum
+	HyphaCount int
 }
 
 func viewList(meta viewutil.Meta, entries []listDatum) {
 	viewutil.ExecutePage(meta, chainList, listData{
-		BaseData: &viewutil.BaseData{},
-		Entries:  entries,
+		BaseData:   &viewutil.BaseData{},
+		Entries:    entries,
+		HyphaCount: hyphae.Count(),
 	})
 }
 
