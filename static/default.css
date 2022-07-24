@@ -149,39 +149,6 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .upload-amnt__unattach { display: block; }
 aside { clear: both; }
 
-.img-gallery { margin-top: .25rem; margin-bottom: .25rem; }
-@media screen and (min-width: 700px) {
-	.img-gallery_layout-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.img-gallery_layout-side {
-		float: right;
-		max-width: 50%;
-		margin-left: 1em;
-	}
-
-	.img-gallery_layout-normal .img-gallery__entry {
-	}
-	.img-gallery_layout-normal .img-gallery__entry > a {
-		display: inline-block;
-		width: calc(100% - 320px);
-	}
-	.img-gallery_layout-normal .img-gallery__entry > a > img {
-		max-width: 100%;
-	}
-	.img-gallery_layout-normal figcaption {
-		display: inline-block;
-		width: 300px;
-		position: absolute;
-		padding-left: 1rem;
-	}
-}
-.img-gallery img { max-width: 100%; max-height: 50vh; }
-figure { margin: 0; }
-figcaption { padding-bottom: .5rem; }
-
 #new-name {width:100%;}
 
 .prevnext__el { display: inline-block; min-width: 40%; padding: .5rem 0; margin-bottom: .25rem; text-decoration: none; border-radius: .25rem; max-width: 49%; }
@@ -899,3 +866,40 @@ body[data-rrh-addr^="/interwiki"] main form + form {
 .users-table {
 	margin-top: 1rem;
 }
+
+/*
+ * Image galleries
+ */
+.img-gallery { margin-top: .25rem; margin-bottom: .25rem; }
+@media screen and (min-width: 700px) {
+	.img-gallery_layout-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.img-gallery_layout-side {
+		float: right;
+		max-width: 50%;
+		margin-left: 1em;
+	}
+
+	.img-gallery_layout-normal {
+		display: table;
+	}
+	.img-gallery_layout-normal figure {
+		width: 100%;
+		display: table-row;
+	}
+	.img-gallery_layout-normal figure a {
+		display: table-cell;
+	}
+	.img-gallery_layout-normal figure figcaption {
+		vertical-align: top;
+		display: table-cell;
+		padding-left: 1rem;
+		width: 300px;
+	}
+}
+.img-gallery img { max-width: 100%; max-height: 50vh; }
+figure { margin: 0; }
+figcaption { padding-bottom: .5rem; }
