@@ -8,8 +8,8 @@
 	    {{end}}
 
 		{{if .GivenPermissionToModify}}
-			<h2>{{block "add hypha" .}}Add a hypha to the category{{end}}</h2>
-			<form method="POST" action="/add-to-category" class="category__add-form">
+			<h2>{{block "add to category title" .}}Add a hypha to the category{{end}}</h2>
+			<form method="POST" action="/add-to-category" class="add-to-category">
 				<input type="text" name="hypha" id="_hypha-name"
 				       placeholder="{{block `hypha name` .}}Hypha name{{end}}">
 				<input type="hidden" name="cat" value="{{.CatName}}">
@@ -20,16 +20,18 @@
 		{{if len .Hyphae}}
 			<h2>{{block "remove hyphae" .}}Remove hyphae from the category{{end}}</h2>
 			<form method="POST" action="/remove-from-category" class="multi-remove-from-category">
-				{{range .Hyphae}}
-					<input type="checkbox" name="_{{.}}" id="_{{.}}">
-					<label for="_{{.}}"><a href="/hypha/{{.}}">{{beautifulName .}}</a></label>
-					<br>
-				{{end}}
+				<ol>
+                    {{range .Hyphae}}
+	                    <li>
+							<input type="checkbox" name="_{{.}}" id="_{{.}}">
+							<label for="_{{.}}"><a href="/hypha/{{.}}">{{beautifulName .}}</a></label>
+	                    </li>
+                    {{end}}
+				</ol>
 				<input type="hidden" name="cat" value="{{.CatName}}">
 				<input type="hidden" name="redirect-to" value="/edit-category/{{.CatName}}">
 				<input type="submit" class="btn" value="{{block `remove` .}}Remove{{end}}">
 			</form>
-		{{end}}
-		{{end}}
+		{{end}}{{end}}
 	</main>
 {{end}}

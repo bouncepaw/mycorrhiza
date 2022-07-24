@@ -10,16 +10,22 @@ import (
 
 const ruTranslation = `
 {{define "empty cat"}}Эта категория пуста.{{end}}
-{{define "add hypha"}}Добавить в категорию{{end}}
 {{define "cat"}}Категория{{end}}
-{{define "hypha name"}}Имя гифы{{end}}
+{{define "hypha name"}}Название гифы{{end}}
 {{define "categories"}}Категории{{end}}
-{{define "placeholder"}}Имя категории...{{end}}
+{{define "placeholder"}}Название категории...{{end}}
 {{define "remove from category title"}}Убрать гифу из этой категории{{end}}
 {{define "add to category title"}}Добавить гифу в эту категорию{{end}}
 {{define "category list"}}Список категорий{{end}}
 {{define "no categories"}}В этой вики нет категорий.{{end}}
 {{define "category x"}}Категория {{. | beautifulName}}{{end}}
+
+{{define "edit category x"}}Редактирование категории {{beautifulName .}}{{end}}
+{{define "edit category heading"}}Редактирование категории <a href="/category/{{.}}">{{beautifulName .}}</a>{{end}}
+{{define "add"}}Добавить{{end}}
+{{define "remove hyphae"}}Убрать гифы из этой категории{{end}}
+{{define "remove"}}Убрать{{end}}
+{{define "edit"}}Редактировать{{end}}
 `
 
 var (

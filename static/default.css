@@ -287,6 +287,12 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 	padding: 0 .5rem;
 	border: none;
 }
+h2 + .add-to-category {
+	margin-top: .5rem;
+}
+.add-to-category input[type="submit"] {
+	display: block;
+}
 
 /*
  * Shortcuts
