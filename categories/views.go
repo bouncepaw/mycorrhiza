@@ -24,14 +24,15 @@ const ruTranslation = `
 
 var (
 	//go:embed *.html
-	fs                                          embed.FS
-	viewListChain, viewPageChain, viewCardChain viewutil.Chain
+	fs                                                         embed.FS
+	viewListChain, viewPageChain, viewCardChain, viewEditChain viewutil.Chain
 )
 
 func prepareViews() {
 	viewCardChain = viewutil.CopyEnRuWith(fs, "view_card.html", ruTranslation)
 	viewListChain = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
 	viewPageChain = viewutil.CopyEnRuWith(fs, "view_page.html", ruTranslation)
+	viewEditChain = viewutil.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
 }
 
 type cardData struct {
@@ -54,15 +55,26 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	return buf.String()
 }
 
-type pageData struct {
+type catData struct {
 	*viewutil.BaseData
 	CatName                 string
 	Hyphae                  []string
 	GivenPermissionToModify bool
 }
 
+func categoryEdit(meta viewutil.Meta, catName string) {
+	viewutil.ExecutePage(meta, viewEditChain, catData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/edit-category/" + catName,
+		},
+		CatName:                 catName,
+		Hyphae:                  hyphaeInCategory(catName),
+		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
+	})
+}
+
 func categoryPage(meta viewutil.Meta, catName string) {
-	viewutil.ExecutePage(meta, viewPageChain, pageData{
+	viewutil.ExecutePage(meta, viewPageChain, catData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/category/" + catName,
 		},

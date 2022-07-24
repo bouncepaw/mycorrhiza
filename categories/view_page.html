@@ -3,6 +3,11 @@
 {{define "body"}}
     {{$catName := .CatName}}
 	<main class="main-width category">
+		{{if .GivenPermissionToModify}}
+			<div class="btn btn_navititle">
+				<a class="btn__link_navititle" href="/edit-category/{{$catName}}">{{block "edit" .}}Edit{{end}}</a>
+			</div>
+		{{end}}
 		<h1>{{block "cat" .}}Category{{end}} <i>{{beautifulName $catName}}</i></h1>
         {{if len .Hyphae | not}}
 			<p>{{block "empty cat" .}}This category is empty{{end}}</p>
