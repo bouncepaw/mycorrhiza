@@ -9,14 +9,14 @@ In Mycomarkup, you can address a different wiki by prefixing the link target wit
 
 The interwiki prefixes obey the same naming rules as hyphae. In particular, they are case-insensitive, among other things. Every interwiki entry has one main name and it might have any number of aliases, which can be used interchangeably.
 
-See [[/interwiki]] for the list of configured interwiki entries. Unlike the WWW, there is no distributed list of wikis, so each wiki administrator has to maintain their own list.
+See [[/interwiki]] for the list of configured interwiki entries. Unlike the WWW, there is no distributed list of wikis similar to DNS, so each wiki administrator has to maintain their own list.
 
 == Mycorrhiza interwiki
-Intermycorrhizal interwiki works the best, due to the nature of hyphae. Unlike with other systems, you can address images from the other wikis reliably.
+Intermycorrhizal interwiki works the best, due to the nature of hyphae. Unlike with some other systems, you can address images from the other wikis reliably.
 
 ```myco
 img {
-   melanocarpa
+   melanocarpa>quadrat 12
 }
 ```
 
@@ -24,9 +24,43 @@ img {
 //This section is meant for wiki administrators.//
 **Intermap**, or interwiki map, is the collection of all configured interwiki entries. To configure it, an administrator has to visit [[/interwiki]] and change the existing entries or add a new one.
 
-You can also change `interwiki.json` directly.
+Entries have the following fields:
+*. {
+   **Name.** This is the canonical name of the wiki and one of the prefixes you can use for interlinks.
+}
+*. {
+   **Aliases.** They are separated with commas. You don't have to set them up.
 
-There are three supported engine types:
-* `mycorrhiza` is used for Mycorrhiza wikis.
-* `agora` is used for intances of Agora, such as [[https://anagora.org]].
-* `generic` is used for everything else.
+   A good idea is to have the full name in the //name// field (such as `wikipedia`), and shorter names in //aliases// (such as `pedia` and `wp`).
+}
+*. {
+   **URL.** The URL of the index/home/main page of the wiki. It should not end on trailing slash.
+}
+*. {
+   **Engine.** This is the software the target wiki runs.
+
+   There are two engines supported explicitly:
+   * Mycorrhiza
+   * [[https://anagora.org | Agora]]
+
+   Choose the //Generic// option for sites running different software.
+}
+*. {
+   **Formats.** Because interlinks are supported for two cases (hyperlinks and images), there has to be a way to convert a resource name to an URL of the resource. Format strings are a way to do that.
+
+   There are two format strings: one for hyperlinks, one for images. They directly correspond to HTML's `href` and `src` attributes of the `a` and `img` tags.
+
+   For Mycorrhiza wikis, you don't have to set them, they are set automatically to the following values (replace `https\:/\/example.org` with the URL of the target wiki):
+   * Link: `https\:/\/example.org/hypha/{NAME}`
+   * Image: `https\:/\/example.org/binary/{NAME}`
+
+   For Agora, they are set to:
+   * Link: `https\:/\/example.org/node/{NAME}`
+   * Image: `https\:/\/example.org/{NAME}`, which doesn't make a lot of sense
+
+   For generic sites, you will have to think of something by yourself. If you do not set it, it will default to `https\:/\/example.org/{NAME}`.
+
+   `{NAME}` is substituted. For example, from link `[[Melanocarpa>uxn]]`, `{NAME}` is replaced with `uxn`.
+}
+
+You can also change `interwiki.json` directly. Reload the wiki after editing it.

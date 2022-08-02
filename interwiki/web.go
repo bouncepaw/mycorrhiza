@@ -10,8 +10,22 @@ import (
 
 var (
 	//go:embed *html
-	fs             embed.FS
-	ruTranslation  = ``
+	fs            embed.FS
+	ruTranslation = `
+{{define "interwiki map"}}Интеркарта{{end}}
+{{define "name"}}Название:{{end}}
+{{define "aliases"}}Псевдонимы:{{end}}
+{{define "aliases (,)"}}Псевдонимы (разделённые запятыми):{{end}}
+{{define "engine"}}Движок:{{end}}
+	{{define "engine/mycorrhiza"}}Микориза{{end}}
+	{{define "engine/generic"}}Любой сайт{{end}}
+{{define "link href format"}}Строка форматирования атрибута href ссылки:{{end}}
+{{define "img src format"}}Строка форматирования атрибута src изображения:{{end}}
+{{define "unset map"}}Интеркарта не задана.{{end}}
+{{define "documentation."}}Документация.{{end}}
+{{define "edit separately."}}Изменяйте записи по отдельности.{{end}}
+{{define "add interwiki entry"}}Добавить запись в интеркарту{{end}}
+`
 	chainInterwiki viewutil.Chain
 	chainNameTaken viewutil.Chain
 )

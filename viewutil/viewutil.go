@@ -27,6 +27,7 @@ const ruText = `
 {{define "register"}}Регистрация{{end}}
 {{define "confirm"}}Подтвердить{{end}}
 {{define "cancel"}}Отмена{{end}}
+{{define "save"}}Сохранить{{end}}
 `
 
 func Init() {
