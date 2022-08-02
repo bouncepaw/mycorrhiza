@@ -16,6 +16,7 @@
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
 * **Support for [authorization].** Both plain username-password pairs and [Telegram]'s login widget are supported.
 * **[Open Graph] support.** The most relevant info about a hypha is made available through OG meta tags for consumption by other software.
+* **Interwiki support.**
 
 [transclude]: https://mycorrhiza.wiki/hypha/feature/transclusion
 [Mycomarkup]: https://mycorrhiza.wiki/help/en/mycomarkup
