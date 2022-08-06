@@ -151,7 +151,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "text")
 	switch h := hyphae.ByName(hyphaName).(type) {
-	case *hyphae.TextualHypha:
+	case hyphae.ExistingHypha:
 		log.Println("Serving", h.TextFilePath())
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, h.TextFilePath())
