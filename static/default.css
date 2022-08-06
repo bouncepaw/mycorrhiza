@@ -502,6 +502,8 @@ kbd {
 	border: 1px dashed #999;
 }
 
+a.btn_destructive,
+a.btn_destructive:visited,
 .btn_destructive {
 	border-color: #aa1818;
 	background-color: #ee4343;

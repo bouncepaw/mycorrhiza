@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
-	"io"
 	"log"
 	"mime"
 	"net/http"
@@ -12,7 +11,6 @@ import (
 	"sort"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -87,15 +85,12 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 
 	f.Put("group", u.Group)
 
-	var lc = l18n.FromRequest(rq)
-	html := AdminUserEdit(u, f, lc)
-	html = viewutil.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
-
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	io.WriteString(w, html)
+
+	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
@@ -117,26 +112,17 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 
-	var lc = l18n.FromRequest(rq)
-	html := AdminUserDelete(u, util.NewFormData(), lc)
-	html = viewutil.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
-
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	io.WriteString(w, html)
+	viewDeleteUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
-	var lc = l18n.FromRequest(rq)
 	if rq.Method == http.MethodGet {
-		// New user form
-		html := AdminUserNew(util.NewFormData(), lc)
-		html = viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
-
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-		io.WriteString(w, html)
+		viewNewUser(viewutil.MetaFrom(w, rq), util.NewFormData())
 	} else if rq.Method == http.MethodPost {
 		// Create a user
 		f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
@@ -144,12 +130,9 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
 
 		if err != nil {
-			html := AdminUserNew(f.WithError(err), lc)
-			html = viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
-
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-			io.WriteString(w, html)
+			viewNewUser(viewutil.MetaFrom(w, rq), f.WithError(err))
 		} else {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		}

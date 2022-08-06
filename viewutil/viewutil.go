@@ -28,6 +28,8 @@ const ruText = `
 {{define "confirm"}}Подтвердить{{end}}
 {{define "cancel"}}Отмена{{end}}
 {{define "save"}}Сохранить{{end}}
+{{define "error"}}Ошибка{{end}}
+{{define "delete"}}Удалить{{end}}
 `
 
 func Init() {

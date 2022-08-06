@@ -1,0 +1,21 @@
+{{define "delete user?"}}Delete user {{.}}?{{end}}
+{{define "title"}}{{template "delete user?" .U.Name}}{{end}}
+{{define "body"}}
+	<main class="main-width form-wrap">
+		<h1>{{template "delete user?" .U.Name}}</h1>
+
+		{{if .Form.HasError}}
+			<div class="notice notice--error">
+				<strong>{{template "error"}}:</strong>
+				{{.Form.Error}}
+			</div>
+		{{end}}
+
+		<p>{{block "delete user warning" .}}Are you sure you want to delete them from the database? This action is irreversible.{{end}}</p>
+
+		<form action="" method="post">
+			<input class="btn btn_destructive" type="submit" value="{{template "delete"}}">
+			<a class="btn btn_weak" href="/admin/users/{{.U.Name}}/edit">{{template "cancel"}}</a>
+		</form>
+	</main>
+{{end}}
