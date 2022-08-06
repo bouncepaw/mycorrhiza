@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/files"
+	views2 "github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
@@ -15,16 +16,14 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
+	"github.com/bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
-
-	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v5/tools"
 )
 
 func initReaders(r *mux.Router) {
@@ -46,10 +45,10 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 		lc        = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
-		views.Base(
+		viewutil.Base(
 			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views.MediaMenu(rq, h, u)))
+			views2.MediaMenu(rq, h, u)))
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
@@ -128,7 +127,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
 	}
 
-	page := views.Revision(
+	page := views2.Revision(
 		viewutil.MetaFrom(w, rq),
 		h,
 		contents,
@@ -138,7 +137,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = fmt.Fprint(
 		w,
-		views.Base(
+		viewutil.Base(
 			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
@@ -188,10 +187,10 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
 		util.HTTP404Page(w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
-				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
 				openGraph))
 	case hyphae.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
@@ -208,10 +207,10 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 
 		util.HTTP200Page(w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
-				views.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
 				openGraph))
 	}
 }

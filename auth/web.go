@@ -1,4 +1,4 @@
-package web
+package auth
 
 import (
 	"errors"
@@ -16,10 +16,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 )
 
-func initAuth(r *mux.Router) {
+func InitAuth(r *mux.Router) {
 	r.HandleFunc("/user-list", handlerUserList)
 	r.HandleFunc("/lock", handlerLock)
 	// The check below saves a lot of extra checks and lines of codes in other places in this file.
@@ -40,11 +39,11 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(views.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), views.UserList(lc))))
+	w.Write([]byte(viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), UserList(lc))))
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	_, _ = io.WriteString(w, views.Lock(l18n.FromRequest(rq)))
+	_, _ = io.WriteString(w, Lock(l18n.FromRequest(rq)))
 }
 
 // handlerRegister displays the register form (GET) or registers the user (POST).
@@ -54,10 +53,10 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		_, _ = io.WriteString(
 			w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.register_title"),
-				views.Register(rq),
+				Register(rq),
 			),
 		)
 		return
@@ -74,7 +73,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.register_title"),
 				fmt.Sprintf(
@@ -112,7 +111,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		}
 		_, _ = io.WriteString(
 			w,
-			views.Base(viewutil.MetaFrom(w, rq), lc.Get("auth.logout_title"), views.Logout(can, lc)),
+			viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("auth.logout_title"), Logout(can, lc)),
 		)
 	} else if rq.Method == http.MethodPost {
 		user.LogoutFromRequest(w, rq)
@@ -128,10 +127,10 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(
 			w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.login_title"),
-				views.Login(lc),
+				Login(lc),
 			),
 		)
 	} else if rq.Method == http.MethodPost {
@@ -143,7 +142,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		if err != nil {
 			w.Header().Set("Content-Type", "text/html;charset=utf-8")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = io.WriteString(w, views.Base(viewutil.MetaFrom(w, rq), err.Error(), views.LoginError(err.Error(), lc)))
+			_, _ = io.WriteString(w, viewutil.Base(viewutil.MetaFrom(w, rq), err.Error(), LoginError(err.Error(), lc)))
 			return
 		}
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
@@ -181,7 +180,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				lc.Get("ui.error"),
 				fmt.Sprintf(
@@ -201,7 +200,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,
-			views.Base(
+			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				"Error",
 				fmt.Sprintf(

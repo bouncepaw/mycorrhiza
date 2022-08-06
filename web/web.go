@@ -3,6 +3,7 @@ package web
 
 import (
 	"github.com/bouncepaw/mycorrhiza/admin"
+	"github.com/bouncepaw/mycorrhiza/auth"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
@@ -36,7 +37,7 @@ func Handler() http.Handler {
 	router.StrictSlash(true)
 
 	// Public routes. They're always accessible regardless of the user status.
-	initAuth(router)
+	auth.InitAuth(router)
 
 	// Wiki routes. They may be locked or restricted.
 	wikiRouter := router.PathPrefix("").Subrouter()

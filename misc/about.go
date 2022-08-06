@@ -1,4 +1,4 @@
-package views
+package misc
 
 import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -9,21 +9,21 @@ import (
 	"text/template" // sic!
 )
 
-type l10nEntry struct {
+type L10nEntry struct {
 	_en string
 	_ru string
 }
 
-func en(v string) l10nEntry {
-	return l10nEntry{_en: v}
+func En(v string) L10nEntry {
+	return L10nEntry{_en: v}
 }
 
-func (e l10nEntry) ru(v string) l10nEntry {
+func (e L10nEntry) Ru(v string) L10nEntry {
 	e._ru = v
 	return e
 }
 
-func (e l10nEntry) get(lang string) string {
+func (e L10nEntry) Get(lang string) string {
 	if lang == "ru" && e._ru != "" {
 		return e._ru
 	}
@@ -66,30 +66,30 @@ const aboutTemplateString = `
 </main>`
 
 var aboutData = struct {
-	L                 map[string]l10nEntry
+	L                 map[string]L10nEntry
 	Cfg               map[string]interface{}
 	Admins            []string
 	UserCount         uint64
 	RegistrationLimit uint64
 }{
-	L: map[string]l10nEntry{
-		"Title":             en("About %s").ru("О %s"),
-		"Version":           en("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version").ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>"),
-		"UserCount":         en("User count").ru("Число пользователей"),
-		"HomeHypha":         en("Home hypha").ru("Домашняя гифа"),
-		"RegistrationLimit": en("RegistrationLimit").ru("Максимум пользователей"),
-		"Admins":            en("Administrators").ru("Администраторы"),
+	L: map[string]L10nEntry{
+		"Title":             En("About %s").Ru("О %s"),
+		"Version":           En("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version").Ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>"),
+		"UserCount":         En("User count").Ru("Число пользователей"),
+		"HomeHypha":         En("Home hypha").Ru("Домашняя гифа"),
+		"RegistrationLimit": En("RegistrationLimit").Ru("Максимум пользователей"),
+		"Admins":            En("Administrators").Ru("Администраторы"),
 
-		"Auth":       en("Authentication").ru("Аутентификация"),
-		"AuthOn":     en("Authentication is on").ru("Аутентификация включена"),
-		"AuthOff":    en("Authentication is off").ru("Аутентификация не включена"),
-		"TelegramOn": en("Telegram authentication is on").ru("Вход через Телеграм включён"),
+		"Auth":       En("Authentication").Ru("Аутентификация"),
+		"AuthOn":     En("Authentication is on").Ru("Аутентификация включена"),
+		"AuthOff":    En("Authentication is off").Ru("Аутентификация не включена"),
+		"TelegramOn": En("Telegram authentication is on").Ru("Вход через Телеграм включён"),
 	},
 }
 
 func AboutHTML(lc *l18n.Localizer) string {
-	get := func(e l10nEntry) string {
-		return e.get(lc.Locale)
+	get := func(e L10nEntry) string {
+		return e.Get(lc.Locale)
 	}
 	temp, err := template.New("about wiki").Funcs(template.FuncMap{"get": get}).Parse(aboutTemplateString)
 	if err != nil {

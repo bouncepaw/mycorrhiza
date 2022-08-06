@@ -11,7 +11,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
 	"io"
@@ -122,10 +121,10 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 		lc    = l18n.FromRequest(rq)
 		title = lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName})
 	)
-	_, err := io.WriteString(w, views.Base(
+	_, err := io.WriteString(w, viewutil.Base(
 		viewutil.MetaFrom(w, rq),
 		title,
-		views.AboutHTML(lc),
+		AboutHTML(lc),
 	))
 	if err != nil {
 		log.Println(err)

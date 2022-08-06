@@ -1,7 +1,9 @@
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=views
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=tree
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
+//go:generate go run github.com/valyala/quicktemplate/qtc -dir=auth
+//go:generate go run github.com/valyala/quicktemplate/qtc -dir=hypview
+//go:generate go run github.com/valyala/quicktemplate/qtc -dir=admin
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 package main
 

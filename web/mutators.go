@@ -18,7 +18,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/shroom"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 func initMutators(r *mux.Router) {
@@ -47,10 +46,10 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == "GET" {
 		util.HTTP200Page(
 			w,
-			views.Base(
+			viewutil.Base(
 				meta,
 				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
-				views.RemoveMediaAsk(rq, h.CanonicalName())))
+				hypview.RemoveMediaAsk(rq, h.CanonicalName())))
 		return
 	}
 	switch h := h.(type) {
@@ -173,10 +172,10 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	}
 	util.HTTP200Page(
 		w,
-		views.Base(
+		viewutil.Base(
 			meta,
 			fmt.Sprintf(lc.Get("edit.title"), util.BeautifulName(hyphaName)),
-			views.Editor(rq, hyphaName, textAreaFill, warning)))
+			hypview.Editor(rq, hyphaName, textAreaFill, warning)))
 }
 
 // handlerUploadText uploads a new text part for the hypha.
@@ -205,10 +204,10 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 
 		util.HTTP200Page(
 			w,
-			views.Base(
+			viewutil.Base(
 				meta,
 				fmt.Sprintf(lc.Get("edit.preview_title"), util.BeautifulName(hyphaName)),
-				views.Preview(
+				hypview.Preview(
 					rq,
 					hyphaName,
 					textData,

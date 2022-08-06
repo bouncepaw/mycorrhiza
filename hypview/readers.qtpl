@@ -5,7 +5,6 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/hyphae" %}
-{% import "github.com/bouncepaw/mycorrhiza/hypview" %}
 {% import "github.com/bouncepaw/mycorrhiza/categories" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/mimetype" %}
@@ -110,10 +109,10 @@ If you rename .prevnext, change the docs too.
 		{% endif %}
 		{% endif %}
 
-		{%s= hypview.NaviTitle(meta, h.CanonicalName()) %}
+		{%s= NaviTitle(meta, h.CanonicalName()) %}
 		{% switch h.(type) %}
 			{% case *hyphae.EmptyHypha %}
-				{%s= hypview.EmptyHypha(meta, h.CanonicalName()) %}
+				{%s= EmptyHypha(meta, h.CanonicalName()) %}
 			{% default %}
 				{%s= contents %}
 		{% endswitch %}
@@ -148,7 +147,7 @@ If you rename .prevnext, change the docs too.
 <main class="main-width">
 	<section>
 		<p>{%s meta.Lc.Get("ui.revision_warning") %} <a href="/rev-text/{%s revHash %}/{%s h.CanonicalName() %}">{%s meta.Lc.Get("ui.revision_link") %}</a></p>
-		{%s= hypview.NaviTitle(meta, h.CanonicalName()) %}
+		{%s= NaviTitle(meta, h.CanonicalName()) %}
 		{%s= contents %}
 	</section>
 </main>

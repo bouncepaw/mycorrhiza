@@ -144,11 +144,11 @@ Telegram auth widget was requested by Yogurt. As you can see, we don't offer use
 {% endfunc %}
 
 {% code
-var userListL10n = map[string]l10nEntry{
-    "heading": en("List of users").ru("Список пользователей"),
-    "administrators": en("Administrators").ru("Администраторы"),
-    "moderators": en("Moderators").ru("Модераторы"),
-    "editors": en("Editors").ru("Редакторы"),
+var userListL10n = map[string]L10nEntry{
+    "heading": En("List of users").Ru("Список пользователей"),
+    "administrators": En("Administrators").Ru("Администраторы"),
+    "moderators": En("Moderators").Ru("Модераторы"),
+    "editors": En("Editors").Ru("Редакторы"),
 }
 %}
 
@@ -156,7 +156,7 @@ var userListL10n = map[string]l10nEntry{
 <main class="main-width user-list">
 {% code
 var get = func(key string) string {
-	return userListL10n[key].get(lc.Locale)
+	return userListL10n[key].Get(lc.Locale)
 }
 
 var (

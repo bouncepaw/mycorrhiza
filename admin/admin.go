@@ -15,7 +15,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/views"
 )
 
 // handlerAdmin provides the admin panel.
@@ -89,8 +88,8 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 	f.Put("group", u.Group)
 
 	var lc = l18n.FromRequest(rq)
-	html := views.AdminUserEdit(u, f, lc)
-	html = views.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
+	html := AdminUserEdit(u, f, lc)
+	html = viewutil.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
 
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
@@ -119,8 +118,8 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	var lc = l18n.FromRequest(rq)
-	html := views.AdminUserDelete(u, util.NewFormData(), lc)
-	html = views.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
+	html := AdminUserDelete(u, util.NewFormData(), lc)
+	html = viewutil.Base(viewutil.MetaFrom(w, rq), fmt.Sprintf(lc.Get("admin.user_title"), u.Name), html)
 
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
@@ -133,8 +132,8 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 	var lc = l18n.FromRequest(rq)
 	if rq.Method == http.MethodGet {
 		// New user form
-		html := views.AdminUserNew(util.NewFormData(), lc)
-		html = views.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
+		html := AdminUserNew(util.NewFormData(), lc)
+		html = viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
 
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 		io.WriteString(w, html)
@@ -145,8 +144,8 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
 
 		if err != nil {
-			html := views.AdminUserNew(f.WithError(err), lc)
-			html = views.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
+			html := AdminUserNew(f.WithError(err), lc)
+			html = viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("admin.newuser_title"), html)
 
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
