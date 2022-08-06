@@ -14,8 +14,7 @@
 	"backlinks_link": "{{.n}} backlink%s",
 	"backlinks_link+one": "",
 	"backlinks_link+other": "s",
-	
-	"sibling_hyphae": "Sibling hyphae",
+
 	"subhyphae": "Subhyphae",
 
 	"random_no_hyphae": "There are no hyphae",

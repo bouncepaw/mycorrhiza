@@ -60,7 +60,6 @@ header { width: 100%; }
 	main { grid-column: 1 / span 1; grid-row: 2 / span 2; }
 	main.main-width { margin-left: .5rem; }
 	.markup-toolbar, .help-topics, .categories-card { grid-column: 2 / span 1; grid-row: 2 / span 1; }
-	.sibling-hyphae { grid-column: 2 / span 1; grid-row: 3 / span 1; }
 	.action-toolbar { grid-column: 2 / span 1; grid-row: 3 / span 1; }
 	.layout-card { width: 100%; margin-left: -.5rem; }
 	.edit-toolbar__buttons {display: grid; }
@@ -76,7 +75,7 @@ header { width: 100%; }
 	.layout-card {max-width: 18rem;}
 	.main-width { margin: 0 auto; }
 	main.main-width { grid-column: 2 / span 1; grid-row: 2 / span 3; margin: 0; }
-	.sibling-hyphae, .markup-toolbar, .help-topics { grid-column: 3 / span 1; margin-left: -.5rem; grid-row: 2 / span 2; }
+	.markup-toolbar, .help-topics { grid-column: 3 / span 1; margin-left: -.5rem; grid-row: 2 / span 2; }
 	.markup-toolbar { grid-column: 3 / span 1; grid-row: 2 / span 2; margin-left: -.5rem; }
 	.action-toolbar, .categories-card { grid-column: 1 / span 1; grid-row: 2 / span 1; margin: 0 -.5rem 0 .5rem; justify-self: end; }
 	.edit-toolbar__buttons { grid-template-columns: 1fr; }
@@ -173,12 +172,6 @@ caption { caption-side: top; font-size: small; }
 .subhyphae__link { display: block; padding: .25rem; text-decoration: none; }
 .subhyphae__link:hover { background: #eee; }
 
-.sibling-hyphae__list { padding: 0; margin: 0; }
-.sibling-hyphae__entry { clear: both; }
-.sibling-hyphae__count { display: inline-block; float: right; }
-.sibling-hyphae__entry_this { padding: .25rem .5rem; font-weight: bold; }
-.sibling-hyphae__link { text-decoration: none; display: block; padding: .25rem .5rem; }
-
 /* Color stuff */
 /* Lighter stuff #eee */
 ::-webkit-file-upload-button, .btn { background-color: #eee; color: black; }
@@ -218,8 +211,7 @@ blockquote { border-left: 2px #999 solid; }
 .prevnext { border-top: #eee 1px solid; clear: both; }
 td { border: #ddd 1px solid; }
 
-.categories-card__link:hover,
-.sibling-hyphae__link:hover { background-color: #eee; }
+.categories-card__link:hover { background-color: #eee; }
 
 /* Dark theme! */
 @media (prefers-color-scheme: dark) {

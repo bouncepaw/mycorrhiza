@@ -42,7 +42,6 @@ AllowRegistration = true
 === Root section
 * `WikiName`: //string//. The name your wiki has. It is shown in the header by default and in other places. **Default:** `Mycorrhiza Wiki`.
 * `NaviTitleIcon`: //string//. The icon shown before the colon in the navigational titles above each hypha. You may want to use an emoji or HTML here. **Default:** `🍄` (mushroom emoji).
-* `UseSiblingHyphaeSidebar`: //boolean//. Whether to show the [[/help/en/sibling_hyphae_section | sibling hyphae sidebar]]. You are discouraged from using the sibling hyphae sidebar on new wikis. Enable it on old wikis that depend on it heavily. **Default:** `false`.
 
 === [Hyphae]
 * `HomeHypha`: //string//. The name your home hypha has. **Default:** `home`.

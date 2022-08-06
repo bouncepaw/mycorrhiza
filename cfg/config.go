@@ -17,9 +17,8 @@ import (
 // See https://mycorrhiza.wiki/hypha/configuration/fields for the
 // documentation.
 var (
-	WikiName                string
-	NaviTitleIcon           string
-	UseSiblingHyphaeSidebar bool
+	WikiName      string
+	NaviTitleIcon string
 
 	HomeHypha           string
 	UserHypha           string
@@ -53,9 +52,8 @@ var WikiDir string
 // Config represents a Mycorrhiza wiki configuration file. This type is used
 // only when reading configs.
 type Config struct {
-	WikiName                string `comment:"This name appears in the header and on various pages."`
-	NaviTitleIcon           string `comment:"This icon is used in the breadcrumbs bar."`
-	UseSiblingHyphaeSidebar bool   `comment:"You are discouraged from using the sibling hyphae sidebar on new wikis. Enable it on old wikis that depend on it heavily."`
+	WikiName      string `comment:"This name appears in the header and on various pages."`
+	NaviTitleIcon string `comment:"This icon is used in the breadcrumbs bar."`
 	Hyphae
 	Network
 	Authorization
@@ -111,9 +109,8 @@ type Telegram struct {
 // configuration. Call it sometime during the initialization.
 func ReadConfigFile(path string) error {
 	cfg := &Config{
-		WikiName:                "Mycorrhiza Wiki",
-		NaviTitleIcon:           "🍄",
-		UseSiblingHyphaeSidebar: false,
+		WikiName:      "Mycorrhiza Wiki",
+		NaviTitleIcon: "🍄",
 		Hyphae: Hyphae{
 			HomeHypha:           "home",
 			UserHypha:           "u",
@@ -174,7 +171,6 @@ func ReadConfigFile(path string) error {
 	// Map the struct to the global variables
 	WikiName = cfg.WikiName
 	NaviTitleIcon = cfg.NaviTitleIcon
-	UseSiblingHyphaeSidebar = cfg.UseSiblingHyphaeSidebar
 	HomeHypha = cfg.HomeHypha
 	UserHypha = cfg.UserHypha
 	HeaderLinksHypha = cfg.HeaderLinksHypha
