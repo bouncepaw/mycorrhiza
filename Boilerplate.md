@@ -48,7 +48,7 @@ var (
 )
 
 func initViews() {
-	chainStuffs = viewutil.CopyEnRuWith(fs, "view_stuff.html", ruTranslation)
+	chainStuff = viewutil.CopyEnRuWith(fs, "view_stuff.html", ruTranslation)
 	chainAddStuff = viewutil.CopyEnRuWith(fs, "view_add_stuff.html", ruTranslation)
 }
 ```
@@ -64,7 +64,7 @@ type dataStuff struct {
 }
 
 func viewStuff(meta viewutil.Meta, stuffName string) {
-	viewutil.ExecutePage(meta, chainStuffs, dataUserList{
+	viewutil.ExecutePage(meta, chainStuff, dataUserList{
 		BaseData: &viewutil.BaseData{},
 		StuffName: stuffName,
 	})
