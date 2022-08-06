@@ -5,7 +5,7 @@
 Subhyphae links are recursive. It may end up looking like that if drawn with
 pseudographics:
 ╔══════════════╗
-║Foo           ║   The presented hyphae are foo and foo/bar
+║Foo           ║   The presented hyphae are ./foo and ./foo/bar
 ║╔════════════╗║
 ║║Bar         ║║
 ║╚════════════╝║
@@ -30,23 +30,3 @@ pseudographics:
 </li>
 {% endfunc %}
 
-
-{% func siblingHTML(s *sibling) %}
-<li class="sibling-hyphae__entry">
-	<a class="sibling-hyphae__link {% if !s.exists %}wikilink_new{% endif %}" href="/hypha/{%s s.name %}">
-		{%s util.BeautifulName(path.Base(s.name)) %}
-		<span class="sibling-hyphae__count">
-		{% if s.directSubhyphaeCount > 0 %}
-			<span class="sibling-hyphae__direct-count">
-				{%d s.directSubhyphaeCount %}
-			</span>
-		{% endif %}
-		{% if s.indirectSubhyphaeCount > 0 %}
-			<span class="sibling-hyphae__indirect-count">
-				({%d s.indirectSubhyphaeCount %})
-			</span>
-		{% endif %}
-		</span>
-	</a>
-</li>
-{% endfunc %}

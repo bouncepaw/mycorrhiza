@@ -16,7 +16,7 @@ import "github.com/bouncepaw/mycorrhiza/util"
 // Subhyphae links are recursive. It may end up looking like that if drawn with
 // pseudographics:
 // ╔══════════════╗
-// ║Foo           ║   The presented hyphae are foo and foo/bar
+// ║Foo           ║   The presented hyphae are ./foo and ./foo/bar
 // ║╔════════════╗║
 // ║║Bar         ║║
 // ║╚════════════╝║
@@ -123,95 +123,4 @@ func childHTML(c *child) string {
 //line tree/view.qtpl:31
 	return qs422016
 //line tree/view.qtpl:31
-}
-
-//line tree/view.qtpl:34
-func streamsiblingHTML(qw422016 *qt422016.Writer, s *sibling) {
-//line tree/view.qtpl:34
-	qw422016.N().S(`
-<li class="sibling-hyphae__entry">
-	<a class="sibling-hyphae__link `)
-//line tree/view.qtpl:36
-	if !s.exists {
-//line tree/view.qtpl:36
-		qw422016.N().S(`wikilink_new`)
-//line tree/view.qtpl:36
-	}
-//line tree/view.qtpl:36
-	qw422016.N().S(`" href="/hypha/`)
-//line tree/view.qtpl:36
-	qw422016.E().S(s.name)
-//line tree/view.qtpl:36
-	qw422016.N().S(`">
-		`)
-//line tree/view.qtpl:37
-	qw422016.E().S(util.BeautifulName(path.Base(s.name)))
-//line tree/view.qtpl:37
-	qw422016.N().S(`
-		<span class="sibling-hyphae__count">
-		`)
-//line tree/view.qtpl:39
-	if s.directSubhyphaeCount > 0 {
-//line tree/view.qtpl:39
-		qw422016.N().S(`
-			<span class="sibling-hyphae__direct-count">
-				`)
-//line tree/view.qtpl:41
-		qw422016.N().D(s.directSubhyphaeCount)
-//line tree/view.qtpl:41
-		qw422016.N().S(`
-			</span>
-		`)
-//line tree/view.qtpl:43
-	}
-//line tree/view.qtpl:43
-	qw422016.N().S(`
-		`)
-//line tree/view.qtpl:44
-	if s.indirectSubhyphaeCount > 0 {
-//line tree/view.qtpl:44
-		qw422016.N().S(`
-			<span class="sibling-hyphae__indirect-count">
-				(`)
-//line tree/view.qtpl:46
-		qw422016.N().D(s.indirectSubhyphaeCount)
-//line tree/view.qtpl:46
-		qw422016.N().S(`)
-			</span>
-		`)
-//line tree/view.qtpl:48
-	}
-//line tree/view.qtpl:48
-	qw422016.N().S(`
-		</span>
-	</a>
-</li>
-`)
-//line tree/view.qtpl:52
-}
-
-//line tree/view.qtpl:52
-func writesiblingHTML(qq422016 qtio422016.Writer, s *sibling) {
-//line tree/view.qtpl:52
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line tree/view.qtpl:52
-	streamsiblingHTML(qw422016, s)
-//line tree/view.qtpl:52
-	qt422016.ReleaseWriter(qw422016)
-//line tree/view.qtpl:52
-}
-
-//line tree/view.qtpl:52
-func siblingHTML(s *sibling) string {
-//line tree/view.qtpl:52
-	qb422016 := qt422016.AcquireByteBuffer()
-//line tree/view.qtpl:52
-	writesiblingHTML(qb422016, s)
-//line tree/view.qtpl:52
-	qs422016 := string(qb422016.B)
-//line tree/view.qtpl:52
-	qt422016.ReleaseByteBuffer(qb422016)
-//line tree/view.qtpl:52
-	return qs422016
-//line tree/view.qtpl:52
 }

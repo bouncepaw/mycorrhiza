@@ -1,150 +1,47 @@
 package tree
 
 import (
-	"fmt"
-	"github.com/bouncepaw/mycorrhiza/hyphae/iteration"
+	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"path"
 	"sort"
 	"strings"
-	"sync"
-
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-func findSiblings(hyphaName string) []*sibling {
-	parentHyphaName := ""
-	if hyphaRawDir := path.Dir(hyphaName); hyphaRawDir != "." {
-		parentHyphaName = hyphaRawDir
-	}
+// Tree returns the subhypha matrix as HTML and names of the next and previous hyphae (or empty strings).
+func Tree(hyphaName string) (childrenHTML, prev, next string) {
 	var (
-		siblingsMap  = make(map[string]bool)
-		siblingCheck = func(h hyphae.Hypha) iteration.CheckResult {
-			switch {
-			case h.CanonicalName() == hyphaName, // NonEmptyHypha is no sibling of itself
-				h.CanonicalName() == parentHyphaName: // Parent hypha is no sibling of its child
-				return iteration.CheckContinue
-			}
-			if (parentHyphaName != "" && strings.HasPrefix(h.CanonicalName(), parentHyphaName+"/")) ||
-				(parentHyphaName == "") {
-				var (
-					rawSubPath = strings.TrimPrefix(h.CanonicalName(), parentHyphaName)[1:]
-					slashIdx   = strings.IndexRune(rawSubPath, '/')
-				)
-				if slashIdx > -1 {
-					var sibPath = h.CanonicalName()[:slashIdx+len(parentHyphaName)+1]
-					if _, exists := siblingsMap[sibPath]; !exists {
-						siblingsMap[sibPath] = false
-					}
-				} else { // it is a straight sibling
-					siblingsMap[h.CanonicalName()] = true
-				}
-			}
-			return iteration.CheckContinue
-		}
-
-		i7n = iteration.NewIteration()
+		root             = child{hyphaName, true, make([]child, 0)}
+		descendantPrefix = hyphaName + "/"
+		parent           = path.Dir(hyphaName) // Beware, it might be . and whatnot.
+		slashCount       = strings.Count(hyphaName, "/")
 	)
-	siblingsMap[hyphaName] = true
-
-	i7n.AddCheck(siblingCheck)
-	i7n.Ignite()
-
-	siblings := make([]*sibling, len(siblingsMap))
-	sibIdx := 0
-	for sibName, exists := range siblingsMap {
-		siblings[sibIdx] = &sibling{sibName, 0, 0, exists}
-		sibIdx++
-	}
-	sort.Slice(siblings, func(i, j int) bool {
-		return siblings[i].name < siblings[j].name
-	})
-	return siblings
-}
-
-func countSubhyphae(siblings []*sibling) {
-	var (
-		subhyphaCheck = func(h hyphae.Hypha) iteration.CheckResult {
-			for _, s := range siblings {
-				if path.Dir(h.CanonicalName()) == s.name {
-					s.directSubhyphaeCount++
-					return iteration.CheckContinue
-				} else if strings.HasPrefix(h.CanonicalName(), s.name+"/") {
-					s.indirectSubhyphaeCount++
-					return iteration.CheckContinue
-				}
-			}
-			return iteration.CheckContinue
+	for h := range hyphae.YieldExistingHyphae() {
+		name := h.CanonicalName()
+		if strings.HasPrefix(name, descendantPrefix) {
+			var subPath = strings.TrimPrefix(name, descendantPrefix)
+			addHyphaToChild(name, subPath, &root)
+			// A child is not a sibling, so we skip the rest.
+			continue
 		}
-		i7n = iteration.NewIteration()
-	)
-	i7n.AddCheck(subhyphaCheck)
-	i7n.Ignite()
-}
 
-// Tree generates a tree for `hyphaName` as html and returns next and previous hyphae if any.
-func Tree(hyphaName string) (siblingsHTML, childrenHTML, prev, next string) {
-	children := make([]child, 0)
-	I := 0
-	// The tree is generated in two iterations of hyphae storage:
-	// 1. Find all siblings (sorted)
-	// 2. Count how many subhyphae siblings have
-	//
-	// We also have to figure out what is going on with the descendants: who is a child of whom. We do that in parallel with (2) because we can.
-	// One of the siblings is the hypha with name `hyphaName`
-	var siblings []*sibling
+		// Skipping non-siblings.
+		if !(path.Dir(name) == parent && slashCount == strings.Count(name, "/")) {
+			continue
+		}
 
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		siblings = findSiblings(hyphaName)
-		countSubhyphae(siblings)
-		wg.Done()
-	}()
-	go func() {
-		children = figureOutChildren(hyphaName).children
-		wg.Done()
-	}()
-	wg.Wait()
-
-	for i, s := range siblings {
-		if s.name == hyphaName {
-			I = i
-			siblingsHTML += fmt.Sprintf(`<li class="sibling-hyphae__entry sibling-hyphae__entry_this"><span>%s</span></li>`, util.BeautifulName(path.Base(hyphaName)))
-		} else {
-			siblingsHTML += siblingHTML(s)
+		if (name < hyphaName) && (name > prev) {
+			prev = name
+		} else if (name > hyphaName) && (name < next || next == "") {
+			next = name
 		}
 	}
-	if I != 0 && len(siblings) > 1 {
-		prev = siblings[I-1].name
-	}
-	if I != len(siblings)-1 && len(siblings) > 1 {
-		next = siblings[I+1].name
-	}
-	return fmt.Sprintf(`<ul class="sibling-hyphae__list">%s</ul>`, siblingsHTML), subhyphaeMatrix(children), prev, next
+	return subhyphaeMatrix(root.children), prev, next
 }
 
 type child struct {
 	name     string
 	exists   bool
 	children []child
-}
-
-func figureOutChildren(hyphaName string) child {
-	var (
-		descPrefix = hyphaName + "/"
-		child      = child{hyphaName, true, make([]child, 0)}
-	)
-
-	for desc := range hyphae.YieldExistingHyphae() {
-		var descName = desc.CanonicalName()
-		if strings.HasPrefix(descName, descPrefix) {
-			var subPath = strings.TrimPrefix(descName, descPrefix)
-			addHyphaToChild(descName, subPath, &child)
-		}
-	}
-
-	return child
 }
 
 func addHyphaToChild(hyphaName, subPath string, child *child) {
@@ -179,13 +76,6 @@ func findOrCreateSubchild(name string, baseChild *child) *child {
 	}
 	baseChild.children = append(baseChild.children, child{fullName, false, make([]child, 0)})
 	return &baseChild.children[len(baseChild.children)-1]
-}
-
-type sibling struct {
-	name                   string
-	directSubhyphaeCount   int
-	indirectSubhyphaeCount int
-	exists                 bool
 }
 
 func subhyphaeMatrix(children []child) (html string) {
