@@ -48,7 +48,9 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 		viewutil.Base(
 			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			views2.MediaMenu(rq, h, u)))
+			views2.MediaMenu(rq, h, u),
+			[]string{},
+		    ))
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
@@ -141,6 +143,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 			viewutil.MetaFrom(w, rq),
 			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
+			[]string{},
 		),
 	)
 }
@@ -191,6 +194,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				[]string{},
 				openGraph))
 	case hyphae.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
@@ -206,11 +210,13 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = mycoopts.Media(h, lc) + contents
 		}
 
+
 		util.HTTP200Page(w,
 			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				[]string{},
 				openGraph))
 	}
 }

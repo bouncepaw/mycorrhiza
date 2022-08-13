@@ -125,6 +125,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 		viewutil.MetaFrom(w, rq),
 		title,
 		AboutHTML(lc),
+		[]string{},
 	))
 	if err != nil {
 		log.Println(err)
