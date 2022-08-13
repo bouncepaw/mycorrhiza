@@ -39,7 +39,7 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), UserList(lc))))
+	w.Write([]byte(viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), UserList(lc), []string{})))
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
@@ -57,6 +57,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.register_title"),
 				Register(rq),
+				[]string{},
 			),
 		)
 		return
@@ -81,6 +82,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 					err.Error(),
 					lc.Get("auth.try_again"),
 				),
+				[]string{},
 			),
 		)
 		return
@@ -111,7 +113,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		}
 		_, _ = io.WriteString(
 			w,
-			viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("auth.logout_title"), Logout(can, lc)),
+			viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("auth.logout_title"), Logout(can, lc), []string{}),
 		)
 	} else if rq.Method == http.MethodPost {
 		user.LogoutFromRequest(w, rq)
@@ -131,6 +133,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 				viewutil.MetaFrom(w, rq),
 				lc.Get("auth.login_title"),
 				Login(lc),
+				[]string{},
 			),
 		)
 	} else if rq.Method == http.MethodPost {
@@ -142,7 +145,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 		if err != nil {
 			w.Header().Set("Content-Type", "text/html;charset=utf-8")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = io.WriteString(w, viewutil.Base(viewutil.MetaFrom(w, rq), err.Error(), LoginError(err.Error(), lc)))
+			_, _ = io.WriteString(w, viewutil.Base(viewutil.MetaFrom(w, rq), err.Error(), LoginError(err.Error(), lc), []string{}))
 			return
 		}
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
@@ -189,6 +192,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 					err.Error(),
 					lc.Get("auth.go_login"),
 				),
+				[]string{},
 			),
 		)
 		return
@@ -209,6 +213,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 					err.Error(),
 					lc.Get("auth.go_login"),
 				),
+				[]string{},
 			),
 		)
 		return

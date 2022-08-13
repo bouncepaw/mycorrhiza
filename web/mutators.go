@@ -49,7 +49,9 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 			viewutil.Base(
 				meta,
 				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
-				hypview.RemoveMediaAsk(rq, h.CanonicalName())))
+				hypview.RemoveMediaAsk(rq, h.CanonicalName()),
+				[]string{},
+			    ))
 		return
 	}
 	switch h := h.(type) {
@@ -175,7 +177,8 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		viewutil.Base(
 			meta,
 			fmt.Sprintf(lc.Get("edit.title"), util.BeautifulName(hyphaName)),
-			hypview.Editor(rq, hyphaName, textAreaFill, warning)))
+			hypview.Editor(rq, hyphaName, textAreaFill, warning),
+			[]string{}))
 }
 
 // handlerUploadText uploads a new text part for the hypha.
@@ -213,7 +216,9 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					textData,
 					message,
 					"",
-					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))))
+					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
+				[]string{},
+				    ))
 	} else {
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
 	}
