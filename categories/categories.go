@@ -33,8 +33,8 @@ func listOfCategories() (categoryList []string) {
 	return categoryList
 }
 
-// categoriesWithHypha returns what categories have the given hypha. The hypha name must be canonical.
-func categoriesWithHypha(hyphaName string) (categoryList []string) {
+// CategoriesWithHypha returns what categories have the given hypha. The hypha name must be canonical.
+func CategoriesWithHypha(hyphaName string) (categoryList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
