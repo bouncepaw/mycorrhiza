@@ -52,7 +52,7 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := viewCardChain.Get(meta).ExecuteTemplate(&buf, "category card", cardData{
 		HyphaName:               hyphaName,
-		Categories:              categoriesWithHypha(hyphaName),
+		Categories:              CategoriesWithHypha(hyphaName),
 		GivenPermissionToModify: meta.U.CanProceed("add-to-category"),
 	})
 	if err != nil {

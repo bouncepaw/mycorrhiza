@@ -7,6 +7,7 @@ import (
 	views2 "github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"io"
 	"log"
 	"net/http"
@@ -210,13 +211,17 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = mycoopts.Media(h, lc) + contents
 		}
 
+		cats := []string{}
+		for _, category := range categories.CategoriesWithHypha(h.CanonicalName()) {
+		    cats = append(cats, "cat-" + category)
+		}
 
 		util.HTTP200Page(w,
 			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
-				[]string{},
+				cats,
 				openGraph))
 	}
 }
