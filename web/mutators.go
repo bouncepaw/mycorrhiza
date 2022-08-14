@@ -51,7 +51,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
 				hypview.RemoveMediaAsk(rq, h.CanonicalName()),
 				map[string]string{},
-			    ))
+			))
 		return
 	}
 	switch h := h.(type) {
@@ -218,7 +218,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 					"",
 					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
 				map[string]string{},
-				    ))
+			))
 	} else {
 		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
 	}
