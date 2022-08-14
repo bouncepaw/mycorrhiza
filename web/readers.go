@@ -3,11 +3,11 @@ package web
 import (
 	"fmt"
 	"github.com/bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/files"
 	views2 "github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"github.com/bouncepaw/mycorrhiza/categories"
 	"io"
 	"log"
 	"net/http"
@@ -51,7 +51,7 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
 			views2.MediaMenu(rq, h, u),
 			map[string]string{},
-		    ))
+		))
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
@@ -211,14 +211,14 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			contents = mycoopts.Media(h, lc) + contents
 		}
 
-                category_list := ":" + strings.Join(categories.CategoriesWithHypha(h.CanonicalName()), ":") + ":"
+		category_list := ":" + strings.Join(categories.CategoriesWithHypha(h.CanonicalName()), ":") + ":"
 
 		util.HTTP200Page(w,
 			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
 				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
-                                map[string]string{"cats": category_list},
+				map[string]string{"cats": category_list},
 				openGraph))
 	}
 }
