@@ -91,14 +91,14 @@ func localizedBaseWithWeirdBody(meta Meta) *template.Template {
 }
 
 type BaseData struct {
-	Meta          Meta
-	HeadElements  []string
-	HeaderLinks   []HeaderLink
-	CommonScripts []string
-	Addr          string
-	Title         string // TODO: remove
-	Body          string // TODO: remove
-	ExtraData    []string
+	Meta           Meta
+	HeadElements   []string
+	HeaderLinks    []HeaderLink
+	CommonScripts  []string
+	Addr           string
+	Title          string // TODO: remove
+	Body           string // TODO: remove
+	BodyAttributes []string
 }
 
 func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonScripts []string) {
@@ -114,13 +114,13 @@ func Base(meta Meta, title, body string, extraData []string, headElements ...str
 	meta.W = &w
 	t := localizedBaseWithWeirdBody(meta)
 	err := t.ExecuteTemplate(&w, "page", BaseData{
-		Meta:          meta,
-		Title:         title,
-		HeadElements:  headElements,
-		HeaderLinks:   HeaderLinks,
-		CommonScripts: cfg.CommonScripts,
-		Body:          body,
-		ExtraData:     extraData,
+		Meta:           meta,
+		Title:          title,
+		HeadElements:   headElements,
+		HeaderLinks:    HeaderLinks,
+		CommonScripts:  cfg.CommonScripts,
+		Body:           body,
+		BodyAttributes: extraData,
 	})
 	if err != nil {
 		log.Println(err)
