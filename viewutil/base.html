@@ -15,7 +15,7 @@
 	<script src="/static/shortcuts.js"></script>
 	{{range .HeadElements}}{{.}}{{end}}
 </head>
-<body data-rrh-addr="{{if .Addr}}{{.Addr}}{{else}}{{.Meta.Addr}}{{end}}"{{range .BodyAttributes}} data-rrh-{{.}}=""{{end}}>
+<body data-rrh-addr="{{if .Addr}}{{.Addr}}{{else}}{{.Meta.Addr}}{{end}}"{{range $key, $value := .BodyAttributes}} data-rrh-{{$key}}="{{$value}}"{{end}}>
 <header>
 	<nav class="main-width top-bar">
 		<ul class="top-bar__wrapper">

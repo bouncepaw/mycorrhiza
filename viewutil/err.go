@@ -22,7 +22,7 @@ func HttpErr(meta Meta, status int, name, errMsg string) {
 				name,
 				meta.Lc.Get("ui.error_go_back"),
 			),
-			[]string{},
+			map[string]string{},
 		),
 	)
 }

@@ -98,7 +98,7 @@ type BaseData struct {
 	Addr           string
 	Title          string // TODO: remove
 	Body           string // TODO: remove
-	BodyAttributes []string
+	BodyAttributes map[string]string
 }
 
 func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonScripts []string) {
@@ -109,7 +109,7 @@ func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonSc
 
 // Base is a temporary wrapper around BaseEn and BaseRu, meant to facilitate the migration from qtpl.
 // TODO: get rid of this
-func Base(meta Meta, title, body string, extraData []string, headElements ...string) string {
+func Base(meta Meta, title, body string, bodyAttributes map[string]string, headElements ...string) string {
 	var w strings.Builder
 	meta.W = &w
 	t := localizedBaseWithWeirdBody(meta)
@@ -120,7 +120,7 @@ func Base(meta Meta, title, body string, extraData []string, headElements ...str
 		HeaderLinks:    HeaderLinks,
 		CommonScripts:  cfg.CommonScripts,
 		Body:           body,
-		BodyAttributes: extraData,
+		BodyAttributes: bodyAttributes,
 	})
 	if err != nil {
 		log.Println(err)
