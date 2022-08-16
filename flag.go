@@ -36,7 +36,7 @@ func parseCliArgs() {
 
 	flag.StringVar(&cfg.ListenAddr, "listen-addr", "", "Address to listen on. For example, 127.0.0.1:1737 or /run/mycorrhiza.sock.")
 	flag.StringVar(&createAdminName, "create-admin", "", "Create a new admin. The password will be prompted in the terminal.")
-	flag.BoolVar(&versionFlag, "version", false, "Print the mycorrhiza version and exit.")
+	flag.BoolVar(&versionFlag, "version", false, "Print version information and exit.")
 	flag.Usage = printHelp
 	flag.Parse()
 
