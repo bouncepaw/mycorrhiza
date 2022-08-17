@@ -13,6 +13,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/version"
 	"golang.org/x/term"
 )
 
@@ -31,11 +32,18 @@ func printHelp() {
 // parseCliArgs parses CLI options and sets several important global variables. Call it early.
 func parseCliArgs() {
 	var createAdminName string
+	var versionFlag bool
 
 	flag.StringVar(&cfg.ListenAddr, "listen-addr", "", "Address to listen on. For example, 127.0.0.1:1737 or /run/mycorrhiza.sock.")
 	flag.StringVar(&createAdminName, "create-admin", "", "Create a new admin. The password will be prompted in the terminal.")
+	flag.BoolVar(&versionFlag, "version", false, "Print version information and exit.")
 	flag.Usage = printHelp
 	flag.Parse()
+
+	if versionFlag {
+		fmt.Println(version.FormatVersion())
+		os.Exit(0)
+	}
 
 	args := flag.Args()
 	if len(args) == 0 {
