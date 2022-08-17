@@ -5,7 +5,7 @@ PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
 MANDIR=$(PREFIX)/share/man
 GO=go
-TAGGED_RELEASE=$(shell git describe --tags --abbrev=0)
+TAGGED_RELEASE!=git describe --tags --abbrev=0
 LDFLAGS=-X "github.com/bouncepaw/mycorrhiza/version.taggedRelease=$(TAGGED_RELEASE)"
 
 all: mycorrhiza
