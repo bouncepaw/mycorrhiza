@@ -4,6 +4,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/version"
 	"log"
 	"strings"
 	"text/template" // sic!
@@ -36,7 +37,7 @@ const aboutTemplateString = `
 		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
 		<dl>
 			<dt>{{ get .L.Version }}</dt>
-			<dd>1.11.0</dd>
+			<dd>{{ .Version }}</dd>
 		{{ if .Cfg.UseAuth }}
 			<dt>{{ get .L.HomeHypha }}</dt>
 			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
@@ -67,6 +68,7 @@ const aboutTemplateString = `
 
 var aboutData = struct {
 	L                 map[string]L10nEntry
+	Version           string
 	Cfg               map[string]interface{}
 	Admins            []string
 	UserCount         uint64
@@ -96,6 +98,7 @@ func AboutHTML(lc *l18n.Localizer) string {
 		log.Fatalln(err)
 	}
 	data := aboutData
+	data.Version = version.FormatVersion()
 	data.Admins = user.ListUsersWithGroup("admin")
 	data.UserCount = user.Count()
 	data.RegistrationLimit = cfg.RegistrationLimit

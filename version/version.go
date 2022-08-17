@@ -28,5 +28,5 @@ func FormatVersion() string {
 		}
 	}
 
-	return fmt.Sprintf("Mycorrhiza Wiki %s+%s%s", taggedRelease, commitHash[:7], dirty)
+	return fmt.Sprintf("%s+%s%s", taggedRelease, commitHash[:7], dirty)
 }
