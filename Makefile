@@ -6,8 +6,7 @@ BINDIR=$(PREFIX)/bin
 MANDIR=$(PREFIX)/share/man
 GO=go
 TAGGED_RELEASE=$(shell git describe --tags --abbrev=0)
-COMMIT_HASH=$(shell echo -n $(shell git rev-parse --short HEAD) && git diff-index --quiet HEAD -- || echo -n '-dirty')
-LDFLAGS=-X "github.com/bouncepaw/mycorrhiza/version.TaggedRelease=$(TAGGED_RELEASE)" -X "github.com/bouncepaw/mycorrhiza/version.CommitHash=$(COMMIT_HASH)"
+LDFLAGS=-X "github.com/bouncepaw/mycorrhiza/version.taggedRelease=$(TAGGED_RELEASE)"
 
 all: mycorrhiza
 
