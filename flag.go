@@ -41,7 +41,6 @@ func parseCliArgs() {
 	flag.Parse()
 
 	if versionFlag {
-		//fmt.Println("mycorrhiza:", version.TaggedRelease, "\tcommit:", version.CommitHash)
 		fmt.Println(version.FormatVersion())
 		os.Exit(0)
 	}
