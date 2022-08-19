@@ -57,8 +57,10 @@
 		<div class="dialog__content"></div>
 	</div>
 </template>
-{{range .CommonScripts}}{{.}}{{end}}
 <script src="/static/view.js"></script>
+{{range .CommonScripts}}
+	<script src="{{.}}"></script>
+{{end}}
 </body>
 </html>
 {{end}}
