@@ -2,12 +2,15 @@ package web
 
 import (
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+
 	"github.com/bouncepaw/mycomarkup/v5"
+
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"log"
-	"net/http"
 
 	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
 
@@ -148,80 +151,65 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName    = util.HyphaNameFromRq(rq, "edit")
-		h            = hyphae.ByName(hyphaName)
-		warning      string
-		textAreaFill string
-		err          error
-		u            = user.FromRequest(rq)
-		lc           = l18n.FromRequest(rq)
-		meta         = viewutil.MetaFrom(w, rq)
+		u    = user.FromRequest(rq)
+		lc   = l18n.FromRequest(rq)
+		meta = viewutil.MetaFrom(w, rq)
+
+		hyphaName = util.HyphaNameFromRq(rq, "edit")
+		h         = hyphae.ByName(hyphaName)
+
+		isNew   bool
+		content string
+		err     error
 	)
+
 	if err := shroom.CanEdit(u, h, lc); err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 		return
 	}
+
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
-		warning = fmt.Sprintf(`<p class="warning warning_new-hypha">%s</p>`, lc.Get("edit.new_hypha"))
+		isNew = true
 	default:
-		textAreaFill, err = hyphae.FetchMycomarkupFile(h)
+		content, err = hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			log.Println(err)
 			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.error_text_fetch"))
 			return
 		}
 	}
-	util.HTTP200Page(
-		w,
-		viewutil.Base(
-			meta,
-			fmt.Sprintf(lc.Get("edit.title"), util.BeautifulName(hyphaName)),
-			hypview.Editor(rq, hyphaName, textAreaFill, warning),
-			map[string]string{}))
+	hypview.EditHypha(meta, hyphaName, isNew, content, "", "")
 }
 
 // handlerUploadText uploads a new text part for the hypha.
 func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
+		u    = user.FromRequest(rq)
+		meta = viewutil.MetaFrom(w, rq)
+
 		hyphaName = util.HyphaNameFromRq(rq, "upload-text")
 		h         = hyphae.ByName(hyphaName)
-		textData  = rq.PostFormValue("text")
-		action    = rq.PostFormValue("action")
-		message   = rq.PostFormValue("message")
-		u         = user.FromRequest(rq)
-		lc        = l18n.FromRequest(rq)
-		meta      = viewutil.MetaFrom(w, rq)
+		_, isNew  = h.(*hyphae.EmptyHypha)
+
+		textData = rq.PostFormValue("text")
+		action   = rq.PostFormValue("action")
+		message  = rq.PostFormValue("message")
 	)
 
-	if action != "Preview" {
-		if err := shroom.UploadText(h, []byte(textData), message, u); err != nil {
-			viewutil.HttpErr(meta, http.StatusForbidden, hyphaName, err.Error())
-			return
-		}
-	}
-
-	if action == "Preview" {
+	if action == "preview" {
 		ctx, _ := mycocontext.ContextFromStringInput(textData, mycoopts.MarkupOptions(hyphaName))
-
-		util.HTTP200Page(
-			w,
-			viewutil.Base(
-				meta,
-				fmt.Sprintf(lc.Get("edit.preview_title"), util.BeautifulName(hyphaName)),
-				hypview.Preview(
-					rq,
-					hyphaName,
-					textData,
-					message,
-					"",
-					mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))),
-				map[string]string{},
-			))
-	} else {
-		http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
+		preview := template.HTML(mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))
+		hypview.EditHypha(meta, hyphaName, isNew, textData, message, preview)
+		return
 	}
+
+	if err := shroom.UploadText(h, []byte(textData), message, u); err != nil {
+		viewutil.HttpErr(meta, http.StatusForbidden, hyphaName, err.Error())
+		return
+	}
+	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
 }
 
 // handlerUploadBinary uploads a new media for the hypha.

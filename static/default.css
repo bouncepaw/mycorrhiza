@@ -99,7 +99,7 @@ textarea {font-size:16px; font-family: inherit; line-height: 150%; }
 .edit-form p { margin: .25rem 0; }
 .edit-form__message { width: 100%; margin: 0.25em 0; }
 .edit-form__save { font-weight: bold; }
-.edit-toolbar__buttons, .edit-toolbar__ad { margin: .5rem; }
+.edit-toolbar__buttons, .edit-toolbar__help { margin: .5rem; }
 .edit-form { height: 100%; display: flex; flex-direction: column; }
 
 .icon {margin-right: .25rem; vertical-align: bottom; }

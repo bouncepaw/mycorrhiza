@@ -1,0 +1,104 @@
+{{define "toolbar"}}
+<aside class="edit-toolbar markup-toolbar layout-card">
+    <h2 class="edit-toolbar__title layout-card__title">{{block "markup" .}}Markup{{end}}</h2>
+    <section class="edit-toolbar__buttons">
+        <button class="btn edit-toolbar__btn edit-toolbar__link">[[{{block "link" .}}Link{{end}}]]</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__titlelink">[[{{template "link" .}} | {{block "link title" .}}Title{{end}}]]</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__heading1">= {{block "heading" .}}Heading{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__heading2">== {{template "heading" .}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__bold"><b>**{{block "bold" .}}Bold{{end}}**</b></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__italic"><i>//{{block "italic" .}}Italic{{end}}//</i></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__highlighted"><mark>++{{block "highlight" .}}Highlight{{end}}++</mark></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__underline"><u>__{{block "underline" .}}Underline{{end}}__</u></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__monospace"><code>`{{block "mono" .}}Monospace{{end}}`</code></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__lifted"><sup>^^{{block "super" .}}Supertext{{end}}^^</sup></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__lowered"><sub>,,{{block "sub" .}}Subtext{{end}},,</sub></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__strikethrough"><s>~~{{block "strike" .}}Strikethrough{{end}}~~</s></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__rocket">=> {{block "rocket" .}}Rocketlink{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__xcl"><= {{block "transclude" .}}Transclusion{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__img"><code>img {}</code></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__table"><code>table {}</code></button>
+        <button class="btn edit-toolbar__btn edit-toolbar__hr">{{block "hr" .}}Horizontal bar{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__codeblock">{{block "code" .}}Code block{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__bulletedlist">* {{block "bullets" .}}Bullet list{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__numberedlist">*. {{block "numbers" .}}Number list{{end}}</button>
+    </section>
+    <p class="edit-toolbar__help">
+        {{block "mycomarkup help" .}}
+            <a href="/help/en/mycomarkup" target="_blank" class="shy-link">Learn more</a> about mycomarkup
+        {{end}}
+    </p>
+</aside>
+<aside class="edit-toolbar action-toolbar layout-card">
+    <h2 class="edit-toolbar__title layout-card__title">{{block "actions" .}}Actions{{end}}</h2>
+    <section class="edit-toolbar__buttons">
+        <button class="btn edit-toolbar__btn edit-toolbar__date">{{block "current date" .}}Insert current date{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__time">{{block "current time" .}}Insert current time{{end}}</button>
+        {{if .Meta.U.Group | ne "anon"}}
+        <button class="btn edit-toolbar__btn edit-toolbar__user-link">{{block "selflink" .}}Link yourself{{end}}</button>
+        {{end}}
+    </section>
+</aside>
+<script src="/static/toolbar.js"></script>
+{{end}}
+
+{{define "editing hypha"}}Edit {{beautifulName .}}{{end}}
+{{define "previewing hypha"}}Preview of {{beautifulName .}}{{end}}
+{{define "title"}}
+{{- if .Preview -}}
+    {{template "previewing hypha" .HyphaName}}
+{{- else -}}
+    {{template "editing hypha" .HyphaName}}
+{{- end -}}
+{{end}}
+{{define "body"}}
+<main class="main-width edit {{if .Preview}}edit_with-preview{{else}}edit_no-preview{{end}}">
+    <form method="post" class="edit-form" action="/upload-text/{{.HyphaName}}">
+        <h1 class="edit__title">
+            {{block "editing [[hypha]]" .HyphaName}}
+                Edit <a href="/hypha/{{.}}">{{beautifulName .}}</a>
+            {{end}}
+        </h1>
+        {{if .IsNew}}
+            <p class="warning warning_new-hypha">
+                {{block "you're creating a new hypha" .}}You are creating a new hypha.{{end}}
+            </p>
+        {{end}}
+        <textarea name="text" class="edit-form__textarea" autofocus>{{.Content}}</textarea>
+        <p class="edit-form__message-zone">
+            <input
+                id="text"
+                type="text"
+                name="message"
+                class="edit-form__message"
+                value="{{.Message}}"
+                placeholder="{{block "describe your changes" .}}Describe your changes{{end}}"
+                aria-label="{{template "describe your changes" .}}">
+        </p>
+        <p class="edit-form__buttons">
+            <button type="submit" name="action" class="btn btn_accent edit-form__save" value="save">
+                {{template "save" .}}
+            </button>
+            <button type="submit" name="action" class="btn edit-form__preview" value="preview">
+                {{block "preview" .}}Preview{{end}}
+            </button>
+            <a href="/hypha/{{.HyphaName}}" class="btn btn_weak">
+                {{template "cancel" .}}
+            </a>
+        </p>
+    </form>
+    {{if .Preview}}
+        <p class="warning">
+            {{block "preview tip" .}}Note that the hypha hasn't been saved yet. Here's the preview:{{end}}
+        </p>
+        <article class="edit__preview">
+            {{.Preview}}
+        </article>
+    {{end}}
+</main>
+{{template "toolbar" .}}
+<script src="/static/editor.js"></script>
+{{range .EditScripts}}
+    <script src="{{.}}"></script>
+{{end}}
+{{end}}

@@ -2,16 +2,51 @@ package hypview
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"html/template"
 	"log"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
 var (
 	//go:embed *.html
 	fs            embed.FS
 	ruTranslation = `
+{{define "editing hypha"}}Редактирование {{beautifulName .}}{{end}}
+{{define "editing [[hypha]]"}}Редактирование <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
+{{define "you're creating a new hypha"}}Вы создаёте новую гифу.{{end}}
+{{define "describe your changes"}}Опишите ваши правки{{end}}
+{{define "save"}}Сохранить{{end}}
+{{define "preview"}}Предпросмотр{{end}}
+{{define "previewing hypha"}}Предпросмотр «{{beautifulName .}}»{{end}}
+{{define "preview tip"}}Заметьте, эта гифа ещё не сохранена. Вот её предпросмотр:{{end}}
+
+{{define "markup"}}Разметка{{end}}
+{{define "link"}}Ссылка{{end}}
+{{define "link title"}}Текст{{end}}
+{{define "heading"}}Заголовок{{end}}
+{{define "bold"}}Жирный{{end}}
+{{define "italic"}}Курсив{{end}}
+{{define "highlight"}}Выделение{{end}}
+{{define "underline"}}Подчеркивание{{end}}
+{{define "mono"}}Моноширинный{{end}}
+{{define "super"}}Надстрочный{{end}}
+{{define "sub"}}Подстрочный{{end}}
+{{define "strike"}}Зачёркнутый{{end}}
+{{define "rocket"}}Ссылка-ракета{{end}}
+{{define "transclude"}}Трансклюзия{{end}}
+{{define "hr"}}Гориз. черта{{end}}
+{{define "code"}}Код-блок{{end}}
+{{define "bullets"}}Маркир. список{{end}}
+{{define "numbers"}}Нумер. список{{end}}
+{{define "mycomarkup help"}}<a href="/help/en/mycomarkup" class="shy-link">Подробнее</a> о микоразметке{{end}}
+{{define "actions"}}Действия{{end}}
+{{define "current date"}}Текущая дата{{end}}
+{{define "current time"}}Текущее время{{end}}
+{{define "selflink"}}Ссылка на вас{{end}}
+
 {{define "empty heading"}}Эта гифа не существует{{end}}
 {{define "empty no rights"}}У вас нет прав для создания новых гиф. Вы можете:{{end}}
 {{define "empty log in"}}Войти в свою учётную запись, если она у вас есть{{end}}
@@ -37,6 +72,7 @@ var (
 {{define "leave redirections"}}Оставить перенаправления{{end}}
 `
 	chainNaviTitle   viewutil.Chain
+	chainEditHypha   viewutil.Chain
 	chainEmptyHypha  viewutil.Chain
 	chainDeleteHypha viewutil.Chain
 	chainRenameHypha viewutil.Chain
@@ -44,9 +80,33 @@ var (
 
 func Init() {
 	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
+	chainEditHypha = viewutil.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
 	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
 	chainDeleteHypha = viewutil.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
 	chainRenameHypha = viewutil.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
+}
+
+type editData struct {
+	*viewutil.BaseData
+	HyphaName string
+	IsNew     bool
+	Content   string
+	Message   string
+	Preview   template.HTML
+}
+
+func EditHypha(meta viewutil.Meta, hyphaName string, isNew bool, content string, message string, preview template.HTML) {
+	viewutil.ExecutePage(meta, chainEditHypha, editData{
+		BaseData: &viewutil.BaseData{
+			Addr:        "/edit/" + hyphaName,
+			EditScripts: cfg.EditScripts,
+		},
+		HyphaName: hyphaName,
+		IsNew:     isNew,
+		Content:   content,
+		Message:   message,
+		Preview:   preview,
+	})
 }
 
 type deleteRenameData struct {

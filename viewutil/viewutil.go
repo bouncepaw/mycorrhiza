@@ -4,12 +4,13 @@ package viewutil
 import (
 	"embed"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"io/fs"
 	"log"
 	"strings"
 	"text/template" // TODO: save the world
+
+	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var (
@@ -95,6 +96,7 @@ type BaseData struct {
 	HeadElements   []string
 	HeaderLinks    []HeaderLink
 	CommonScripts  []string
+	EditScripts    []string
 	Addr           string
 	Title          string // TODO: remove
 	Body           string // TODO: remove
@@ -119,6 +121,7 @@ func Base(meta Meta, title, body string, bodyAttributes map[string]string, headE
 		HeadElements:   headElements,
 		HeaderLinks:    HeaderLinks,
 		CommonScripts:  cfg.CommonScripts,
+		EditScripts:    cfg.EditScripts,
 		Body:           body,
 		BodyAttributes: bodyAttributes,
 	})
