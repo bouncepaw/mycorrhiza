@@ -130,7 +130,7 @@ func streamhyphaInfo(qw422016 *qt422016.Writer, meta viewutil.Meta, h hyphae.Hyp
 //line hypview/nav.qtpl:23
 	u := meta.U
 	lc := meta.Lc
-	backs := backlinks.BacklinksCount(h)
+	backs := backlinks.BacklinksCount(h.CanonicalName())
 
 //line hypview/nav.qtpl:26
 	qw422016.N().S(`

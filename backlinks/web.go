@@ -32,7 +32,7 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
 	var orphans []string
 	for h := range hyphae.YieldExistingHyphae() {
-		if BacklinksCount(h) == 0 {
+		if BacklinksCount(h.CanonicalName()) == 0 {
 			orphans = append(orphans, h.CanonicalName())
 		}
 	}

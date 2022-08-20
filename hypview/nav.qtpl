@@ -22,7 +22,7 @@
 {% code
 	u := meta.U
 	lc := meta.Lc
-	backs := backlinks.BacklinksCount(h)
+	backs := backlinks.BacklinksCount(h.CanonicalName())
 %}
 <nav class="hypha-info">
 	<ul class="hypha-info__list">

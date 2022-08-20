@@ -2,6 +2,7 @@ package hypview
 
 import (
 	"embed"
+	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"html/template"
 	"log"
 	"strings"
@@ -69,7 +70,7 @@ var (
 {{define "new name"}}Новое название:{{end}}
 {{define "rename recursively"}}Также переименовать подгифы{{end}}
 {{define "rename tip"}}Переименовывайте аккуратно. <a href="/help/en/rename">Документация на английском.</a>{{end}}
-{{define "leave redirections"}}Оставить перенаправления{{end}}
+{{define "leave redirection"}}Оставить перенаправление{{end}}
 `
 	chainNaviTitle   viewutil.Chain
 	chainEditHypha   viewutil.Chain
@@ -109,22 +110,29 @@ func EditHypha(meta viewutil.Meta, hyphaName string, isNew bool, content string,
 	})
 }
 
-type deleteRenameData struct {
+type renameData struct {
+	*viewutil.BaseData
+	HyphaName               string
+	LeaveRedirectionDefault bool
+}
+
+func RenameHypha(meta viewutil.Meta, hyphaName string) {
+	viewutil.ExecutePage(meta, chainRenameHypha, renameData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/rename/" + hyphaName,
+		},
+		HyphaName:               hyphaName,
+		LeaveRedirectionDefault: backlinks.BacklinksCount(hyphaName) != 0,
+	})
+}
+
+type deleteData struct {
 	*viewutil.BaseData
 	HyphaName string
 }
 
-func RenameHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainRenameHypha, deleteRenameData{
-		BaseData: &viewutil.BaseData{
-			Addr: "/rename/" + hyphaName,
-		},
-		HyphaName: hyphaName,
-	})
-}
-
 func DeleteHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainDeleteHypha, deleteRenameData{
+	viewutil.ExecutePage(meta, chainDeleteHypha, deleteData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/delete/" + hyphaName,
 		},

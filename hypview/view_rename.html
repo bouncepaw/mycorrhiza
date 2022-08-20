@@ -13,8 +13,8 @@
 			<input type="checkbox" id="recursive" name="recursive" value="true" checked/>
 			<label for="recursive">{{block "rename recursively" .}}Rename subhyphae too{{end}}</label>
 			<br>
-			<input type="checkbox" id="redirection" name="redirection" value="true" checked/>
-			<label for="redirection">{{block "leave redirections" .}}Leave redirections{{end}}</label>
+			<input type="checkbox" id="redirection" name="redirection" value="true" {{if .LeaveRedirectionDefault}}checked{{end}}/>
+			<label for="redirection">{{block "leave redirection" .}}Leave redirection{{end}}</label>
 
 			<p>{{block "rename tip" .}}Rename carefully. <a href="/help/en/rename">Documentation.</a>{{end}}</p>
 			<button type="submit" value="Confirm" class="btn">
