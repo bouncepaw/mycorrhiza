@@ -12,9 +12,10 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // CanProceed returns `true` if the user in `rq` has enough rights to access `route`.
@@ -58,6 +59,8 @@ func Register(username, password, group, source string, force bool) error {
 		return fmt.Errorf("username ‘%s’ is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
+	case password == "":
+		return fmt.Errorf("password must not be empty")
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

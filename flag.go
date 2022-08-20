@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	_ "embed"
 	"flag"
 	"fmt"
@@ -8,13 +9,13 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"syscall"
+
+	"golang.org/x/term"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/version"
-	"golang.org/x/term"
 )
 
 // CLI options are read and parsed here.
@@ -64,38 +65,50 @@ func parseCliArgs() {
 }
 
 func createAdminCommand(name string) {
-	wr := log.Writer()
-	log.SetFlags(0)
-
 	if err := files.PrepareWikiRoot(); err != nil {
-		log.Fatal("error: ", err)
+		log.Fatal(err)
 	}
 	cfg.UseAuth = true
 	cfg.AllowRegistration = true
-
-	log.SetOutput(io.Discard)
 	user.InitUserDatabase()
-	log.SetOutput(wr)
 
-	handle /*rug*/ := syscall.Stdin
-	if !term.IsTerminal(handle) {
-		log.Fatal("error: not a terminal")
-	}
-
-	fmt.Print("Password: ")
-	passwordBytes, err := term.ReadPassword(handle)
-	fmt.Print("\n")
+	password, err := askPass("Password")
 	if err != nil {
-		log.Fatal("error: ", err)
+		log.Fatal(err)
+	}
+	if err := user.Register(name, password, "admin", "local", true); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func askPass(prompt string) (string, error) {
+	var password []byte
+	var err error
+	fd := int(os.Stdin.Fd())
+
+	if term.IsTerminal(fd) {
+		fmt.Printf("%s: ", prompt)
+		password, err = term.ReadPassword(int(os.Stdin.Fd()))
+		if err != nil {
+			return "", err
+		}
+		fmt.Println()
+	} else {
+		fmt.Fprintf(os.Stderr, "Warning: Reading password from stdin.\n")
+		// TODO: the buffering messes up repeated calls to readPassword
+		scanner := bufio.NewScanner(os.Stdin)
+		if !scanner.Scan() {
+			if err := scanner.Err(); err != nil {
+				return "", err
+			}
+			return "", io.ErrUnexpectedEOF
+		}
+		password = scanner.Bytes()
+
+		if len(password) == 0 {
+			return "", fmt.Errorf("zero length password")
+		}
 	}
 
-	password := string(passwordBytes)
-
-	log.SetOutput(io.Discard)
-	err = user.Register(name, password, "admin", "local", true)
-	log.SetOutput(wr)
-
-	if err != nil {
-		log.Fatal("error: ", err)
-	}
+	return string(password), nil
 }
