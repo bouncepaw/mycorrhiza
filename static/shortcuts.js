@@ -1,369 +1,321 @@
-const $ = document.querySelector.bind(document);
-const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...args));
+rrh.l10n('List of shortcuts', { ru: 'Горячие клавиши' })
+rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
 
-const isMac = /Macintosh/.test(window.navigator.userAgent);
+rrh.l10n('Common', { ru: 'Общее' })
+rrh.l10n('Home', { ru: 'Главная' })
 
+rrh.l10n('Hypha', { ru: 'Гифа' })
+
+rrh.l10n('Editor', { ru: 'Редактор' })
+
+rrh.l10n('Format', { ru: 'Форматирование' })
+
+rrh.shortcuts = {
+    // map is the whole shortcut graph. active points to the node of the
+    // shortcut graph that's currently "selected". When the user presses a
+    // key, the code finds the key node in the active subgraph and sets
+    // active to the found node. On each key press we get a narrower view
+    // until we reach a leaf and execute the action. View this property in
+    // the JavaScript console of your browser for easier understanding.
+    map: {},
+    groups: [],
+
+    addGroup(group) {
+        this.groups.push(group)
+    },
+
+    addBindingToGroup(name, binding) {
+        let group = this.groups.find(group => group.name === name)
+        if (!group) {
+            console.warn('Shortcut group', name, 'not found')
+            return
+        }
+        group.bind(binding)
+    },
+
+    _register(shortcuts, action, other = {}) {
+        // shortcuts looks like this: ['g r', 'Ctrl+r']
+        // Every item of shortcuts is a sequential key chord.
+        for (let chord of strToArr(shortcuts)) {
+            let leaf = this.map
+            let keys = chord.trim().split(' ')
+            for (let key of keys) {
+                // If there's no existing edge, create one
+                if (!leaf[key]) leaf[key] = {}
+                leaf = leaf[key]
+                if (leaf.action) throw new Error(`Shortcut ${chord} already exists`)
+            }
+            // Now we've traversed to the leaf. Bind the shortcut
+            leaf.action = action
+            Object.assign(leaf, other)
+        }
+    },
+
+    _handleKeyDown(event) {
+        if (event.defaultPrevented) return
+        if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return
+        if ((!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) &&
+            event.target instanceof Node && isTextField(event.target)) return
+
+        let shortcut = keyEventToShortcut(event)
+
+        if (!this.active[shortcut]) {
+            this._resetActive()
+            return
+        }
+
+        this.active = this.active[shortcut]
+        if (this.active.action && (!this.active.element || event.target === this.active.element)) {
+            event.stopPropagation()
+            if (this.active.force) event.preventDefault()
+            this.active.action(event)
+            this._resetActive()
+            return
+        }
+
+        if (this.timeout) clearTimeout(this.timeout)
+        this.timeout = window.setTimeout(() => this._resetActive(), 1500)
+    },
+
+    _resetActive() {
+        this.active = this.map
+        if (this.timeout) {
+            clearTimeout(this.timeout)
+            this.timeout = null
+        }
+    },
+}
+window.addEventListener('keydown', event => rrh.shortcuts._handleKeyDown(event))
+rrh.shortcuts._resetActive()
+
+// Convert a KeyboardEvent into a shortcut string for matching by
+// ShortcutHandler.
 function keyEventToShortcut(event) {
-    let elideShift = event.key.toUpperCase() === event.key && event.shiftKey;
+    let elideShift = event.key.toUpperCase() === event.key && event.shiftKey
     return (event.ctrlKey ? 'Ctrl+' : '') +
         (event.altKey ? 'Alt+' : '') +
         (event.metaKey ? 'Meta+' : '') +
         (!elideShift && event.shiftKey ? 'Shift+' : '') +
-        (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key);
+        (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key)
 }
 
+// Prettify the shortcut string by replacing modifiers and arrow codes with
+// Unicode symbol for presentation to the user.
 function prettifyShortcut(shortcut) {
-    let keys = shortcut.split('+');
+    let keys = shortcut.split('+')
 
     if (isMac) {
-        let cmdIdx = keys.indexOf('Meta');
+        let cmdIdx = keys.indexOf('Meta')
         if (cmdIdx !== -1 && keys.length - cmdIdx > 2) {
-            let tmp = keys[cmdIdx + 1];
-            keys[cmdIdx + 1] = 'Meta';
-            keys[cmdIdx] = tmp;
+            let tmp = keys[cmdIdx + 1]
+            keys[cmdIdx + 1] = 'Meta'
+            keys[cmdIdx] = tmp
         }
     }
 
-    let lastKey = keys[keys.length - 1];
+    // Add Shift into shortcut strings like Ctrl+L
+    let lastKey = keys[keys.length - 1]
     if (!keys.includes('Shift') && lastKey.toUpperCase() === lastKey && lastKey.toLowerCase() !== lastKey) {
-        keys.splice(keys.length - 1, 0, 'Shift');
+        keys.splice(keys.length - 1, 0, 'Shift')
     }
 
     for (let i = 0; i < keys.length; i++) {
         if (isMac) {
-            switch (keys[i]) {
-                case 'Ctrl': keys[i] = '⌃'; break;
-                case 'Alt': keys[i] = '⌥'; break;
-                case 'Shift': keys[i] = '⇧'; break;
-                case 'Meta': keys[i] = '⌘'; break;
-            }
+            if (keys[i] === 'Ctrl') keys[i] = '⌃'
+            if (keys[i] === 'Alt') keys[i] = '⌥'
+            if (keys[i] === 'Shift') keys[i] = '⇧'
+            if (keys[i] === 'Meta') keys[i] = '⌘'
+        } else {
+            if (keys[i] === 'Meta') keys[i] = 'Win'
         }
 
         if (i === keys.length - 1 && i > 0 && keys[i].length === 1) {
-            keys[i] = keys[i].toUpperCase();
+            // Make every key uppercase. This does not introduce any ambiguous
+            // cases because we insert a Shift modifier for upper-case keys
+            // earlier.
+            keys[i] = keys[i].toUpperCase()
         }
 
-        switch (keys[i]) {
-            case 'ArrowLeft': keys[i] = '←'; break;
-            case 'ArrowRight': keys[i] = '→'; break;
-            case 'ArrowUp': keys[i] = '↑'; break;
-            case 'ArrowDown': keys[i] = '↓'; break;
-            case 'Comma': keys[i] = ','; break;
-            case 'Enter': keys[i] = '↩'; break;
-            case ' ': keys[i] = 'Space'; break;
-        }
-
-        keys[i] = `<kbd>${keys[i]}</kbd>`;
+        if (keys[i] === 'ArrowLeft') keys[i] = '←'
+        if (keys[i] === 'ArrowRight') keys[i] = '→'
+        if (keys[i] === 'ArrowUp') keys[i] = '↑'
+        if (keys[i] === 'ArrowDown') keys[i] = '↓'
+        if (keys[i] === 'Comma') keys[i] = ','
+        if (keys[i] === 'Enter') keys[i] = '↩'
+        if (keys[i] === ' ') keys[i] = 'Space'
+        keys[i] = `<kbd>${keys[i]}</kbd>`
     }
 
-    return keys.join(isMac ? '' : ' + ');
+    return keys.join(isMac ? '' : ' + ')
 }
 
 function isTextField(element) {
-    let name = element.nodeName.toLowerCase();
+    let name = element.nodeName.toLowerCase()
     return name === 'textarea' ||
         name === 'select' ||
         (name === 'input' && !['submit', 'reset', 'checkbox', 'radio'].includes(element.type)) ||
-        element.isContentEditable;
+        element.isContentEditable
 }
 
-let notTextField = event => !(event.target instanceof Node && isTextField(event.target));
+class Shortcut {
+    constructor(shortcuts, target, description, other) {
+        this.shortcuts = shortcuts
+        this.target = target
+        this.description = rrh.l10n(description)
+        Object.assign(this, other)
+    }
+}
 
-let allShortcuts = [];
-let shortcutsGroup = null;
-
-class ShortcutHandler {
-    constructor(element, override, filter = () => true) {
-        this.element = element;
-        this.map = {};
-        this.active = this.map;
-        this.override = override;
-        this.filter = filter;
-        this.timeout = null;
-
-        this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.resetActive = this.resetActive.bind(this);
-        this.addEventListeners();
+class ShortcutGroup {
+    constructor(name, element = null, bindings = []) {
+        this.name = rrh.l10n(name)
+        this.shortcuts = []
+        this.element = element
+        bindings.forEach(binding => this.bind(binding))
     }
 
-    addEventListeners() {
-        this.element.addEventListener('keydown', this.handleKeyDown);
-    }
-
-    add(text, action, description = null, shownInHelp = true) {
-        let shortcuts = text.trim().split(',').map(shortcut => shortcut.trim().split(' '));
-
-        if (shortcutsGroup && shownInHelp) {
-            shortcutsGroup.push({
-                action,
-                shortcut: text,
+    bind({ shortcuts, target, description, ...other }) {
+        shortcuts = strToArr(shortcuts).map(s => s.trim())
+        if (!other.element) other.element = this.element
+        if (target instanceof Function) {
+            this.shortcuts.push({ shortcuts, description })
+            rrh.shortcuts._register(shortcuts, target, other)
+        } else if (target instanceof Node) {
+            this.bind({
+                shortcuts,
+                target: () => {
+                    if (isTextField(target)) target.focus()
+                    target.click()
+                },
+                description, ...other,
+            })
+        } else if (Array.isArray(target) && (target.length === 0 || target[0] instanceof Node)) {
+            this.shortcuts.push({
+                shortcuts: shortcuts.map(s => `${s} 1 — 9`),
                 description,
             })
-        }
-
-        for (let shortcut of shortcuts) {
-            let node = this.map;
-            for (let key of shortcut) {
-                if (!node[key]) {
-                    node[key] = {};
-                }
-                node = node[key];
-                if (node.action) {
-                    delete node.action;
-                    delete node.shortcut;
-                    delete node.description;
-                }
+            for (let i = 0; i < target.length && i < 9; i++) {
+                let element = target[i]
+                rrh.shortcuts._register(shortcuts.map(s => `${s} ${i + 1}`), () => {
+                    if (isTextField(element)) element.focus()
+                    else element.click()
+                }, other)
             }
-
-            node.action = action;
-            node.shortcut = shortcut;
-            node.description = description;
-        }
-    }
-
-    group(...args) {
-        if (typeof args[0] === 'string') this.fakeItem(args.shift());
-        shortcutsGroup = [];
-
-        args[0].bind(this)();
-
-        if (shortcutsGroup && shortcutsGroup.length) allShortcuts.push(shortcutsGroup);
-        shortcutsGroup = null;
-    }
-
-    bindElement(shortcut, element, ...other) {
-        element = typeof element === 'string' ? $(element) : element;
-        if (!element) return;
-        this.add(shortcut, () => {
-            if (isTextField(element)) {
-                element.focus();
-            } else {
-                element.click();
-            }
-        }, ...other);
-    }
-
-    bindLink(shortcut, link, ...other) {
-        this.add(shortcut, () => window.location.href = link, ...other);
-    }
-
-    bindCollection(prefix, elements, collectionDescription, itemDescription) {
-        this.fakeItem(prefix + ' 1 – 9', collectionDescription);
-
-        if (typeof elements === 'string') {
-            elements = $$(elements);
-        } else if (Array.isArray(elements)) {
-            elements = elements.map(el => typeof el === 'string' ? $(el) : el);
-        }
-
-        for (let i = 1; i <= elements.length && i < 10; i++) {
-            this.bindElement(`${prefix} ${i}`, elements[i - 1], `${itemDescription} #${i}`, false);
-        }
-    }
-
-    fakeItem(shortcut, description = null) {
-        let list = shortcutsGroup || allShortcuts;
-        list.push({
-            shortcut: description ? shortcut : null,
-            description: description || shortcut,
-        });
-    }
-
-    handleKeyDown(event) {
-        if (event.defaultPrevented) return;
-        if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
-        if (!this.filter(event)) return;
-
-        let shortcut = keyEventToShortcut(event);
-
-        if (!this.active[shortcut]) {
-            this.resetActive();
-            return;
-        }
-
-        this.active = this.active[shortcut];
-        if (this.active.action) {
-            event.stopPropagation();
-            this.active.action(event);
-            if (this.override) event.preventDefault();
-            this.resetActive();
-            return;
-        }
-
-        if (this.timeout) clearTimeout(this.timeout);
-        this.timeout = window.setTimeout(this.resetActive, 1500);
-    }
-
-    resetActive() {
-        this.active = this.map;
-        if (this.timeout) {
-            clearTimeout(this.timeout)
-            this.timeout = null;
+        } else if (typeof target === 'string') {
+            this.bind({
+                shortcuts,
+                target: () => window.location.href = target,
+                description,
+                ...other,
+            })
+        } else if (target !== undefined && target !== null) {
+            throw new Error('Invalid target type')
         }
     }
 }
 
-class ShortcutsHelpDialog {
-    constructor() {
-        let template = $('#dialog-template');
-        let clonedTemplate = template.content.cloneNode(true);
-        this.backdrop = clonedTemplate.children[0];
-        this.dialog = clonedTemplate.children[1];
+function openHelp() {
+    if ($('.shortcuts-help')) return
 
-        this.dialog.classList.add('shortcuts-help');
-        this.dialog.hidden = true;
-        this.backdrop.hidden = true;
+    document.body.overflow = 'hidden'
+    let prevActiveElement = document.activeElement
 
-        document.body.appendChild(this.backdrop);
-        document.body.appendChild(this.dialog);
+    let backdrop = rrh.html`<div class="dialog-backdrop"></div>`
+    backdrop.onclick = close
+    document.body.appendChild(backdrop)
 
-        this.close = this.close.bind(this);
+    let dialog = rrh.html`
+        <div class="dialog shortcuts-help" tabindex="0">
+            <div class="dialog__header">
+                <h1 class="dialog__title">${rrh.l10n('List of shortcuts')}</h1>
+                <button class="dialog__close-button" aria-label="${rrh.l10n('Close this dialog')}"></button>
+            </div>
+            <div class="dialog__content"></div>
+        </div>
+    `
+    dialog.querySelector('.dialog__close-button').onclick = close
+    dialog.onkeydown = event => {
+        if (event.key === 'Escape') close()
+    }
+    document.body.appendChild(dialog)
+    dialog.focus()
 
-        this.dialog.querySelector('.dialog__title').textContent = 'List of shortcuts';
-        this.dialog.querySelector('.dialog__close-button').addEventListener('click', this.close);
-        this.backdrop.addEventListener('click', this.close);
-
-        this.shortcuts = new ShortcutHandler(this.dialog, false);
-        this.shortcuts.add('Escape', this.close, null, false);
-
-        let shortcutsGroup;
-        let shortcutsGroupTemplate = document.createElement('div');
-        shortcutsGroupTemplate.className = 'shortcuts-group';
-
-        for (let item of allShortcuts) {
-            if (item.description && !item.shortcut) {
-                shortcutsGroup = shortcutsGroupTemplate.cloneNode();
-                this.dialog.querySelector('.dialog__content').appendChild(shortcutsGroup);
-
-                let heading = document.createElement('h2');
-                heading.className = 'shortcuts-group-heading';
-                heading.textContent = item.description;
-                shortcutsGroup.appendChild(heading);
-
-            } else {
-                let list = document.createElement('ul');
-                list.className = 'shortcuts-list';
-
-                for (let shortcut of item) {
-                    let listItem = document.createElement('li');
-                    listItem.className = 'shortcut-row';
-                    list.appendChild(listItem);
-
-                    let descriptionColumn = document.createElement('div')
-                    descriptionColumn.className = 'shortcut-row__description';
-                    descriptionColumn.textContent = shortcut.description;
-                    listItem.appendChild(descriptionColumn);
-
-                    let shortcutColumn = document.createElement('div');
-                    shortcutColumn.className = 'shortcut-row__keys';
-                    shortcutColumn.innerHTML = shortcut.shortcut.split(',')
-                        .map(shortcuts => shortcuts.trim().split(' ').map(prettifyShortcut).join(' '))
-                        .join(' <span class="kbd-or">or</span> ');
-                    listItem.appendChild(shortcutColumn);
-                }
-
-                if (shortcutsGroup) {
-                    shortcutsGroup.appendChild(list);
-                }
-            }
-        }
+    function close() {
+        document.body.overflow = ''
+        document.body.removeChild(backdrop)
+        document.body.removeChild(dialog)
+        if (prevActiveElement) prevActiveElement.focus()
     }
 
-    open() {
-        this.prevActiveElement = document.activeElement;
-
-        document.body.overflow = 'hidden';
-        this.backdrop.hidden = false;
-        this.dialog.hidden = false;
-        this.dialog.focus();
+    function formatShortcuts(shortcuts) {
+        return shortcuts.map(s => s.split(' ')
+            .map(prettifyShortcut).join(' '))
+            .join(' <span class="kbd-or">or</span> ')
     }
 
-    close() {
-        document.body.overflow = '';
-        this.backdrop.hidden = true;
-        this.dialog.hidden = true;
-
-        if (this.prevActiveElement) {
-            this.prevActiveElement.focus();
-            this.prevActiveElement = null;
-        }
+    for (let group of rrh.shortcuts.groups) {
+        if (group.shortcuts.length === 0) continue
+        dialog.querySelector('.dialog__content').appendChild(rrh.html`
+            <div class="shortcuts-group">
+                <h2 class="shortcuts-group-heading">${group.name}</h2>
+                <ul class="shortcuts-list">
+                    ${group.shortcuts.map(({ description, shortcuts }) => `
+                        <li class="shortcut-row">
+                            <div class="shortcut-row__description">${description}</div>
+                            <div class="shortcut-row__keys">
+                                ${formatShortcuts(shortcuts)}
+                            </div>
+                        </li>
+                    `)}
+                </ul>
+            </div>
+        `)
     }
 }
 
-window.addEventListener('load', () => {
-    let helpDialog = null;
-    let openHelp = () => {
-        if (!helpDialog) helpDialog = new ShortcutsHelpDialog();
-        helpDialog.open();
-    };
+rrh.shortcuts.addGroup(new ShortcutGroup('Common', null, [
+    new Shortcut('g', $$('.top-bar__highlight-link'), 'First 9 header links'),
+    new Shortcut('g h', '/', 'Home'),
+    new Shortcut('g l', '/list/', 'List of hyphae'),
+    new Shortcut('g r', '/recent-changes/', 'Recent changes'),
+    new Shortcut('g u', $('.auth-links__user-link'), 'Your profile′s hypha'),
+    new Shortcut(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help', { force: true }),
+]))
 
-    let onEditPage = typeof editTextarea !== 'undefined';
+if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
+    rrh.shortcuts.addGroup(new ShortcutGroup('Hypha', null, [
+        new Shortcut('', $$('article .wikilink'), 'First 9 hypha′s links'),
+        new Shortcut(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Next hypha'),
+        new Shortcut(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Previous hypha'),
+        new Shortcut(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha'),
+        new Shortcut(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], $('.subhyphae__link'), 'First child hypha'),
+        new Shortcut(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], $('.btn__link_navititle[href^="/edit/"]'), 'Edit this hypha'),
+        new Shortcut('v', $('.hypha-info__link[href^="/hypha/"]'), 'Go to hypha′s page'),
+        new Shortcut('a', $('.hypha-info__link[href^="/media/"]'), 'Go to media management'),
+        new Shortcut('h', $('.hypha-info__link[href^="/history/"]'), 'Go to history'),
+        new Shortcut('r', $('.hypha-info__link[href^="/rename/"]'), 'Rename this hypha'),
+        new Shortcut('b', $('.hypha-info__link[href^="/backlinks/"]'), 'Backlinks'),
+    ]))
+}
 
-    // Global shortcuts work everywhere.
-    let globalShortcuts = new ShortcutHandler(document, false);
-    globalShortcuts.add(isMac ? 'Meta+/' : 'Ctrl+/', openHelp);
+if (document.body.dataset.rrhAddr.startsWith('/edit')) {
+    rrh.shortcuts.addGroup(new ShortcutGroup('Editor', null, [
+        new Shortcut(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes'),
+        new Shortcut(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes'),
+    ]))
 
-    // Page shortcuts work everywhere except on text fields.
-    let pageShortcuts = new ShortcutHandler(document, false, notTextField);
-    pageShortcuts.add('?', openHelp, null, false);
-
-    // Common shortcuts
-    pageShortcuts.group('Common', function () {
-        this.bindCollection('g', '.top-bar__highlight-link', 'First 9 header links', 'Header link');
-        this.bindLink('g h', '/', 'Home');
-        this.bindLink('g l', '/list/', 'List of hyphae');
-        this.bindLink('g r', '/recent-changes/', 'Recent changes');
-        this.bindElement('g u', '.auth-links__user-link', 'Your profile′s hypha');
-    });
-
-    if (!onEditPage) {
-        // Hypha shortcuts
-        pageShortcuts.group('Hypha', function () {
-            this.bindCollection('', 'article .wikilink', 'First 9 hypha′s links', 'Hypha link');
-            this.bindElement('p, Alt+ArrowLeft, Ctrl+Alt+ArrowLeft', '.prevnext__prev', 'Next hypha');
-            this.bindElement('n, Alt+ArrowRight, Ctrl+Alt+ArrowRight', '.prevnext__next', 'Previous hypha');
-            this.bindElement('s, Alt+ArrowUp, Ctrl+Alt+ArrowUp', $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha');
-            this.bindElement('c, Alt+ArrowDown, Ctrl+Alt+ArrowDown', '.subhyphae__link', 'First child hypha');
-
-            this.bindElement('e, ' + (isMac ? "Meta+Enter" : "Ctrl+Enter"), '.btn__link_navititle[href^="/edit/"]', 'Edit this hypha');
-            this.bindElement('v', '.hypha-info__link[href^="/hypha/"]', 'Go to hypha′s page');
-            this.bindElement('a', '.hypha-info__link[href^="/media/"]', 'Go to media management');
-            this.bindElement('h', '.hypha-info__link[href^="/history/"]', 'Go to history');
-            this.bindElement('r', '.hypha-info__link[href^="/rename/"]', 'Rename this hypha');
-            this.bindElement('b', '.hypha-info__link[href^="/backlinks/"]', 'Backlinks');
-        });
-
-    } else {
-        // Hypha editor shortcuts. These work only on editor's text area.
-        let editorShortcuts = new ShortcutHandler(editTextarea, true);
-
-        let shortcuts = [
-            // Win+Linux    Mac                  Action              Description
-            ['Ctrl+b', 'Meta+b', wrapBold, 'Format: Bold'],
-            ['Ctrl+i', 'Meta+i', wrapItalic, 'Format: Italic'],
-            ['Ctrl+M', 'Meta+Shift+m', wrapMonospace, 'Format: Monospaced'],
-            ['Ctrl+I', 'Meta+Shift+i', wrapHighlighted, 'Format: Highlight'],
-            ['Ctrl+.', 'Meta+.', wrapLifted, 'Format: Superscript'],
-            ['Ctrl+Comma', 'Meta+Comma', wrapLowered, 'Format: Subscript'],
-            ['Ctrl+X', 'Meta+Shift+x', wrapStrikethrough, 'Format: Strikethrough'],
-            ['Ctrl+k', 'Meta+k', wrapLink, 'Format: Inline link'],
+    if (editTextarea) {
+        rrh.shortcuts.addGroup(new ShortcutGroup('Format', null, [
+            new Shortcut(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold', { force: true }),
+            new Shortcut(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic', { force: true }),
+            new Shortcut(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced', { force: true }),
+            new Shortcut(isMac ? 'Meta+Shift+i' : 'Ctrl+I', wrapHighlighted, 'Highlight', { force: true }),
+            new Shortcut(isMac ? 'Meta+.' : 'Ctrl+.', wrapLifted, 'Superscript', { force: true }),
+            new Shortcut(isMac ? 'Meta+Comma' : 'Ctrl+Comma', wrapLowered, 'Subscript', { force: true }),
+            new Shortcut(isMac ? 'Meta+Shift+x' : 'Ctrl+X', wrapStrikethrough, 'Strikethrough', { force: true }),
+            new Shortcut(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link', { force: true }),
             // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
-            ['Ctrl+;', 'Meta+;', insertDate, 'Insert date UTC'],
-        ];
-
-        editorShortcuts.group('Editor', function () {
-            for (let shortcut of shortcuts) {
-                if (isMac) {
-                    this.add(shortcut[1], ...shortcut.slice(2))
-                } else {
-                    this.add(shortcut[0], ...shortcut.slice(2))
-                }
-            }
-        });
-
-        editorShortcuts.group(function () {
-            this.bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
-            this.bindElement(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes');
-        });
+            new Shortcut(isMac ? 'Meta+;' : 'Ctrl+;', insertDate, 'Insert date UTC', { force: true }),
+        ]))
     }
-});
+}

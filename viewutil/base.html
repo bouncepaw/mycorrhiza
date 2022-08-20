@@ -12,7 +12,6 @@
 	<title>{{block "title" .}}{{end}}</title>
 	<link rel="icon" href="/static/favicon.ico">
 	<link rel="stylesheet" href="/static/style.css">
-	<script src="/static/shortcuts.js"></script>
 	{{range .HeadElements}}{{.}}{{end}}
 </head>
 <body data-rrh-addr="{{if .Addr}}{{.Addr}}{{else}}{{.Meta.Addr}}{{end}}"{{range $key, $value := .BodyAttributes}} data-rrh-{{$key}}="{{$value}}"{{end}}>
@@ -46,17 +45,8 @@
 	</nav>
 </header>
 {{block "body" .}}{{end}}
-<template id="dialog-template">
-	<div class="dialog-backdrop"></div>
-	<div class="dialog" tabindex="0">
-		<div class="dialog__header">
-			<h1 class="dialog__title"></h1>
-			<button class="dialog__close-button" aria-label="{{block `close this dialog` .}}{{end}}"></button>
-		</div>
-
-		<div class="dialog__content"></div>
-	</div>
-</template>
+<script src="/static/common.js"></script>
+<script src="/static/shortcuts.js"></script>
 <script src="/static/view.js"></script>
 {{range .CommonScripts}}
 	<script src="{{.}}"></script>

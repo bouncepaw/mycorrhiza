@@ -23,7 +23,6 @@ var (
 
 const ruText = `
 {{define "search by title"}}Поиск по названию{{end}}
-{{define "close this dialog"}}Закрыть этот диалог{{end}}
 {{define "login"}}Войти{{end}}
 {{define "register"}}Регистрация{{end}}
 {{define "confirm"}}Подтвердить{{end}}
