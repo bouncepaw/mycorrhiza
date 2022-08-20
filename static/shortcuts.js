@@ -363,6 +363,7 @@ window.addEventListener('load', () => {
 
         editorShortcuts.group(function () {
             this.bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes');
+            this.bindElement(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes');
         });
     }
 });
