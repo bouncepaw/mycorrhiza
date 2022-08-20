@@ -20,6 +20,7 @@ const adminTranslationRu = `
 {{define "panel unsafe section title"}}Опасная секция{{end}}
 {{define "panel shutdown"}}Выключить вики{{end}}
 {{define "panel reindex hyphae"}}Переиндексировать гифы{{end}}
+{{define "panel interwiki"}}Интервики{{end}}
 
 {{define "manage users"}}Управление пользователями{{end}}
 {{define "create user"}}Создать пользователя{{end}}
