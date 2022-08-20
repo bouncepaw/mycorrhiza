@@ -3,6 +3,19 @@ const $$ = (...args) => Array.prototype.slice.call(document.querySelectorAll(...
 
 const isMac = /Macintosh/.test(window.navigator.userAgent);
 
+const shortcutHelpTemplate = document.createElement('template')
+shortcutHelpTemplate.innerHTML = `
+    <div class="dialog-backdrop"></div>
+    <div class="dialog" tabindex="0">
+        <div class="dialog__header">
+            <h1 class="dialog__title"></h1>
+            <button class="dialog__close-button" aria-label="Close this dialog"></button>
+        </div>
+
+        <div class="dialog__content"></div>
+    </div>
+`
+
 function keyEventToShortcut(event) {
     let elideShift = event.key.toUpperCase() === event.key && event.shiftKey;
     return (event.ctrlKey ? 'Ctrl+' : '') +
@@ -205,8 +218,7 @@ class ShortcutHandler {
 
 class ShortcutsHelpDialog {
     constructor() {
-        let template = $('#dialog-template');
-        let clonedTemplate = template.content.cloneNode(true);
+        let clonedTemplate = shortcutHelpTemplate.content.cloneNode(true);
         this.backdrop = clonedTemplate.children[0];
         this.dialog = clonedTemplate.children[1];
 

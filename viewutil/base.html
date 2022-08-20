@@ -46,17 +46,6 @@
 	</nav>
 </header>
 {{block "body" .}}{{end}}
-<template id="dialog-template">
-	<div class="dialog-backdrop"></div>
-	<div class="dialog" tabindex="0">
-		<div class="dialog__header">
-			<h1 class="dialog__title"></h1>
-			<button class="dialog__close-button" aria-label="{{block `close this dialog` .}}{{end}}"></button>
-		</div>
-
-		<div class="dialog__content"></div>
-	</div>
-</template>
 <script src="/static/view.js"></script>
 {{range .CommonScripts}}
 	<script src="{{.}}"></script>
