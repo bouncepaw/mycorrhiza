@@ -15,6 +15,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/misc"
+	"github.com/bouncepaw/mycorrhiza/static"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -35,6 +36,12 @@ func InitAuth(r *mux.Router) {
 	r.HandleFunc("/login", handlerLogin)
 	r.HandleFunc("/logout", handlerLogout)
 	r.HandleFunc("/static/style.css", misc.HandlerStyle)
+	r.HandleFunc("/robots.txt", misc.HandlerRobotsTxt)
+	r.PathPrefix("/static/").
+		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
+	})
 }
 
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
