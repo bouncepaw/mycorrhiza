@@ -2,13 +2,13 @@ package web
 
 import (
 	"fmt"
+	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/files"
 	views2 "github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"io"
-	"lesarbr.es/mycomarkup/v5"
 	"log"
 	"net/http"
 	"os"
@@ -17,14 +17,14 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mimetype"
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"lesarbr.es/mycomarkup/v5/mycocontext"
-	"lesarbr.es/mycomarkup/v5/tools"
 )
 
 func initReaders(r *mux.Router) {

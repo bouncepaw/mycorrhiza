@@ -1,9 +1,9 @@
 package migration
 
 import (
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"io/ioutil"
-	"lesarbr.es/mycomarkup/v5/tools"
 	"log"
 	"os"
 )

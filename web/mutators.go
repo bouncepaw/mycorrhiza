@@ -2,8 +2,8 @@ package web
 
 import (
 	"fmt"
+	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"html/template"
-	"lesarbr.es/mycomarkup/v5"
 	"log"
 	"net/http"
 
@@ -11,7 +11,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 
-	"lesarbr.es/mycomarkup/v5/mycocontext"
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
 
 	"github.com/gorilla/mux"
 

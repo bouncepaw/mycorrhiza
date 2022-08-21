@@ -3,6 +3,7 @@ module github.com/bouncepaw/mycorrhiza
 go 1.18
 
 require (
+	git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1
 	github.com/go-ini/ini v1.63.2
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
@@ -11,7 +12,6 @@ require (
 	golang.org/x/exp v0.0.0-20220414153411-bcd21879b8fd
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	golang.org/x/text v0.3.7
-	lesarbr.es/mycomarkup/v5 v5.2.0
 )
 
 require (
@@ -23,8 +23,4 @@ require (
 
 // Use this trick to test local Mycomarkup changes, replace the path with yours,
 // but do not commit the change to the path:
-// replace lesarbr.es/mycomarkup/v5 v5.1.2 => "/Users/bouncepaw/GolandProjects/mycomarkup"
-
-// Use this utility every time Mycomarkup gets a major update:
-// https://github.com/marwan-at-work/mod
-// Or maybe just ⌘⇧R every time, the utility is kinda weird.
+// replace git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1 => "/Users/bouncepaw/GolandProjects/mycomarkup"

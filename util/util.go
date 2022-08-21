@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/util"
 	"github.com/bouncepaw/mycorrhiza/cfg"
-	"lesarbr.es/mycomarkup/v5/util"
 )
 
 // PrepareRq strips the trailing / in rq.URL.Path. In the future it might do more stuff for making all request structs uniform.
