@@ -2,6 +2,15 @@
 package misc
 
 import (
+	"io"
+	"log"
+	"math/rand"
+	"mime"
+	"net/http"
+	"path/filepath"
+
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
@@ -12,14 +21,17 @@ import (
 	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
-	"github.com/gorilla/mux"
-	"io"
-	"log"
-	"math/rand"
-	"mime"
-	"net/http"
-	"path/filepath"
 )
+
+func InitAssetHandlers(rtr *mux.Router) {
+	rtr.HandleFunc("/static/style.css", handlerStyle)
+	rtr.HandleFunc("/robots.txt", handlerRobotsTxt)
+	rtr.PathPrefix("/static/").
+		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+	rtr.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
+		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
+	})
+}
 
 func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/list", handlerList)
@@ -127,7 +139,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 
 var stylesheets = []string{"default.css", "custom.css"}
 
-func HandlerStyle(w http.ResponseWriter, rq *http.Request) {
+func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
@@ -142,7 +154,7 @@ func HandlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func HandlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
+func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	file, err := static.FS.Open("robots.txt")

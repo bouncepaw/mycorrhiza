@@ -2,6 +2,10 @@
 package web
 
 import (
+	"io"
+	"net/http"
+	"net/url"
+
 	"github.com/bouncepaw/mycorrhiza/admin"
 	"github.com/bouncepaw/mycorrhiza/auth"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
@@ -11,9 +15,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
-	"io"
-	"net/http"
-	"net/url"
 
 	"github.com/gorilla/mux"
 
@@ -37,6 +38,7 @@ func Handler() http.Handler {
 	router.StrictSlash(true)
 
 	// Public routes. They're always accessible regardless of the user status.
+	misc.InitAssetHandlers(router)
 	auth.InitAuth(router)
 
 	// Wiki routes. They may be locked or restricted.
