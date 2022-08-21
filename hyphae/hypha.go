@@ -8,7 +8,7 @@ import (
 )
 
 // hyphaNamePattern is a pattern which all hyphae names must match.
-var hyphaNamePattern = regexp.MustCompile(`[^?!:#@><*|"'&%{}]+`)
+var hyphaNamePattern = regexp.MustCompile(`^[^?!:#@><*|"'&%{}]+$`)
 
 // IsValidName checks for invalid characters and path traversals.
 func IsValidName(hyphaName string) bool {
