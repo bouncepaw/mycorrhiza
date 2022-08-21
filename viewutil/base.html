@@ -12,7 +12,6 @@
 	<title>{{block "title" .}}{{end}}</title>
 	<link rel="icon" href="/static/favicon.ico">
 	<link rel="stylesheet" href="/static/style.css">
-	<script src="/static/shortcuts.js"></script>
 	{{range .HeadElements}}{{.}}{{end}}
 </head>
 <body data-rrh-addr="{{if .Addr}}{{.Addr}}{{else}}{{.Meta.Addr}}{{end}}"{{range $key, $value := .BodyAttributes}} data-rrh-{{$key}}="{{$value}}"{{end}}>
@@ -47,6 +46,7 @@
 </header>
 {{block "body" .}}{{end}}
 <script src="/static/common.js"></script>
+<script src="/static/shortcuts.js"></script>
 <script src="/static/view.js"></script>
 {{range .CommonScripts}}
 	<script src="{{.}}"></script>

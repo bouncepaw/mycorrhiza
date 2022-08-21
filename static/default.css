@@ -309,7 +309,7 @@ kbd {
 	top: 0;
 	left: 50%;
 	width: 100%;
-	max-width: 700px;
+	max-width: 800px;
 	margin: 96px auto;
 	padding: 24px;
 	transform: translate(-50%, 0);
@@ -357,9 +357,15 @@ kbd {
 }
 
 .shortcuts-help .dialog__content {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	grid-column-gap: 32px;
+	columns: 300px 2;
+	column-gap: 32px;
+}
+
+.shortcuts-group {
+	/* Don't break a shortcut group between columns */
+	break-inside: avoid;
+	page-break-inside: avoid;
+	overflow: hidden;
 }
 
 .shortcuts-group-heading {
