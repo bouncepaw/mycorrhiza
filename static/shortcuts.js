@@ -235,10 +235,10 @@ function openHelp() {
                             <div class="shortcut-row__description">${description}</div>
                             <div class="shortcut-row__keys">
                                 ${shortcuts.map(s => s.trim()
-            .split(' ')
-            .map(prettifyShortcut)
-            .join(' '))
-            .join(' <span class="kbd-or">or</span> ')}
+                                    .split(' ')
+                                    .map(prettifyShortcut)
+                                    .join(' '))
+                                    .join(' <span class="kbd-or">or</span> ')}
                             </div>
                         </li>
                     `)}
