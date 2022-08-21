@@ -144,7 +144,7 @@ class ShortcutGroup {
     }
 
     bind(shortcuts, target, description = null, other = {}) {
-        shortcuts = strToArr(shortcuts)
+        shortcuts = strToArr(shortcuts).map(s => s.trim())
         if (!other.element) other.element = this.element
         if (target instanceof Function) {
             this.shortcuts.push({ shortcuts, description })
@@ -224,6 +224,12 @@ function openHelp() {
         if (prevActiveElement) prevActiveElement.focus()
     }
 
+    function formatShortcuts(shortcuts) {
+        return shortcuts.map(s => s.split(' ')
+            .map(prettifyShortcut).join(' '))
+            .join(' <span class="kbd-or">or</span> ')
+    }
+
     for (let { name, group } of rrh.shortcuts.groups) {
         if (group.shortcuts.length === 0) continue
         dialog.querySelector('.dialog__content').appendChild(rrh.html`
@@ -234,11 +240,7 @@ function openHelp() {
                         <li class="shortcut-row">
                             <div class="shortcut-row__description">${description}</div>
                             <div class="shortcut-row__keys">
-                                ${shortcuts.map(s => s.trim()
-                                    .split(' ')
-                                    .map(prettifyShortcut)
-                                    .join(' '))
-                                    .join(' <span class="kbd-or">or</span> ')}
+                                ${formatShortcuts(shortcuts)}
                             </div>
                         </li>
                     `)}
