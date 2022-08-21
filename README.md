@@ -44,3 +44,7 @@ If you want to contribute with code, open a pull request on GitHub or send a pat
 If you want to report an issue, open an issue on GitHub or contact us directly.
 
 Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
+
+## Assets
+
+The `static/favico.ico` file in this repository is the [mushroom emoji](https://github.com/twitter/twemoji/blob/54df6a1/assets/72x72/1f344.png) from Twitter's [twemoji project](https://twemoji.twitter.com/), and is licensed under the [Creative Commons CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
