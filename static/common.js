@@ -11,12 +11,6 @@ const rrh = {
         wrapper.innerHTML = s
         return wrapper.children[0]
     },
-    escape(text) {
-        return text
-            .replace('&', '&amp;')
-            .replace('<', '&lt;')
-            .replace('>', '&gt;')
-    },
 
     l10nMap: {},
     l10n(text, translations) {
