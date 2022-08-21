@@ -172,6 +172,10 @@ class ShortcutGroup {
             throw new Error('Invalid target type')
         }
     }
+
+    apply(fn) {
+        fn(this) // Kotlin moment
+    }
 }
 
 rrh.shortcuts = {
@@ -244,45 +248,49 @@ function openHelp() {
     }
 }
 
-let common = rrh.l10nify(rrh.shortcuts).group('Common')
-common.bind('g', $$('.top-bar__highlight-link'), 'First 9 header links')
-common.bind('g h', '/', 'Home')
-common.bind('g l', '/list/', 'List of hyphae')
-common.bind('g r', '/recent-changes/', 'Recent changes')
-common.bind('g u', $('.auth-links__user-link'), 'Your profile′s hypha')
-common.bind(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help')
+rrh.l10nify(rrh.shortcuts).group('Common').apply(common => {
+    common.bind('g', $$('.top-bar__highlight-link'), 'First 9 header links')
+    common.bind('g h', '/', 'Home')
+    common.bind('g l', '/list/', 'List of hyphae')
+    common.bind('g r', '/recent-changes/', 'Recent changes')
+    common.bind('g u', $('.auth-links__user-link'), 'Your profile′s hypha')
+    common.bind(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help')
+})
 
 if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
-    let hypha = rrh.l10nify(rrh.shortcuts).group('Hypha')
-    hypha.bind('', $$('article .wikilink'), 'First 9 hypha′s links')
-    hypha.bind(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Next hypha')
-    hypha.bind(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Previous hypha')
-    hypha.bind(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha')
-    hypha.bind(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], $('.subhyphae__link'), 'First child hypha')
-    hypha.bind(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], $('.btn__link_navititle[href^="/edit/"]'), 'Edit this hypha')
-    hypha.bind('v', $('.hypha-info__link[href^="/hypha/"]'), 'Go to hypha′s page')
-    hypha.bind('a', $('.hypha-info__link[href^="/media/"]'), 'Go to media management')
-    hypha.bind('h', $('.hypha-info__link[href^="/history/"]'), 'Go to history')
-    hypha.bind('r', $('.hypha-info__link[href^="/rename/"]'), 'Rename this hypha')
-    hypha.bind('b', $('.hypha-info__link[href^="/backlinks/"]'), 'Backlinks')
+    rrh.l10nify(rrh.shortcuts).group('Hypha').apply(hypha => {
+        hypha.bind('', $$('article .wikilink'), 'First 9 hypha′s links')
+        hypha.bind(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Next hypha')
+        hypha.bind(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Previous hypha')
+        hypha.bind(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha')
+        hypha.bind(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], $('.subhyphae__link'), 'First child hypha')
+        hypha.bind(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], $('.btn__link_navititle[href^="/edit/"]'), 'Edit this hypha')
+        hypha.bind('v', $('.hypha-info__link[href^="/hypha/"]'), 'Go to hypha′s page')
+        hypha.bind('a', $('.hypha-info__link[href^="/media/"]'), 'Go to media management')
+        hypha.bind('h', $('.hypha-info__link[href^="/history/"]'), 'Go to history')
+        hypha.bind('r', $('.hypha-info__link[href^="/rename/"]'), 'Rename this hypha')
+        hypha.bind('b', $('.hypha-info__link[href^="/backlinks/"]'), 'Backlinks')
+    })
 }
 
 if (document.body.dataset.rrhAddr.startsWith('/edit')) {
-    let editor = rrh.l10nify(rrh.shortcuts).group('Editor')
-    editor.bind(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes')
-    editor.bind(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes')
+    rrh.l10nify(rrh.shortcuts).group('Editor').apply(editor => {
+        editor.bind(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes')
+        editor.bind(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes')
+    })
 
     if (editTextarea) {
-        let format = rrh.l10nify(rrh.shortcuts).group('Format', editTextarea)
-        format.bind(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold', { force: true })
-        format.bind(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic', { force: true })
-        format.bind(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced', { force: true })
-        format.bind(isMac ? 'Meta+Shift+i' : 'Ctrl+I', wrapHighlighted, 'Highlight', { force: true })
-        format.bind(isMac ? 'Meta+.' : 'Ctrl+.', wrapLifted, 'Superscript', { force: true })
-        format.bind(isMac ? 'Meta+Comma' : 'Ctrl+Comma', wrapLowered, 'Subscript', { force: true })
-        format.bind(isMac ? 'Meta+Shift+x' : 'Ctrl+X', wrapStrikethrough, 'Strikethrough', { force: true })
-        format.bind(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link', { force: true })
-        // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
-        format.bind(isMac ? 'Meta+;' : 'Ctrl+;', insertDate, 'Insert date UTC', { force: true })
+        rrh.l10nify(rrh.shortcuts).group('Format', editTextarea).apply(format => {
+            format.bind(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold', { force: true })
+            format.bind(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic', { force: true })
+            format.bind(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced', { force: true })
+            format.bind(isMac ? 'Meta+Shift+i' : 'Ctrl+I', wrapHighlighted, 'Highlight', { force: true })
+            format.bind(isMac ? 'Meta+.' : 'Ctrl+.', wrapLifted, 'Superscript', { force: true })
+            format.bind(isMac ? 'Meta+Comma' : 'Ctrl+Comma', wrapLowered, 'Subscript', { force: true })
+            format.bind(isMac ? 'Meta+Shift+x' : 'Ctrl+X', wrapStrikethrough, 'Strikethrough', { force: true })
+            format.bind(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link', { force: true })
+            // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
+            format.bind(isMac ? 'Meta+;' : 'Ctrl+;', insertDate, 'Insert date UTC', { force: true })
+        })
     }
 }
