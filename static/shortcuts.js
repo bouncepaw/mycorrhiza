@@ -1,3 +1,15 @@
+rrh.l10n('List of shortcuts', { ru: 'Горячие клавиши' })
+rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
+
+rrh.l10n('Common', { ru: 'Общее' })
+rrh.l10n('Home', { ru: 'Главная' })
+
+rrh.l10n('Hypha', { ru: 'Гифа' })
+
+rrh.l10n('Editor', { ru: 'Редактор' })
+
+rrh.l10n('Format', { ru: 'Форматирование' })
+
 function keyEventToShortcut(event) {
     let elideShift = event.key.toUpperCase() === event.key && event.shiftKey
     return (event.ctrlKey ? 'Ctrl+' : '') +
@@ -177,12 +189,6 @@ rrh.shortcuts = {
     },
 }
 
-// Global shortcuts work everywhere.
-rrh.shortcuts.global = new ShortcutGroup(rrh.shortcuts.handler)
-
-rrh.l10n('List of shortcuts', { ru: 'Горячие клавиши' })
-rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
-
 function openHelp() {
     if ($('.shortcuts-help')) return
 
@@ -238,23 +244,16 @@ function openHelp() {
     }
 }
 
-rrh.l10n('Common', { ru: 'Общее' })
-rrh.l10n('Hypha', { ru: 'Гифа' })
-rrh.l10n('Editor', { ru: 'Редактор' })
-rrh.l10n('Format', { ru: 'Форматирование' })
-
-rrh.shortcuts.global.bind(isMac ? 'Meta+/' : 'Ctrl+/', openHelp)
-
-let common = rrh.l10nify(rrh.shortcuts.group('Common'))
+let common = rrh.l10nify(rrh.shortcuts).group('Common')
 common.bind('g', $$('.top-bar__highlight-link'), 'First 9 header links')
 common.bind('g h', '/', 'Home')
 common.bind('g l', '/list/', 'List of hyphae')
 common.bind('g r', '/recent-changes/', 'Recent changes')
 common.bind('g u', $('.auth-links__user-link'), 'Your profile′s hypha')
-common.bind('?', openHelp, rrh.l10n('Shortcut help'))
+common.bind(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help')
 
 if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
-    let hypha = rrh.shortcuts.group('Hypha')
+    let hypha = rrh.l10nify(rrh.shortcuts).group('Hypha')
     hypha.bind('', $$('article .wikilink'), 'First 9 hypha′s links')
     hypha.bind(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Next hypha')
     hypha.bind(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Previous hypha')
@@ -269,12 +268,12 @@ if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
 }
 
 if (document.body.dataset.rrhAddr.startsWith('/edit')) {
-    let editor = rrh.shortcuts.group('Editor')
+    let editor = rrh.l10nify(rrh.shortcuts).group('Editor')
     editor.bind(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes')
     editor.bind(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes')
 
     if (editTextarea) {
-        let format = rrh.shortcuts.group('Format', editTextarea)
+        let format = rrh.l10nify(rrh.shortcuts).group('Format', editTextarea)
         format.bind(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold', { force: true })
         format.bind(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic', { force: true })
         format.bind(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced', { force: true })

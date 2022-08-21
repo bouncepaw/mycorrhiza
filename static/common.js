@@ -37,7 +37,11 @@ const rrh = {
                 if (value instanceof Function) {
                     return function (...args) {
                         args = args.map(arg => typeof arg === 'string' ? rrh.l10n(arg) : arg)
-                        return value.apply(this === receiver ? target : this, args)
+                        let result = value.apply(this === receiver ? target : this, args)
+                        if (typeof result === 'object' && result !== null) {
+                            result = rrh.l10nify(result)
+                        }
+                        return result
                     }
                 }
                 return value
