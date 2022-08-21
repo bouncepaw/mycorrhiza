@@ -233,8 +233,10 @@ function openHelp() {
             <div class="dialog__content"></div>
         </div>
     `
-    dialog.querySelector('.dialog__close-button').onclick = () => this.close()
-    dialog.onkeydown = event => event.key === 'Escape' && close()
+    dialog.querySelector('.dialog__close-button').onclick = close
+    dialog.onkeydown = event => {
+        if (event.key === 'Escape') close()
+    }
     document.body.appendChild(dialog)
     dialog.focus()
 
