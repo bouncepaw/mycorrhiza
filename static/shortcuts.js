@@ -279,7 +279,7 @@ rrh.shortcuts.addGroup(new ShortcutGroup('Common', null, [
     new Shortcut('g l', '/list/', 'List of hyphae'),
     new Shortcut('g r', '/recent-changes/', 'Recent changes'),
     new Shortcut('g u', $('.auth-links__user-link'), 'Your profile′s hypha'),
-    new Shortcut(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help'),
+    new Shortcut(['?', isMac ? 'Meta+/' : 'Ctrl+/'], openHelp, 'Shortcut help', { force: true }),
 ]))
 
 if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
