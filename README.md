@@ -47,4 +47,4 @@ Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
 
 ## Assets
 
-The `static/favico.ico` file in this repository is the [mushroom emoji](https://github.com/twitter/twemoji/blob/54df6a1/assets/72x72/1f344.png) from Twitter's [twemoji project](https://twemoji.twitter.com/), and is licensed under the [Creative Commons CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+The `static/favicon.ico` file in this repository is the [mushroom emoji](https://github.com/twitter/twemoji/blob/54df6a1/assets/72x72/1f344.png) from Twitter's [twemoji project](https://twemoji.twitter.com/), and is licensed under the [Creative Commons CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
