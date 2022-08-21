@@ -359,6 +359,7 @@ kbd {
 .shortcuts-help .dialog__content {
 	columns: 300px 2;
 	column-gap: 32px;
+	overflow: hidden;
 }
 
 .shortcuts-group {
