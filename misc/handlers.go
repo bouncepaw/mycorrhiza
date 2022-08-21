@@ -23,7 +23,7 @@ import (
 
 func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/robots.txt", handlerRobotsTxt)
-	rtr.HandleFunc("/static/style.css", handlerStyle)
+	rtr.HandleFunc("/static/style.css", HandlerStyle)
 	rtr.PathPrefix("/static/").
 		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 	rtr.HandleFunc("/list", handlerList)
@@ -134,7 +134,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 
 var stylesheets = []string{"default.css", "custom.css"}
 
-func handlerStyle(w http.ResponseWriter, rq *http.Request) {
+func HandlerStyle(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
