@@ -532,7 +532,7 @@ func StreamLock(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-	<main class="locked-notice">
+	<main class="locked-notice main-width">
 		<section class="locked-notice__message">
 			<p class="locked-notice__lock">🔒</p>
 			<h1 class="locked-notice__title">`)
