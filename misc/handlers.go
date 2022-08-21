@@ -22,18 +22,11 @@ import (
 )
 
 func InitHandlers(rtr *mux.Router) {
-	rtr.HandleFunc("/robots.txt", handlerRobotsTxt)
-	rtr.HandleFunc("/static/style.css", handlerStyle)
-	rtr.PathPrefix("/static/").
-		Handler(http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 	rtr.HandleFunc("/list", handlerList)
 	rtr.HandleFunc("/reindex", handlerReindex)
 	rtr.HandleFunc("/update-header-links", handlerUpdateHeaderLinks)
 	rtr.HandleFunc("/random", handlerRandom)
 	rtr.HandleFunc("/about", handlerAbout)
-	rtr.HandleFunc("/favicon.ico", func(w http.ResponseWriter, rq *http.Request) {
-		http.Redirect(w, rq, "/static/favicon.ico", http.StatusSeeOther)
-	})
 	rtr.HandleFunc("/title-search/", handlerTitleSearch)
 	initViews()
 }
@@ -134,7 +127,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 
 var stylesheets = []string{"default.css", "custom.css"}
 
-func handlerStyle(w http.ResponseWriter, rq *http.Request) {
+func HandlerStyle(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
@@ -149,7 +142,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
+func HandlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	file, err := static.FS.Open("robots.txt")
