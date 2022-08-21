@@ -59,14 +59,8 @@ function isTextField(element) {
         element.isContentEditable
 }
 
-let notTextField = event => !(event.target instanceof Node && isTextField(event.target))
-
-let allShortcuts = []
-
 class ShortcutHandler {
-    constructor(element, override, filter = () => true) {
-        this.element = element
-
+    constructor(element) {
         // This shit is built like this: map is the whole shortcut graph. active
         // points to the node of the shortcut graph that's currently "selected".
         // When the user presses a key, the code finds the key node in the
@@ -74,18 +68,10 @@ class ShortcutHandler {
         // we get a narrower view until we reach a leaf and execute the action.
         this.map = {}
         this.active = this.map
-
-        // This is the listing of all shortcuts for the help dialog.
-        this.shortcuts = []
-
-        this.override = override
-        this.filter = filter
-        this.timeout = null
-
-        this.element.addEventListener('keydown', event => this.handleKeyDown(event))
+        element.addEventListener('keydown', event => this.handleKeyDown(event))
     }
 
-    register(shortcuts, action) {
+    register(shortcuts, action, other = {}) {
         // shortcuts looks like this: ['g r', 'Ctrl+r']
         // Every item of shortcuts is a sequential key chord.
         for (let chord of strToArr(shortcuts)) {
@@ -97,63 +83,17 @@ class ShortcutHandler {
                 leaf = leaf[key]
                 if (leaf.action) throw new Error(`Shortcut ${chord} already exists`)
             }
-
             // Now we've traversed to the leaf. Bind the shortcut
             leaf.action = action
-            leaf.shortcut = chord
-        }
-    }
-
-    add(shortcuts, action, description = null) {
-        shortcuts = strToArr(shortcuts)
-        this.register(shortcuts, action)
-        this.shortcuts.push({ action, shortcuts, description })
-    }
-
-    bindElement(shortcut, element, description = null) {
-        element = typeof element === 'string' ? $(element) : element
-        if (!element) return
-        this.add(shortcut, () => {
-            if (isTextField(element)) {
-                element.focus()
-            } else {
-                element.click()
-            }
-        }, description)
-    }
-
-    bindLink(shortcut, link, ...other) {
-        this.add(shortcut, () => window.location.href = link, ...other)
-    }
-
-    bindCollection(trigger, elements, description) {
-        this.shortcuts.push({
-            shortcuts: [trigger + ' 1 — 9'],
-            description,
-        })
-
-        if (typeof elements === 'string') {
-            elements = $$(elements)
-        } else if (Array.isArray(elements)) {
-            elements = elements.map(el => typeof el === 'string' ? $(el) : el)
-        }
-
-        for (let i = 1; i <= elements.length && i < 10; i++) {
-            let element = elements[i - 1]
-            this.register(`${trigger} ${i}`, () => {
-                if (isTextField(element)) {
-                    element.focus()
-                } else {
-                    element.click()
-                }
-            })
+            Object.assign(leaf, other)
         }
     }
 
     handleKeyDown(event) {
         if (event.defaultPrevented) return
         if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return
-        if (!this.filter(event)) return
+        if ((!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) &&
+            event.target instanceof Node && isTextField(event.target)) return
 
         let shortcut = keyEventToShortcut(event)
 
@@ -163,10 +103,10 @@ class ShortcutHandler {
         }
 
         this.active = this.active[shortcut]
-        if (this.active.action) {
+        if (this.active.action && (!this.active.element || event.target === this.active.element)) {
             event.stopPropagation()
+            if (this.active.force) event.preventDefault()
             this.active.action(event)
-            if (this.override) event.preventDefault()
             this.resetActive()
             return
         }
@@ -184,87 +124,117 @@ class ShortcutHandler {
     }
 }
 
-rrh.shortcuts = {
-    // Global shortcuts work everywhere.
-    global: new ShortcutHandler(document, false),
+class ShortcutGroup {
+    constructor(handler, element = null) {
+        this.shortcuts = []
+        this.handler = handler
+        this.element = element
+    }
 
-    groupMap: {}, // this is used for name lookups
-    groups: [], // this is used in the help dialog
-    group(name, element = window, filter = () => true) {
-        if (!this.groupMap[name]) {
-            let group = new ShortcutHandler(element, false, filter)
-            this.groupMap[name] = group
-            this.groups.push({ name, group })
-            return group
+    bind(shortcuts, target, description = null, other = {}) {
+        shortcuts = strToArr(shortcuts)
+        if (!other.element) other.element = this.element
+        if (target instanceof Function) {
+            this.shortcuts.push({ shortcuts, description })
+            this.handler.register(shortcuts, target, other)
+        } else if (target instanceof Node) {
+            this.bind(shortcuts, () => {
+                if (isTextField(target)) target.focus()
+                target.click()
+            }, description)
+        } else if (Array.isArray(target) && (target.length === 0 || target[0] instanceof Node)) {
+            this.shortcuts.push({
+                shortcuts: shortcuts.map(s => `${s} 1 — 9`),
+                description,
+            })
+            for (let i = 0; i < target.length && i < 9; i++) {
+                let element = target[i]
+                this.handler.register(shortcuts.map(s => `${s} ${i + 1}`), () => {
+                    if (isTextField(element)) element.focus()
+                    else element.click()
+                }, other)
+            }
+        } else if (typeof target === 'string') {
+            this.bind(shortcuts, () => window.location.href = target, description)
+        } else if (target !== undefined && target !== null) {
+            throw new Error('Invalid target type')
         }
-        return this.groupMap[name]
+    }
+}
+
+rrh.shortcuts = {
+    handler: new ShortcutHandler(window),
+    groups: [],
+
+    // Creates or finds an existing group by name.
+    group(name, element = null) {
+        let group = this.groups.find(group => group.name === name)
+        if (!group) {
+            group = { name, group: new ShortcutGroup(this.handler, element) }
+            this.groups.push(group)
+        }
+        return group.group
     },
 }
+
+// Global shortcuts work everywhere.
+rrh.shortcuts.global = new ShortcutGroup(rrh.shortcuts.handler)
 
 rrh.l10n('List of shortcuts', { ru: 'Горячие клавиши' })
 rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
 
-class ShortcutsHelpDialog {
-    constructor() {
-        this.backdrop = rrh.html`<div class="dialog-backdrop" hidden></div>`
-        this.backdrop.onclick = () => this.close()
-        document.body.appendChild(this.backdrop)
+function openHelp() {
+    if ($('.shortcuts-help')) return
 
-        this.dialog = rrh.html`
-            <div class="dialog shortcuts-help" tabindex="0" hidden>
-                <div class="dialog__header">
-                    <h1 class="dialog__title">${rrh.l10n('List of shortcuts')}</h1>
-                    <button class="dialog__close-button" aria-label="${rrh.l10n('Close this dialog')}"></button>
-                </div>
-                <div class="dialog__content"></div>
+    document.body.overflow = 'hidden'
+    let prevActiveElement = document.activeElement
+
+    let backdrop = rrh.html`<div class="dialog-backdrop"></div>`
+    backdrop.onclick = close
+    document.body.appendChild(backdrop)
+
+    let dialog = rrh.html`
+        <div class="dialog shortcuts-help" tabindex="0">
+            <div class="dialog__header">
+                <h1 class="dialog__title">${rrh.l10n('List of shortcuts')}</h1>
+                <button class="dialog__close-button" aria-label="${rrh.l10n('Close this dialog')}"></button>
             </div>
-        `
-        this.dialog.querySelector('.dialog__close-button').onclick = () => this.close()
-        this.dialog.onkeydown = event => event.key === 'Escape' && this.close()
-        document.body.appendChild(this.dialog)
+            <div class="dialog__content"></div>
+        </div>
+    `
+    dialog.querySelector('.dialog__close-button').onclick = () => this.close()
+    dialog.onkeydown = event => event.key === 'Escape' && close()
+    document.body.appendChild(dialog)
+    dialog.focus()
 
-        for (let { name, group } of rrh.shortcuts.groups) {
-            if (group.shortcuts.length === 0) continue
-            this.dialog.querySelector('.dialog__content').appendChild(rrh.html`
-                <div class="shortcuts-group">
-                    <h2 class="shortcuts-group-heading">${name}</h2>
-                    <ul class="shortcuts-list">
-                        ${group.shortcuts.map(({ description, shortcuts }) => `
-                            <li class="shortcut-row">
-                                <div class="shortcut-row__description">${description}</div>
-                                <div class="shortcut-row__keys">
-                                    ${shortcuts.map(s => s.trim()
-                                        .split(' ')
-                                        .map(prettifyShortcut)
-                                        .join(' '))
-                                    .join(' <span class="kbd-or">or</span> ')}
-                                </div>
-                            </li>
-                        `)}
-                    </ul>
-                </div>
-            `)
-        }
-    }
-
-    open() {
-        this.prevActiveElement = document.activeElement
-
-        document.body.overflow = 'hidden'
-        this.backdrop.hidden = false
-        this.dialog.hidden = false
-        this.dialog.focus()
-    }
-
-    close() {
+    function close() {
         document.body.overflow = ''
-        this.backdrop.hidden = true
-        this.dialog.hidden = true
+        document.body.removeChild(backdrop)
+        document.body.removeChild(dialog)
+        if (prevActiveElement) prevActiveElement.focus()
+    }
 
-        if (this.prevActiveElement) {
-            this.prevActiveElement.focus()
-            this.prevActiveElement = null
-        }
+    for (let { name, group } of rrh.shortcuts.groups) {
+        if (group.shortcuts.length === 0) continue
+        dialog.querySelector('.dialog__content').appendChild(rrh.html`
+            <div class="shortcuts-group">
+                <h2 class="shortcuts-group-heading">${name}</h2>
+                <ul class="shortcuts-list">
+                    ${group.shortcuts.map(({ description, shortcuts }) => `
+                        <li class="shortcut-row">
+                            <div class="shortcut-row__description">${description}</div>
+                            <div class="shortcut-row__keys">
+                                ${shortcuts.map(s => s.trim()
+            .split(' ')
+            .map(prettifyShortcut)
+            .join(' '))
+            .join(' <span class="kbd-or">or</span> ')}
+                            </div>
+                        </li>
+                    `)}
+                </ul>
+            </div>
+        `)
     }
 }
 
@@ -273,52 +243,47 @@ rrh.l10n('Hypha', { ru: 'Гифа' })
 rrh.l10n('Editor', { ru: 'Редактор' })
 rrh.l10n('Format', { ru: 'Форматирование' })
 
-let helpDialog = null
-let openHelp = () => {
-    if (!helpDialog) helpDialog = new ShortcutsHelpDialog()
-    helpDialog.open()
-}
+rrh.shortcuts.global.bind(isMac ? 'Meta+/' : 'Ctrl+/', openHelp)
 
-rrh.shortcuts.global.add(isMac ? 'Meta+/' : 'Ctrl+/', openHelp)
-
-let common = rrh.l10nify(rrh.shortcuts.group('Common', window, notTextField))
-common.bindCollection('g', '.top-bar__highlight-link', 'First 9 header links', 'Header link')
-common.bindLink('g h', '/', 'Home')
-common.bindLink('g l', '/list/', 'List of hyphae')
-common.bindLink('g r', '/recent-changes/', 'Recent changes')
-common.bindElement('g u', '.auth-links__user-link', 'Your profile′s hypha')
-common.add('?', openHelp, rrh.l10n('Shortcut help'))
+let common = rrh.l10nify(rrh.shortcuts.group('Common'))
+common.bind('g', $$('.top-bar__highlight-link'), 'First 9 header links')
+common.bind('g h', '/', 'Home')
+common.bind('g l', '/list/', 'List of hyphae')
+common.bind('g r', '/recent-changes/', 'Recent changes')
+common.bind('g u', $('.auth-links__user-link'), 'Your profile′s hypha')
+common.bind('?', openHelp, rrh.l10n('Shortcut help'))
 
 if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
-    let hypha = rrh.shortcuts.group('Hypha', window, notTextField)
-    hypha.bindCollection('', 'article .wikilink', 'First 9 hypha′s links')
-    hypha.bindElement(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], '.prevnext__prev', 'Next hypha')
-    hypha.bindElement(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], '.prevnext__next', 'Previous hypha')
-    hypha.bindElement(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha')
-    hypha.bindElement(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], '.subhyphae__link', 'First child hypha')
-    hypha.bindElement(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], '.btn__link_navititle[href^="/edit/"]', 'Edit this hypha')
-    hypha.bindElement('v', '.hypha-info__link[href^="/hypha/"]', 'Go to hypha′s page')
-    hypha.bindElement('a', '.hypha-info__link[href^="/media/"]', 'Go to media management')
-    hypha.bindElement('h', '.hypha-info__link[href^="/history/"]', 'Go to history')
-    hypha.bindElement('r', '.hypha-info__link[href^="/rename/"]', 'Rename this hypha')
-    hypha.bindElement('b', '.hypha-info__link[href^="/backlinks/"]', 'Backlinks')
+    let hypha = rrh.shortcuts.group('Hypha')
+    hypha.bind('', $$('article .wikilink'), 'First 9 hypha′s links')
+    hypha.bind(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Next hypha')
+    hypha.bind(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Previous hypha')
+    hypha.bind(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha')
+    hypha.bind(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], $('.subhyphae__link'), 'First child hypha')
+    hypha.bind(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], $('.btn__link_navititle[href^="/edit/"]'), 'Edit this hypha')
+    hypha.bind('v', $('.hypha-info__link[href^="/hypha/"]'), 'Go to hypha′s page')
+    hypha.bind('a', $('.hypha-info__link[href^="/media/"]'), 'Go to media management')
+    hypha.bind('h', $('.hypha-info__link[href^="/history/"]'), 'Go to history')
+    hypha.bind('r', $('.hypha-info__link[href^="/rename/"]'), 'Rename this hypha')
+    hypha.bind('b', $('.hypha-info__link[href^="/backlinks/"]'), 'Backlinks')
 }
 
-if (document.body.dataset.rrhAddr.startsWith('/edit') && editTextarea) {
-    let editor = rrh.shortcuts.group('Editor', window)
-    editor.bindElement(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes')
-    editor.bindElement(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes')
+if (document.body.dataset.rrhAddr.startsWith('/edit')) {
+    let editor = rrh.shortcuts.group('Editor')
+    editor.bind(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes')
+    editor.bind(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes')
 
-    let format = rrh.shortcuts.group('Format', editTextarea)
-    format.override = true
-    format.add(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold')
-    format.add(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic')
-    format.add(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced')
-    format.add(isMac ? 'Meta+Shift+i' : 'Ctrl+I', wrapHighlighted, 'Highlight')
-    format.add(isMac ? 'Meta+.' : 'Ctrl+.', wrapLifted, 'Superscript')
-    format.add(isMac ? 'Meta+Comma' : 'Ctrl+Comma', wrapLowered, 'Subscript')
-    format.add(isMac ? 'Meta+Shift+x' : 'Ctrl+X', wrapStrikethrough, 'Strikethrough')
-    format.add(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link')
-    // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
-    format.add(isMac ? 'Meta+;' : 'Ctrl+;', insertDate, 'Insert date UTC')
+    if (editTextarea) {
+        let format = rrh.shortcuts.group('Format', editTextarea)
+        format.bind(isMac ? 'Meta+b' : 'Ctrl+b', wrapBold, 'Bold', { force: true })
+        format.bind(isMac ? 'Meta+i' : 'Ctrl+i', wrapItalic, 'Italic', { force: true })
+        format.bind(isMac ? 'Meta+Shift+m' : 'Ctrl+M', wrapMonospace, 'Monospaced', { force: true })
+        format.bind(isMac ? 'Meta+Shift+i' : 'Ctrl+I', wrapHighlighted, 'Highlight', { force: true })
+        format.bind(isMac ? 'Meta+.' : 'Ctrl+.', wrapLifted, 'Superscript', { force: true })
+        format.bind(isMac ? 'Meta+Comma' : 'Ctrl+Comma', wrapLowered, 'Subscript', { force: true })
+        format.bind(isMac ? 'Meta+Shift+x' : 'Ctrl+X', wrapStrikethrough, 'Strikethrough', { force: true })
+        format.bind(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link', { force: true })
+        // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
+        format.bind(isMac ? 'Meta+;' : 'Ctrl+;', insertDate, 'Insert date UTC', { force: true })
+    }
 }
