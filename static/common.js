@@ -24,22 +24,4 @@ const rrh = {
         }
         return this.l10nMap[text] || text
     },
-    l10nify(object) {
-        return new Proxy(object, {
-            get(target, prop, receiver) {
-                const value = target[prop]
-                if (value instanceof Function) {
-                    return function (...args) {
-                        args = args.map(arg => typeof arg === 'string' ? rrh.l10n(arg) : arg)
-                        let result = value.apply(this === receiver ? target : this, args)
-                        if (typeof result === 'object' && result !== null) {
-                            result = rrh.l10nify(result)
-                        }
-                        return result
-                    }
-                }
-                return value
-            },
-        })
-    },
 }
