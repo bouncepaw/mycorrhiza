@@ -10,6 +10,8 @@ rrh.l10n('Editor', { ru: 'Редактор' })
 
 rrh.l10n('Format', { ru: 'Форматирование' })
 
+// Convert a KeyboardEvent into a shortcut string for matching by
+// ShortcutHandler.
 function keyEventToShortcut(event) {
     let elideShift = event.key.toUpperCase() === event.key && event.shiftKey
     return (event.ctrlKey ? 'Ctrl+' : '') +
@@ -19,6 +21,8 @@ function keyEventToShortcut(event) {
         (event.key === ',' ? 'Comma' : event.key === ' ' ? 'Space' : event.key)
 }
 
+// Prettify the shortcut string by replacing modifiers and arrow codes with
+// Unicode symbol for presentation to the user.
 function prettifyShortcut(shortcut) {
     let keys = shortcut.split('+')
 
@@ -31,6 +35,7 @@ function prettifyShortcut(shortcut) {
         }
     }
 
+    // Add Shift into shortcut strings like Ctrl+L
     let lastKey = keys[keys.length - 1]
     if (!keys.includes('Shift') && lastKey.toUpperCase() === lastKey && lastKey.toLowerCase() !== lastKey) {
         keys.splice(keys.length - 1, 0, 'Shift')
@@ -47,6 +52,9 @@ function prettifyShortcut(shortcut) {
         }
 
         if (i === keys.length - 1 && i > 0 && keys[i].length === 1) {
+            // Make every key uppercase. This does not introduce any ambiguous
+            // cases because we insert a Shift modifier for upper-case keys
+            // earlier.
             keys[i] = keys[i].toUpperCase()
         }
 
@@ -71,13 +79,16 @@ function isTextField(element) {
         element.isContentEditable
 }
 
+// This class handles buffering and dispatching key events. There is typically
+// only a single ShortcutHandler for the webpage.
 class ShortcutHandler {
     constructor(element) {
-        // This shit is built like this: map is the whole shortcut graph. active
-        // points to the node of the shortcut graph that's currently "selected".
-        // When the user presses a key, the code finds the key node in the
-        // active subgraph and sets active to the found node. On each key press
-        // we get a narrower view until we reach a leaf and execute the action.
+        // map is the whole shortcut graph. active points to the node of the
+        // shortcut graph that's currently "selected". When the user presses a
+        // key, the code finds the key node in the active subgraph and sets
+        // active to the found node. On each key press we get a narrower view
+        // until we reach a leaf and execute the action. View this property in
+        // the JavaScript console of your browser for easier understanding.
         this.map = {}
         this.active = this.map
         element.addEventListener('keydown', event => this.handleKeyDown(event))
@@ -136,6 +147,8 @@ class ShortcutHandler {
     }
 }
 
+// This class groups shortcuts into semantic groups. It delegates actual
+// shortcut registration to ShortcutHandler.
 class ShortcutGroup {
     constructor(handler, element = null) {
         this.shortcuts = []
