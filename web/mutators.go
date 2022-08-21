@@ -3,16 +3,15 @@ package web
 import (
 	"fmt"
 	"html/template"
+	"lesarbr.es/mycomarkup/v5"
 	"log"
 	"net/http"
-
-	"github.com/bouncepaw/mycomarkup/v5"
 
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 
-	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
+	"lesarbr.es/mycomarkup/v5/mycocontext"
 
 	"github.com/gorilla/mux"
 

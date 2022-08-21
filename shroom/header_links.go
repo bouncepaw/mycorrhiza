@@ -1,13 +1,13 @@
 package shroom
 
 import (
-	"github.com/bouncepaw/mycomarkup/v5"
-	"github.com/bouncepaw/mycomarkup/v5/blocks"
-	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"lesarbr.es/mycomarkup/v5"
+	"lesarbr.es/mycomarkup/v5/blocks"
+	"lesarbr.es/mycomarkup/v5/mycocontext"
 	"os"
 )
 

@@ -2,11 +2,11 @@ package mycoopts
 
 import (
 	"errors"
-	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"lesarbr.es/mycomarkup/v5/options"
 )
 
 func MarkupOptions(hyphaName string) options.Options {

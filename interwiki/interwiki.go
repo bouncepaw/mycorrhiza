@@ -4,9 +4,9 @@ package interwiki
 import (
 	"encoding/json"
 	"errors"
-	"github.com/bouncepaw/mycomarkup/v5/options"
 	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"lesarbr.es/mycomarkup/v5/options"
 	"log"
 	"os"
 	"sync"

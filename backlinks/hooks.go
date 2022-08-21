@@ -1,12 +1,12 @@
 package backlinks
 
 import (
-	"github.com/bouncepaw/mycomarkup/v5"
-	"github.com/bouncepaw/mycomarkup/v5/links"
-	"github.com/bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
+	"lesarbr.es/mycomarkup/v5"
+	"lesarbr.es/mycomarkup/v5/links"
+	"lesarbr.es/mycomarkup/v5/mycocontext"
+	"lesarbr.es/mycomarkup/v5/tools"
 )
 
 // UpdateBacklinksAfterEdit is a creation/editing hook for backlinks index
