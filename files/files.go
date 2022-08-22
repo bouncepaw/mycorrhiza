@@ -2,10 +2,12 @@
 package files
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/static"
 )
 
 var paths struct {
@@ -51,6 +53,10 @@ func InterwikiJSON() string { return paths.interwikiJSON }
 // PrepareWikiRoot ensures all needed directories and files exist and have
 // correct permissions.
 func PrepareWikiRoot() error {
+	isFirstInit := false
+	if _, err := os.Stat(cfg.WikiDir); err != nil && os.IsNotExist(err) {
+		isFirstInit = true
+	}
 	if err := os.MkdirAll(cfg.WikiDir, os.ModeDir|0777); err != nil {
 		return err
 	}
@@ -76,6 +82,42 @@ func PrepareWikiRoot() error {
 	paths.tokensJSON = filepath.Join(paths.cacheDir, "tokens.json")
 	paths.categoriesJSON = filepath.Join(cfg.WikiDir, "categories.json")
 	paths.interwikiJSON = FileInRoot("interwiki.json")
+
+	// Are we initializing the wiki for the first time?
+	if isFirstInit {
+		err := firstTimeInit()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// firstTimeInit takes care of any tasks that only need to happen the first time the wiki is initialized
+func firstTimeInit() error {
+	static.InitFS(StaticFiles())
+
+	defaultFavicon, err := static.FS.Open("icon/mushroom.png")
+	if err != nil {
+		return err
+	}
+
+	defer defaultFavicon.Close()
+
+	outputFileName := filepath.Join(cfg.WikiDir, "static", "favicon.ico")
+
+	outputFile, err := os.Create(outputFileName)
+	if err != nil {
+		return err
+	}
+
+	defer outputFile.Close()
+
+	_, err = io.Copy(outputFile, defaultFavicon)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
