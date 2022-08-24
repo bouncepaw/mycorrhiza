@@ -7,6 +7,9 @@ RUN go build -o /out/mycorrhiza .
 FROM alpine/git as app
 EXPOSE 1737
 
+RUN apk add --no-cache curl
+HEALTHCHECK CMD curl -f localhost:1737 || exit 1
+
 WORKDIR /
 RUN mkdir wiki
 COPY --from=build /out/mycorrhiza /usr/bin
