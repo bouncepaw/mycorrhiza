@@ -15,6 +15,7 @@
 	"delete_link": "Удалить",
 	"text_link": "Посмотреть разметку",
 	"media_link": "Медиа",
+	"media_link_for_textual": "Превратить в медиа-гифу",
 	"backlinks_link": "{{.n}} %s сюда",
 	"backlinks_link+one": "ссылка",
 	"backlinks_link+few": "ссылки",

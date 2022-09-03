@@ -11,6 +11,7 @@
 	"delete_link": "Delete",
 	"text_link": "View markup",
 	"media_link": "Manage media",
+	"media_link_for_textual": "Turn to media hypha",
 	"backlinks_link": "{{.n}} backlink%s",
 	"backlinks_link+one": "",
 	"backlinks_link+other": "s",
