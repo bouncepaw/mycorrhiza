@@ -60,7 +60,7 @@ Entries have the following fields:
 
    For generic sites, you will have to think of something by yourself. If you do not set it, it will default to `https\:/\/example.org/{NAME}`.
 
-   `{NAME}` is substituted. For example, from link `[[Melanocarpa>uxn]]`, `{NAME}` is replaced with `uxn`.
+   `{NAME}` is substituted. For example, from link `[\[Melanocarpa\>uxn]]`, `{NAME}` is replaced with `uxn`.
 }
 
 You can also change `interwiki.json` directly. Reload the wiki after editing it.
