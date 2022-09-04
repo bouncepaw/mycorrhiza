@@ -54,7 +54,7 @@ rrh.shortcuts = {
     _handleKeyDown(event) {
         if (event.defaultPrevented) return
         if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return
-        if ((!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) &&
+        if ((!event.ctrlKey && !event.metaKey && !event.altKey) &&
             event.target instanceof Node && isTextField(event.target)) return
 
         let shortcut = keyEventToShortcut(event)
