@@ -11,6 +11,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/migration"
+	"github.com/bouncepaw/mycorrhiza/version"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"os"
@@ -36,7 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Running Mycorrhiza Wiki 1.12.0")
+	log.Println("Running Mycorrhiza Wiki", version.FormatVersion())
 	if err := os.Chdir(files.HyphaeDir()); err != nil {
 		log.Fatal(err)
 	}
