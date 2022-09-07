@@ -56,7 +56,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 	fmt.Printf("$ %v\n", args)
 	cmd := exec.Command(gitpath, args...)
 	cmd.Dir = files.HyphaeDir()
-	cmd.Env = gitEnv
+	cmd.Env = append(cmd.Environ(), gitEnv...)
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
