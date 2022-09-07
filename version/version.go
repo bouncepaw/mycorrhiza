@@ -1,16 +1,15 @@
 package version
 
 import (
-	"fmt"
 	"runtime/debug"
 	"strconv"
 )
 
 // This is set through ldflags='-X ...' in the Makefile
-var taggedRelease string = "Unknown"
+var taggedRelease string = "unknown"
 
 func FormatVersion() string {
-	var commitHash string = "Unknown"
+	var commitHash string = ""
 	var dirty string = ""
 
 	info, ok := debug.ReadBuildInfo()
@@ -18,7 +17,10 @@ func FormatVersion() string {
 	if ok {
 		for _, setting := range info.Settings {
 			if setting.Key == "vcs.revision" {
-				commitHash = setting.Value
+				commitHash = "+" + setting.Value
+				if len(commitHash) > 8 {
+					commitHash = commitHash[:8]
+				}
 			} else if setting.Key == "vcs.modified" {
 				modified, err := strconv.ParseBool(setting.Value)
 				if err == nil && modified {
@@ -28,5 +30,5 @@ func FormatVersion() string {
 		}
 	}
 
-	return fmt.Sprintf("%s+%s%s", taggedRelease, commitHash[:7], dirty)
+	return taggedRelease + commitHash + dirty
 }
