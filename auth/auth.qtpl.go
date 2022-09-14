@@ -608,15 +608,16 @@ var userListL10n = map[string]L10nEntry{
 	"administrators": En("Administrators").Ru("Администраторы"),
 	"moderators":     En("Moderators").Ru("Модераторы"),
 	"editors":        En("Editors").Ru("Редакторы"),
+	"readers":        En("Readers").Ru("Читатели"),
 }
 
-//line auth/auth.qtpl:155
+//line auth/auth.qtpl:156
 func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
-//line auth/auth.qtpl:155
+//line auth/auth.qtpl:156
 	qw422016.N().S(`
 <main class="main-width user-list">
 `)
-//line auth/auth.qtpl:158
+//line auth/auth.qtpl:159
 	var get = func(key string) string {
 		return userListL10n[key].Get(lc.Locale)
 	}
@@ -625,6 +626,7 @@ func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 		admins     = make([]string, 0)
 		moderators = make([]string, 0)
 		editors    = make([]string, 0)
+		readers    = make([]string, 0)
 	)
 	for u := range user.YieldUsers() {
 		switch u.Group {
@@ -635,136 +637,169 @@ func StreamUserList(qw422016 *qt422016.Writer, lc *l18n.Localizer) {
 			moderators = append(moderators, u.Name)
 		case "editor", "trusted":
 			editors = append(editors, u.Name)
+		case "reader":
+			readers = append(readers, u.Name)
 		}
 	}
 	sort.Strings(admins)
 	sort.Strings(moderators)
 	sort.Strings(editors)
+	sort.Strings(readers)
 
-//line auth/auth.qtpl:181
+//line auth/auth.qtpl:186
 	qw422016.N().S(`
 	<h1>`)
-//line auth/auth.qtpl:182
+//line auth/auth.qtpl:187
 	qw422016.E().S(get("heading"))
-//line auth/auth.qtpl:182
+//line auth/auth.qtpl:187
 	qw422016.N().S(`</h1>
 	<section>
 		<h2>`)
-//line auth/auth.qtpl:184
+//line auth/auth.qtpl:189
 	qw422016.E().S(get("administrators"))
-//line auth/auth.qtpl:184
+//line auth/auth.qtpl:189
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line auth/auth.qtpl:185
+//line auth/auth.qtpl:190
 	for _, name := range admins {
-//line auth/auth.qtpl:185
+//line auth/auth.qtpl:190
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.E().S(cfg.UserHypha)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.N().S(`/`)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.E().S(name)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.N().S(`">`)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.E().S(name)
-//line auth/auth.qtpl:186
+//line auth/auth.qtpl:191
 		qw422016.N().S(`</a></li>
 		`)
-//line auth/auth.qtpl:187
+//line auth/auth.qtpl:192
 	}
-//line auth/auth.qtpl:187
+//line auth/auth.qtpl:192
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line auth/auth.qtpl:190
+//line auth/auth.qtpl:195
 	qw422016.E().S(get("moderators"))
-//line auth/auth.qtpl:190
+//line auth/auth.qtpl:195
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line auth/auth.qtpl:191
+//line auth/auth.qtpl:196
 	for _, name := range moderators {
-//line auth/auth.qtpl:191
+//line auth/auth.qtpl:196
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.E().S(cfg.UserHypha)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.N().S(`/`)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.E().S(name)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.N().S(`">`)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.E().S(name)
-//line auth/auth.qtpl:192
+//line auth/auth.qtpl:197
 		qw422016.N().S(`</a></li>
 		`)
-//line auth/auth.qtpl:193
+//line auth/auth.qtpl:198
 	}
-//line auth/auth.qtpl:193
+//line auth/auth.qtpl:198
 	qw422016.N().S(`</ol>
 	</section>
 	<section>
 		<h2>`)
-//line auth/auth.qtpl:196
+//line auth/auth.qtpl:201
 	qw422016.E().S(get("editors"))
-//line auth/auth.qtpl:196
+//line auth/auth.qtpl:201
 	qw422016.N().S(`</h2>
 		<ol>`)
-//line auth/auth.qtpl:197
+//line auth/auth.qtpl:202
 	for _, name := range editors {
-//line auth/auth.qtpl:197
+//line auth/auth.qtpl:202
 		qw422016.N().S(`
 			<li><a href="/hypha/`)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.E().S(cfg.UserHypha)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.N().S(`/`)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.E().S(name)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.N().S(`">`)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.E().S(name)
-//line auth/auth.qtpl:198
+//line auth/auth.qtpl:203
 		qw422016.N().S(`</a></li>
 		`)
-//line auth/auth.qtpl:199
+//line auth/auth.qtpl:204
 	}
-//line auth/auth.qtpl:199
+//line auth/auth.qtpl:204
+	qw422016.N().S(`</ol>
+	</section>
+	<section>
+		<h2>`)
+//line auth/auth.qtpl:207
+	qw422016.E().S(get("readers"))
+//line auth/auth.qtpl:207
+	qw422016.N().S(`</h2>
+		<ol>`)
+//line auth/auth.qtpl:208
+	for _, name := range readers {
+//line auth/auth.qtpl:208
+		qw422016.N().S(`
+			<li><a href="/hypha/`)
+//line auth/auth.qtpl:209
+		qw422016.E().S(cfg.UserHypha)
+//line auth/auth.qtpl:209
+		qw422016.N().S(`/`)
+//line auth/auth.qtpl:209
+		qw422016.E().S(name)
+//line auth/auth.qtpl:209
+		qw422016.N().S(`">`)
+//line auth/auth.qtpl:209
+		qw422016.E().S(name)
+//line auth/auth.qtpl:209
+		qw422016.N().S(`</a></li>
+		`)
+//line auth/auth.qtpl:210
+	}
+//line auth/auth.qtpl:210
 	qw422016.N().S(`</ol>
 	</section>
 </main>
 `)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 }
 
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 func WriteUserList(qq422016 qtio422016.Writer, lc *l18n.Localizer) {
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	StreamUserList(qw422016, lc)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	qt422016.ReleaseWriter(qw422016)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 }
 
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 func UserList(lc *l18n.Localizer) string {
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	qb422016 := qt422016.AcquireByteBuffer()
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	WriteUserList(qb422016, lc)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	qs422016 := string(qb422016.B)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	qt422016.ReleaseByteBuffer(qb422016)
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 	return qs422016
-//line auth/auth.qtpl:202
+//line auth/auth.qtpl:213
 }

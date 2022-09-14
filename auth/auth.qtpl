@@ -149,6 +149,7 @@ var userListL10n = map[string]L10nEntry{
     "administrators": En("Administrators").Ru("Администраторы"),
     "moderators": En("Moderators").Ru("Модераторы"),
     "editors": En("Editors").Ru("Редакторы"),
+    "readers": En("Readers").Ru("Читатели"),
 }
 %}
 
@@ -163,6 +164,7 @@ var (
 	admins = make([]string, 0)
 	moderators = make([]string, 0)
 	editors = make([]string, 0)
+    readers = make([]string, 0)
 )
 for u := range user.YieldUsers() {
 	switch u.Group {
@@ -173,11 +175,14 @@ for u := range user.YieldUsers() {
 		moderators = append(moderators, u.Name)
 	case "editor", "trusted":
 		editors = append(editors, u.Name)
+    case "reader":
+        readers = append(readers, u.Name)
 	}
 }
 sort.Strings(admins)
 sort.Strings(moderators)
 sort.Strings(editors)
+sort.Strings(readers)
 %}
 	<h1>{%s get("heading") %}</h1>
 	<section>
@@ -195,6 +200,12 @@ sort.Strings(editors)
 	<section>
 		<h2>{%s get("editors") %}</h2>
 		<ol>{% for _, name := range editors %}
+			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
+		{% endfor %}</ol>
+	</section>
+	<section>
+		<h2>{%s get("readers") %}</h2>
+		<ol>{% for _, name := range readers %}
 			<li><a href="/hypha/{%s cfg.UserHypha %}/{%s name %}">{%s name %}</a></li>
 		{% endfor %}</ol>
 	</section>
