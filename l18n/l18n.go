@@ -40,6 +40,7 @@ type Localizer struct {
 }
 
 // locales is a filesystem containing all localization files.
+//
 //go:embed en ru
 var locales embed.FS
 

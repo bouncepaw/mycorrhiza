@@ -3,8 +3,8 @@
 // Migrations are meant to be removed couple of versions after being introduced.
 //
 // Available migrations:
-//     * Rocket links
-//     * Headings
+//   - Rocket links
+//   - Headings
 package migration
 
 import (
