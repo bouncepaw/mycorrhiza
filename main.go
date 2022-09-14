@@ -37,7 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Running Mycorrhiza Wiki", version.FormatVersion())
+	log.Println("Running Mycorrhiza Wiki", version.Short)
 	if err := os.Chdir(files.HyphaeDir()); err != nil {
 		log.Fatal(err)
 	}

@@ -98,7 +98,7 @@ func AboutHTML(lc *l18n.Localizer) string {
 		log.Fatalln(err)
 	}
 	data := aboutData
-	data.Version = version.FormatVersion()
+	data.Version = version.Short
 	data.Admins = user.ListUsersWithGroup("admin")
 	data.UserCount = user.Count()
 	data.RegistrationLimit = cfg.RegistrationLimit

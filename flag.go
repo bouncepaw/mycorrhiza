@@ -42,7 +42,7 @@ func parseCliArgs() {
 	flag.Parse()
 
 	if versionFlag {
-		fmt.Println("Mycorrhiza Wiki", version.FormatVersion())
+		fmt.Println("Mycorrhiza Wiki", version.Long)
 		os.Exit(0)
 	}
 
