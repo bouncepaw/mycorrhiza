@@ -25,6 +25,7 @@
 				<label for="group">{{block "group" .}}Group{{end}}:</label>
 				<select id="group" name="group">
 					<option {{if .Form.Get "group" | eq "anon" }}selected{{end}}>anon</option>
+					<option {{if .Form.Get "group" | eq "reader" }}selected{{end}}>reader</option>
 					<option {{if .Form.Get "group" | eq "editor" }}selected{{end}}>editor</option>
 					<option {{if .Form.Get "group" | eq "trusted" }}selected{{end}}>trusted</option>
 					<option {{if .Form.Get "group" | eq "moderator" }}selected{{end}}>moderator</option>

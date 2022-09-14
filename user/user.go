@@ -48,6 +48,7 @@ var minimalRights = map[string]int{
 
 var groups = []string{
 	"anon",
+	"reader",
 	"editor",
 	"trusted",
 	"moderator",
@@ -57,6 +58,7 @@ var groups = []string{
 // Group — Right level
 var groupRight = map[string]int{
 	"anon":      0,
+	"reader":    0,
 	"editor":    1,
 	"trusted":   2,
 	"moderator": 3,
