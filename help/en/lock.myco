@@ -23,5 +23,8 @@ https://mycorrhiza.wiki/binary/release/1.3/lock_screenshot
 
 If they log in, they will be able to navigate the wiki. They are not able to register, though. [[/help/en/telegram | Telegram]] authorization is supported.
 
+== Readers
+You might want to add some users to the `reader` group. Readers can log in even to locked wikis, but they cannot edit.
+
 == See also
 => /help/en/whitelist | Whitelist
