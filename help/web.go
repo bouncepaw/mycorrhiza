@@ -40,6 +40,7 @@ var (
 {{define "whitelist"}}Белый список{{end}}
 {{define "telegram"}}Вход через Телеграм{{end}}
 {{define "interwiki"}}Интервики{{end}}
+{{define "file structure"}}Файловая структура{{end}}
 `
 )
 

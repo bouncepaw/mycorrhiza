@@ -1,0 +1,19 @@
+= File structure
+//This article is intended for wiki administrators.//
+
+Every Mycorrhiza wiki is stored in one directory. This document explaints the structure of this directory, what files can be there, and what you should do with them.
+
+You can edit all of the files manually, if you want, just do your best to not break anything.
+
+* `config.ini` is the [[/help/en/config_file | configuration file]]. It has comments in it, feel free to edit it.
+* `wiki.git/` is the Git repository of the wiki, it has all hyphae in it. You can edit it directly, but do not forget to make Git commits with your changes and [[/reindex]] you wiki afterwards.
+* `static` holds static data. You can access data there from your wiki with addresses like `/static/image.png`.
+** `static/favicon.ico` is your wiki's favicon, accessed at [[/favicon.ico]] by browsers.
+** `static/common.css` redefines the engine's default style, if exists. You probably don't need to use it.
+** `static/custom.css` is loaded after the main style. If you want to make visual changes to your wiki, this is probably where you should do that.
+* `categories.json` contains the information about all categories in your wiki.
+* `users.json` stores users' information. The passwords are not stored, only their hashes are, this is safe. Their tokens are stored in `cache/tokens.json`.
+* `interwiki.json` holds the interwiki configuration.
+* `cache/` holds cached data. If you back up your wiki, you can omit this directory.
+** `cache/tokens.json` holds users' tokens. By deleting specific tokens, you can log out users remotely.
+* Mycomarkup migration markers are hidden files prefixed with `.mycomarkup-`. You should probably not touch them.
