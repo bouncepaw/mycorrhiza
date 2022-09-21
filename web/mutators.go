@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"html/template"
 	"log"
@@ -37,7 +36,6 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u    = user.FromRequest(rq)
-		lc   = l18n.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
@@ -46,14 +44,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	if rq.Method == "GET" {
-		util.HTTP200Page(
-			w,
-			viewutil.Base(
-				meta,
-				fmt.Sprintf(lc.Get("ui.ask_remove_media"), util.BeautifulName(h.CanonicalName())),
-				hypview.RemoveMediaAsk(rq, h.CanonicalName()),
-				map[string]string{},
-			))
+		hypview.RemoveMedia(viewutil.MetaFrom(w, rq), h.CanonicalName())
 		return
 	}
 	switch h := h.(type) {

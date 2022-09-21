@@ -71,12 +71,17 @@ var (
 {{define "rename recursively"}}Также переименовать подгифы{{end}}
 {{define "rename tip"}}Переименовывайте аккуратно. <a href="/help/en/rename">Документация на английском.</a>{{end}}
 {{define "leave redirection"}}Оставить перенаправление{{end}}
+
+{{define "remove media from x?"}}Убрать медиа у {{beautifulName .}}?{{end}}
+{{define "remove media from [[x]]?"}}Убрать медиа у <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a>?{{end}}
+{{define "remove media for real?"}}Вы точно хотите убрать медиа у гифы «{{beautifulName .HyphaName}}»?{{end}}
 `
 	chainNaviTitle   viewutil.Chain
 	chainEditHypha   viewutil.Chain
 	chainEmptyHypha  viewutil.Chain
 	chainDeleteHypha viewutil.Chain
 	chainRenameHypha viewutil.Chain
+	chainRemoveMedia viewutil.Chain
 )
 
 func Init() {
@@ -85,6 +90,7 @@ func Init() {
 	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
 	chainDeleteHypha = viewutil.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
 	chainRenameHypha = viewutil.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
+	chainRemoveMedia = viewutil.CopyEnRuWith(fs, "view_remove_media.html", ruTranslation)
 }
 
 type editData struct {
@@ -126,15 +132,24 @@ func RenameHypha(meta viewutil.Meta, hyphaName string) {
 	})
 }
 
-type deleteData struct {
+type deleteRemoveMediaData struct {
 	*viewutil.BaseData
 	HyphaName string
 }
 
 func DeleteHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainDeleteHypha, deleteData{
+	viewutil.ExecutePage(meta, chainDeleteHypha, deleteRemoveMediaData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/delete/" + hyphaName,
+		},
+		HyphaName: hyphaName,
+	})
+}
+
+func RemoveMedia(meta viewutil.Meta, hyphaName string) {
+	viewutil.ExecutePage(meta, chainRemoveMedia, deleteRemoveMediaData{
+		BaseData: &viewutil.BaseData{
+			Addr: "/remove-media/" + hyphaName,
 		},
 		HyphaName: hyphaName,
 	})
