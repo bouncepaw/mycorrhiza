@@ -897,7 +897,7 @@ body[data-rrh-addr^="/interwiki"] main form + form {
 		width: 100%;
 		display: table-row;
 	}
-	.img-gallery_layout-normal figure a {
+	.img-gallery_layout-normal figure > a {
 		display: table-cell;
 	}
 	.img-gallery_layout-normal figure figcaption {
