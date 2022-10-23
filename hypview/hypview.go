@@ -17,6 +17,7 @@ var (
 	ruTranslation = `
 {{define "editing hypha"}}Редактирование {{beautifulName .}}{{end}}
 {{define "editing [[hypha]]"}}Редактирование <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
+{{define "creating [[hypha]]"}}Создание <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
 {{define "you're creating a new hypha"}}Вы создаёте новую гифу.{{end}}
 {{define "describe your changes"}}Опишите ваши правки{{end}}
 {{define "save"}}Сохранить{{end}}

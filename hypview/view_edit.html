@@ -55,15 +55,16 @@
 <main class="main-width edit {{if .Preview}}edit_with-preview{{else}}edit_no-preview{{end}}">
     <form method="post" class="edit-form" action="/upload-text/{{.HyphaName}}">
         <h1 class="edit__title">
-            {{block "editing [[hypha]]" .HyphaName}}
-                Edit <a href="/hypha/{{.}}">{{beautifulName .}}</a>
+            {{if .IsNew}}
+                {{block "creating [[hypha]]" .HyphaName}}
+                    Create <a href="/hypha/{{.}}">{{beautifulName .}}</a>
+                {{end}}
+            {{else}}
+                {{block "editing [[hypha]]" .HyphaName}}
+                    Edit <a href="/hypha/{{.}}">{{beautifulName .}}</a>
+                {{end}}
             {{end}}
         </h1>
-        {{if .IsNew}}
-            <p class="warning warning_new-hypha">
-                {{block "you're creating a new hypha" .}}You are creating a new hypha.{{end}}
-            </p>
-        {{end}}
         <textarea name="text" class="edit-form__textarea" autofocus>{{.Content}}</textarea>
         <p class="edit-form__message-zone">
             <input
