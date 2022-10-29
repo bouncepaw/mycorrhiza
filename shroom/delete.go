@@ -3,6 +3,7 @@ package shroom
 import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/user"
@@ -30,6 +31,7 @@ func Delete(u *user.User, h hyphae.ExistingHypha) error {
 		return hop.Errs[0]
 	}
 	backlinks.UpdateBacklinksAfterDelete(h, originalText)
+	categories.RemoveHyphaFromAllCategories(h.CanonicalName())
 	hyphae.DeleteHypha(h)
 	return nil
 }

@@ -95,6 +95,29 @@ func removeHyphaFromCategory(hyphaName, catName string) {
 	go saveToDisk()
 }
 
+// RemoveHyphaFromAllCategories removes the given hypha from all the categories.
+func RemoveHyphaFromAllCategories(hyphaName string) {
+	cats := CategoriesWithHypha(hyphaName)
+	mutex.Lock()
+	defer mutex.Unlock()
+	for _, cat := range cats {
+		if node, ok := hyphaToCategories[hyphaName]; ok {
+			node.removeCategory(cat)
+			if len(node.categoryList) == 0 {
+				delete(hyphaToCategories, hyphaName)
+			}
+		}
+
+		if node, ok := categoryToHyphae[cat]; ok {
+			node.removeHypha(hyphaName)
+			if len(node.hyphaList) == 0 {
+				delete(categoryToHyphae, cat)
+			}
+		}
+	}
+	go saveToDisk()
+}
+
 // RenameHyphaInAllCategories finds all mentions of oldName and replaces them with newName. Pass canonical names. Make sure newName is not taken. If oldName is not in any category, RenameHyphaInAllCategories is a no-op.
 func RenameHyphaInAllCategories(oldName, newName string) {
 	mutex.Lock()
