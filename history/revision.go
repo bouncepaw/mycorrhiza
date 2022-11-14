@@ -252,3 +252,21 @@ func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
 	}
 	return out.String(), err
 }
+
+// SplitPrimitiveDiff splits a primitive diff of a single file into hunks.
+func SplitPrimitiveDiff(text string) (result []string) {
+	idx := strings.Index(text, "@@ -")
+	if idx < 0 {
+		return
+	}
+	text = text[idx:]
+	for {
+		idx = strings.Index(text, "\n@@ -")
+		if idx < 0 {
+			result = append(result, text)
+			return
+		}
+		result = append(result, text[:idx+1])
+		text = text[idx+1:]
+	}
+}

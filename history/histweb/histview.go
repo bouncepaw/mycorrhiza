@@ -11,6 +11,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -125,6 +126,7 @@ var (
 
 {{define "diff for at title"}}Разница для {{beautifulName .HyphaName}} для {{.Hash}}{{end}}
 {{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
+{{define "no text diff available"}}Нет текстовой разницы.{{end}}
 
 {{define "count pre"}}Отобразить{{end}}
 {{define "count post"}}свежих правок.{{end}}
@@ -158,15 +160,49 @@ type primitiveDiffData struct {
 	*viewutil.BaseData
 	HyphaName string
 	Hash      string
-	Text      string
+	Text      template.HTML
 }
 
 func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
+	hunks := history.SplitPrimitiveDiff(text)
+	if len(hunks) > 0 {
+		var buf strings.Builder
+		for _, hunk := range hunks {
+			lines := strings.Split(hunk, "\n")
+			buf.WriteString(`<pre class="codeblock">`)
+			for i, line := range lines {
+				line = strings.Trim(line, "\r")
+				var class string
+				if len(line) > 0 {
+					switch line[0] {
+					case '+':
+						class = "primitive-diff__addition"
+					case '-':
+						class = "primitive-diff__deletion"
+					case '@':
+						class = "primitive-diff__context"
+					}
+				}
+				if i > 0 {
+					buf.WriteString("\n")
+				}
+				line = template.HTMLEscapeString(line)
+				fmt.Fprintf(&buf, `<code class="%s">%s</code>`,
+					class, line)
+			}
+			buf.WriteString(`</pre>`)
+		}
+		text = buf.String()
+	} else if text != "" {
+		text = template.HTMLEscapeString(text)
+		text = fmt.Sprintf(
+			`<pre class="codeblock"><code>%s</code></pre>`, text)
+	}
 	viewutil.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
 		BaseData:  &viewutil.BaseData{},
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
-		Text:      text,
+		Text:      template.HTML(text),
 	})
 }
 

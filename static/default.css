@@ -911,3 +911,21 @@ body[data-rrh-addr^="/interwiki"] main form + form {
 .img-gallery img { max-width: 100%; max-height: 50vh; }
 figure { margin: 0; }
 figcaption { padding-bottom: .5rem; }
+
+/*
+ * Primitive diff
+ */
+.primitive-diff__addition {
+	color: green;
+}
+.primitive-diff__deletion {
+	color: red;
+}
+.primitive-diff__context {
+	opacity: .5;
+}
+@media (prefers-color-scheme: dark) {
+	.primitive-diff__addition {
+		color: #4cd74c;
+	}
+}
