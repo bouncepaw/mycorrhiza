@@ -135,3 +135,18 @@ func (f FormData) Get(key string) string {
 func (f FormData) Put(key, value string) {
 	f.fields[key] = value
 }
+
+// IsRevHash checks if the revision hash is valid.
+func IsRevHash(revHash string) bool {
+	if len(revHash) < 7 {
+		return false
+	}
+	paddedRevHash := revHash
+	if len(paddedRevHash)%2 != 0 {
+		paddedRevHash = paddedRevHash[:len(paddedRevHash)-1]
+	}
+	if _, err := hex.DecodeString(paddedRevHash); err != nil {
+		return false
+	}
+	return true
+}

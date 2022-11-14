@@ -3,7 +3,6 @@ package histweb
 
 import (
 	"embed"
-	"encoding/hex"
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/files"
@@ -39,15 +38,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	shorterURL := strings.TrimPrefix(rq.URL.Path, "/primitive-diff/")
 	revHash, slug, found := strings.Cut(shorterURL, "/")
-	if !found || len(revHash) < 7 || len(slug) < 1 {
-		http.Error(w, "403 bad request", http.StatusBadRequest)
-		return
-	}
-	paddedRevHash := revHash
-	if len(paddedRevHash)%2 != 0 {
-		paddedRevHash = paddedRevHash[:len(paddedRevHash)-1]
-	}
-	if _, err := hex.DecodeString(paddedRevHash); err != nil {
+	if !found || !util.IsRevHash(revHash) || len(slug) < 1 {
 		http.Error(w, "403 bad request", http.StatusBadRequest)
 		return
 	}

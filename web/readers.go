@@ -59,12 +59,15 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 // /rev-text/<revHash>/<hyphaName>
 func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	shorterURL := strings.TrimPrefix(rq.URL.Path, "/rev-text/")
+	revHash, slug, found := strings.Cut(shorterURL, "/")
+	if !found || !util.IsRevHash(revHash) || len(slug) < 1 {
+		http.Error(w, "403 bad request", http.StatusBadRequest)
+		return
+	}
 	var (
-		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/rev-text/")
-		firstSlashIndex = strings.IndexRune(shorterURL, '/')
-		revHash         = shorterURL[:firstSlashIndex]
-		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
-		h               = hyphae.ByName(hyphaName)
+		hyphaName = util.CanonicalName(slug)
+		h         = hyphae.ByName(hyphaName)
 	)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	switch h := h.(type) {
@@ -103,17 +106,17 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 // handlerRevision displays a specific revision of the text part the hypha
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	lc := l18n.FromRequest(rq)
+	shorterURL := strings.TrimPrefix(rq.URL.Path, "/rev/")
+	revHash, slug, found := strings.Cut(shorterURL, "/")
+	if !found || !util.IsRevHash(revHash) || len(slug) < 1 {
+		http.Error(w, "403 bad request", http.StatusBadRequest)
+		return
+	}
 	var (
-		lc              = l18n.FromRequest(rq)
-		shorterURL      = strings.TrimPrefix(rq.URL.Path, "/rev/")
-		firstSlashIndex = strings.IndexRune(shorterURL, '/')
-		revHash         = shorterURL[:firstSlashIndex]
-		hyphaName       = util.CanonicalName(shorterURL[firstSlashIndex+1:])
-		h               = hyphae.ByName(hyphaName)
-		contents        = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
-	)
-
-	var (
+		hyphaName    = util.CanonicalName(slug)
+		h            = hyphae.ByName(hyphaName)
+		contents     = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 		textContents string
 		err          error
 		mycoFilePath string
