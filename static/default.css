@@ -686,8 +686,11 @@ a.btn_destructive:visited,
 
 .top-bar__search-bar {
 	border: 0;
-	vertical-align: -webkit-baseline-middle; /* You have no idea how sorry I am. This is a non-standard value. Seems to work in Safari, Opera and mobile Chrome. We need a jedi and a knight in shiny armor to replace it with something more standard. */
 	width: 100%;
+}
+
+.top-bar__section_search {
+	align-self: center;
 }
 
 @media (prefers-color-scheme: dark) {
