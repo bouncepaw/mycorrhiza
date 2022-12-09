@@ -687,6 +687,7 @@ a.btn_destructive:visited,
 .top-bar__search-bar {
 	border: 0;
 	width: 100%;
+	padding: 4px 2px;
 }
 
 .top-bar__section_search {
