@@ -14,7 +14,6 @@ var (
 {{define "list of hyphae"}}Список гиф{{end}}
 {{define "search:"}}Поиск:{{end}}
 {{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
-{{define "search desc"}}Название каждой из существующих гиф сопоставлено с запросом. Подходящие гифы приведены ниже.{{end}}
 {{define "search no results"}}Ничего не найдено.{{end}}
 {{define "x total"}}{{.}} всего.{{end}}
 {{define "go to hypha"}}Перейти к гифе <a class="wikilink{{if .HasExactMatch | not}} wikilink_new{{end}}" href="/hypha/{{.MatchedHyphaName}}">{{beautifulName .MatchedHyphaName}}</a>.{{end}}
