@@ -43,7 +43,7 @@ var (
 {{define "code"}}Код-блок{{end}}
 {{define "bullets"}}Маркир. список{{end}}
 {{define "numbers"}}Нумер. список{{end}}
-{{define "mycomarkup help"}}<a href="/help/en/mycomarkup" class="shy-link">Подробнее</a> о микоразметке{{end}}
+{{define "mycomarkup help"}}<a href="/help/en/mycomarkup" class="shy-link">Подробнее</a> о Микоразметке{{end}}
 {{define "actions"}}Действия{{end}}
 {{define "current date"}}Текущая дата{{end}}
 {{define "current time"}}Текущее время{{end}}
@@ -54,7 +54,7 @@ var (
 {{define "empty log in"}}Войти в свою учётную запись, если она у вас есть{{end}}
 {{define "empty register"}}Создать новую учётную запись{{end}}
 {{define "write a text"}}Написать текст{{end}}
-{{define "write a text tip"}}Напишите заметку, дневник, статью, рассказ или иной текст с помощью <a href="/help/en/mycomarkup" class="shy-link">микоразметки</a>. Сохраняется полная история правок документа.{{end}}
+{{define "write a text tip"}}Напишите заметку, дневник, статью, рассказ или иной текст с помощью <a href="/help/en/mycomarkup" class="shy-link">Микоразметки</a>. Сохраняется полная история правок документа.{{end}}
 {{define "write a text writing conventions"}}Не забывайте следовать правилам оформления этой вики, если они имеются.{{end}}
 {{define "write a text btn"}}Создать{{end}}
 {{define "upload a media"}}Загрузить медиа{{end}}
