@@ -93,9 +93,13 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 	return nil
 }
 
+const redirectionTemplate = `=> %[1]s | ✏️ %[2]s
+<= %[1]s | full
+`
+
 func leaveRedirection(oldName, newName string, hop *history.Op) error {
 	var (
-		text       = fmt.Sprintf("=> %s | ✏️ %s\n", newName, util.BeautifulName(newName))
+		text       = fmt.Sprintf(redirectionTemplate, newName, util.BeautifulName(newName))
 		emptyHypha = hyphae.ByName(oldName)
 	)
 	switch emptyHypha := emptyHypha.(type) {
