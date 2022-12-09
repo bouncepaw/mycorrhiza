@@ -163,22 +163,22 @@ You can write a description for the image and specify its size.
 
 * {```
 img {
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg {
+https://lesarbr.es/mushroom.jpg
+https://lesarbr.es/mushroom.jpg {
 	Description //here//
 }
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 100 { Size }
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 50*50
+https://lesarbr.es/mushroom.jpg | 100 { Size }
+https://lesarbr.es/mushroom.jpg | 50*50
 }
 ```}
 * {
 img {
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg {
+https://lesarbr.es/mushroom.jpg
+https://lesarbr.es/mushroom.jpg {
 	Description //here//
 }
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 100 { Size }
-https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 50*50 { Square }
+https://lesarbr.es/mushroom.jpg | 100 { Size }
+https://lesarbr.es/mushroom.jpg | 50*50 { Square }
 }
 }
 
@@ -205,25 +205,25 @@ Specify the layout after `img` and before `{`. If you do not write any of them, 
 
 ```
 img grid {
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+   https://lesarbr.es/mushroom.jpg
+   https://lesarbr.es/mushroom.jpg
 }
 
 img side {
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+   https://lesarbr.es/mushroom.jpg | 200
+   https://lesarbr.es/mushroom.jpg | 200
 }
 
 This text is wrapped.
 ```
 img grid {
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg
+   https://lesarbr.es/mushroom.jpg
+   https://lesarbr.es/mushroom.jpg
 }
 
 img side {
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
-   https://upload.wikimedia.org/wikipedia/commons/4/48/Timbre_ciuperci_otravitoare.jpg | 200
+   https://lesarbr.es/mushroom.jpg | 200
+   https://lesarbr.es/mushroom.jpg | 200
 }
 
 This text is wrapped.
