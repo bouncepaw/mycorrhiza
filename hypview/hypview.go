@@ -74,8 +74,8 @@ var (
 {{define "leave redirection"}}Оставить перенаправление{{end}}
 
 {{define "remove media from x?"}}Убрать медиа у {{beautifulName .}}?{{end}}
-{{define "remove media from [[x]]?"}}Убрать медиа у <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a>?{{end}}
-{{define "remove media for real?"}}Вы точно хотите убрать медиа у гифы «{{beautifulName .HyphaName}}»?{{end}}
+{{define "remove media from [[x]]?"}}Убрать медиа у <a href="/hypha/{{.MatchedHyphaName}}">{{beautifulName .MatchedHyphaName}}</a>?{{end}}
+{{define "remove media for real?"}}Вы точно хотите убрать медиа у гифы «{{beautifulName .MatchedHyphaName}}»?{{end}}
 `
 	chainNaviTitle   viewutil.Chain
 	chainEditHypha   viewutil.Chain

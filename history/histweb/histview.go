@@ -124,8 +124,8 @@ var (
 {{define "history of title"}}История «{{.}}»{{end}}
 {{define "history of heading"}}История <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
 
-{{define "diff for at title"}}Разница для {{beautifulName .HyphaName}} для {{.Hash}}{{end}}
-{{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
+{{define "diff for at title"}}Разница для {{beautifulName .MatchedHyphaName}} для {{.Hash}}{{end}}
+{{define "diff for at heading"}}Разница для <a href="/hypha/{{.MatchedHyphaName}}">{{beautifulName .MatchedHyphaName}}</a> для {{.Hash}}{{end}}
 {{define "no text diff available"}}Нет текстовой разницы.{{end}}
 
 {{define "count pre"}}Отобразить{{end}}

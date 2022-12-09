@@ -172,12 +172,14 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	_ = rq.ParseForm()
 	var (
-		query   = rq.FormValue("q")
-		results []string
+		query       = rq.FormValue("q")
+		hyphaName   = util.CanonicalName(query)
+		_, nameFree = hyphae.AreFreeNames(hyphaName)
+		results     []string
 	)
 	for hyphaName := range shroom.YieldHyphaNamesContainingString(query) {
 		results = append(results, hyphaName)
 	}
 	w.WriteHeader(http.StatusOK)
-	viewTitleSearch(viewutil.MetaFrom(w, rq), query, results)
+	viewTitleSearch(viewutil.MetaFrom(w, rq), query, hyphaName, !nameFree, results)
 }
