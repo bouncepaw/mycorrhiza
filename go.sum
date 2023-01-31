@@ -1,5 +1,5 @@
-git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1 h1:pq4oM0YaGfSITLMk1/UCtOa0F+rqENX9PLBa6KKd6aE=
-git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1/go.mod h1:TCzFBqW11En4EjLfcQtJu8C/Ro7FIFR8vZ+nM9f6Q28=
+git.sr.ht/~bouncepaw/mycomarkup/v5 v5.4.0 h1:n57ze2WEmtjhlDDDPKctp40rzo8T2bGfuR9s7UAOaVg=
+git.sr.ht/~bouncepaw/mycomarkup/v5 v5.4.0/go.mod h1:TCzFBqW11En4EjLfcQtJu8C/Ro7FIFR8vZ+nM9f6Q28=
 github.com/andybalholm/brotli v1.0.2/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/andybalholm/brotli v1.0.3/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=

@@ -3,7 +3,7 @@ module github.com/bouncepaw/mycorrhiza
 go 1.19
 
 require (
-	git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1
+	git.sr.ht/~bouncepaw/mycomarkup/v5 v5.4.0
 	github.com/go-ini/ini v1.63.2
 	github.com/gorilla/feeds v1.1.1
 	github.com/gorilla/mux v1.8.0
@@ -23,4 +23,4 @@ require (
 
 // Use this trick to test local Mycomarkup changes, replace the path with yours,
 // but do not commit the change to the path:
-// replace git.sr.ht/~bouncepaw/mycomarkup/v5 v5.2.1 => "/Users/bouncepaw/GolandProjects/mycomarkup"
+// replace git.sr.ht/~bouncepaw/mycomarkup/v5 v5.4.0 => "/Users/bouncepaw/src/mycomarkup"
