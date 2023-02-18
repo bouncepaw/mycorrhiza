@@ -22,4 +22,28 @@ hamburgerSection.classList.add("top-bar__section", "top-bar__section_hamburger")
 
 hamburgerWrapper.appendChild(hamburger)
 hamburgerSection.appendChild(hamburgerWrapper)
-wrapper.appendChild(hamburgerSection)
+wrapper.appendChild(hamburgerSection);
+
+(async () => {
+    const input = document.querySelector('.js-add-cat-name'),
+        datalist = document.querySelector('.js-add-cat-list')
+    if (!input || !datalist) return;
+
+    const categories = await fetch('/category')
+        .then(resp => resp.text())
+        .then(html => {
+            return Array
+                .from(new DOMParser()
+                    .parseFromString(html, 'text/html')
+                    .querySelectorAll('.mv-category .p-name'))
+                .map(a => a.innerText);
+        });
+
+    for (let cat of categories) {
+        let optionElement = document.createElement('option')
+        optionElement.value = cat
+        datalist.appendChild(optionElement)
+    }
+    input.setAttribute('list', 'cat-name-options')
+})();
+
