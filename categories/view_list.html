@@ -1,13 +1,13 @@
 {{define "category list"}}Category list{{end}}
 {{define "title"}}{{template "category list"}}{{end}}
 {{define "body"}}
-	<main class="main-width">
-		<h1>{{template "title"}}</h1>
+	<main class="main-width mv-categories">
+		<h1 class="p-name">{{template "title"}}</h1>
         {{if len .Categories}}
 			<ol>
                 {{range .Categories}}
-					<li>
-						<a class="wikilink" href="/category/{{.}}">{{beautifulName .}}</a>
+					<li class="mv-category">
+						<a class="wikilink u-url p-name" href="/category/{{.}}">{{beautifulName .}}</a>
 					</li>
                 {{end}}
 			</ol>
