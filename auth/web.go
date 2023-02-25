@@ -170,8 +170,9 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 			false,
 		)
 	)
+	// If registering a user via Telegram failed, because a Telegram user with this name
+	// has already registered, then everything is actually ok!
 	if user.HasUsername(username) && user.ByName(username).Source == "telegram" {
-		// Problems is something we put blankets on.
 		err = nil
 	}
 
