@@ -63,7 +63,6 @@ func (stream *recentChangesStream) next(n int) []Revision {
 		// currHash is the last revision from the last call, so skip it
 		args = append(args, "--skip=1", stream.currHash)
 	}
-	// I don't think this can fail, so ignore the error
 	res, err := gitLog(args...)
 	if err != nil {
 		log.Fatal(err)
