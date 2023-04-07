@@ -1,11 +1,8 @@
 = Help
 
-This is documentation for **Mycorrhiza Wiki** 1.14.
+This is documentation for Mycorrhiza Wiki 1.14. Choose a topic from the list.
 
-//Choose a topic from the list.//
-
-Currently, the documentation does not cover everything there is to cover, but it will probably change in the future.
-
-If you want to contribute to the documentation, open a pull request or an issue on [[https://github.com/bouncepaw/mycorrhiza | GitHub]].
+The documentation is incomplete. If you want to contribute to the documentation, open a pull request or an issue on [[https://github.com/bouncepaw/mycorrhiza | GitHub]] or [[https://lists.sr.ht/~bouncepaw/mycorrhiza-devel | send a patch]].
 
 => https://mycorrhiza.wiki | Official wiki
+=> https://floss.social/@mycorrhiza | Fediverse
