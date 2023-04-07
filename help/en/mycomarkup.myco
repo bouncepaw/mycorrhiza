@@ -86,7 +86,7 @@ Links to [[hypha | a Hypha]] and [[https://example.org | some website]].
 ```}
 * Links to [[hypha | a Hypha]] and [[https://example.org | some website]].
 
-Since hypha names are case-insensitive, these links are basically the same: `[[hypha]]`, `[[Hypha]]`, `[[HYPHA]]`.
+Since hypha names are case-insensitive, these links are basically the same: `[\[hypha]]`, `[\[Hypha]]`, `[\[HYPHA]]`.
 
 === Rocket link
 **Rocket links** are special links. They take up a whole line. They are not consistent with usual inline links. They were taken from [[https://gemini.circumlunar.space/docs/gemtext.gmi | gemtext]].
@@ -163,22 +163,22 @@ You can write a description for the image and specify its size.
 
 * {```
 img {
-https://lesarbr.es/mushroom.jpg
-https://lesarbr.es/mushroom.jpg {
+https://bouncepaw.com/mushroom.jpg
+https://bouncepaw.com/mushroom.jpg {
 	Description //here//
 }
-https://lesarbr.es/mushroom.jpg | 100 { Size }
-https://lesarbr.es/mushroom.jpg | 50*50
+https://bouncepaw.com/mushroom.jpg | 100 { Size }
+https://bouncepaw.com/mushroom.jpg | 50*50
 }
 ```}
 * {
 img {
-https://lesarbr.es/mushroom.jpg
-https://lesarbr.es/mushroom.jpg {
+https://bouncepaw.com/mushroom.jpg
+https://bouncepaw.com/mushroom.jpg {
 	Description //here//
 }
-https://lesarbr.es/mushroom.jpg | 100 { Size }
-https://lesarbr.es/mushroom.jpg | 50*50 { Square }
+https://bouncepaw.com/mushroom.jpg | 100 { Size }
+https://bouncepaw.com/mushroom.jpg | 50*50 { Square }
 }
 }
 
@@ -205,25 +205,25 @@ Specify the layout after `img` and before `{`. If you do not write any of them, 
 
 ```
 img grid {
-   https://lesarbr.es/mushroom.jpg
-   https://lesarbr.es/mushroom.jpg
+   https://bouncepaw.com/mushroom.jpg
+   https://bouncepaw.com/mushroom.jpg
 }
 
 img side {
-   https://lesarbr.es/mushroom.jpg | 200
-   https://lesarbr.es/mushroom.jpg | 200
+   https://bouncepaw.com/mushroom.jpg | 200
+   https://bouncepaw.com/mushroom.jpg | 200
 }
 
 This text is wrapped.
 ```
 img grid {
-   https://lesarbr.es/mushroom.jpg
-   https://lesarbr.es/mushroom.jpg
+   https://bouncepaw.com/mushroom.jpg
+   https://bouncepaw.com/mushroom.jpg
 }
 
 img side {
-   https://lesarbr.es/mushroom.jpg | 200
-   https://lesarbr.es/mushroom.jpg | 200
+   https://bouncepaw.com/mushroom.jpg | 200
+   https://bouncepaw.com/mushroom.jpg | 200
 }
 
 This text is wrapped.
