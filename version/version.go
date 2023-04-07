@@ -15,7 +15,7 @@ var Long string
 // Short is the human-friendly x.y.z part of the long version string.
 var Short string
 
-var versionRegexp = regexp.MustCompile(`This is documentation for \*\*Mycorrhiza Wiki\*\* (.*).`)
+var versionRegexp = regexp.MustCompile(`This is documentation for Mycorrhiza Wiki (.*)\. `)
 
 func init() {
 	if b, err := help.Get("en"); err == nil {
