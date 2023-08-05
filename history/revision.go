@@ -27,7 +27,12 @@ func gitLog(args ...string) ([]Revision, error) {
 		"log", "--abbrev-commit", "--no-merges",
 		"--pretty=format:%h\t%ae\t%at\t%s",
 	}, args...)
+	args = append(args, "--")
 	out, err := silentGitsh(args...)
+	if strings.Contains(out.String(), "bad revision 'HEAD'") {
+		// Then we have no recent changes! It's a hack.
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +68,7 @@ func (stream *recentChangesStream) next(n int) []Revision {
 		// currHash is the last revision from the last call, so skip it
 		args = append(args, "--skip=1", stream.currHash)
 	}
+
 	res, err := gitLog(args...)
 	if err != nil {
 		log.Fatal(err)
@@ -70,6 +76,7 @@ func (stream *recentChangesStream) next(n int) []Revision {
 	if len(res) != 0 {
 		stream.currHash = res[len(res)-1].Hash
 	}
+
 	return res
 }
 
