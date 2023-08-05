@@ -18,6 +18,8 @@ var (
 {{define "aliases (,)"}}Псевдонимы (разделённые запятыми):{{end}}
 {{define "engine"}}Движок:{{end}}
 	{{define "engine/mycorrhiza"}}Микориза{{end}}
+	{{define "engine/betula"}}Бетула{{end}}
+	{{define "engine/agora"}}Агора{{end}}
 	{{define "engine/generic"}}Любой сайт{{end}}
 {{define "link href format"}}Строка форматирования атрибута href ссылки:{{end}}
 {{define "img src format"}}Строка форматирования атрибута src изображения:{{end}}

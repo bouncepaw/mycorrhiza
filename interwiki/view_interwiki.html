@@ -70,7 +70,8 @@
 					<label for="engine{{$i}}" class="required-field">{{template "engine"}}</label>
 					<select name="engine" id="engine{{$i}}" required>
 						<option value="mycorrhiza" {{if eq .Engine "mycorrhiza"}}selected{{end}}>{{template "engine/mycorrhiza"}} 🍄</option>
-						<option value="agora" {{if eq .Engine "agora"}}selected{{end}}>Agora ἀ</option>
+						<option value="betula" {{if eq .Engine "betula"}}selected{{end}}>{{template "engine/betula"}} 🌳</option>
+						<option value="agora" {{if eq .Engine "agora"}}selected{{end}}>{{template "engine/agora"}} ἀ</option>
 						<option value="generic" {{if eq .Engine "generic"}}selected{{end}}>{{template "engine/generic"}}</option>
 					</select>
 				</p>
@@ -109,7 +110,8 @@
 			<label for="engine" class="required-field">{{template "engine"}}</label>
 			<select name="engine" id="engine" required>
 				<option value="mycorrhiza">{{template "engine/mycorrhiza"}} 🍄</option>
-				<option value="agora">Agora ἀ</option>
+				<option value="betula">{{template "engine/betula"}} 🌳</option>
+				<option value="agora">{{template "engine/agora"}} ἀ</option>
 				<option value="generic">{{template "engine/generic"}}</option>
 			</select>
 		</p>

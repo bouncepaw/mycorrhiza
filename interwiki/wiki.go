@@ -11,6 +11,7 @@ type WikiEngine string
 
 const (
 	Mycorrhiza WikiEngine = "mycorrhiza"
+	Betula     WikiEngine = "betula"
 	Agora      WikiEngine = "agora"
 	// Generic is any website.
 	Generic WikiEngine = "generic"
@@ -18,7 +19,7 @@ const (
 
 func (we WikiEngine) Valid() bool {
 	switch we {
-	case Mycorrhiza, Agora, Generic:
+	case Mycorrhiza, Betula, Agora, Generic:
 		return true
 	}
 	return false
@@ -65,6 +66,8 @@ func (w *Wiki) canonize() {
 		switch w.Engine {
 		case Mycorrhiza:
 			w.LinkHrefFormat = fmt.Sprintf("%s/hypha/{NAME}", w.URL)
+		case Betula:
+			w.LinkHrefFormat = fmt.Sprintf("%s/{BETULA-NAME}", w.URL)
 		case Agora:
 			w.LinkHrefFormat = fmt.Sprintf("%s/node/{NAME}", w.URL)
 		default:

@@ -22,6 +22,7 @@
 				<label for="engine" class="required-field">Engine:</label>
 				<select name="engine" id="engine" required>
 					<option value="mycorrhiza" {{if eq .Engine "mycorrhiza"}}selected{{end}}>Mycorrhiza 🍄</option>
+					<option value="betula" {{if eq .Engine "betula"}}selected{{end}}>Betula 🌳</option>
 					<option value="agora" {{if eq .Engine "agora"}}selected{{end}}>Agora ἀ</option>
 					<option value="generic" {{if eq .Engine "generic"}}selected{{end}}>Generic (any website)</option>
 				</select>
