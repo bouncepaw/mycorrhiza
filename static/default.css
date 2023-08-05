@@ -943,3 +943,53 @@ figcaption { padding-bottom: .5rem; }
 		color: #4cd74c;
 	}
 }
+
+/*
+ * Print CSS
+ */
+@media print {
+	html {
+		background: white;
+	}
+	.subhyphae,
+	header,
+	.btn_navititle,
+	h1 a:first-of-type,
+	.prevnext,
+	#hypha-bottom,
+	.categories-card input,
+	.btn.categories-card__btn {
+		display: none;
+	}
+
+	.categories-card h2 {
+		display: inline;
+		border: 0;
+		margin-left: 2rem;
+		padding: 0;
+	}
+	.categories-card h2:after {
+		content: ":";
+	}
+	.categories-card {
+		margin-top: -1rem;
+	}
+	.categories-card__entries {
+		padding: 0;
+		display: inline;
+	}
+	.categories-card__entry {
+		display: inline-block;
+	}
+	.categories-card__link {
+		text-decoration: underline;
+		padding: 0;
+	}
+	.categories-card__link:after {
+		content: ", ";
+	}
+	main {
+		padding: 1rem 2rem;
+		font-family: Georgia, serif;
+	}
+}
