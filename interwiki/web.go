@@ -4,6 +4,7 @@ import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -37,9 +38,10 @@ func InitHandlers(rtr *mux.Router) {
 	chainNameTaken = viewutil.CopyEnRuWith(fs, "view_name_taken.html", ruTranslation)
 	rtr.HandleFunc("/interwiki", handlerInterwiki)
 	rtr.HandleFunc("/interwiki/add-entry", handlerAddEntry).Methods(http.MethodPost)
+	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)
 }
 
-func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
+func readInterwikiEntryFromRequest(rq *http.Request) Wiki {
 	wiki := Wiki{
 		Name:           rq.PostFormValue("name"),
 		Aliases:        strings.Split(rq.PostFormValue("aliases"), ","),
@@ -49,8 +51,38 @@ func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 		Engine:         WikiEngine(rq.PostFormValue("engine")),
 	}
 	wiki.canonize()
+	return wiki
+}
+
+func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
+	var (
+		oldData *Wiki
+		ok      bool
+		name    = mux.Vars(rq)["target"]
+		newData = readInterwikiEntryFromRequest(rq)
+	)
+
+	if oldData, ok = entriesByName[name]; !ok {
+		log.Printf("Could not modify interwiki entry ‘%s’ because it does not exist", name)
+		viewutil.HandlerNotFound(w, rq)
+		return
+	}
+
+	if err := replaceEntry(oldData, &newData); err != nil {
+		log.Printf("Could not modify interwiki entry ‘%s’ because one of the proposed aliases/name is taken\n", name)
+		viewNameTaken(viewutil.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
+		return
+	}
+
+	saveInterwikiJson()
+	log.Printf("Modified interwiki entry ‘%s’\n", name)
+	http.Redirect(w, rq, "/interwiki", http.StatusSeeOther)
+}
+
+func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
+	wiki := readInterwikiEntryFromRequest(rq)
 	if err := addEntry(&wiki); err != nil {
-		viewNameTaken(viewutil.MetaFrom(w, rq), &wiki, err.Error())
+		viewNameTaken(viewutil.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
 		return
 	}
 	saveInterwikiJson()
@@ -61,13 +93,15 @@ type nameTakenData struct {
 	*viewutil.BaseData
 	*Wiki
 	TakenName string
+	Action    string
 }
 
-func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName string) {
+func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
 	viewutil.ExecutePage(meta, chainNameTaken, nameTakenData{
 		BaseData:  &viewutil.BaseData{},
 		Wiki:      wiki,
 		TakenName: takenName,
+		Action:    action,
 	})
 }
 

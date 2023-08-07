@@ -26,3 +26,9 @@ func HttpErr(meta Meta, status int, name, errMsg string) {
 		),
 	)
 }
+
+// HandlerNotFound prints the simples 404 page. Use in rare places that cannot be achieved normally.
+func HandlerNotFound(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+	w.Write([]byte("404 Page not found"))
+}

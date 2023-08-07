@@ -2,7 +2,7 @@
 	<main class="main-width">
 		<h1>{{block "heading" .}}Name taken{{end}}</h1>
 		<p>{{block "tip" .TakenName}}Name <kbd>{{.}}</kbd> is already taken, please choose a different one.{{end}}</p>
-		<form method="post" action="/interwiki/add-entry">
+		<form method="post" action="/interwiki/{{.Action}}">
 			<p>
 				<label for="name" class="required-field">Name:</label>
 				<input type="text" id="name" name="name" required

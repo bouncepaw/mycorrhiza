@@ -29,6 +29,32 @@ func Init() {
 	log.Printf("Loaded %d interwiki entries\n", len(listOfEntries))
 }
 
+func dropEmptyStrings(ss []string) (clean []string) {
+	for _, s := range ss {
+		if s != "" {
+			clean = append(clean, s)
+		}
+	}
+	return clean
+}
+
+// difference returns the elements in `a` that aren't in `b`.
+// Taken from https://stackoverflow.com/a/45428032
+// CC BY-SA 4.0, no changes made
+func difference(a, b []string) []string {
+	mb := make(map[string]struct{}, len(b))
+	for _, x := range b {
+		mb[x] = struct{}{}
+	}
+	var diff []string
+	for _, x := range a {
+		if _, found := mb[x]; !found {
+			diff = append(diff, x)
+		}
+	}
+	return diff
+}
+
 func areNamesFree(names []string) (bool, string) {
 	for _, name := range names {
 		if _, found := entriesByName[name]; found {
@@ -40,21 +66,59 @@ func areNamesFree(names []string) (bool, string) {
 
 var mutex sync.Mutex
 
-func addEntry(wiki *Wiki) error {
+func replaceEntry(oldWiki *Wiki, newWiki *Wiki) error {
+	diff := difference(
+		append(newWiki.Aliases, newWiki.Name),
+		append(oldWiki.Aliases, oldWiki.Name),
+	)
+	if ok, name := areNamesFree(diff); !ok {
+		return errors.New(name)
+	}
+	deleteEntry(oldWiki)
+	return addEntry(newWiki)
+}
+
+func deleteEntry(wiki *Wiki) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	var (
-		// non-empty names only
-		names = func(names []string) []string {
-			var result []string
-			for _, name := range names {
-				if name != "" {
-					result = append(result, name)
-				}
+	// I'm being fancy here. Come on, the code here is already a mess.
+	// Let me have some fun.
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+	go func() {
+		names := append(wiki.Aliases, wiki.Name)
+		for _, name := range names {
+			name := name // I guess we need that
+			delete(entriesByName, name)
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		for i, w := range listOfEntries {
+			i, w := i, w
+			if w.Name == wiki.Name {
+				log.Println("It came to delete")
+				// Drop ith element.
+				listOfEntries[i] = listOfEntries[len(listOfEntries)-1]
+				listOfEntries = listOfEntries[:len(listOfEntries)-1]
+				break
 			}
-			return result
-		}(append(wiki.Aliases, wiki.Name))
+		}
+		wg.Done()
+	}()
+
+	wg.Wait()
+}
+
+func addEntry(wiki *Wiki) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+	wiki.Aliases = dropEmptyStrings(wiki.Aliases)
+	var (
+		names    = append(wiki.Aliases, wiki.Name)
 		ok, name = areNamesFree(names)
 	)
 	if !ok {

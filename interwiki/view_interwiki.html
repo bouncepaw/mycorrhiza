@@ -5,6 +5,8 @@
 {{define "aliases (,)"}}Aliases (separated by commas):{{end}}
 {{define "engine"}}Engine:{{end}}
 	{{define "engine/mycorrhiza"}}Mycorrhiza{{end}}
+	{{define "engine/betula"}}Betula{{end}}
+	{{define "engine/agora"}}Agora{{end}}
 	{{define "engine/generic"}}Generic (any website){{end}}
 {{define "url"}}URL{{end}}
 {{define "link href format"}}Link href attribute format string:{{end}}
@@ -53,7 +55,7 @@
 			<form method="post" action="/interwiki/modify-entry/{{.Name}}">
 				<p>
 					<label for="name{{$i}}" class="required-field">{{template "name"}}</label>
-					<input type="text" id="name" name="name{{$i}}" required
+					<input type="text" id="name{{$i}}" name="name" required
 					       value="{{.Name}}">
 				</p>
 				<p>
@@ -125,7 +127,7 @@
 			<input type="url" id="img-src-format" name="img-src-format"
 			       placeholder="https://wiki.example.org/media/{NAME}">
 		</p>
-		<input type="submit" class="btn">
+		<input type="submit" class="btn" value="Add entry">
 	</form>
 {{end}}
 
