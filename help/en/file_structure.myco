@@ -9,7 +9,7 @@ You can edit all of the files manually, if you want, just do your best to not br
 * `wiki.git/` is the Git repository of the wiki, it has all hyphae in it. You can edit it directly, but do not forget to make Git commits with your changes and [[/reindex]] you wiki afterwards.
 * `static` holds static data. You can access data there from your wiki with addresses like `/static/image.png`.
 ** `static/favicon.ico` is your wiki's favicon, accessed at [[/favicon.ico]] by browsers.
-** `static/common.css` redefines the engine's default style, if exists. You probably don't need to use it.
+** `static/default.css` redefines the engine's default style, if exists. You probably don't need to use it.
 ** `static/custom.css` is loaded after the main style. If you want to make visual changes to your wiki, this is probably where you should do that.
 * `categories.json` contains the information about all categories in your wiki.
 * `users.json` stores users' information. The passwords are not stored, only their hashes are, this is safe. Their tokens are stored in `cache/tokens.json`.
