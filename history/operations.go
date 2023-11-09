@@ -118,6 +118,7 @@ func (hop *Op) Apply() *Op {
 		"commit",
 		"--author='"+hop.name+" <"+hop.email+">'",
 		"--message="+hop.userMsg,
+		"--no-gpg-sign",
 	)
 	gitMutex.Unlock()
 	return hop
