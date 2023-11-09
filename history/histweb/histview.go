@@ -114,7 +114,7 @@ func handlerRecentChangesAtom(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
-	genericHandlerOfFeeds(w, rq, history.RecentChangesJSON, "JSON feed", "application/json")
+	genericHandlerOfFeeds(w, rq, history.RecentChangesJSON, "JSON feed", "application/feed+json")
 }
 
 var (
