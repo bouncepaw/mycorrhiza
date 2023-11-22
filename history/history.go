@@ -69,7 +69,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 func silentGitsh(args ...string) (out bytes.Buffer, err error) {
 	cmd := exec.Command(gitpath, args...)
 	cmd.Dir = files.HyphaeDir()
-	cmd.Env = gitEnv
+	cmd.Env = append(cmd.Environ(), gitEnv...)
 
 	b, err := cmd.CombinedOutput()
 	return *bytes.NewBuffer(b), err
