@@ -7,14 +7,14 @@
 			{{.U.Name}}
 		</h1>
 
-		<h2>{{block "change group" .}}Change group{{end}}</h2>
-
 		{{if .Form.HasError}}
 		<div class="notice notice--error">
 			<strong>{{template "error"}}:</strong>
 			{{.Form.Error}}
 		</div>
 		{{end}}
+
+		<h2>{{block "change group" .}}Change group{{end}}</h2>
 
 		<form action="" method="post">
 			<div class="form-field">
