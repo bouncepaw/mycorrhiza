@@ -93,6 +93,49 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
+func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
+	vars := mux.Vars(rq)
+	u := user.ByName(vars["username"])
+	if u == nil {
+		util.HTTP404Page(w, "404 page not found")
+		return
+	}
+
+	f := util.FormDataFromRequest(rq, []string{"password", "password_confirm"})
+
+	password := f.Get("password")
+	passwordConfirm := f.Get("password_confirm")
+	// server side validation
+	if password == "" {
+		err := fmt.Errorf("passwords should not be empty")
+		f = f.WithError(err)
+	}
+	if password == passwordConfirm {
+		previousPassword := u.Password // for rollback
+		if err := u.ChangePassword(password); err != nil {
+			f = f.WithError(err)
+		} else {
+			if err := user.SaveUserDatabase(); err != nil {
+				u.Password = previousPassword
+				f = f.WithError(err)
+			} else {
+				http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
+				return
+			}
+		}
+	} else {
+		err := fmt.Errorf("passwords do not match")
+		f = f.WithError(err)
+	}
+
+	if f.HasError() {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
+
+	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
+}
+
 func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
 	u := user.ByName(vars["username"])

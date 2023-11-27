@@ -33,6 +33,26 @@
 			</div>
 		</form>
 
+		<h2>{{block "change password" .}}Change password{{end}}</h2>
+
+		{{if eq .U.Source "local"}}
+		<form action="/admin/users/{{.U.Name}}/change-password" method="post">
+			<div class="form-field">
+				<label for="pass">{{block "password" .}}Password{{end}}</label>
+				<input required type="password" autocomplete="new-password" id="pass" name="password">
+				<br>
+				<label for="pass_confirm">{{block "confirm password" .}}Confirm password{{end}}</label>
+				<input required type="password" autocomplete="new-password" id="pass_confirm" name="password_confirm">
+			</div>
+
+			<div class="form-field">
+				<input class="btn" type="submit" value='{{block "submit" .}}Submit{{end}}'>
+			</div>
+		</form>
+        {{else}}
+        <p>{{block "non local password change" .}}Non-local accounts cannot have their passwords changed.{{end}}</p>
+        {{end}}
+
 		<h2>{{block "delete user" .}}Delete user{{end}}</h2>
 		<p>{{block "delete user tip" .}}Remove the user from the database. Changes made by the user will be preserved. It will be possible to take this username later.{{end}}</p>
 		<a class="btn btn_destructive" href="/admin/users/{{.U.Name}}/delete">{{template "delete"}}</a>

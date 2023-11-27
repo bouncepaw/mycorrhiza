@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// TODO: translate some untranslated strings
 const adminTranslationRu = `
 {{define "panel title"}}Панель админстратора{{end}}
 {{define "panel safe section title"}}Безопасная секция{{end}}
@@ -33,6 +34,9 @@ const adminTranslationRu = `
 
 {{define "new user"}}Новый пользователь{{end}}
 {{define "password"}}Пароль{{end}}
+{{define "confirm password"}}Confirm password{{end}}
+{{define "change password"}}Change password{{end}}
+{{define "non local password change"}}Non-local accounts cannot have their passwords changed.{{end}}
 {{define "create"}}Создать{{end}}
 
 {{define "change group"}}Изменить группу{{end}}
@@ -57,6 +61,7 @@ func Init(rtr *mux.Router) {
 
 	rtr.HandleFunc("/new-user", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
 	rtr.HandleFunc("/users/{username}/edit", handlerAdminUserEdit).Methods(http.MethodGet, http.MethodPost)
+	rtr.HandleFunc("/users/{username}/change-password", handlerAdminUserChangePassword).Methods(http.MethodPost)
 	rtr.HandleFunc("/users/{username}/delete", handlerAdminUserDelete).Methods(http.MethodGet, http.MethodPost)
 	rtr.HandleFunc("/users", handlerAdminUsers)
 
