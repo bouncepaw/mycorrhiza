@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -133,6 +134,20 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 		return true
 	}
 	return false
+}
+
+// Sets a new password for the user.
+func (user *User) ChangePassword(password string) error {
+	if user.Source != "local" {
+		return fmt.Errorf("Only local users can change their passwords.")
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hash)
+	return SaveUserDatabase()
 }
 
 // IsValidUsername checks if the given username is valid.
