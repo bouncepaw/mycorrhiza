@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/bouncepaw/mycorrhiza/admin"
+	"github.com/bouncepaw/mycorrhiza/settings"
 	"github.com/bouncepaw/mycorrhiza/auth"
 	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
@@ -67,6 +68,11 @@ func Handler() http.Handler {
 		adminRouter := wikiRouter.PathPrefix("/admin").Subrouter()
 		adminRouter.Use(groupMiddleware("admin"))
 		admin.Init(adminRouter)
+
+		settingsRouter := wikiRouter.PathPrefix("/settings").Subrouter()
+		// TODO: check if necessary?
+		//settingsRouter.Use(groupMiddleware("settings"))
+		settings.Init(settingsRouter)
 	}
 
 	// Index page
