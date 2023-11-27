@@ -10,7 +10,6 @@ import (
 	"net/http"
 )
 
-// TODO: translate some untranslated strings
 const adminTranslationRu = `
 {{define "panel title"}}Панель админстратора{{end}}
 {{define "panel safe section title"}}Безопасная секция{{end}}
@@ -34,9 +33,9 @@ const adminTranslationRu = `
 
 {{define "new user"}}Новый пользователь{{end}}
 {{define "password"}}Пароль{{end}}
-{{define "confirm password"}}Confirm password{{end}}
-{{define "change password"}}Change password{{end}}
-{{define "non local password change"}}Non-local accounts cannot have their passwords changed.{{end}}
+{{define "confirm password"}}Подтвердить пароль{{end}}
+{{define "change password"}}Изменить пароль{{end}}
+{{define "non local password change"}}Поменять пароль можно только у локальных пользователей.{{end}}
 {{define "create"}}Создать{{end}}
 
 {{define "change group"}}Изменить группу{{end}}
