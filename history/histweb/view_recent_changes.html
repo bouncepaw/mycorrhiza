@@ -24,7 +24,9 @@
 					<time class="recent-changes__entry__time">
                         {{ $time.Format "15:04 UTC" }}
 					</time>
-					<span class="recent-changes__entry__message">{{$entry.Hash}}</span>
+					<span class="recent-changes__entry__message">
+						{{$entry.HyphaeDiffsHTML}}
+					</span>
                     {{ if $entry.Username | ne "anon" }}
 						<span class="recent-changes__entry__author">
 							&mdash; <a href="/hypha/{{$userHypha}}/{{$entry.Username}}" rel="author">{{$entry.Username}}</a>
