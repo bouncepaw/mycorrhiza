@@ -13,6 +13,23 @@ HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by t
 {% endstripspace %}
 {% endfunc %}
 
+
+HyphaeDiffsHTML returns a comma-separated list of diffs links of current revision for every affected file as HTML string.
+{% func (rev Revision) HyphaeDiffsHTML() %}
+{% stripspace %}
+    {% if len(rev.hyphaeAffected()) == 1 %}
+        <a href="/primitive-diff/{%s rev.Hash %}/{%s rev.hyphaeAffected()[0] %}">{%s rev.Hash %}</a>
+    {% else %}
+        {% for i, hyphaName := range rev.hyphaeAffected() %}
+            {% if i > 0 %}
+                <span aria-hidden="true">, </span>
+            {% endif %}
+                <a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}({%s hyphaName %})</a>
+        {% endfor %}
+    {% endif %}
+{% endstripspace %}
+{% endfunc %}
+
 descriptionForFeed generates a good enough HTML contents for a web feed.
 {% func (rev *Revision) descriptionForFeed() %}
 <p><b>{%s rev.Message %}</b> (by {%s rev.Username %} at {%s rev.TimeString() %})</p>
