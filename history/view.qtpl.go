@@ -134,7 +134,7 @@ func (rev Revision) StreamHyphaeDiffsHTML(qw422016 *qt422016.Writer) {
 //line history/view.qtpl:28
 			qw422016.E().S(rev.Hash)
 //line history/view.qtpl:28
-			qw422016.N().S(`(`)
+			qw422016.N().S(`&nbsp;(`)
 //line history/view.qtpl:28
 			qw422016.E().S(hyphaName)
 //line history/view.qtpl:28

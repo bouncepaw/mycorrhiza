@@ -25,7 +25,7 @@ HyphaeDiffsHTML returns a comma-separated list of diffs links of current revisio
             {% if i > 0 %}
                 <span aria-hidden="true">, </span>
             {% endif %}
-                <a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}({%s hyphaName %})</a>
+                <a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}&nbsp;({%s hyphaName %})</a>
         {% endfor %}
     {% endif %}
 {% endstripspace %}
