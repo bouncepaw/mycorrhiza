@@ -16,11 +16,12 @@ HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by t
 
 HyphaeDiffsHTML returns a comma-separated list of diffs links of current revision for every affected file as HTML string.
 {% func (rev Revision) HyphaeDiffsHTML() %}
+    {% code entries := rev.hyphaeAffected() %}
 {% stripspace %}
-    {% if len(rev.hyphaeAffected()) == 1 %}
-        <a href="/primitive-diff/{%s rev.Hash %}/{%s rev.hyphaeAffected()[0] %}">{%s rev.Hash %}</a>
+    {% if len(entries) == 1 %}
+        <a href="/primitive-diff/{%s rev.Hash %}/{%s entries[0] %}">{%s rev.Hash %}</a>
     {% else %}
-        {% for i, hyphaName := range rev.hyphaeAffected() %}
+        {% for i, hyphaName := range entries %}
             {% if i > 0 %}
                 <span aria-hidden="true">, </span>
             {% endif %}
