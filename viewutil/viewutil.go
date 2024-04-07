@@ -43,7 +43,7 @@ func Init() {
 			"inc":           func(i int) int { return i + 1 },
 		}).ParseFS(fsys, "base.html")).
 		Parse(dataText))
-	if cfg.UseAuth {
+	if cfg.UseAuth && !cfg.ReadOnly {
 		BaseEn = m(BaseEn.Parse(`
 {{define "auth"}}
 <ul class="top-bar__auth auth-links">

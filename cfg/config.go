@@ -29,6 +29,7 @@ var (
 	URL        string
 
 	UseAuth           bool
+	ReadOnly          bool
 	AllowRegistration bool
 	RegistrationLimit uint64
 	Locked            bool
@@ -90,6 +91,7 @@ type CustomScripts struct {
 // authorization and authentication.
 type Authorization struct {
 	UseAuth           bool
+	ReadOnly          bool
 	AllowRegistration bool
 	RegistrationLimit uint64   `comment:"This field controls the maximum amount of allowed registrations."`
 	Locked            bool     `comment:"Set if users have to authorize to see anything on the wiki."`
@@ -180,6 +182,7 @@ func ReadConfigFile(path string) error {
 	}
 	URL = cfg.URL
 	UseAuth = cfg.UseAuth
+	ReadOnly = cfg.ReadOnly
 	AllowRegistration = cfg.AllowRegistration
 	RegistrationLimit = cfg.RegistrationLimit
 	Locked = cfg.Locked && cfg.UseAuth // Makes no sense to have the lock but no auth
