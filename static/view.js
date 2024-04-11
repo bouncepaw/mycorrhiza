@@ -46,4 +46,3 @@ wrapper.appendChild(hamburgerSection);
     }
     input.setAttribute('list', 'cat-name-options')
 })();
-
