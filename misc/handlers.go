@@ -141,11 +141,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 var stylesheets = []string{"default.css", "custom.css"}
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
-	type fileData struct {
-		Content io.Reader
-		ModTime time.Time
-	}
-	var filesData []fileData
+	var filesData []io.Reader
 
 	var latestModTime time.Time
 
@@ -166,10 +162,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 			latestModTime = modTime
 		}
 
-		filesData = append(filesData, fileData{
-			Content: file,
-			ModTime: modTime,
-		})
+		filesData = append(filesData, file)
 
 		defer file.Close()
 	}
@@ -187,7 +180,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Last-Modified", latestModTime.UTC().Format(http.TimeFormat))
 
 	for _, data := range filesData {
-		if _, err := io.Copy(w, data.Content); err != nil {
+		if _, err := io.Copy(w, data); err != nil {
 			log.Println(err)
 		}
 	}
