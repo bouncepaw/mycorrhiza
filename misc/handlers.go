@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -140,17 +141,55 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 var stylesheets = []string{"default.css", "custom.css"}
 
 func handlerStyle(w http.ResponseWriter, rq *http.Request) {
-	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
+	type fileData struct {
+		Content io.Reader
+		ModTime time.Time
+	}
+	var filesData []fileData
+
+	var latestModTime time.Time
+
+	// Step 1: Collect files data and determine the latest modification time
 	for _, name := range stylesheets {
 		file, err := static.FS.Open(name)
 		if err != nil {
 			continue
 		}
-		_, err = io.Copy(w, file)
+
+		fileStats, err := file.Stat()
 		if err != nil {
+			continue
+		}
+
+		modTime := fileStats.ModTime()
+		if modTime.After(latestModTime) {
+			latestModTime = modTime
+		}
+
+		filesData = append(filesData, fileData{
+			Content: file,
+			ModTime: modTime,
+		})
+
+		defer file.Close()
+	}
+
+	// Step 2: Check the "If-Modified-Since" header in the request
+	if ifModifiedSince := rq.Header.Get("If-Modified-Since"); ifModifiedSince != "" {
+		if ifModSinceTime, err := http.ParseTime(ifModifiedSince); err == nil && !latestModTime.UTC().After(ifModSinceTime) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
+	// Step 3: If content needs to be served, set Last-Modified header and serve the content
+	w.Header().Set("Content-Type", mime.TypeByExtension(".css"))
+	w.Header().Set("Last-Modified", latestModTime.UTC().Format(http.TimeFormat))
+
+	for _, data := range filesData {
+		if _, err := io.Copy(w, data.Content); err != nil {
 			log.Println(err)
 		}
-		_ = file.Close()
 	}
 }
 
