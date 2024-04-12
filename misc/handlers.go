@@ -167,19 +167,13 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 
 func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	hash := md5.New()
 	file, err := static.FS.Open("robots.txt")
 	if err != nil {
 		return
 	}
-	_, err = io.Copy(hash, file)
-	if err != nil {
-		log.Println(err)
-	}
-	w.Header().Set("ETag", hex.EncodeToString(hash.Sum(nil)))
 	_, err = io.Copy(w, file)
 	if err != nil {
-		log.Println(err)
+		log.Println()
 	}
 	_ = file.Close()
 }
