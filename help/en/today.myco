@@ -1,0 +1,4 @@
+= Today links
+Some people use Mycorrhiza to keep their diaries. They put each day's notes into separate hyphae, usually named in the ISO format, for example, `2024-06-01` for the 1st of June, 2024. This date format is especially handy because it aligns with the way Mycorrhiza sorts hyphae, so the days are in order.
+
+Links [[/today]] and [[/edit-today]] are special links that redirect to or edit the “today” hypha. Put them on your home hypha or on [[/help/en/top_bar | the top bar]].

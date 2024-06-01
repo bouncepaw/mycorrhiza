@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -35,6 +36,18 @@ func initReaders(r *mux.Router) {
 	r.PathPrefix("/rev/").HandlerFunc(handlerRevision)
 	r.PathPrefix("/rev-text/").HandlerFunc(handlerRevisionText)
 	r.PathPrefix("/media/").HandlerFunc(handlerMedia)
+	r.Path("/today").HandlerFunc(handlerToday)
+	r.Path("/edit-today").HandlerFunc(handlerEditToday)
+}
+
+func handlerEditToday(w http.ResponseWriter, rq *http.Request) {
+	today := time.Now().Format(time.DateOnly)
+	http.Redirect(w, rq, "/edit/"+today, http.StatusSeeOther)
+}
+
+func handlerToday(w http.ResponseWriter, rq *http.Request) {
+	today := time.Now().Format(time.DateOnly)
+	http.Redirect(w, rq, "/hypha/"+today, http.StatusSeeOther)
 }
 
 func handlerMedia(w http.ResponseWriter, rq *http.Request) {
