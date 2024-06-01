@@ -97,7 +97,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 	return nil
 }
 
-const redirectionTemplate = `=> %[1]s | ✏️ %[2]s
+const redirectionTemplate = `=> %[1]s | 👁️➡️ %[2]s
 <= %[1]s | full
 `
 
