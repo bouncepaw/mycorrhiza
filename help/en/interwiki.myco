@@ -1,5 +1,5 @@
 = Interwiki
-**Interwiki** is a means of bringing wikis together, making a federation of them. In Mycorrhiza, one aspect of interwiki is supported: the interwiki links, or the **interlinks**. Most other wiki systems support it too. Interwiki links are shown in green.
+**Interwiki** is a means of bringing wikis together, making a federation of them. In Mycorrhiza, one aspect of interwiki is supported: the interwiki links, or the **interlinks**. Most other wiki systems support them too. Interwiki links are shown in green.
 
 In Mycomarkup, you can address a different wiki by prefixing the link target with a name and a `>` character. For example:
 ```myco
