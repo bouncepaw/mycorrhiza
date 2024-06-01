@@ -5,7 +5,7 @@ go 1.22
 require (
 	git.sr.ht/~bouncepaw/mycomarkup/v5 v5.5.0
 	github.com/go-ini/ini v1.63.2
-	github.com/gorilla/feeds v1.1.1
+	github.com/gorilla/feeds v1.1.2
 	github.com/gorilla/mux v1.8.0
 	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/crypto v0.17.0
@@ -15,7 +15,6 @@ require (
 )
 
 require (
-	github.com/kr/pretty v0.2.1 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect

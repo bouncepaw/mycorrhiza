@@ -121,6 +121,7 @@ func (grp revisionGroup) feedItem(opts FeedOptions) feeds.Item {
 		Created:     grp[len(grp)-1].Time, // earliest revision
 		Updated:     grp[0].Time,          // latest revision
 		Link:        &feeds.Link{Href: cfg.URL + grp[0].bestLink()},
+		Content:     grp.descriptionForFeed(opts.order),
 	}
 }
 
