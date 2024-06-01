@@ -9,7 +9,7 @@ var tokens sync.Map
 func YieldUsers() chan *User {
 	ch := make(chan *User)
 	go func(ch chan *User) {
-		users.Range(func(_, v interface{}) bool {
+		users.Range(func(_, v any) bool {
 			ch <- v.(*User)
 			return true
 		})
@@ -36,6 +36,15 @@ func Count() (i uint64) {
 		return true
 	})
 	return i
+}
+
+func HasAnyAdmins() bool {
+	for u := range YieldUsers() {
+		if u.Group == "admin" {
+			return true
+		}
+	}
+	return false
 }
 
 // HasUsername checks whether the desired user exists

@@ -61,5 +61,9 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
+	if !user.HasAnyAdmins() {
+		log.Println("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
+	}
+
 	serveHTTP(web.Handler())
 }
