@@ -712,7 +712,8 @@ a.btn_destructive:visited,
 	.top-bar__home-link:hover,
 	.auth-links__link:hover,
 	.top-bar__highlight-link:hover,
-	.categories-card__link:hover {
+	.categories-card__link:hover,
+	.subhyphae__link:hover {
 		background-color: #444;
 	}
 }
