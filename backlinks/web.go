@@ -3,6 +3,7 @@ package backlinks
 import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/gorilla/mux"
@@ -14,7 +15,10 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.PathPrefix("/backlinks/").HandlerFunc(handlerBacklinks)
 	rtr.PathPrefix("/orphans").HandlerFunc(handlerOrphans)
 	chainBacklinks = viewutil.CopyEnRuWith(fs, "view_backlinks.html", ruTranslation)
-	chainOrphans = viewutil.CopyEnRuWith(fs, "view_orphans.html", ruTranslation)
+	pageOrphans = newtmpl.NewPage(fs, "view_orphans.html", map[string]string{
+		"orphaned hyphae":    "Гифы-сироты",
+		"orphan description": "Ниже перечислены гифы без ссылок на них.",
+	})
 }
 
 // handlerBacklinks lists all backlinks to a hypha.
@@ -37,7 +41,12 @@ func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 	sort.Strings(orphans)
-	viewOrphans(viewutil.MetaFrom(w, rq), orphans)
+
+	_ = pageOrphans.RenderTo(viewutil.MetaFrom(w, rq),
+		map[string]any{
+			"Addr":    "/orphans",
+			"Orphans": orphans,
+		})
 }
 
 var (
@@ -47,11 +56,10 @@ var (
 {{define "backlinks to text"}}Обратные ссылки на {{.}}{{end}}
 {{define "backlinks to link"}}Обратные ссылки на <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
 {{define "description"}}Ниже перечислены гифы, на которых есть ссылка на эту гифу, трансклюзия этой гифы или эта гифа вставлена как изображение.{{end}}
-{{define "orphaned hyphae"}}Гифы-сироты{{end}}
-{{define "orphan description"}}Ниже перечислены гифы без ссылок на них.{{end}}
 `
 	chainBacklinks viewutil.Chain
-	chainOrphans   viewutil.Chain
+
+	pageOrphans *newtmpl.Page
 )
 
 type backlinksData struct {
@@ -67,19 +75,5 @@ func viewBacklinks(meta viewutil.Meta, hyphaName string, backlinks []string) {
 		},
 		HyphaName: hyphaName,
 		Backlinks: backlinks,
-	})
-}
-
-type orphansData struct {
-	*viewutil.BaseData
-	Orphans []string
-}
-
-func viewOrphans(meta viewutil.Meta, orphans []string) {
-	viewutil.ExecutePage(meta, chainOrphans, orphansData{
-		BaseData: &viewutil.BaseData{
-			Addr: "/orphans",
-		},
-		Orphans: orphans,
 	})
 }
