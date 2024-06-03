@@ -7,15 +7,14 @@ import (
 	"net/url"
 
 	"github.com/bouncepaw/mycorrhiza/admin"
-	"github.com/bouncepaw/mycorrhiza/settings"
 	"github.com/bouncepaw/mycorrhiza/auth"
-	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/history/histweb"
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
+	"github.com/bouncepaw/mycorrhiza/settings"
 
 	"github.com/gorilla/mux"
 
@@ -56,14 +55,13 @@ func Handler() http.Handler {
 	initReaders(wikiRouter)
 	initMutators(wikiRouter)
 	help.InitHandlers(wikiRouter)
-	backlinks.InitHandlers(wikiRouter)
 	categories.InitHandlers(wikiRouter)
 	misc.InitHandlers(wikiRouter)
 	hypview.Init()
 	histweb.InitHandlers(wikiRouter)
 	interwiki.InitHandlers(wikiRouter)
 
-	// Admin routes.
+	// Admin routes
 	if cfg.UseAuth {
 		adminRouter := wikiRouter.PathPrefix("/admin").Subrouter()
 		adminRouter.Use(groupMiddleware("admin"))

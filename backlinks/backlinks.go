@@ -4,6 +4,7 @@ package backlinks
 import (
 	"log"
 	"os"
+	"sort"
 
 	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -59,6 +60,25 @@ func BacklinksCount(hyphaName string) int {
 		return len(links)
 	}
 	return 0
+}
+
+func BacklinksFor(hyphaName string) []string {
+	var backlinks []string
+	for b := range yieldHyphaBacklinks(hyphaName) {
+		backlinks = append(backlinks, b)
+	}
+	return backlinks
+}
+
+func Orphans() []string {
+	var orphans []string
+	for h := range hyphae.YieldExistingHyphae() {
+		if BacklinksCount(h.CanonicalName()) == 0 {
+			orphans = append(orphans, h.CanonicalName())
+		}
+	}
+	sort.Strings(orphans)
+	return orphans
 }
 
 // Using set here seems like the most appropriate solution

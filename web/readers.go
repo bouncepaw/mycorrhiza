@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
+	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/files"
 	views2 "github.com/bouncepaw/mycorrhiza/hypview"
@@ -38,6 +39,10 @@ func initReaders(r *mux.Router) {
 	r.PathPrefix("/media/").HandlerFunc(handlerMedia)
 	r.Path("/today").HandlerFunc(handlerToday)
 	r.Path("/edit-today").HandlerFunc(handlerEditToday)
+
+	// Backlinks
+	r.PathPrefix("/backlinks/").HandlerFunc(handlerBacklinks)
+	r.PathPrefix("/orphans").HandlerFunc(handlerOrphans)
 }
 
 func handlerEditToday(w http.ResponseWriter, rq *http.Request) {
@@ -237,4 +242,24 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 				map[string]string{"cats": category_list},
 				openGraph))
 	}
+}
+
+// handlerBacklinks lists all backlinks to a hypha.
+func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
+	hyphaName := util.HyphaNameFromRq(rq, "backlinks")
+
+	_ = pageBacklinks.RenderTo(viewutil.MetaFrom(w, rq),
+		map[string]any{
+			"Addr":      "/backlinks/" + hyphaName,
+			"HyphaName": hyphaName,
+			"Backlinks": backlinks.BacklinksFor(hyphaName),
+		})
+}
+
+func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
+	_ = pageOrphans.RenderTo(viewutil.MetaFrom(w, rq),
+		map[string]any{
+			"Addr":    "/orphans",
+			"Orphans": backlinks.Orphans(),
+		})
 }
