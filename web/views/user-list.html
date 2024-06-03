@@ -1,0 +1,30 @@
+{{define "title"}}List of users{{end}}
+{{define "body"}}
+	<main class="main-width user-list">
+		<h1>{{template "title"}}</h1>
+		<section>{{$u := .UserHypha}}
+			<h2>{{block "administrators" .}}Administrators{{end}}</h2>
+			<ol>
+				{{range .Admins}}<li><a href="/hypha/{{$u}}/{{.}}">{{.}}</a></li>{{end}}
+			</ol>
+		</section>
+		<section>
+			<h2>{{block "moderators" .}}Moderators{{end}}</h2>
+			<ol>
+	            {{range .Moderators}}<li><a href="/hypha/{{$u}}/{{.}}">{{.}}</a></li>{{end}}
+			</ol>
+		</section>
+		<section>
+			<h2>{{block "editors" .}}Editors{{end}}</h2>
+			<ol>
+	            {{range .Editors}}<li><a href="/hypha/{{$u}}/{{.}}">{{.}}</a></li>{{end}}
+			</ol>
+		</section>
+		<section>
+			<h2>{{block "readers" .}}Readers{{end}}</h2>
+			<ol>
+	            {{range .Readers}}<li><a href="/hypha/{{$u}}/{{.}}">{{.}}</a></li>{{end}}
+			</ol>
+		</section>
+	</main>
+	{{end}}

@@ -1,6 +1,9 @@
 package user
 
-import "sync"
+import (
+	"sort"
+	"sync"
+)
 
 var users sync.Map
 var tokens sync.Map
@@ -98,4 +101,25 @@ func commenceSession(username, token string) {
 func terminateSession(token string) {
 	tokens.Delete(token)
 	dumpTokens()
+}
+
+func UsersInGroups() (admins []string, moderators []string, editors []string, readers []string) {
+	for u := range YieldUsers() {
+		switch u.Group {
+		// What if we place the users into sorted slices?
+		case "admin":
+			admins = append(admins, u.Name)
+		case "moderator":
+			moderators = append(moderators, u.Name)
+		case "editor", "trusted":
+			editors = append(editors, u.Name)
+		case "reader":
+			readers = append(readers, u.Name)
+		}
+	}
+	sort.Strings(admins)
+	sort.Strings(moderators)
+	sort.Strings(editors)
+	sort.Strings(readers)
+	return
 }

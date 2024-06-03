@@ -126,10 +126,14 @@ func groupMiddleware(group string) func(http.Handler) http.Handler {
 
 // Auth
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
-	lc := l18n.FromRequest(rq)
-	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(viewutil.Base(viewutil.MetaFrom(w, rq), lc.Get("ui.users_title"), auth.UserList(lc), map[string]string{})))
+	admins, moderators, editors, readers := user.UsersInGroups()
+	_ = pageUserList.RenderTo(viewutil.MetaFrom(w, rq),
+		map[string]any{
+			"Admins":     admins,
+			"Moderators": moderators,
+			"Editors":    editors,
+			"Readers":    readers,
+		})
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
