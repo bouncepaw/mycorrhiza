@@ -13,6 +13,10 @@ type Meta struct {
 	U    *user.User
 	W    io.Writer
 	Addr string
+
+	// New template additions
+	HeadElements   []string
+	BodyAttributes map[string]string
 }
 
 // MetaFrom makes a Meta from the given data. You are meant to further modify it.
@@ -27,4 +31,8 @@ func MetaFrom(w http.ResponseWriter, rq *http.Request) Meta {
 
 func (m Meta) Locale() string {
 	return m.Lc.Locale
+}
+
+func (m Meta) LocaleIsRussian() bool {
+	return m.Locale() == "ru"
 }
