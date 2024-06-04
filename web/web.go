@@ -13,7 +13,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/admin"
 	"github.com/bouncepaw/mycorrhiza/auth"
 	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
@@ -84,7 +83,17 @@ func Handler() http.Handler {
 	if cfg.UseAuth {
 		adminRouter := r.PathPrefix("/admin").Subrouter()
 		adminRouter.Use(groupMiddleware("admin"))
-		admin.Init(adminRouter)
+
+		adminRouter.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
+		adminRouter.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
+
+		adminRouter.HandleFunc("/new-user", handlerAdminUserNew).Methods(http.MethodGet, http.MethodPost)
+		adminRouter.HandleFunc("/users/{username}/edit", handlerAdminUserEdit).Methods(http.MethodGet, http.MethodPost)
+		adminRouter.HandleFunc("/users/{username}/change-password", handlerAdminUserChangePassword).Methods(http.MethodPost)
+		adminRouter.HandleFunc("/users/{username}/delete", handlerAdminUserDelete).Methods(http.MethodGet, http.MethodPost)
+		adminRouter.HandleFunc("/users", handlerAdminUsers)
+
+		adminRouter.HandleFunc("/", handlerAdmin)
 
 		settingsRouter := r.PathPrefix("/settings").Subrouter()
 		// TODO: check if necessary?
