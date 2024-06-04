@@ -2,7 +2,7 @@ package web
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 )
 
 //go:embed views/*.html
