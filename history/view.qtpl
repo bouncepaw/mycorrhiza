@@ -56,22 +56,18 @@ WithRevisions returns an html representation of `revs` that is meant to be inser
 	</a>
 	<ul class="history__entries">
         {% for _, rev := range grp %}
-            {%= rev.asHistoryEntry(hyphaName) %}
+            <li class="history__entry">
+            	<a class="history-entry" href="/rev/{%s rev.Hash %}/{%s hyphaName %}">
+                    <time class="history-entry__time">{%s rev.timeToDisplay() %}</time>
+                </a>
+            	<span class="history-entry__hash"><a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}</a></span>
+            	<span class="history-entry__msg">{%s rev.Message %}</span>
+            	{% if rev.Username != "anon" %}
+                    <span class="history-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>
+                {% endif %}
+            </li>
         {% endfor %}
 	</ul>
 </section>
 {% endfor %}
-{% endfunc %}
-
-{% func (rev *Revision) asHistoryEntry(hyphaName string) %}
-<li class="history__entry">
-	<a class="history-entry" href="/rev/{%s rev.Hash %}/{%s hyphaName %}">
-        <time class="history-entry__time">{%s rev.timeToDisplay() %}</time>
-    </a>
-	<span class="history-entry__hash"><a href="/primitive-diff/{%s rev.Hash %}/{%s hyphaName %}">{%s rev.Hash %}</a></span>
-	<span class="history-entry__msg">{%s rev.Message %}</span>
-	{% if rev.Username != "anon" %}
-        <span class="history-entry__author">by <a href="/hypha/{%s cfg.UserHypha %}/{%s rev.Username %}" rel="author">{%s rev.Username %}</a></span>
-    {% endif %}
-</li>
 {% endfunc %}

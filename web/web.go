@@ -21,8 +21,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
-	"github.com/bouncepaw/mycorrhiza/settings"
-
 	"github.com/gorilla/mux"
 
 	"github.com/bouncepaw/mycorrhiza/cfg"
@@ -91,7 +89,7 @@ func Handler() http.Handler {
 		settingsRouter := r.PathPrefix("/settings").Subrouter()
 		// TODO: check if necessary?
 		//settingsRouter.Use(groupMiddleware("settings"))
-		settings.Init(settingsRouter)
+		settingsRouter.HandleFunc("/change-password", handlerUserChangePassword).Methods(http.MethodGet, http.MethodPost)
 	}
 
 	// Index page

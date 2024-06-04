@@ -8,7 +8,7 @@ import (
 //go:embed views/*.html
 var fs embed.FS
 
-var pageOrphans, pageBacklinks, pageUserList *newtmpl.Page
+var pageOrphans, pageBacklinks, pageUserList, pageChangePassword *newtmpl.Page
 
 func initPages() {
 	pageOrphans = newtmpl.NewPage(fs, "views/orphans.html", map[string]string{
@@ -26,5 +26,13 @@ func initPages() {
 		"moderators":     "Модераторы",
 		"editors":        "Редакторы",
 		"readers":        "Читатели",
+	})
+	pageChangePassword = newtmpl.NewPage(fs, "views/change-password.html", map[string]string{
+		"change password":           "Сменить пароль",
+		"confirm password":          "Повторите пароль",
+		"current password":          "Текущий пароль",
+		"non local password change": "Пароль можно поменять только местным аккаунтам. Telegram-аккаунтам нельзя.",
+		"password":                  "Пароль",
+		"submit":                    "Поменять",
 	})
 }

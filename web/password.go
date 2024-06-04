@@ -1,15 +1,14 @@
-package settings
+package web
 
 import (
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"mime"
 	"net/http"
 	"reflect"
 
-	"github.com/bouncepaw/mycorrhiza/viewutil"
-
 	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
@@ -49,6 +48,7 @@ func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 			f = f.WithError(err)
 		}
 	} else {
+		// TODO: handle first attempt different
 		err := fmt.Errorf("incorrect password")
 		f = f.WithError(err)
 	}
@@ -58,5 +58,11 @@ func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 
-	changePasswordPage(viewutil.MetaFrom(w, rq), f, u)
+	_ = pageChangePassword.RenderTo(
+		viewutil.MetaFrom(w, rq),
+		map[string]any{
+			"Form": f,
+			"U":    u,
+		},
+	)
 }
