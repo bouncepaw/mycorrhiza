@@ -4,12 +4,12 @@ package viewutil
 import (
 	"embed"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"io/fs"
 	"log"
 	"strings"
 	"text/template" // TODO: save the world
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 

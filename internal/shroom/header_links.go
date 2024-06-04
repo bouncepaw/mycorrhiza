@@ -4,19 +4,19 @@ import (
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/blocks"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"os"
 )
 
 // SetHeaderLinks initializes header links by reading the configured hypha, if there is any, or resorting to default values.
 func SetHeaderLinks() {
-	switch userLinksHypha := hyphae.ByName(cfg.HeaderLinksHypha).(type) {
-	case *hyphae.EmptyHypha:
+	switch userLinksHypha := hyphae2.ByName(cfg.HeaderLinksHypha).(type) {
+	case *hyphae2.EmptyHypha:
 		setDefaultHeaderLinks()
-	case hyphae.ExistingHypha:
+	case hyphae2.ExistingHypha:
 		contents, err := os.ReadFile(userLinksHypha.TextFilePath())
 		if err != nil || len(contents) == 0 {
 			setDefaultHeaderLinks()

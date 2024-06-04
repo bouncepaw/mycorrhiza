@@ -1,9 +1,9 @@
 package categories
 
 import (
-	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"github.com/gorilla/mux"
 	"io"
 	"log"

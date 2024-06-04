@@ -17,10 +17,10 @@ import "path"
 import "os"
 
 //line hypview/readers.qtpl:6
-import "github.com/bouncepaw/mycorrhiza/cfg"
+import "github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 //line hypview/readers.qtpl:7
-import "github.com/bouncepaw/mycorrhiza/hyphae"
+import "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 
 //line hypview/readers.qtpl:8
 import "github.com/bouncepaw/mycorrhiza/categories"
@@ -29,19 +29,19 @@ import "github.com/bouncepaw/mycorrhiza/categories"
 import "github.com/bouncepaw/mycorrhiza/l18n"
 
 //line hypview/readers.qtpl:10
-import "github.com/bouncepaw/mycorrhiza/mimetype"
+import "github.com/bouncepaw/mycorrhiza/internal/mimetype"
 
 //line hypview/readers.qtpl:11
 import "github.com/bouncepaw/mycorrhiza/tree"
 
 //line hypview/readers.qtpl:12
-import "github.com/bouncepaw/mycorrhiza/user"
+import "github.com/bouncepaw/mycorrhiza/internal/user"
 
 //line hypview/readers.qtpl:13
 import "github.com/bouncepaw/mycorrhiza/util"
 
 //line hypview/readers.qtpl:14
-import "github.com/bouncepaw/mycorrhiza/viewutil"
+import "github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 //line hypview/readers.qtpl:16
 import (

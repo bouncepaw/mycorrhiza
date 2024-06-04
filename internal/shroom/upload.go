@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/backlinks"
-	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/mimetype"
-	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"io"
 	"log"
 	"mime/multipart"
@@ -17,10 +17,10 @@ import (
 	"path/filepath"
 )
 
-func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
+func historyMessageForTextUpload(h hyphae2.Hypha, userMessage string) string {
 	var verb string
 	switch h.(type) {
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		verb = "Create"
 	default:
 		verb = "Edit"
@@ -32,8 +32,8 @@ func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
 	return fmt.Sprintf("%s ‘%s’: %s", verb, h.CanonicalName(), userMessage)
 }
 
-func writeTextToDisk(h hyphae.ExistingHypha, data []byte, hop *history.Op) error {
-	if err := hyphae.WriteToMycoFile(h, data); err != nil {
+func writeTextToDisk(h hyphae2.ExistingHypha, data []byte, hop *history.Op) error {
+	if err := hyphae2.WriteToMycoFile(h, data); err != nil {
 		return err
 	}
 	hop.WithFiles(h.TextFilePath())
@@ -42,7 +42,7 @@ func writeTextToDisk(h hyphae.ExistingHypha, data []byte, hop *history.Op) error
 }
 
 // UploadText edits the hypha's text part and makes a history record about that.
-func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) error {
+func UploadText(h hyphae2.Hypha, data []byte, userMessage string, u *user.User) error {
 	hop := history.
 		Operation(history.TypeEditText).
 		WithMsg(historyMessageForTextUpload(h, userMessage)).
@@ -56,13 +56,13 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 	}
 
 	// Hypha name exploit check
-	if !hyphae.IsValidName(h.CanonicalName()) {
+	if !hyphae2.IsValidName(h.CanonicalName()) {
 		// We check for the name only. I suppose the filepath would be valid as well.
 		hop.Abort()
 		return errors.New("invalid hypha name")
 	}
 
-	oldText, err := hyphae.FetchMycomarkupFile(h)
+	oldText, err := hyphae2.FetchMycomarkupFile(h)
 	if err != nil {
 		hop.Abort()
 		return err
@@ -77,8 +77,8 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 	// At this point, we have a savable user-generated Mycomarkup document. Gotta save it.
 
 	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
-		H := hyphae.ExtendEmptyToTextual(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
+	case *hyphae2.EmptyHypha:
+		H := hyphae2.ExtendEmptyToTextual(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
 
 		err := writeTextToDisk(H, data, hop)
 		if err != nil {
@@ -86,9 +86,9 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 			return err
 		}
 
-		hyphae.Insert(H)
+		hyphae2.Insert(H)
 		backlinks.UpdateBacklinksAfterEdit(H, "")
-	case *hyphae.MediaHypha:
+	case *hyphae2.MediaHypha:
 		// TODO: that []byte(...) part should be removed
 		if bytes.Equal(data, []byte(oldText)) {
 			// No changes! Just like cancel button
@@ -103,8 +103,8 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		}
 
 		backlinks.UpdateBacklinksAfterEdit(h, oldText)
-	case *hyphae.TextualHypha:
-		oldText, err := hyphae.FetchMycomarkupFile(h)
+	case *hyphae2.TextualHypha:
+		oldText, err := hyphae2.FetchMycomarkupFile(h)
 		if err != nil {
 			hop.Abort()
 			return err
@@ -130,12 +130,12 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 	return nil
 }
 
-func historyMessageForMediaUpload(h hyphae.Hypha, mime string) string {
+func historyMessageForMediaUpload(h hyphae2.Hypha, mime string) string {
 	return fmt.Sprintf("Upload media for ‘%s’ with type ‘%s’", h.CanonicalName(), mime)
 }
 
 // writeMediaToDisk saves the given data with the given mime type for the given hypha to the disk and returns the path to the saved file and an error, if any.
-func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) {
+func writeMediaToDisk(h hyphae2.Hypha, mime string, data []byte) (string, error) {
 	var (
 		ext = mimetype.ToExtension(mime)
 		// That's where the file will go
@@ -153,7 +153,7 @@ func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) 
 }
 
 // UploadBinary edits the hypha's media part and makes a history record about that.
-func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User) error {
+func UploadBinary(h hyphae2.Hypha, mime string, file multipart.File, u *user.User) error {
 
 	// Privilege check
 	if !u.CanProceed("upload-binary") {
@@ -162,7 +162,7 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User
 	}
 
 	// Hypha name exploit check
-	if !hyphae.IsValidName(h.CanonicalName()) {
+	if !hyphae2.IsValidName(h.CanonicalName()) {
 		// We check for the name only. I suppose the filepath would be valid as well.
 		return errors.New("invalid hypha name")
 	}
@@ -185,12 +185,12 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User
 	}
 
 	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
-		H := hyphae.ExtendEmptyToMedia(h, uploadedFilePath)
-		hyphae.Insert(H)
-	case *hyphae.TextualHypha:
-		hyphae.Insert(hyphae.ExtendTextualToMedia(h, uploadedFilePath))
-	case *hyphae.MediaHypha: // If this is not the first media the hypha gets
+	case *hyphae2.EmptyHypha:
+		H := hyphae2.ExtendEmptyToMedia(h, uploadedFilePath)
+		hyphae2.Insert(H)
+	case *hyphae2.TextualHypha:
+		hyphae2.Insert(hyphae2.ExtendTextualToMedia(h, uploadedFilePath))
+	case *hyphae2.MediaHypha: // If this is not the first media the hypha gets
 		prevFilePath := h.MediaFilePath()
 		if prevFilePath != uploadedFilePath {
 			if err := history.Rename(prevFilePath, uploadedFilePath); err != nil {

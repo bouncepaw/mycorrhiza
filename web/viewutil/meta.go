@@ -1,8 +1,8 @@
 package viewutil
 
 import (
+	user2 "github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"io"
 	"net/http"
 )
@@ -10,7 +10,7 @@ import (
 // Meta is a bundle of common stuffs used by views, templates.
 type Meta struct {
 	Lc   *l18n.Localizer
-	U    *user.User
+	U    *user2.User
 	W    io.Writer
 	Addr string
 
@@ -23,7 +23,7 @@ type Meta struct {
 func MetaFrom(w http.ResponseWriter, rq *http.Request) Meta {
 	return Meta{
 		Lc:   l18n.FromRequest(rq),
-		U:    user.FromRequest(rq),
+		U:    user2.FromRequest(rq),
 		W:    w,
 		Addr: rq.URL.Path,
 	}

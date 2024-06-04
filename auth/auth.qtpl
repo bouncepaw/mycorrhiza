@@ -1,5 +1,5 @@
 {% import "net/http" %}
-{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
+{% import "github.com/bouncepaw/mycorrhiza/internal/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 
 {% func Register(rq *http.Request) %}

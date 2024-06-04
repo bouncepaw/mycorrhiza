@@ -1,9 +1,9 @@
 package shroom
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 

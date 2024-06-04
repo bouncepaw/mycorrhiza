@@ -2,12 +2,11 @@
 package files
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/web/static"
 	"io"
 	"os"
 	"path/filepath"
-
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/static"
 )
 
 var paths struct {

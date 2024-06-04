@@ -2,7 +2,7 @@ package categories
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"log"
 	"sort"
 	"strings"
@@ -31,14 +31,14 @@ const ruTranslation = `
 var (
 	//go:embed *.html
 	fs                                                         embed.FS
-	viewListChain, viewPageChain, viewCardChain, viewEditChain viewutil.Chain
+	viewListChain, viewPageChain, viewCardChain, viewEditChain viewutil2.Chain
 )
 
 func prepareViews() {
-	viewCardChain = viewutil.CopyEnRuWith(fs, "view_card.html", ruTranslation)
-	viewListChain = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
-	viewPageChain = viewutil.CopyEnRuWith(fs, "view_page.html", ruTranslation)
-	viewEditChain = viewutil.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
+	viewCardChain = viewutil2.CopyEnRuWith(fs, "view_card.html", ruTranslation)
+	viewListChain = viewutil2.CopyEnRuWith(fs, "view_list.html", ruTranslation)
+	viewPageChain = viewutil2.CopyEnRuWith(fs, "view_page.html", ruTranslation)
+	viewEditChain = viewutil2.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
 }
 
 type cardData struct {
@@ -48,7 +48,7 @@ type cardData struct {
 }
 
 // CategoryCard is the little sidebar that is shown nearby the hypha view.
-func CategoryCard(meta viewutil.Meta, hyphaName string) string {
+func CategoryCard(meta viewutil2.Meta, hyphaName string) string {
 	var buf strings.Builder
 	err := viewCardChain.Get(meta).ExecuteTemplate(&buf, "category card", cardData{
 		HyphaName:               hyphaName,
@@ -62,15 +62,15 @@ func CategoryCard(meta viewutil.Meta, hyphaName string) string {
 }
 
 type catData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	CatName                 string
 	Hyphae                  []string
 	GivenPermissionToModify bool
 }
 
-func categoryEdit(meta viewutil.Meta, catName string) {
-	viewutil.ExecutePage(meta, viewEditChain, catData{
-		BaseData: &viewutil.BaseData{
+func categoryEdit(meta viewutil2.Meta, catName string) {
+	viewutil2.ExecutePage(meta, viewEditChain, catData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/edit-category/" + catName,
 		},
 		CatName:                 catName,
@@ -79,9 +79,9 @@ func categoryEdit(meta viewutil.Meta, catName string) {
 	})
 }
 
-func categoryPage(meta viewutil.Meta, catName string) {
-	viewutil.ExecutePage(meta, viewPageChain, catData{
-		BaseData: &viewutil.BaseData{
+func categoryPage(meta viewutil2.Meta, catName string) {
+	viewutil2.ExecutePage(meta, viewPageChain, catData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/category/" + catName,
 		},
 		CatName:                 catName,
@@ -91,15 +91,15 @@ func categoryPage(meta viewutil.Meta, catName string) {
 }
 
 type listData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	Categories []string
 }
 
-func categoryList(meta viewutil.Meta) {
+func categoryList(meta viewutil2.Meta) {
 	cats := listOfCategories()
 	sort.Strings(cats)
-	viewutil.ExecutePage(meta, viewListChain, listData{
-		BaseData: &viewutil.BaseData{
+	viewutil2.ExecutePage(meta, viewListChain, listData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/category",
 		},
 		Categories: cats,

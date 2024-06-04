@@ -2,6 +2,13 @@
 package misc
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	shroom2 "github.com/bouncepaw/mycorrhiza/internal/shroom"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/web/static"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"io"
 	"log"
 	"math/rand"
@@ -11,16 +18,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/bouncepaw/mycorrhiza/backlinks"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/static"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
 func InitAssetHandlers(rtr *mux.Router) {
@@ -49,22 +49,22 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 	// TODO: make this more effective, there are too many loops and vars
 	var (
 		hyphaNames  = make(chan string)
-		sortedHypha = hyphae.PathographicSort(hyphaNames)
+		sortedHypha = hyphae2.PathographicSort(hyphaNames)
 		entries     []listDatum
 	)
-	for hypha := range hyphae.YieldExistingHyphae() {
+	for hypha := range hyphae2.YieldExistingHyphae() {
 		hyphaNames <- hypha.CanonicalName()
 	}
 	close(hyphaNames)
 	for hyphaName := range sortedHypha {
-		switch h := hyphae.ByName(hyphaName).(type) {
-		case *hyphae.TextualHypha:
+		switch h := hyphae2.ByName(hyphaName).(type) {
+		case *hyphae2.TextualHypha:
 			entries = append(entries, listDatum{h.CanonicalName(), ""})
-		case *hyphae.MediaHypha:
+		case *hyphae2.MediaHypha:
 			entries = append(entries, listDatum{h.CanonicalName(), filepath.Ext(h.MediaFilePath())[1:]})
 		}
 	}
-	viewList(viewutil.MetaFrom(w, rq), entries)
+	viewList(viewutil2.MetaFrom(w, rq), entries)
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
@@ -72,13 +72,13 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		var lc = l18n.FromRequest(rq)
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
+		viewutil2.HttpErr(viewutil2.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	hyphae.ResetCount()
+	hyphae2.ResetCount()
 	log.Println("Reindexing hyphae in", files.HyphaeDir())
-	hyphae.Index(files.HyphaeDir())
+	hyphae2.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
@@ -88,11 +88,11 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		var lc = l18n.FromRequest(rq)
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
+		viewutil2.HttpErr(viewutil2.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
 		log.Println("Rejected", rq.URL)
 		return
 	}
-	shroom.SetHeaderLinks()
+	shroom2.SetHeaderLinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
 
@@ -101,15 +101,15 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		randomHyphaName string
-		amountOfHyphae  = hyphae.Count()
+		amountOfHyphae  = hyphae2.Count()
 	)
 	if amountOfHyphae == 0 {
 		var lc = l18n.FromRequest(rq)
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae_tip"))
+		viewutil2.HttpErr(viewutil2.MetaFrom(w, rq), http.StatusNotFound, cfg.HomeHypha, lc.Get("ui.random_no_hyphae_tip"))
 		return
 	}
 	i := rand.Intn(amountOfHyphae)
-	for h := range hyphae.YieldExistingHyphae() {
+	for h := range hyphae2.YieldExistingHyphae() {
 		if i == 0 {
 			randomHyphaName = h.CanonicalName()
 		}
@@ -126,8 +126,8 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 		lc    = l18n.FromRequest(rq)
 		title = lc.Get("ui.about_title", &l18n.Replacements{"name": cfg.WikiName})
 	)
-	_, err := io.WriteString(w, viewutil.Base(
-		viewutil.MetaFrom(w, rq),
+	_, err := io.WriteString(w, viewutil2.Base(
+		viewutil2.MetaFrom(w, rq),
 		title,
 		AboutHTML(lc),
 		map[string]string{},
@@ -174,12 +174,12 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 	var (
 		query       = rq.FormValue("q")
 		hyphaName   = util.CanonicalName(query)
-		_, nameFree = hyphae.AreFreeNames(hyphaName)
+		_, nameFree = hyphae2.AreFreeNames(hyphaName)
 		results     []string
 	)
-	for hyphaName := range shroom.YieldHyphaNamesContainingString(query) {
+	for hyphaName := range shroom2.YieldHyphaNamesContainingString(query) {
 		results = append(results, hyphaName)
 	}
 	w.WriteHeader(http.StatusOK)
-	viewTitleSearch(viewutil.MetaFrom(w, rq), query, hyphaName, !nameFree, results)
+	viewTitleSearch(viewutil2.MetaFrom(w, rq), query, hyphaName, !nameFree, results)
 }

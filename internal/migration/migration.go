@@ -8,13 +8,14 @@
 package migration
 
 import (
-	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"io"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 )
 
 func genericLineMigrator(

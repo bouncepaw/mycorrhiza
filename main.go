@@ -8,23 +8,23 @@
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/backlinks"
-	"github.com/bouncepaw/mycorrhiza/categories"
-	"github.com/bouncepaw/mycorrhiza/interwiki"
-	"github.com/bouncepaw/mycorrhiza/migration"
-	"github.com/bouncepaw/mycorrhiza/version"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"log"
 	"os"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/static"
-	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	migration2 "github.com/bouncepaw/mycorrhiza/internal/migration"
+	"github.com/bouncepaw/mycorrhiza/internal/shroom"
+	user2 "github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/version"
+	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/web"
+	"github.com/bouncepaw/mycorrhiza/web/static"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func main() {
@@ -49,11 +49,11 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	user.InitUserDatabase()
+	user2.InitUserDatabase()
 	history.Start()
 	history.InitGitRepo()
-	migration.MigrateRocketsMaybe()
-	migration.MigrateHeadingsMaybe()
+	migration2.MigrateRocketsMaybe()
+	migration2.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
 	categories.Init()
 	interwiki.Init()
@@ -61,7 +61,7 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
-	if !user.HasAnyAdmins() {
+	if !user2.HasAnyAdmins() {
 		log.Println("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 

@@ -1,9 +1,10 @@
 package hyphae
 
 import (
-	"github.com/bouncepaw/mycorrhiza/files"
 	"path/filepath"
 	"sync"
+
+	"github.com/bouncepaw/mycorrhiza/internal/files"
 )
 
 type MediaHypha struct {

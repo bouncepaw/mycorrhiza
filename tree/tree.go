@@ -1,7 +1,7 @@
 package tree
 
 import (
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"path"
 	"sort"
 	"strings"

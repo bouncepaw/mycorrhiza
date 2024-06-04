@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"log"
 	"net/http"
 	"sort"
@@ -14,7 +15,6 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 

@@ -2,13 +2,14 @@ package categories
 
 import (
 	"encoding/json"
-	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"golang.org/x/exp/slices"
 	"log"
 	"os"
 	"sort"
 	"sync"
+
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var categoryToHyphae = map[string]*categoryNode{}

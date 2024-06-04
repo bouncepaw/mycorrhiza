@@ -4,7 +4,7 @@ package help
 import (
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	chain         viewutil.Chain
+	chain         viewutil2.Chain
 	ruTranslation = `
 {{define "title"}}Справка{{end}}
 {{define "entry not found"}}Статья не найдена{{end}}
@@ -46,14 +46,14 @@ var (
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	chain = viewutil.CopyEnRuWith(fs, "view_help.html", ruTranslation)
+	chain = viewutil2.CopyEnRuWith(fs, "view_help.html", ruTranslation)
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	// See the history of this file to resurrect the old algorithm that supported multiple languages
 	var (
-		meta        = viewutil.MetaFrom(w, rq)
+		meta        = viewutil2.MetaFrom(w, rq)
 		articlePath = strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
 		lang        = "en"
 	)
@@ -88,14 +88,14 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 }
 
 type helpData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	ContentsHTML string
 	Lang         string
 }
 
-func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
-	viewutil.ExecutePage(meta, chain, helpData{
-		BaseData: &viewutil.BaseData{
+func viewHelp(meta viewutil2.Meta, lang, contentsHTML, articlePath string) {
+	viewutil2.ExecutePage(meta, chain, helpData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/help/" + articlePath,
 		},
 		ContentsHTML: contentsHTML,

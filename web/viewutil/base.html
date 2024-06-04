@@ -10,8 +10,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{{block "title" .}}{{end}}</title>
-	<link rel="icon" href="/static/favicon.ico">
-	<link rel="stylesheet" href="/static/style.css">
+	<link rel="icon" href="/web/static/favicon.ico">
+	<link rel="stylesheet" href="/web/static/style.css">
 	{{range .HeadElements}}{{.}}{{end}}
 </head>
 <body data-rrh-addr="{{if .Addr}}{{.Addr}}{{else}}{{.Meta.Addr}}{{end}}"{{range $key, $value := .BodyAttributes}} data-rrh-{{$key}}="{{$value}}"{{end}}>
@@ -45,9 +45,9 @@
 	</nav>
 </header>
 {{block "body" .}}{{end}}
-<script src="/static/common.js"></script>
-<script src="/static/shortcuts.js"></script>
-<script src="/static/view.js"></script>
+<script src="/web/static/common.js"></script>
+<script src="/web/static/shortcuts.js"></script>
+<script src="/web/static/view.js"></script>
 {{range .CommonScripts}}
 	<script src="{{.}}"></script>
 {{end}}

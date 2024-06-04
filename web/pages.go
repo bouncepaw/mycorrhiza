@@ -2,8 +2,8 @@ package web
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 //go:embed views/*.html
@@ -11,15 +11,15 @@ var fs embed.FS
 
 var pageOrphans, pageBacklinks, pageUserList, pageChangePassword *newtmpl.Page
 
-var panelChain, listChain, newUserChain, editUserChain, deleteUserChain viewutil.Chain
+var panelChain, listChain, newUserChain, editUserChain, deleteUserChain viewutil2.Chain
 
 func initPages() {
 
-	panelChain = viewutil.CopyEnRuWith(fs, "views/admin-panel.html", adminTranslationRu)
-	listChain = viewutil.CopyEnRuWith(fs, "views/admin-user-list.html", adminTranslationRu)
-	newUserChain = viewutil.CopyEnRuWith(fs, "views/admin-new-user.html", adminTranslationRu)
-	editUserChain = viewutil.CopyEnRuWith(fs, "views/admin-edit-user.html", adminTranslationRu)
-	deleteUserChain = viewutil.CopyEnRuWith(fs, "views/admin-delete-user.html", adminTranslationRu)
+	panelChain = viewutil2.CopyEnRuWith(fs, "views/admin-panel.html", adminTranslationRu)
+	listChain = viewutil2.CopyEnRuWith(fs, "views/admin-user-list.html", adminTranslationRu)
+	newUserChain = viewutil2.CopyEnRuWith(fs, "views/admin-new-user.html", adminTranslationRu)
+	editUserChain = viewutil2.CopyEnRuWith(fs, "views/admin-edit-user.html", adminTranslationRu)
+	deleteUserChain = viewutil2.CopyEnRuWith(fs, "views/admin-delete-user.html", adminTranslationRu)
 
 	pageOrphans = newtmpl.NewPage(fs, "views/orphans.html", map[string]string{
 		"orphaned hyphae":    "Гифы-сироты",

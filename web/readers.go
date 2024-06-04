@@ -3,12 +3,15 @@ package web
 import (
 	"fmt"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
-	"github.com/bouncepaw/mycorrhiza/backlinks"
 	"github.com/bouncepaw/mycorrhiza/categories"
-	"github.com/bouncepaw/mycorrhiza/files"
 	views2 "github.com/bouncepaw/mycorrhiza/hypview"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"io"
 	"log"
 	"net/http"
@@ -22,10 +25,7 @@ import (
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/mimetype"
-	"github.com/bouncepaw/mycorrhiza/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -59,13 +59,13 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		hyphaName = util.HyphaNameFromRq(rq, "media")
-		h         = hyphae.ByName(hyphaName)
+		h         = hyphae2.ByName(hyphaName)
 		u         = user.FromRequest(rq)
 		lc        = l18n.FromRequest(rq)
 	)
 	util.HTTP200Page(w,
-		viewutil.Base(
-			viewutil.MetaFrom(w, rq),
+		viewutil2.Base(
+			viewutil2.MetaFrom(w, rq),
 			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
 			views2.MediaMenu(rq, h, u),
 			map[string]string{},
@@ -85,11 +85,11 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 	}
 	var (
 		hyphaName = util.CanonicalName(slug)
-		h         = hyphae.ByName(hyphaName)
+		h         = hyphae2.ByName(hyphaName)
 	)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		var mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 		var textContents, err = history.FileAtRevision(mycoFilePath, revHash)
 
@@ -102,7 +102,7 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, mycoFilePath, revHash)
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(w, textContents)
-	case hyphae.ExistingHypha:
+	case hyphae2.ExistingHypha:
 		if !h.HasTextFile() {
 			log.Printf(`Media hypha ‘%s’ has no text`)
 			w.WriteHeader(http.StatusNotFound)
@@ -133,16 +133,16 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	}
 	var (
 		hyphaName    = util.CanonicalName(slug)
-		h            = hyphae.ByName(hyphaName)
+		h            = hyphae2.ByName(hyphaName)
 		contents     = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
 		textContents string
 		err          error
 		mycoFilePath string
 	)
 	switch h := h.(type) {
-	case hyphae.ExistingHypha:
+	case hyphae2.ExistingHypha:
 		mycoFilePath = h.TextFilePath()
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 	}
 	textContents, err = history.FileAtRevision(mycoFilePath, revHash)
@@ -152,7 +152,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	page := views2.Revision(
-		viewutil.MetaFrom(w, rq),
+		viewutil2.MetaFrom(w, rq),
 		h,
 		contents,
 		revHash,
@@ -161,8 +161,8 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = fmt.Fprint(
 		w,
-		viewutil.Base(
-			viewutil.MetaFrom(w, rq),
+		viewutil2.Base(
+			viewutil2.MetaFrom(w, rq),
 			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
 			page,
 			map[string]string{},
@@ -174,8 +174,8 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 func handlerText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "text")
-	switch h := hyphae.ByName(hyphaName).(type) {
-	case hyphae.ExistingHypha:
+	switch h := hyphae2.ByName(hyphaName).(type) {
+	case hyphae2.ExistingHypha:
 		log.Println("Serving", h.TextFilePath())
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, h.TextFilePath())
@@ -186,12 +186,12 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
-	switch h := hyphae.ByName(hyphaName).(type) {
-	case *hyphae.EmptyHypha:
-	case *hyphae.TextualHypha:
+	switch h := hyphae2.ByName(hyphaName).(type) {
+	case *hyphae2.EmptyHypha:
+	case *hyphae2.TextualHypha:
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
-	case *hyphae.MediaHypha:
+	case *hyphae2.MediaHypha:
 		log.Println("Serving", h.MediaFilePath())
 		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.MediaFilePath())))
 		http.ServeFile(w, rq, h.MediaFilePath())
@@ -203,22 +203,22 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		hyphaName = util.HyphaNameFromRq(rq, "page", "hypha")
-		h         = hyphae.ByName(hyphaName)
+		h         = hyphae2.ByName(hyphaName)
 		contents  string
 		openGraph string
 		lc        = l18n.FromRequest(rq)
 	)
 
 	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		util.HTTP404Page(w,
-			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
+			viewutil2.Base(
+				viewutil2.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
-				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				views2.Hypha(viewutil2.MetaFrom(w, rq), h, contents),
 				map[string]string{},
 				openGraph))
-	case hyphae.ExistingHypha:
+	case hyphae2.ExistingHypha:
 		fileContentsT, errT := os.ReadFile(h.TextFilePath())
 		if errT == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), mycoopts.MarkupOptions(hyphaName))
@@ -228,17 +228,17 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			openGraph = getOpenGraph()
 		}
 		switch h := h.(type) {
-		case *hyphae.MediaHypha:
+		case *hyphae2.MediaHypha:
 			contents = mycoopts.Media(h, lc) + contents
 		}
 
 		category_list := ":" + strings.Join(categories.CategoriesWithHypha(h.CanonicalName()), ":") + ":"
 
 		util.HTTP200Page(w,
-			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
+			viewutil2.Base(
+				viewutil2.MetaFrom(w, rq),
 				util.BeautifulName(hyphaName),
-				views2.Hypha(viewutil.MetaFrom(w, rq), h, contents),
+				views2.Hypha(viewutil2.MetaFrom(w, rq), h, contents),
 				map[string]string{"cats": category_list},
 				openGraph))
 	}
@@ -248,7 +248,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := util.HyphaNameFromRq(rq, "backlinks")
 
-	_ = pageBacklinks.RenderTo(viewutil.MetaFrom(w, rq),
+	_ = pageBacklinks.RenderTo(viewutil2.MetaFrom(w, rq),
 		map[string]any{
 			"Addr":      "/backlinks/" + hyphaName,
 			"HyphaName": hyphaName,
@@ -257,7 +257,7 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
-	_ = pageOrphans.RenderTo(viewutil.MetaFrom(w, rq),
+	_ = pageOrphans.RenderTo(viewutil2.MetaFrom(w, rq),
 		map[string]any{
 			"Addr":    "/orphans",
 			"Orphans": backlinks.Orphans(),

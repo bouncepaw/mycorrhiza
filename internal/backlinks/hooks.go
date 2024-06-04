@@ -5,7 +5,7 @@ import (
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/links"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 )
 

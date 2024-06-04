@@ -12,17 +12,17 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/files"
-	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/version"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	user2 "github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/version"
 )
 
 // CLI options are read and parsed here.
 
 // printHelp prints the help message.
 func printHelp() {
-	fmt.Fprintf(
+	_, _ = fmt.Fprintf(
 		flag.CommandLine.Output(),
 		"Usage: %s WIKI_PATH\n",
 		os.Args[0],
@@ -70,13 +70,13 @@ func createAdminCommand(name string) {
 	}
 	cfg.UseAuth = true
 	cfg.AllowRegistration = true
-	user.InitUserDatabase()
+	user2.InitUserDatabase()
 
 	password, err := askPass("Password")
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := user.Register(name, password, "admin", "local", true); err != nil {
+	if err := user2.Register(name, password, "admin", "local", true); err != nil {
 		log.Fatal(err)
 	}
 }

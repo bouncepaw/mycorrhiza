@@ -2,14 +2,14 @@ package shroom
 
 import (
 	"fmt"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/user"
 )
 
 // RemoveMedia removes media from the media hypha and makes a history record about that. If it only had media, the hypha will be deleted. If it also had text, the hypha will become textual.
-func RemoveMedia(u *user.User, h *hyphae.MediaHypha) error {
+func RemoveMedia(u *user.User, h *hyphae2.MediaHypha) error {
 	hop := history.
 		Operation(history.TypeRemoveMedia).
 		WithFilesRemoved(h.MediaFilePath()).
@@ -24,9 +24,9 @@ func RemoveMedia(u *user.User, h *hyphae.MediaHypha) error {
 	}
 
 	if h.HasTextFile() {
-		hyphae.Insert(hyphae.ShrinkMediaToTextual(h))
+		hyphae2.Insert(hyphae2.ShrinkMediaToTextual(h))
 	} else {
-		hyphae.DeleteHypha(h)
+		hyphae2.DeleteHypha(h)
 	}
 	return nil
 }

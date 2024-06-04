@@ -2,13 +2,12 @@ package hypview
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"html/template"
 	"log"
 	"strings"
-
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
 var (
@@ -77,25 +76,25 @@ var (
 {{define "remove media from [[x]]?"}}Убрать медиа у <a href="/hypha/{{.MatchedHyphaName}}">{{beautifulName .MatchedHyphaName}}</a>?{{end}}
 {{define "remove media for real?"}}Вы точно хотите убрать медиа у гифы «{{beautifulName .MatchedHyphaName}}»?{{end}}
 `
-	chainNaviTitle   viewutil.Chain
-	chainEditHypha   viewutil.Chain
-	chainEmptyHypha  viewutil.Chain
-	chainDeleteHypha viewutil.Chain
-	chainRenameHypha viewutil.Chain
-	chainRemoveMedia viewutil.Chain
+	chainNaviTitle   viewutil2.Chain
+	chainEditHypha   viewutil2.Chain
+	chainEmptyHypha  viewutil2.Chain
+	chainDeleteHypha viewutil2.Chain
+	chainRenameHypha viewutil2.Chain
+	chainRemoveMedia viewutil2.Chain
 )
 
 func Init() {
-	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
-	chainEditHypha = viewutil.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
-	chainEmptyHypha = viewutil.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
-	chainDeleteHypha = viewutil.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
-	chainRenameHypha = viewutil.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
-	chainRemoveMedia = viewutil.CopyEnRuWith(fs, "view_remove_media.html", ruTranslation)
+	chainNaviTitle = viewutil2.CopyEnRuWith(fs, "view_navititle.html", "")
+	chainEditHypha = viewutil2.CopyEnRuWith(fs, "view_edit.html", ruTranslation)
+	chainEmptyHypha = viewutil2.CopyEnRuWith(fs, "view_empty_hypha.html", ruTranslation)
+	chainDeleteHypha = viewutil2.CopyEnRuWith(fs, "view_delete.html", ruTranslation)
+	chainRenameHypha = viewutil2.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
+	chainRemoveMedia = viewutil2.CopyEnRuWith(fs, "view_remove_media.html", ruTranslation)
 }
 
 type editData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	HyphaName string
 	IsNew     bool
 	Content   string
@@ -103,9 +102,9 @@ type editData struct {
 	Preview   template.HTML
 }
 
-func EditHypha(meta viewutil.Meta, hyphaName string, isNew bool, content string, message string, preview template.HTML) {
-	viewutil.ExecutePage(meta, chainEditHypha, editData{
-		BaseData: &viewutil.BaseData{
+func EditHypha(meta viewutil2.Meta, hyphaName string, isNew bool, content string, message string, preview template.HTML) {
+	viewutil2.ExecutePage(meta, chainEditHypha, editData{
+		BaseData: &viewutil2.BaseData{
 			Addr:        "/edit/" + hyphaName,
 			EditScripts: cfg.EditScripts,
 		},
@@ -118,14 +117,14 @@ func EditHypha(meta viewutil.Meta, hyphaName string, isNew bool, content string,
 }
 
 type renameData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	HyphaName               string
 	LeaveRedirectionDefault bool
 }
 
-func RenameHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainRenameHypha, renameData{
-		BaseData: &viewutil.BaseData{
+func RenameHypha(meta viewutil2.Meta, hyphaName string) {
+	viewutil2.ExecutePage(meta, chainRenameHypha, renameData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/rename/" + hyphaName,
 		},
 		HyphaName:               hyphaName,
@@ -134,22 +133,22 @@ func RenameHypha(meta viewutil.Meta, hyphaName string) {
 }
 
 type deleteRemoveMediaData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	HyphaName string
 }
 
-func DeleteHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainDeleteHypha, deleteRemoveMediaData{
-		BaseData: &viewutil.BaseData{
+func DeleteHypha(meta viewutil2.Meta, hyphaName string) {
+	viewutil2.ExecutePage(meta, chainDeleteHypha, deleteRemoveMediaData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/delete/" + hyphaName,
 		},
 		HyphaName: hyphaName,
 	})
 }
 
-func RemoveMedia(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainRemoveMedia, deleteRemoveMediaData{
-		BaseData: &viewutil.BaseData{
+func RemoveMedia(meta viewutil2.Meta, hyphaName string) {
+	viewutil2.ExecutePage(meta, chainRemoveMedia, deleteRemoveMediaData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/remove-media/" + hyphaName,
 		},
 		HyphaName: hyphaName,
@@ -157,13 +156,13 @@ func RemoveMedia(meta viewutil.Meta, hyphaName string) {
 }
 
 type emptyHyphaData struct {
-	Meta              viewutil.Meta
+	Meta              viewutil2.Meta
 	HyphaName         string
 	AllowRegistration bool
 	UseAuth           bool
 }
 
-func EmptyHypha(meta viewutil.Meta, hyphaName string) string {
+func EmptyHypha(meta viewutil2.Meta, hyphaName string) string {
 	var buf strings.Builder
 	if err := chainEmptyHypha.Get(meta).ExecuteTemplate(&buf, "empty hypha card", emptyHyphaData{
 		Meta:              meta,
@@ -183,7 +182,7 @@ type naviTitleData struct {
 	HomeHypha                 string
 }
 
-func NaviTitle(meta viewutil.Meta, hyphaName string) string {
+func NaviTitle(meta viewutil2.Meta, hyphaName string) string {
 	parts, partsWithParents := naviTitleify(hyphaName)
 	var buf strings.Builder
 	err := chainNaviTitle.Get(meta).ExecuteTemplate(&buf, "navititle", naviTitleData{

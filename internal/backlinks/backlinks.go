@@ -2,11 +2,11 @@
 package backlinks
 
 import (
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"log"
 	"os"
 	"sort"
 
-	"github.com/bouncepaw/mycorrhiza/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -14,7 +14,7 @@ import (
 func yieldHyphaBacklinks(hyphaName string) <-chan string {
 	hyphaName = util.CanonicalName(hyphaName)
 	out := make(chan string)
-	sorted := hyphae.PathographicSort(out)
+	sorted := hyphae2.PathographicSort(out)
 	go func() {
 		backlinks, exists := backlinkIndex[hyphaName]
 		if exists {
@@ -43,7 +43,7 @@ var backlinkIndex = make(map[string]linkSet)
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index. Call it when indexing and reindexing hyphae.
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
-	for h := range hyphae.FilterHyphaeWithText(hyphae.YieldExistingHyphae()) {
+	for h := range hyphae2.FilterHyphaeWithText(hyphae2.YieldExistingHyphae()) {
 		foundLinks := extractHyphaLinksFromContent(h.CanonicalName(), fetchText(h))
 		for _, link := range foundLinks {
 			if _, exists := backlinkIndex[link]; !exists {
@@ -72,7 +72,7 @@ func BacklinksFor(hyphaName string) []string {
 
 func Orphans() []string {
 	var orphans []string
-	for h := range hyphae.YieldExistingHyphae() {
+	for h := range hyphae2.YieldExistingHyphae() {
 		if BacklinksCount(h.CanonicalName()) == 0 {
 			orphans = append(orphans, h.CanonicalName())
 		}
@@ -92,14 +92,14 @@ func toLinkSet(xs []string) linkSet {
 	return result
 }
 
-func fetchText(h hyphae.Hypha) string {
+func fetchText(h hyphae2.Hypha) string {
 	var path string
 	switch h := h.(type) {
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		return ""
-	case *hyphae.TextualHypha:
+	case *hyphae2.TextualHypha:
 		path = h.TextFilePath()
-	case *hyphae.MediaHypha:
+	case *hyphae2.MediaHypha:
 		if !h.HasTextFile() {
 			return ""
 		}

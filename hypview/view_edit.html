@@ -39,7 +39,7 @@
         {{end}}
     </section>
 </aside>
-<script src="/static/toolbar.js"></script>
+<script src="/web/static/toolbar.js"></script>
 {{end}}
 
 {{define "editing hypha"}}Edit {{beautifulName .}}{{end}}
@@ -98,7 +98,7 @@
     {{end}}
 </main>
 {{template "toolbar" .}}
-<script src="/static/editor.js"></script>
+<script src="/web/static/editor.js"></script>
 {{range .EditScripts}}
     <script src="{{.}}"></script>
 {{end}}

@@ -1,10 +1,9 @@
 package shroom
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"log"
-
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/user"
 )
 
 func rejectRenameLog(h hyphae.Hypha, u *user.User, errmsg string) {

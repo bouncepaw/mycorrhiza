@@ -8,7 +8,7 @@ package history
 import "fmt"
 
 //line history/view.qtpl:2
-import "github.com/bouncepaw/mycorrhiza/cfg"
+import "github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 // HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
 

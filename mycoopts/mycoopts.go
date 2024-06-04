@@ -3,8 +3,8 @@ package mycoopts
 import (
 	"errors"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -17,26 +17,26 @@ func MarkupOptions(hyphaName string) options.Options {
 		RedLinksSupported:     true,
 		InterwikiSupported:    true,
 		HyphaExists: func(hyphaName string) bool {
-			switch hyphae.ByName(hyphaName).(type) {
-			case *hyphae.EmptyHypha:
+			switch hyphae2.ByName(hyphaName).(type) {
+			case *hyphae2.EmptyHypha:
 				return false
 			default:
 				return true
 			}
 		},
 		IterateHyphaNamesWith: func(λ func(string)) {
-			for h := range hyphae.YieldExistingHyphae() {
+			for h := range hyphae2.YieldExistingHyphae() {
 				λ(h.CanonicalName())
 			}
 		},
 		HyphaHTMLData: func(hyphaName string) (rawText, binaryBlock string, err error) {
-			switch h := hyphae.ByName(hyphaName).(type) {
-			case *hyphae.EmptyHypha:
+			switch h := hyphae2.ByName(hyphaName).(type) {
+			case *hyphae2.EmptyHypha:
 				err = errors.New("Hypha " + hyphaName + " does not exist")
-			case *hyphae.TextualHypha:
-				rawText, err = hyphae.FetchMycomarkupFile(h)
-			case *hyphae.MediaHypha:
-				rawText, err = hyphae.FetchMycomarkupFile(h)
+			case *hyphae2.TextualHypha:
+				rawText, err = hyphae2.FetchMycomarkupFile(h)
+			case *hyphae2.MediaHypha:
+				rawText, err = hyphae2.FetchMycomarkupFile(h)
 				binaryBlock = mediaRaw(h)
 			}
 			return

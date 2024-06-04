@@ -8,7 +8,7 @@ package auth
 import "net/http"
 
 //line auth/auth.qtpl:2
-import "github.com/bouncepaw/mycorrhiza/cfg"
+import "github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 //line auth/auth.qtpl:3
 import "github.com/bouncepaw/mycorrhiza/l18n"

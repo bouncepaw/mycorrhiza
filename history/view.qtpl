@@ -1,5 +1,5 @@
 {% import "fmt" %}
-{% import "github.com/bouncepaw/mycorrhiza/cfg" %}
+{% import "github.com/bouncepaw/mycorrhiza/internal/cfg" %}
 
 HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
 {% func (rev Revision) HyphaeLinksHTML() %}

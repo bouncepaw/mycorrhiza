@@ -1,11 +1,10 @@
 package hyphae
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/bouncepaw/mycorrhiza/mimetype"
 )
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.

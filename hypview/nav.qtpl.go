@@ -5,22 +5,22 @@
 package hypview
 
 //line hypview/nav.qtpl:1
-import "github.com/bouncepaw/mycorrhiza/backlinks"
+import "github.com/bouncepaw/mycorrhiza/internal/backlinks"
 
 //line hypview/nav.qtpl:2
-import "github.com/bouncepaw/mycorrhiza/cfg"
+import "github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 //line hypview/nav.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/hyphae"
+import "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 
 //line hypview/nav.qtpl:4
-import "github.com/bouncepaw/mycorrhiza/user"
+import "github.com/bouncepaw/mycorrhiza/internal/user"
 
 //line hypview/nav.qtpl:5
 import "github.com/bouncepaw/mycorrhiza/util"
 
 //line hypview/nav.qtpl:6
-import "github.com/bouncepaw/mycorrhiza/viewutil"
+import "github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 //line hypview/nav.qtpl:8
 import (

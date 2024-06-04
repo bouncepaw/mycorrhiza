@@ -3,13 +3,14 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"github.com/bouncepaw/mycorrhiza/files"
 	"log"
 	"net/http"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/util"
-	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 // PrepareRq strips the trailing / in rq.URL.Path. In the future it might do more stuff for making all request structs uniform.

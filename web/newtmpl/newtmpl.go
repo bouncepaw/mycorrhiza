@@ -3,12 +3,11 @@ package newtmpl
 import (
 	"embed"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"html/template"
 	"strings"
-
-	"github.com/bouncepaw/mycorrhiza/viewutil"
 )
 
 //go:embed *.html
@@ -85,13 +84,13 @@ func translationsIntoTemplates(m map[string]string) string {
 	return sb.String()
 }
 
-func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
+func (p *Page) RenderTo(meta viewutil2.Meta, data map[string]any) error {
 	data["Meta"] = meta
 	data["HeadElements"] = meta.HeadElements
 	data["BodyAttributes"] = meta.BodyAttributes
 	data["CommonScripts"] = cfg.CommonScripts
 	data["EditScripts"] = cfg.EditScripts
-	data["HeaderLinks"] = viewutil.HeaderLinks
+	data["HeaderLinks"] = viewutil2.HeaderLinks
 
 	tmpl := p.TemplateEnglish
 	if meta.LocaleIsRussian() {

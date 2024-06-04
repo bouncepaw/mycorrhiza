@@ -8,7 +8,7 @@ package mycoopts
 import "path/filepath"
 
 //line mycoopts/view.qtpl:3
-import "github.com/bouncepaw/mycorrhiza/hyphae"
+import "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 
 //line mycoopts/view.qtpl:4
 import "github.com/bouncepaw/mycorrhiza/l18n"
