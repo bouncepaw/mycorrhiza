@@ -1,7 +1,10 @@
 package tree
 
 import (
+	"fmt"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"io"
 	"path"
 	"sort"
 	"strings"
@@ -44,6 +47,41 @@ type child struct {
 	children []child
 }
 
+/*
+Subhyphae links are recursive. It may end up looking like that if drawn with
+pseudographics:
+╔══════════════╗
+║Foo           ║   The presented hyphae are ./foo and ./foo/bar
+║╔════════════╗║
+║║Bar         ║║
+║╚════════════╝║
+╚══════════════╝
+*/
+func childHTML(c *child, w io.Writer) {
+	sort.Slice(c.children, func(i, j int) bool {
+		return c.children[i].name < c.children[j].name
+	})
+
+	_, _ = io.WriteString(w, "<li class=\"subhyphae__entry\">\n<a class=\"subhyphae__link")
+	if !c.exists {
+		_, _ = io.WriteString(w, " wikilink_new")
+	}
+	_, _ = io.WriteString(w, fmt.Sprintf(
+		"\" href=\"/hypha/%s\">%s</a>\n",
+		c.name,
+		util.BeautifulName(path.Base(c.name)),
+	))
+
+	if len(c.children) > 0 {
+		_, _ = io.WriteString(w, "<ul>\n")
+		for _, child := range c.children {
+			childHTML(&child, w)
+		}
+		_, _ = io.WriteString(w, "</ul>\n")
+	}
+	_, _ = io.WriteString(w, "</li>\n")
+}
+
 func addHyphaToChild(hyphaName, subPath string, child *child) {
 	// when hyphaName = "root/a/b", subPath = "a/b", and child.name = "root"
 	// addHyphaToChild("root/a/b", "b", child{"root/a"})
@@ -82,8 +120,9 @@ func subhyphaeMatrix(children []child) (html string) {
 	sort.Slice(children, func(i, j int) bool {
 		return children[i].name < children[j].name
 	})
+	var buf strings.Builder
 	for _, child := range children {
-		html += childHTML(&child)
+		childHTML(&child, &buf)
 	}
-	return html
+	return buf.String()
 }

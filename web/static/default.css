@@ -108,11 +108,11 @@ main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote { margin: 0; padding-left: .75rem; }
 .wikilink_external::before { display: inline-block; width: 18px; height: 16px; vertical-align: sub; }
 /* .wikilink_external { padding-left: 16px; } */
-.wikilink_gopher::before { content: url("/web/staticatic/icon/gopher-proto.svg"); }
-.wikilink_http::before, .wikilink_https::before { content: url("/web/staticatic/icon/http-proto.svg"); }
+.wikilink_gopher::before { content: url("/staticatic/icon/gopher-proto.svg"); }
+.wikilink_http::before, .wikilink_https::before { content: url("/staticatic/icon/http-proto.svg"); }
 /* .wikilink_https { background: transparent url("/static/icon/http-proto.svg") center left no-repeat; } */
-.wikilink_gemini::before { content: url("/web/staticatic/icon/gemini-proto.svg"); }
-.wikilink_mailto::before { content: url("/web/staticatic/icon/mailto-proto.svg"); }
+.wikilink_gemini::before { content: url("/staticatic/icon/gemini-proto.svg"); }
+.wikilink_mailto::before { content: url("/staticatic/icon/mailto-proto.svg"); }
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 main h1 { margin: .5rem 0 0 0; }

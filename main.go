@@ -1,6 +1,5 @@
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 //
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=tree
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=auth
@@ -17,9 +16,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	migration2 "github.com/bouncepaw/mycorrhiza/internal/migration"
+	"github.com/bouncepaw/mycorrhiza/internal/migration"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
-	user2 "github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/web"
@@ -49,11 +48,11 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	user2.InitUserDatabase()
+	user.InitUserDatabase()
 	history.Start()
 	history.InitGitRepo()
-	migration2.MigrateRocketsMaybe()
-	migration2.MigrateHeadingsMaybe()
+	migration.MigrateRocketsMaybe()
+	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
 	categories.Init()
 	interwiki.Init()
@@ -61,7 +60,7 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
-	if !user2.HasAnyAdmins() {
+	if !user.HasAnyAdmins() {
 		log.Println("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 

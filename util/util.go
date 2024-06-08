@@ -32,6 +32,7 @@ func ShorterPath(path string) string {
 }
 
 // HTTP404Page writes a 404 error in the status, needed when no content is found on the page.
+// TODO: demolish
 func HTTP404Page(w http.ResponseWriter, page string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
@@ -39,6 +40,7 @@ func HTTP404Page(w http.ResponseWriter, page string) {
 }
 
 // HTTP200Page wraps some frequently used things for successful 200 responses.
+// TODO: demolish
 func HTTP200Page(w http.ResponseWriter, page string) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
