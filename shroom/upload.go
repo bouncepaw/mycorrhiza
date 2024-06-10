@@ -15,6 +15,7 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
@@ -78,7 +79,9 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		H := hyphae.ExtendEmptyToTextual(h, filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco"))
+		parts := []string{files.HyphaeDir()}
+		parts = append(parts, strings.Split(h.CanonicalName()+".myco", "\\")...)
+		H := hyphae.ExtendEmptyToTextual(h, filepath.Join(parts...))
 
 		err := writeTextToDisk(H, data, hop)
 		if err != nil {
@@ -139,7 +142,8 @@ func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) 
 	var (
 		ext = mimetype.ToExtension(mime)
 		// That's where the file will go
-		uploadedFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+ext)
+
+		uploadedFilePath = filepath.Join(append([]string{files.HyphaeDir()}, strings.Split(h.CanonicalName()+ext, "\\")...)...)
 	)
 
 	if err := os.MkdirAll(filepath.Dir(uploadedFilePath), 0777); err != nil {
