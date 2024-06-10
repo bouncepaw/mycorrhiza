@@ -82,66 +82,6 @@
 </main>
 {% endfunc %}
 
-If `contents` == "", a helpful message is shown instead.
-
-If you rename .prevnext, change the docs too.
-{% func Hypha(meta viewutil.Meta, h hyphae.Hypha, contents string) %}
-{% code
-	subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
-	lc := meta.Lc
-%}
-<main class="main-width">
-	<section id="hypha">
-		{% if meta.U.CanProceed("edit") %}
-		<div class="btn btn_navititle">
-			<a class="btn__link_navititle" href="/edit/{%s h.CanonicalName() %}">{%s lc.Get("ui.edit_link") %}</a>
-		</div>
-		{% endif %}
-
-		{% if cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha + "/") %}
-		<div class="btn btn_navititle">
-			<a class="btn__link_navititle" href="/logout">{%s lc.Get("ui.logout_link") %}</a>
-		</div>
-		{% if meta.U.Group == "admin" %}
-		<div class="btn btn_navititle">
-			<a class="btn__link_navititle" href="/admin">{%s lc.Get("ui.admin_panel") %}<a>
-		</div>
-		{% endif %}
-		{% endif %}
-
-		{%s= NaviTitle(meta, h.CanonicalName()) %}
-		{% switch h.(type) %}
-			{% case *hyphae.EmptyHypha %}
-				{%s= EmptyHypha(meta, h.CanonicalName()) %}
-			{% default %}
-				{%s= contents %}
-		{% endswitch %}
-	</section>
-	<section class="prevnext">
-		{% if prevHyphaName != "" %}
-		<a class="prevnext__el prevnext__prev" href="/hypha/{%s prevHyphaName %}" rel="prev">← {%s util.BeautifulName(path.Base(prevHyphaName)) %}</a>
-		{% endif %}
-		{% if nextHyphaName != "" %}
-		<a class="prevnext__el prevnext__next" href="/hypha/{%s nextHyphaName %}" rel="next">{%s util.BeautifulName(path.Base(nextHyphaName)) %} →</a>
-		{% endif %}
-	</section>
-{% if strings.TrimSpace(subhyphae) != "" %}
-<section class="subhyphae">
-	<h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>
-	<nav class="subhyphae__nav">
-		<ul class="subhyphae__list">
-		{%s= subhyphae %}
-		</ul>
-	</nav>
-</section>
-{% endif %}
-	<section id="hypha-bottom">
-   		{%= hyphaInfo(meta, h) %}
-	</section>
-</main>
-{%s= categories.CategoryCard(meta, h.CanonicalName()) %}
-{%= viewScripts() %}
-{% endfunc %}
 
 {% func Revision(meta viewutil.Meta, h hyphae.Hypha, contents, revHash string) %}
 <main class="main-width">
@@ -151,10 +91,6 @@ If you rename .prevnext, change the docs too.
 		{%s= contents %}
 	</section>
 </main>
-{%= viewScripts() %}
-{% endfunc %}
-
-{% func viewScripts() %}
 {% for _, scriptPath := range cfg.ViewScripts %}
 <script src="{%s scriptPath %}"></script>
 {% endfor %}

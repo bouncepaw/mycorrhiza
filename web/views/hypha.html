@@ -1,0 +1,98 @@
+{{define "body"}}
+    <main class="main-width">
+        <section id="hypha">
+            {{if .Meta.U.CanProceed "edit"}}
+                <div class="btn btn_navititle">
+                    <a class="btn__link_navititle" href="/edit/{{.HyphaName}}">
+                        {{block "edit" .}}Edit{{end}}
+                    </a>
+                </div>
+            {{end}}
+
+            {{if .IsMyProfile}}
+                <div class="btn btn_navititle">
+                    <a class="btn__link_navititle" href="/logout">
+                        {{block "logout" .}}Log out{{end}}
+                    </a>
+                </div>
+                {{if eq .Meta.U.Group "admin"}}
+                    <div class="btn btn_navititle">
+                        <a class="btn__link_navititle" href="/admin">
+                            {{block "admin panel" .}}Admin panel{{end}}
+                        </a>
+                    </div>
+                {{end}}
+            {{end}}
+
+            {{.NaviTitle}}
+            {{.Contents}}
+        </section>
+
+        <section class="prevnext">
+            {{if .PrevHyphaName}}
+            <a class="prevnext__el prevnext__prev" href="/hypha/{{.PrevHyphaName}}" rel="prev">
+                ← {{base .PrevHyphaName | beautifulName}}</a>
+            {{end}}
+            {{if .NextHyphaName}}
+            <a class="prevnext__el prevnext__next" href="/hypha/{{.NextHyphaName}}" rel="next">
+                {{base .NextHyphaName | beautifulName}} →</a>
+            {{end}}
+        </section>
+
+        {{ if .SubhyphaeHTML }}
+            <section class="subhyphae">
+                <h2 class="subhyphae__title">{%s lc.Get("ui.subhyphae") %}</h2>
+                <nav class="subhyphae__nav">
+                    <ul class="subhyphae__list">
+                        {{.SubhyphaeHTML}}
+                    </ul>
+                </nav>
+            </section>
+        {{end}}
+
+        <section id="hypha-bottom">
+            {{hyphaInfo(meta, h)}}
+        </section>
+    </main>
+    {{template "category card" .}}
+    {{range .ViewScripts}}<script src="{{.}}"></script>
+    {{end}}
+{{end}}
+
+{{define "category card"}}
+    {{if or .GivenPermissionToModify (len .Categories)}}
+        {{$hyphaName := .HyphaName}}
+        {{$givenPermission := .GivenPermissionToModify}}
+        <aside class="layout-card categories-card">
+            <h2 class="layout-card__title">{{block `categories` .}}Categories{{end}}</h2>
+            <ul class="categories-card__entries">
+                {{range .Categories}}
+                    <li class="categories-card__entry">
+                        <a class="categories-card__link" href="/category/{{.}}">{{beautifulName .}}</a>
+                        <form method="POST" action="/remove-from-category" class="categories-card__remove-form">
+                            <input type="hidden" name="cat" value="{{.}}">
+                            <input type="hidden" name="hypha" value="{{$hyphaName}}">
+                            <input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
+                            {{if $givenPermission}}
+                                <input type="submit" value="x" class="btn categories-card__btn"
+                                       title="{{block `remove from category title` .}}Remove the hypha from this category{{end}}">
+                            {{end}}
+                        </form>
+                    </li>
+                {{end}}
+                {{if .GivenPermissionToModify}}
+                    <li class="categories-card__entry categories-card__add-to-cat">
+                        <form method="POST" action="/add-to-category" class="categories-card__add-form js-add-cat-form">
+                            <input type="text" name="cat" id="_cat-name" class="js-add-cat-name" autocomplete="off"
+                                   placeholder="{{block `placeholder` .}}Category name...{{end}}">
+                            <datalist class="js-add-cat-list" id="cat-name-options"></datalist>
+                            <input type="hidden" name="hypha" value="{{$hyphaName}}">
+                            <input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
+                            <input type="submit" class="btn categories-card__btn" value="+"
+                                   title="{{block `add to category title` .}}Add the hypha to this category{{end}}">
+                        </form>
+                    </li>
+                {{end}}
+            </ul>
+        </aside>
+    {{end}}{{end}}

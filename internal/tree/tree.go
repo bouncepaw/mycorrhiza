@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"html/template"
 	"io"
 	"path"
 	"sort"
@@ -11,7 +12,7 @@ import (
 )
 
 // Tree returns the subhypha matrix as HTML and names of the next and previous hyphae (or empty strings).
-func Tree(hyphaName string) (childrenHTML, prev, next string) {
+func Tree(hyphaName string) (childrenHTML template.HTML, prev, next string) {
 	var (
 		root             = child{hyphaName, true, make([]child, 0)}
 		descendantPrefix = hyphaName + "/"
