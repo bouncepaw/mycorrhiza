@@ -2,11 +2,12 @@ package interwiki
 
 import (
 	"embed"
-	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -29,13 +30,13 @@ var (
 {{define "edit separately."}}Изменяйте записи по отдельности.{{end}}
 {{define "add interwiki entry"}}Добавить запись в интеркарту{{end}}
 `
-	chainInterwiki viewutil2.Chain
-	chainNameTaken viewutil2.Chain
+	chainInterwiki viewutil.Chain
+	chainNameTaken viewutil.Chain
 )
 
 func InitHandlers(rtr *mux.Router) {
-	chainInterwiki = viewutil2.CopyEnRuWith(fs, "view_interwiki.html", ruTranslation)
-	chainNameTaken = viewutil2.CopyEnRuWith(fs, "view_name_taken.html", ruTranslation)
+	chainInterwiki = viewutil.CopyEnRuWith(fs, "view_interwiki.html", ruTranslation)
+	chainNameTaken = viewutil.CopyEnRuWith(fs, "view_name_taken.html", ruTranslation)
 	rtr.HandleFunc("/interwiki", handlerInterwiki)
 	rtr.HandleFunc("/interwiki/add-entry", handlerAddEntry).Methods(http.MethodPost)
 	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)
@@ -64,13 +65,13 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 
 	if oldData, ok = entriesByName[name]; !ok {
 		log.Printf("Could not modify interwiki entry ‘%s’ because it does not exist", name)
-		viewutil2.HandlerNotFound(w, rq)
+		viewutil.HandlerNotFound(w, rq)
 		return
 	}
 
 	if err := replaceEntry(oldData, &newData); err != nil {
 		log.Printf("Could not modify interwiki entry ‘%s’ because one of the proposed aliases/name is taken\n", name)
-		viewNameTaken(viewutil2.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
+		viewNameTaken(viewutil.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
 		return
 	}
 
@@ -82,7 +83,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 	wiki := readInterwikiEntryFromRequest(rq)
 	if err := addEntry(&wiki); err != nil {
-		viewNameTaken(viewutil2.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
+		viewNameTaken(viewutil.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
 		return
 	}
 	saveInterwikiJson()
@@ -90,15 +91,15 @@ func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 }
 
 type nameTakenData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	*Wiki
 	TakenName string
 	Action    string
 }
 
-func viewNameTaken(meta viewutil2.Meta, wiki *Wiki, takenName, action string) {
-	viewutil2.ExecutePage(meta, chainNameTaken, nameTakenData{
-		BaseData:  &viewutil2.BaseData{},
+func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
+	viewutil.ExecutePage(meta, chainNameTaken, nameTakenData{
+		BaseData:  &viewutil.BaseData{},
 		Wiki:      wiki,
 		TakenName: takenName,
 		Action:    action,
@@ -106,19 +107,19 @@ func viewNameTaken(meta viewutil2.Meta, wiki *Wiki, takenName, action string) {
 }
 
 func handlerInterwiki(w http.ResponseWriter, rq *http.Request) {
-	viewInterwiki(viewutil2.MetaFrom(w, rq))
+	viewInterwiki(viewutil.MetaFrom(w, rq))
 }
 
 type interwikiData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	Entries []*Wiki
 	CanEdit bool
 	Error   string
 }
 
-func viewInterwiki(meta viewutil2.Meta) {
-	viewutil2.ExecutePage(meta, chainInterwiki, interwikiData{
-		BaseData: &viewutil2.BaseData{},
+func viewInterwiki(meta viewutil.Meta) {
+	viewutil.ExecutePage(meta, chainInterwiki, interwikiData{
+		BaseData: &viewutil.BaseData{},
 		Entries:  listOfEntries,
 		CanEdit:  meta.U.Group == "admin",
 		Error:    "",
