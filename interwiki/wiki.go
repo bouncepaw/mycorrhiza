@@ -2,9 +2,8 @@ package interwiki
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/bouncepaw/mycorrhiza/util"
+	"log"
 )
 
 // WikiEngine is an enumeration of supported interwiki targets.

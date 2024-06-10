@@ -32,7 +32,7 @@ import "github.com/bouncepaw/mycorrhiza/l18n"
 import "github.com/bouncepaw/mycorrhiza/internal/mimetype"
 
 //line hypview/readers.qtpl:11
-import "github.com/bouncepaw/mycorrhiza/internal/tree"
+import "github.com/bouncepaw/mycorrhiza/tree"
 
 //line hypview/readers.qtpl:12
 import "github.com/bouncepaw/mycorrhiza/internal/user"
