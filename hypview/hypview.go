@@ -45,8 +45,10 @@ var (
 {{define "numbers"}}Нумер. список{{end}}
 {{define "mycomarkup help"}}<a href="/help/en/mycomarkup" class="shy-link">Подробнее</a> о Микоразметке{{end}}
 {{define "actions"}}Действия{{end}}
-{{define "current date"}}Текущая дата{{end}}
-{{define "current time"}}Текущее время{{end}}
+{{define "current date utc"}}Дата UTC{{end}}
+{{define "current time utc"}}Время UTC{{end}}
+{{define "current date local"}}Местная дата{{end}}
+{{define "current time local"}}Местное время{{end}}
 {{define "selflink"}}Ссылка на вас{{end}}
 
 {{define "empty heading"}}Эта гифа не существует{{end}}
