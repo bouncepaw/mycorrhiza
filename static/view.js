@@ -35,7 +35,7 @@ wrapper.appendChild(hamburgerSection);
             return Array
                 .from(new DOMParser()
                     .parseFromString(html, 'text/html')
-                    .querySelectorAll('.mv-category .p-name'))
+                    .querySelectorAll('.mv-tags .p-name'))
                 .map(a => a.innerText);
         });
 
