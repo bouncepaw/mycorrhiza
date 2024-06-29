@@ -122,7 +122,7 @@ article p { margin: .5rem 0; }
 article ul, ol { padding-left: 1.5rem; margin: .5rem 0; }
 article code { padding: .1rem .3rem; border-radius: .25rem; font-size: 90%; font-family: 'Menlo', 'PT Mono', monospace; }
 article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25rem;}
-.codeblock code {padding:0; font-size:15px;}
+.codeblock code {padding:0; font-size:15px; tab-size: 3; }
 .transclusion { border-radius: .25rem; margin-bottom: .25rem; clear: both; }
 .transclusion_failed { padding: 0 .5rem; }
 .transclusion__content > *:not(.binary-container) {margin: 0.5rem; }
