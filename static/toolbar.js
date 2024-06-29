@@ -93,7 +93,7 @@ function insertDateUTC() {
 }
 
 function insertTimeUTC() {
-    let time = new Date().toISOString().substring(11, 19) + " UTC"
+    let time = new Date().toISOString().substring(11, 16) + " UTC "
     textInserter(time)()
 }
 
@@ -108,7 +108,7 @@ function insertDateLocal() {
 
 function insertTimeLocal() {
     let d = new Date()
-    textInserter(`${len2(d.getHours())}:${len2(d.getMinutes())}:${len2(d.getSeconds())}`)()
+    textInserter(`${len2(d.getHours())}:${len2(d.getMinutes())} `)()
 }
 
 function insertUserlink() {

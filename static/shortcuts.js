@@ -330,6 +330,7 @@ if (document.body.dataset.rrhAddr.startsWith('/edit')) {
             new Shortcut(isMac ? 'Meta+k' : 'Ctrl+k', wrapLink, 'Inline link', { force: true }),
             // Apparently, ⌘; conflicts with a Safari's hotkey. Whatever.
             new Shortcut(isMac ? 'Meta+;' : 'Ctrl+;', insertDateUTC, 'Insert date UTC', { force: true }),
+            new Shortcut(isMac ? "Meta+'" : "Ctrl+'", insertTimeLocal, 'Insert local time', { force: true })
         ]))
     }
 }
