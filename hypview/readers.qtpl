@@ -5,12 +5,9 @@
 
 {% import "github.com/bouncepaw/mycorrhiza/internal/cfg" %}
 {% import "github.com/bouncepaw/mycorrhiza/internal/hyphae" %}
-{% import "github.com/bouncepaw/mycorrhiza/categories" %}
 {% import "github.com/bouncepaw/mycorrhiza/l18n" %}
 {% import "github.com/bouncepaw/mycorrhiza/internal/mimetype" %}
-{% import "github.com/bouncepaw/mycorrhiza/internal/tree" %}
 {% import "github.com/bouncepaw/mycorrhiza/internal/user" %}
-{% import "github.com/bouncepaw/mycorrhiza/util" %}
 {% import "github.com/bouncepaw/mycorrhiza/web/viewutil" %}
 
 {% func MediaMenu(rq *http.Request, h hyphae.Hypha, u *user.User) %}

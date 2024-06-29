@@ -117,7 +117,7 @@ func findOrCreateSubchild(name string, baseChild *child) *child {
 	return &baseChild.children[len(baseChild.children)-1]
 }
 
-func subhyphaeMatrix(children []child) (html string) {
+func subhyphaeMatrix(children []child) template.HTML {
 	sort.Slice(children, func(i, j int) bool {
 		return children[i].name < children[j].name
 	})
@@ -125,5 +125,5 @@ func subhyphaeMatrix(children []child) (html string) {
 	for _, child := range children {
 		childHTML(&child, &buf)
 	}
-	return buf.String()
+	return template.HTML(buf.String())
 }

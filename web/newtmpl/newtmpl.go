@@ -20,7 +20,7 @@ type Page struct {
 	TemplateRussian *template.Template
 }
 
-func NewPage(fs embed.FS, tmpl string, russianTranslation map[string]string) *Page {
+func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string) *Page {
 	must := template.Must
 	en := must(must(must(
 		base.Clone()).
@@ -32,7 +32,7 @@ func NewPage(fs embed.FS, tmpl string, russianTranslation map[string]string) *Pa
 {{define "wiki name"}}%s{{end}}
 {{define "user hypha"}}%s{{end}}
 `, cfg.WikiName, cfg.UserHypha))).
-		ParseFS(fs, tmpl))
+		ParseFS(fs, tmpls...))
 
 	if cfg.UseAuth {
 		en = must(en.Parse(`
