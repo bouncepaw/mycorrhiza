@@ -11,6 +11,7 @@ You can edit all of the files manually, if you want, just do your best to not br
 ** `static/favicon.ico` is your wiki's favicon, accessed at [[/favicon.ico]] by browsers.
 ** `static/default.css` redefines the engine's default style, if exists. You probably don't need to use it.
 ** `static/custom.css` is loaded after the main style. If you want to make visual changes to your wiki, this is probably where you should do that.
+** `static/robots.txt` redefines default `robots.txt` file.
 * `categories.json` contains the information about all categories in your wiki.
 * `users.json` stores users' information. The passwords are not stored, only their hashes are, this is safe. Their tokens are stored in `cache/tokens.json`.
 * `interwiki.json` holds the interwiki configuration.

@@ -32,8 +32,10 @@
 <aside class="edit-toolbar action-toolbar layout-card">
     <h2 class="edit-toolbar__title layout-card__title">{{block "actions" .}}Actions{{end}}</h2>
     <section class="edit-toolbar__buttons">
-        <button class="btn edit-toolbar__btn edit-toolbar__date">{{block "current date" .}}Insert current date{{end}}</button>
-        <button class="btn edit-toolbar__btn edit-toolbar__time">{{block "current time" .}}Insert current time{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__date-local">{{block "current date local" .}}Current local date{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__time-local">{{block "current time local" .}}Current local time{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__date-utc">{{block "current date utc" .}}Current date UTC{{end}}</button>
+        <button class="btn edit-toolbar__btn edit-toolbar__time-utc">{{block "current time utc" .}}Current time UTC{{end}}</button>
         {{if .Meta.U.Group | ne "anon"}}
         <button class="btn edit-toolbar__btn edit-toolbar__user-link">{{block "selflink" .}}Link yourself{{end}}</button>
         {{end}}

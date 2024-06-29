@@ -87,14 +87,28 @@ const insertHorizontalBar = textInserter('\n----\n'),
     insertBulletedList = textInserter('\n* '),
     insertNumberedList = textInserter('\n*. ')
 
-function insertDate() {
+function insertDateUTC() {
     let date = new Date().toISOString().split('T')[0]
     textInserter(date)()
 }
 
 function insertTimeUTC() {
-    let time = new Date().toISOString().substring(11, 19) + " UTC"
+    let time = new Date().toISOString().substring(11, 16) + " UTC "
     textInserter(time)()
+}
+
+function len2(n) {
+    return n < 10 ? `0${n}` : `${n}`
+}
+
+function insertDateLocal() {
+    let d = new Date()
+    textInserter(`${d.getFullYear()}-${len2(d.getMonth() + 1)}-${len2(d.getDate())}`)()
+}
+
+function insertTimeLocal() {
+    let d = new Date()
+    textInserter(`${len2(d.getHours())}:${len2(d.getMinutes())} `)()
 }
 
 function insertUserlink() {
@@ -124,8 +138,10 @@ const buttonsHandlers = {
     codeblock: insertCodeblock,
     bulletedlist: insertBulletedList,
     numberedlist: insertNumberedList,
-    date: insertDate,
-    time: insertTimeUTC,
+    'date-utc': insertDateUTC,
+    'time-utc': insertTimeUTC,
+    'date-local': insertDateLocal,
+    'time-local': insertTimeLocal,
     'user-link': insertUserlink,
 }
 for (const key of Object.keys(buttonsHandlers)) {

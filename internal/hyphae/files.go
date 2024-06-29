@@ -3,6 +3,7 @@ package hyphae
 import (
 	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 )
@@ -26,11 +27,10 @@ func Index(path string) {
 			switch foundHypha := foundHypha.(type) {
 			case *TextualHypha: // conflict! overwrite
 				storedHypha.mycoFilePath = foundHypha.mycoFilePath
-				log.Printf(
-					"File collision for hypha ‘%s’, using ‘%s’ rather than ‘%s’\n",
-					foundHypha.CanonicalName(),
-					foundHypha.TextFilePath(),
-					storedHypha.TextFilePath(),
+				slog.Info("File collision",
+					"hypha", foundHypha.CanonicalName(),
+					"usingFile", foundHypha.TextFilePath(),
+					"insteadOf", storedHypha.TextFilePath(),
 				)
 			case *MediaHypha: // no conflict
 				Insert(ExtendTextualToMedia(storedHypha, foundHypha.mediaFilePath))
@@ -42,11 +42,11 @@ func Index(path string) {
 				storedHypha.mycoFilePath = foundHypha.mycoFilePath
 			case *MediaHypha: // conflict! overwrite
 				storedHypha.mediaFilePath = foundHypha.mediaFilePath
-				log.Printf(
-					"File collision for hypha ‘%s’, using ‘%s’ rather than ‘%s’\n",
-					foundHypha.CanonicalName(),
-					foundHypha.MediaFilePath(),
-					storedHypha.MediaFilePath(),
+
+				slog.Info("File collision",
+					"hypha", foundHypha.CanonicalName(),
+					"usingFile", foundHypha.MediaFilePath(),
+					"insteadOf", storedHypha.MediaFilePath(),
 				)
 			}
 		}
