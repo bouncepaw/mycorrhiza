@@ -17,8 +17,10 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -64,15 +66,31 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 		hyphaName = util.HyphaNameFromRq(rq, "media")
 		h         = hyphae.ByName(hyphaName)
 		u         = user.FromRequest(rq)
-		lc        = l18n.FromRequest(rq)
+		isMedia   = false
+
+		mime     string
+		fileSize int64
 	)
-	util.HTTP200Page(w,
-		viewutil.Base(
-			viewutil.MetaFrom(w, rq),
-			lc.Get("ui.media_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName)}),
-			hypview.MediaMenu(rq, h, u),
-			map[string]string{},
-		))
+	switch h := h.(type) {
+	case *hyphae.MediaHypha:
+		isMedia = true
+		mime = mimetype.FromExtension(path.Ext(h.MediaFilePath()))
+
+		fileinfo, err := os.Stat(h.MediaFilePath())
+		if err != nil {
+			slog.Error("failed to stat media file", "err", err)
+			// no return
+		}
+
+		fileSize = fileinfo.Size()
+	}
+	_ = pageMedia.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		"HyphaName":    h.CanonicalName(),
+		"U":            u,
+		"IsMediaHypha": isMedia,
+		"MimeType":     mime,
+		"FileSize":     fileSize,
+	})
 }
 
 // handlerRevisionText sends Mycomarkup text of the hypha at the given revision. See also: handlerRevision, handlerText.
@@ -137,7 +155,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName    = util.CanonicalName(slug)
 		h            = hyphae.ByName(hyphaName)
-		contents     = fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text"))
+		contents     = template.HTML(fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text")))
 		textContents string
 		err          error
 		mycoFilePath string
@@ -151,26 +169,17 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	textContents, err = history.FileAtRevision(mycoFilePath, revHash)
 	if err == nil {
 		ctx, _ := mycocontext.ContextFromStringInput(textContents, mycoopts.MarkupOptions(hyphaName))
-		contents = mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx))
+		contents = template.HTML(mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))
 	}
 
-	page := hypview.Revision(
-		viewutil.MetaFrom(w, rq),
-		h,
-		contents,
-		revHash,
-	)
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	_, _ = fmt.Fprint(
-		w,
-		viewutil.Base(
-			viewutil.MetaFrom(w, rq),
-			lc.Get("ui.revision_title", &l18n.Replacements{"name": util.BeautifulName(hyphaName), "rev": revHash}),
-			page,
-			map[string]string{},
-		),
-	)
+	meta := viewutil.MetaFrom(w, rq)
+	_ = pageRevision.RenderTo(meta, map[string]any{
+		"ViewScripts": cfg.ViewScripts,
+		"Contents":    contents,
+		"RevHash":     revHash,
+		"NaviTitle":   hypview.NaviTitle(meta, h.CanonicalName()),
+		"HyphaName":   h.CanonicalName(),
+	})
 }
 
 // handlerText serves raw source text of the hypha.
@@ -190,8 +199,7 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	switch h := hyphae.ByName(hyphaName).(type) {
-	case *hyphae.EmptyHypha:
-	case *hyphae.TextualHypha:
+	case *hyphae.EmptyHypha, *hyphae.TextualHypha:
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
 	case *hyphae.MediaHypha:
@@ -205,59 +213,61 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName = util.HyphaNameFromRq(rq, "page", "hypha")
-		h         = hyphae.ByName(hyphaName)
-		contents  string
-		openGraph string
-		lc        = l18n.FromRequest(rq)
+		hyphaName                               = util.HyphaNameFromRq(rq, "page", "hypha")
+		h                                       = hyphae.ByName(hyphaName)
+		contents                                template.HTML
+		openGraph                               template.HTML
+		lc                                      = l18n.FromRequest(rq)
+		meta                                    = viewutil.MetaFrom(w, rq)
+		subhyphae, prevHyphaName, nextHyphaName = tree.Tree(h.CanonicalName())
+		cats                                    = categories.CategoriesWithHypha(h.CanonicalName())
+		category_list                           = ":" + strings.Join(cats, ":") + ":"
+		isMyProfile                             = cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/")
+
+		data = map[string]any{
+			"HyphaName":               h.CanonicalName(),
+			"SubhyphaeHTML":           subhyphae,
+			"PrevHyphaName":           prevHyphaName,
+			"NextHyphaName":           nextHyphaName,
+			"IsMyProfile":             isMyProfile,
+			"NaviTitle":               hypview.NaviTitle(meta, h.CanonicalName()),
+			"BacklinkCount":           backlinks.BacklinksCount(h.CanonicalName()),
+			"GivenPermissionToModify": user.CanProceed(rq, "edit"),
+			"Categories":              cats,
+			"IsMediaHypha":            false,
+		}
 	)
+	slog.Info("reading hypha", "name", h.CanonicalName(), "can edit", data["GivenPermissionToModify"])
+	meta.BodyAttributes = map[string]string{
+		"cats": category_list,
+	}
 
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
-		// contents = hypview.EmptyHypha()
-		util.HTTP404Page(w,
-			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
-				util.BeautifulName(hyphaName),
-				hypview.Hypha(viewutil.MetaFrom(w, rq), h, ""),
-				map[string]string{},
-				openGraph))
+		w.WriteHeader(http.StatusNotFound)
+		data["Contents"] = ""
+		_ = pageHypha.RenderTo(meta, data)
 	case hyphae.ExistingHypha:
-		fileContentsT, errT := os.ReadFile(h.TextFilePath())
-		if errT == nil {
+		fileContentsT, err := os.ReadFile(h.TextFilePath())
+		if err == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), mycoopts.MarkupOptions(hyphaName))
 			getOpenGraph, descVisitor, imgVisitor := tools.OpenGraphVisitors(ctx)
+			openGraph = template.HTML(getOpenGraph())
 			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
-			contents = mycomarkup.BlocksToHTML(ctx, ast)
-			openGraph = getOpenGraph()
+			contents = template.HTML(mycomarkup.BlocksToHTML(ctx, ast))
 		}
 		switch h := h.(type) {
 		case *hyphae.MediaHypha:
-			contents = mycoopts.Media(h, lc) + contents
+			contents = template.HTML(mycoopts.Media(h, lc)) + contents
+			data["IsMediaHypha"] = true
 		}
 
-		meta := viewutil.MetaFrom(w, rq)
-		category_list := ":" + strings.Join(categories.CategoriesWithHypha(h.CanonicalName()), ":") + ":"
-		subhyphae, prevHyphaName, nextHyphaName := tree.Tree(h.CanonicalName())
-		isMyProfile := cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/")
+		data["Contents"] = contents
+		meta.HeadElements = append(meta.HeadElements, openGraph)
+		_ = pageHypha.RenderTo(meta, data)
 
-		_ = pageHypha.RenderTo(
-			meta,
-			map[string]any{
-				"SubhyphaeHTML": subhyphae,
-				"PrevHyphaName": prevHyphaName,
-				"NextHyphaName": nextHyphaName,
-				"IsMyProfile":   isMyProfile,
-				"NaviTitle":     hypview.NaviTitle(meta, h.CanonicalName()),
-				"Contents":      template.HTML(contents),
-			})
-		util.HTTP200Page(w,
-			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
-				util.BeautifulName(hyphaName),
-				hypview.Hypha(viewutil.MetaFrom(w, rq), h, contents),
-				map[string]string{"cats": category_list},
-				openGraph))
+		// TODO: check head cats
+		// TODO: check opengraph
 	}
 }
 

@@ -2,12 +2,13 @@ package hypview
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"html/template"
 	"log"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 var (

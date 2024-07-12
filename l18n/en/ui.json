@@ -4,18 +4,6 @@
 	"title_search": "Search by title",
 	"admin_panel": "Admin panel",
 
-	"edit_link": "Edit text",
-	"logout_link": "Log out",
-	"history_link": "View history",
-	"rename_link": "Rename",
-	"delete_link": "Delete",
-	"text_link": "View markup",
-	"media_link": "Manage media",
-	"media_link_for_textual": "Turn to media hypha",
-	"backlinks_link": "{{.n}} backlink%s",
-	"backlinks_link+one": "",
-	"backlinks_link+other": "s",
-
 	"subhyphae": "Subhyphae",
 
 	"random_no_hyphae": "There are no hyphae",
@@ -57,9 +45,9 @@
 	
 	"diff_title": "Diff of {{.name}} at {{.rev}}",
 	
-	"revision_title": "{{.name}} at {{.rev}}",
-	"revision_warning": "Please note that viewing media is not supported in history for now.",
-	"revision_link": "Get Mycomarkup source of this revision",
+	"revision_title": "",
+	"revision_warning": "",
+	"revision_link": "",
 	"revision_no_text": "This hypha had no text at this revision.",
 
 	"about_title": "About {{.name}}",
@@ -75,25 +63,6 @@
 	"media_novideo_link": "Download video",
 	"media_noaudio": "Your browser does not support audio.",
 	"media_noaudio_link": "Download audio",
-
-	"media_title": "Media of {{.name}}",
-	"media_empty": "This hypha has no media, you can upload it here.",
-	"media_tip": "You can manage the hypha's media on this page.",
-	"media_what_is": "What is media?",
-	"media_upload": "Upload",
-	"media_stat": "Stat",
-	"media_stat_size": "File size:",
-	"media_size_value": "{{.n}} byte%s",
-	"media_size_value+one": "",
-	"media_size_value+other": "s",
-	"media_stat_mime": "MIME type:",
-	"media_include": "Include",
-	"media_include_tip": "This media is an image. To include it in a hypha, use a syntax like this:",
-	"media_new": "media",
-	"media_new_tip": "You can upload a new media. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.",
-	"media_remove": "Remove media",
-	"media_remove_tip": "Please note that you don't have to remove media before uploading a new media.",
-	"media_remove_button": "Remove media",
 
 	"confirm": "Confirm",
 	"cancel": "Cancel"

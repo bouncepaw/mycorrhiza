@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
-	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"html/template"
 	"strings"
 )
@@ -27,6 +27,15 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 		Funcs(template.FuncMap{
 			"beautifulName": util.BeautifulName,
 			"inc":           func(i int) int { return i + 1 },
+			"base": func(hyphaName string) string {
+				parts := strings.Split(hyphaName, "/")
+				return parts[len(parts)-1]
+			},
+			"beautifulLink": func(hyphaName string) template.HTML {
+				return template.HTML(
+					fmt.Sprintf(
+						`<a href="/hypha/%s">%s</a>`, hyphaName, hyphaName))
+			},
 		}).
 		Parse(fmt.Sprintf(`
 {{define "wiki name"}}%s{{end}}
@@ -67,6 +76,13 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 	}
 
 	russianTranslation["search by title"] = "Поиск по названию"
+	russianTranslation["login"] = "Войти"
+	russianTranslation["register"] = "Регистрация"
+	russianTranslation["cancel"] = "Отмена"
+	russianTranslation["categories"] = "Категории"
+	russianTranslation["remove from category title"] = "Убрать гифу из этой категории"
+	russianTranslation["placeholder"] = "Название категории..."
+	russianTranslation["add to category title"] = "Добавить гифу в эту категорию"
 
 	return &Page{
 		TemplateEnglish: en,
@@ -84,13 +100,13 @@ func translationsIntoTemplates(m map[string]string) string {
 	return sb.String()
 }
 
-func (p *Page) RenderTo(meta viewutil2.Meta, data map[string]any) error {
+func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
 	data["Meta"] = meta
 	data["HeadElements"] = meta.HeadElements
 	data["BodyAttributes"] = meta.BodyAttributes
 	data["CommonScripts"] = cfg.CommonScripts
 	data["EditScripts"] = cfg.EditScripts
-	data["HeaderLinks"] = viewutil2.HeaderLinks
+	data["HeaderLinks"] = viewutil.HeaderLinks
 
 	tmpl := p.TemplateEnglish
 	if meta.LocaleIsRussian() {

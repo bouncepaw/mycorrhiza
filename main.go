@@ -3,7 +3,6 @@
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=auth
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=hypview
 package main
 
 import (
