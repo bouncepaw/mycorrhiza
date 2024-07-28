@@ -79,6 +79,11 @@ func Register(username, password, group, source string, force bool) error {
 	return SaveUserDatabase()
 }
 
+var (
+	ErrUnknownUsername = errors.New("unknown username")
+	ErrWrongPassword   = errors.New("wrong password")
+)
+
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.
 //
 // The HTTP parameters are used for setting header status (bad request, if it is bad) and saving a cookie.
@@ -87,12 +92,12 @@ func LoginDataHTTP(w http.ResponseWriter, username, password string) error {
 	if !HasUsername(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("Unknown username", username, "was entered")
-		return errors.New("unknown username")
+		return ErrUnknownUsername
 	}
 	if !CredentialsOK(username, password) {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("A wrong password was entered for username", username)
-		return errors.New("wrong password")
+		return ErrWrongPassword
 	}
 	token, err := AddSession(username)
 	if err != nil {

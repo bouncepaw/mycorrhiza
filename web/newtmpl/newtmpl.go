@@ -107,6 +107,7 @@ func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
 	data["CommonScripts"] = cfg.CommonScripts
 	data["EditScripts"] = cfg.EditScripts
 	data["HeaderLinks"] = viewutil.HeaderLinks
+	data["UseAuth"] = cfg.UseAuth
 
 	tmpl := p.TemplateEnglish
 	if meta.LocaleIsRussian() {

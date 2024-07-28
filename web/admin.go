@@ -2,16 +2,17 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	user2 "github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/util"
-	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 	"log"
 	"mime"
 	"net/http"
 	"os"
 	"sort"
+
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/gorilla/mux"
 )
 
 const adminTranslationRu = `
@@ -52,53 +53,53 @@ const adminTranslationRu = `
 {{define "delete user warning"}}Вы уверены, что хотите удалить этого пользователя из базы данных? Это действие нельзя отменить.{{end}}
 `
 
-func viewPanel(meta viewutil2.Meta) {
-	viewutil2.ExecutePage(meta, panelChain, &viewutil2.BaseData{})
+func viewPanel(meta viewutil.Meta) {
+	viewutil.ExecutePage(meta, panelChain, &viewutil.BaseData{})
 }
 
 type listData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	UserHypha string
-	Users     []*user2.User
+	Users     []*user.User
 }
 
-func viewList(meta viewutil2.Meta, users []*user2.User) {
-	viewutil2.ExecutePage(meta, listChain, listData{
-		BaseData:  &viewutil2.BaseData{},
+func viewList(meta viewutil.Meta, users []*user.User) {
+	viewutil.ExecutePage(meta, listChain, listData{
+		BaseData:  &viewutil.BaseData{},
 		UserHypha: cfg.UserHypha,
 		Users:     users,
 	})
 }
 
 type newUserData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	Form util.FormData
 }
 
-func viewNewUser(meta viewutil2.Meta, form util.FormData) {
-	viewutil2.ExecutePage(meta, newUserChain, newUserData{
-		BaseData: &viewutil2.BaseData{},
+func viewNewUser(meta viewutil.Meta, form util.FormData) {
+	viewutil.ExecutePage(meta, newUserChain, newUserData{
+		BaseData: &viewutil.BaseData{},
 		Form:     form,
 	})
 }
 
 type editDeleteUserData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	Form util.FormData
-	U    *user2.User
+	U    *user.User
 }
 
-func viewEditUser(meta viewutil2.Meta, form util.FormData, u *user2.User) {
-	viewutil2.ExecutePage(meta, editUserChain, editDeleteUserData{
-		BaseData: &viewutil2.BaseData{},
+func viewEditUser(meta viewutil.Meta, form util.FormData, u *user.User) {
+	viewutil.ExecutePage(meta, editUserChain, editDeleteUserData{
+		BaseData: &viewutil.BaseData{},
 		Form:     form,
 		U:        u,
 	})
 }
 
-func viewDeleteUser(meta viewutil2.Meta, form util.FormData, u *user2.User) {
-	viewutil2.ExecutePage(meta, deleteUserChain, editDeleteUserData{
-		BaseData: &viewutil2.BaseData{},
+func viewDeleteUser(meta viewutil.Meta, form util.FormData, u *user.User) {
+	viewutil.ExecutePage(meta, deleteUserChain, editDeleteUserData{
+		BaseData: &viewutil.BaseData{},
 		Form:     form,
 		U:        u,
 	})
@@ -108,12 +109,12 @@ func viewDeleteUser(meta viewutil2.Meta, form util.FormData, u *user2.User) {
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	viewPanel(viewutil2.MetaFrom(w, rq))
+	viewPanel(viewutil.MetaFrom(w, rq))
 }
 
 // handlerAdminShutdown kills the wiki.
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
-	if user2.CanProceed(rq, "admin/shutdown") {
+	if user.CanProceed(rq, "admin/shutdown") {
 		log.Println("An admin commanded the wiki to shutdown")
 		os.Exit(0)
 	}
@@ -121,7 +122,7 @@ func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 
 // handlerAdminReindexUsers reinitialises the user system.
 func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
-	user2.ReadUsersFromFilesystem()
+	user.ReadUsersFromFilesystem()
 	redirectTo := rq.Referer()
 	if redirectTo == "" {
 		redirectTo = "/hypha/" + cfg.UserHypha
@@ -131,8 +132,8 @@ func handlerAdminReindexUsers(w http.ResponseWriter, rq *http.Request) {
 
 func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 	// Get a sorted list of users
-	var users []*user2.User
-	for u := range user2.YieldUsers() {
+	var users []*user.User
+	for u := range user.YieldUsers() {
 		users = append(users, u)
 	}
 
@@ -140,12 +141,12 @@ func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 		less := users[i].RegisteredAt.Before(users[j].RegisteredAt)
 		return less
 	})
-	viewList(viewutil2.MetaFrom(w, rq), users)
+	viewList(viewutil.MetaFrom(w, rq), users)
 }
 
 func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	u := user2.ByName(vars["username"])
+	u := user.ByName(vars["username"])
 	if u == nil {
 		util.HTTP404Page(w, "404 page not found")
 		return
@@ -157,9 +158,9 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 		oldGroup := u.Group
 		newGroup := f.Get("group")
 
-		if user2.ValidGroup(newGroup) {
+		if user.ValidGroup(newGroup) {
 			u.Group = newGroup
-			if err := user2.SaveUserDatabase(); err != nil {
+			if err := user.SaveUserDatabase(); err != nil {
 				u.Group = oldGroup
 				log.Println(err)
 				f = f.WithError(err)
@@ -179,12 +180,12 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 
-	viewEditUser(viewutil2.MetaFrom(w, rq), f, u)
+	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	u := user2.ByName(vars["username"])
+	u := user.ByName(vars["username"])
 	if u == nil {
 		util.HTTP404Page(w, "404 page not found")
 		return
@@ -204,7 +205,7 @@ func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 		if err := u.ChangePassword(password); err != nil {
 			f = f.WithError(err)
 		} else {
-			if err := user2.SaveUserDatabase(); err != nil {
+			if err := user.SaveUserDatabase(); err != nil {
 				u.Password = previousPassword
 				f = f.WithError(err)
 			} else {
@@ -222,12 +223,12 @@ func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 
-	viewEditUser(viewutil2.MetaFrom(w, rq), f, u)
+	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	u := user2.ByName(vars["username"])
+	u := user.ByName(vars["username"])
 	if u == nil {
 		util.HTTP404Page(w, "404 page not found")
 		return
@@ -236,7 +237,7 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 	f := util.NewFormData()
 
 	if rq.Method == http.MethodPost {
-		f = f.WithError(user2.DeleteUser(u.Name))
+		f = f.WithError(user.DeleteUser(u.Name))
 		if !f.HasError() {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		} else {
@@ -248,23 +249,23 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	viewDeleteUser(viewutil2.MetaFrom(w, rq), f, u)
+	viewDeleteUser(viewutil.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-		viewNewUser(viewutil2.MetaFrom(w, rq), util.NewFormData())
+		viewNewUser(viewutil.MetaFrom(w, rq), util.NewFormData())
 	} else if rq.Method == http.MethodPost {
 		// Create a user
 		f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
 
-		err := user2.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
+		err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-			viewNewUser(viewutil2.MetaFrom(w, rq), f.WithError(err))
+			viewNewUser(viewutil.MetaFrom(w, rq), f.WithError(err))
 		} else {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		}

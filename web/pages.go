@@ -12,6 +12,8 @@ var fs embed.FS
 var pageOrphans, pageBacklinks, pageUserList, pageChangePassword *newtmpl.Page
 var pageHyphaDelete, pageHyphaEdit, pageHyphaEmpty, pageHypha *newtmpl.Page
 var pageRevision, pageMedia *newtmpl.Page
+var pageAuthLock, pageAuthLogin, pageAuthLogout, pageAuthRegister, pageAuthTelegram *newtmpl.Page
+
 var panelChain, listChain, newUserChain, editUserChain, deleteUserChain viewutil.Chain
 
 func initPages() {
@@ -136,4 +138,42 @@ func initPages() {
 		"remove tip":   "Заметьте, чтобы заменить медиа, вам не нужно его перед этим откреплять.",
 		"remove btn":   "Открепить",
 	}, "views/hypha-media.html")
+
+	pageAuthLock = newtmpl.NewPage(fs, map[string]string{
+		"lock title": "Доступ закрыт",
+		"username":   "Логин",
+		"password":   "Пароль",
+		"log in":     "Войти",
+	}, "views/auth-telegram.html", "views/auth-lock.html")
+
+	pageAuthLogin = newtmpl.NewPage(fs, map[string]string{
+		"username":       "Логин",
+		"password":       "Пароль",
+		"log in":         "Войти",
+		"cookie tip":     "Отправляя эту форму, вы разрешаете вики хранить cookie в вашем браузере. Это позволит движку связывать ваши правки с вашей учётной записью. Вы будете авторизованы, пока не выйдете из учётной записи.",
+		"log in to x":    "Войти в {{.}}",
+		"auth disabled":  "Аутентификация отключена. Вы можете делать правки анонимно.",
+		"error username": "Неизвестное имя пользователя.",
+		"error password": "Неправильный пароль.",
+		"error telegram": "Не удалось войти через Телеграм.",
+		"go home":        "Домой",
+	}, "views/auth-telegram.html", "views/auth-login.html")
+
+	pageAuthLogout = newtmpl.NewPage(fs, map[string]string{
+		"log out?":            "Выйти?",
+		"log out":             "Выйти",
+		"cannot log out anon": "Вы не можете выйти, потому что ещё не вошли.",
+		"log in":              "Войти",
+		"go home":             "Домой",
+	}, "views/auth-logout.html")
+
+	pageAuthRegister = newtmpl.NewPage(fs, map[string]string{
+		"username":      "Логин",
+		"password":      "Пароль",
+		"cookie tip":    "Отправляя эту форму, вы разрешаете вики хранить cookie в вашем браузере. Это позволит движку связывать ваши правки с вашей учётной записью. Вы будете авторизованы, пока не выйдете из учётной записи.",
+		"password tip":  "Сервер хранит ваш пароль в зашифрованном виде, даже администраторы не смогут его прочесть.",
+		"register btn":  "Зарегистрироваться",
+		"register on x": "Регистрация на {{.}}",
+	}, "views/auth-telegram.html", "views/auth-register.html")
+
 }

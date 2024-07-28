@@ -2,7 +2,6 @@
 //
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=auth
 package main
 
 import (

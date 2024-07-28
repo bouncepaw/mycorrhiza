@@ -1,0 +1,18 @@
+{{define "title"}}{{end}}
+{{define "body"}}
+<main class="main-width">
+    <section>
+        {{if .CanLogout}}
+            <h1>{{block "log out?" .}}Log out?{{end}}</h1>
+            <form method="POST" action="/logout">
+                <input class="btn btn_accent" type="submit" value='{{block "log out" .}}Log out{{end}}'/>
+                <p><a class="btn btn_weak" href="/">← {{block "go home" .}}Go home{{end}}</a></p>
+            </form>
+        {{else}}
+            <p>{{block "cannot log out anon" .}}You cannot log out because you are not logged in.{{end}}</p>
+            <p><a href="/login">{{block "log in" .}}Log in{{end}}</a></p>
+            <p><a href="/">← {{template "go home"}}</a></p>
+        {{end}}
+    </section>
+</main>
+{{end}}

@@ -1,0 +1,39 @@
+{{define "log in to x"}}Log in to {{.}}{{end}}
+{{define "title"}}{{template "log in to x" .WikiName}}{{end}}
+{{define "body"}}
+<main class="main-width">
+    <section>
+        {{if .UseAuth}}
+            {{if .ErrUnknownUsername}}
+                <p class="error">{{block "error username" .}}Unknown username.{{end}}</p>
+            {{else if .ErrWrongPassword}}
+                <p class="error">{{block "error password" .}}Wrong password.{{end}}</p>
+            {{else if .ErrTelegram}}
+                <p class="error">{{block "error telegram" .}}Could not authorize using Telegram.{{end}}</p>
+            {{else if .Err}}
+                <p class="error">{{.Err}}</p>
+            {{end}}
+
+            <form class="modal" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
+                <fieldset class="modal__fieldset">
+                    <legend class="modal__title">{{template "log in to x" .WikiName}}</legend>
+                    <label for="login-form__username">{{block "username" .}}Username{{end}}</label>
+                    <br>
+                    <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username"{{if .Username}} value="{{.Username}}"{{end}}>
+                    <br>
+                    <label for="login-form__password">{{block "password" .}}Password{{end}}</label>
+                    <br>
+                    <input type="password" required name="password" autocomplete="current-password">
+                    <p>{{block "cookie tip" .}}By submitting this form you give this wiki a permission to store cookies in your browser. It lets the engine associate your edits with you. You will stay logged in until you log out.{{end}}</p>
+                    <button class="btn" type="submit" value="Log in">{{block "log in" .}}Log in{{end}}</button>
+                    <a class="btn btn_weak" href="/">{{block "cancel" .}}Cancel{{end}}</a>
+                </fieldset>
+            </form>
+            {{template "telegram widget" .}}
+        {{else}}
+            <p>{{block "auth disabled" .}}Authentication is disabled. You can make edits anonymously.{{end}}</p>
+            <p><a class="btn btn_weak" href="/">← {{block "go home" .}}Go home{{end}}</a></p>
+        {{end}}
+    </section>
+</main>
+{{end}}

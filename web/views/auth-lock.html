@@ -1,0 +1,33 @@
+{{define "title"}}{{block "lock title" .}}Locked{{end}}{{end}}
+{{define "page"}}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🔒 {{template "lock title" .}}</title>
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main class="locked-notice main-width">
+    <section class="locked-notice__message">
+        <p class="locked-notice__lock">🔒</p>
+        <h1 class="locked-notice__title">{{template "lock title" .}}</h1>
+        <form class="locked-notice__login-form" method="post" action="/login" id="login-form" enctype="multipart/form-data" autocomplete="on">
+            <label for="login-form__username">{{block "username" .}}Username{{end}}</label>
+            <br>
+            <input type="text" required autofocus id="login-form__username" name="username" autocomplete="username">
+            <br>
+            <label for="login-form__password">{{block "password" .}}Password{{end}}</label>
+            <br>
+            <input type="password" required name="password" autocomplete="current-password" id="login-form__password">
+            <br>
+            <button class="btn" type="submit" value="Log in">{{block "log in" .}}Log in{{end}}</button>
+        </form>
+        {{template "telegram widget"}}
+    </section>
+</main>
+</body>
+</html>
+{{end}}
