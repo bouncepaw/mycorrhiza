@@ -1,10 +1,10 @@
 package misc
 
 import (
-	"github.com/bouncepaw/mycorrhiza/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/user"
-	"github.com/bouncepaw/mycorrhiza/version"
 	"log"
 	"strings"
 	"text/template" // sic!

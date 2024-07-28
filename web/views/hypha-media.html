@@ -1,0 +1,57 @@
+{{define "title"}}{{end}}
+{{define "body"}}
+    <main class="main-width media-tab">
+        <h1>{{block "media title" .}}Media of {{.HyphaName | beautifulLink }}{{end}}</h1>
+        <p class="explanation">
+            {{if .IsMediaHypha}}
+                {{block "tip" .}}You can manage the hypha's media on this page.{{end}}
+            {{else}}
+                {{block "empty" .}}This hypha has no media, you can upload it here.{{end}}
+            {{end}}
+            <a href="/help/en/media" class="shy-link">
+                {{block "what is media?" .}}What is media?{{end}}
+            </a>
+        </p>
+
+        <section class="amnt-grid">
+            {{if .IsMediaHypha}}
+                <fieldset class="amnt-menu-block"> <!-- TODO: refactor with <dl> -->
+                    <legend class="modal__title modal__title_small">{{block "stat" .}}Stat{{end}}</legend>
+                    <p><b>{{block "stat size" .}}File size:{{end}}</b> {{.FileSize}}</p> <!-- TODO: human readable measure -->
+                    <p><b>{{block "stat mime" .}}MIME type:{{end}}</b> {{.MimeType}}</p>
+                </fieldset>
+            {{end}}
+
+            {{if .U.CanProceed "upload-binary" }}
+            <form action="/upload-binary/{{.HyphaName}}"
+                  method="post" enctype="multipart/form-data"
+                  class="upload-binary modal amnt-menu-block">
+                <fieldset class="modal__fieldset">
+                    <legend class="modal__title modal__title_small">
+                        {{block "upload title" .}}Upload{{end}}</legend>
+                    <p class="modal__confirmation-msg">
+                        {{block "upload tip" .}}You can upload a new media. Please do not upload too big pictures unless you need to because may not want to wait for big pictures to load.{{end}}</p>
+                    <label for="upload-binary__input"></label> <!-- TODO: ? -->
+                    <input type="file" id="upload-binary__input" name="binary">
+
+                    <button type="submit" class="btn stick-to-bottom" value="Upload">
+                        {{block "upload btn" .}}Upload{{end}}</button>
+                </fieldset>
+            </form>
+            {{end}}
+
+            {{if .IsMediaHypha | and (.U.CanProceed "remove-media")}}
+            <form action="/remove-media/{{.HyphaName}}" class="modal amnt-menu-block" method="POST">
+                <fieldset class="modal__fieldset">
+                    <legend class="modal__title modal__title_small">
+                        {{block "remove title" .}}Remove media{{end}}</legend>
+                    <p class="modal__confirmation-msg">
+                        {{block "remove tip" .}}Please note that you don't have to remove media before uploading a new media.{{end}}</p>
+                    <button type="submit" class="btn" value="Remove media">
+                        {{block "remove btn" .}}Remove media{{end}}</button>
+                </fieldset>
+            </form>
+            {{end}}
+        </section>
+    </main>
+{{end}}

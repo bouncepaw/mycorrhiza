@@ -1,0 +1,35 @@
+{{define "panel title"}}Administrative functions{{end}}
+{{define "title"}}{{template "panel title"}}{{end}}
+{{define "body"}}
+<main class="main-width">
+	<h1>{{template "panel title"}}</h1>
+	<section>
+		<h2>{{block "panel safe section title" .}}Safe section{{end}}</h2>
+		<ul>
+			<li><a href="/about">{{block "panel link about" .}}About this wiki{{end}}</a></li>
+			<li><a href="/update-header-links">{{block "panel update header" .}}Reload header links{{end}}</a></li>
+			<li><a href="/user-list">{{block "panel link user list" .}}User list{{end}}</a></li>
+			<li><a href="/admin/users/">{{block "panel users" .}}Manage users{{end}}</a></li>
+			<li><a href="/interwiki">{{block "panel interwiki" .}}Interwiki{{end}}</a></li>
+			<li><a href="/orphans">{{block "panel/orphans" .}}Orphaned hyphae{{end}}</a></li>
+		</ul>
+	</section>
+	<section>
+		<h2>{{block "panel unsafe section title" .}}Unsafe section{{end}}</h2>
+		<ul>
+			<li>
+				<form action="/admin/shutdown" method="POST">
+					<label>{{block "panel shutdown" .}}Shutdown wiki{{end}}</label>
+					<input type="submit" class="btn">
+				</form>
+			</li>
+			<li>
+				<form action="/reindex" method="GET">
+					<label>{{block "panel reindex hyphae" .}}Reindex hyphae{{end}}</label>
+					<input type="submit" class="btn">
+				</form>
+			</li>
+		</ul>
+	</section>
+</main>
+{{end}}

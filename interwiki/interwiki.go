@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
-	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"log"
 	"os"

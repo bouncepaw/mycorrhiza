@@ -4,12 +4,12 @@ package histweb
 import (
 	"embed"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -30,9 +30,9 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
-	chainPrimitiveDiff = viewutil.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
-	chainRecentChanges = viewutil.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
-	chainHistory = viewutil.CopyEnRuWith(fs, "view_history.html", ruTranslation)
+	chainPrimitiveDiff = viewutil2.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
+	chainRecentChanges = viewutil2.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
+	chainHistory = viewutil2.CopyEnRuWith(fs, "view_history.html", ruTranslation)
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -45,12 +45,12 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 	}
 	var (
 		mycoFilePath string
-		h            = hyphae.ByName(util.CanonicalName(slug))
+		h            = hyphae2.ByName(util.CanonicalName(slug))
 	)
 	switch h := h.(type) {
-	case hyphae.ExistingHypha:
+	case hyphae2.ExistingHypha:
 		mycoFilePath = h.TextFilePath()
-	case *hyphae.EmptyHypha:
+	case *hyphae2.EmptyHypha:
 		mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
 	}
 	text, err := history.PrimitiveDiffAtRevision(mycoFilePath, revHash)
@@ -58,7 +58,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	primitiveDiff(viewutil.MetaFrom(w, rq), h, revHash, text)
+	primitiveDiff(viewutil2.MetaFrom(w, rq), h, revHash, text)
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.
@@ -68,7 +68,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	if editCount > 100 {
 		return
 	}
-	recentChanges(viewutil.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
+	recentChanges(viewutil2.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
 }
 
 // handlerHistory lists all revisions of a hypha.
@@ -83,7 +83,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	}
 	log.Println("Found", len(revs), "revisions for", hyphaName)
 
-	historyView(viewutil.MetaFrom(w, rq), hyphaName, list)
+	historyView(viewutil2.MetaFrom(w, rq), hyphaName, list)
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
@@ -135,20 +135,20 @@ var (
 {{define "n recent changes"}}{{.}} свеж{{if eq . 1}}ая правка{{else if le . 4}}их правок{{else}}их правок{{end}}{{end}}
 {{define "recent empty"}}Правки не найдены.{{end}}
 `
-	chainPrimitiveDiff, chainRecentChanges, chainHistory viewutil.Chain
+	chainPrimitiveDiff, chainRecentChanges, chainHistory viewutil2.Chain
 )
 
 type recentChangesData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	EditCount int
 	Changes   []history.Revision
 	UserHypha string
 	Stops     []int
 }
 
-func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
-	viewutil.ExecutePage(meta, chainRecentChanges, recentChangesData{
-		BaseData:  &viewutil.BaseData{},
+func recentChanges(meta viewutil2.Meta, editCount int, changes []history.Revision) {
+	viewutil2.ExecutePage(meta, chainRecentChanges, recentChangesData{
+		BaseData:  &viewutil2.BaseData{},
 		EditCount: editCount,
 		Changes:   changes,
 		UserHypha: cfg.UserHypha,
@@ -157,13 +157,13 @@ func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision
 }
 
 type primitiveDiffData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	HyphaName string
 	Hash      string
 	Text      template.HTML
 }
 
-func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
+func primitiveDiff(meta viewutil2.Meta, h hyphae2.Hypha, hash, text string) {
 	hunks := history.SplitPrimitiveDiff(text)
 	if len(hunks) > 0 {
 		var buf strings.Builder
@@ -198,8 +198,8 @@ func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
 		text = fmt.Sprintf(
 			`<pre class="codeblock"><code>%s</code></pre>`, text)
 	}
-	viewutil.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
-		BaseData:  &viewutil.BaseData{},
+	viewutil2.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
+		BaseData:  &viewutil2.BaseData{},
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
 		Text:      template.HTML(text),
@@ -207,14 +207,14 @@ func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
 }
 
 type historyData struct {
-	*viewutil.BaseData
+	*viewutil2.BaseData
 	HyphaName string
 	Contents  string
 }
 
-func historyView(meta viewutil.Meta, hyphaName, contents string) {
-	viewutil.ExecutePage(meta, chainHistory, historyData{
-		BaseData: &viewutil.BaseData{
+func historyView(meta viewutil2.Meta, hyphaName, contents string) {
+	viewutil2.ExecutePage(meta, chainHistory, historyData{
+		BaseData: &viewutil2.BaseData{
 			Addr: "/history/" + util.CanonicalName(hyphaName),
 		},
 		HyphaName: hyphaName,

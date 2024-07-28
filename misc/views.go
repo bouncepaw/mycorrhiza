@@ -2,8 +2,8 @@ package misc
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 var (

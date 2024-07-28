@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bouncepaw/mycorrhiza/files"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
 )
 
 // Revision represents a revision, duh. Hash is usually short. Username is extracted from email.
