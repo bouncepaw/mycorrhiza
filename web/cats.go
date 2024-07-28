@@ -1,41 +1,46 @@
-package categories
+package web
 
 import (
+	"github.com/bouncepaw/mycorrhiza/categories"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
+	"sort"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 )
-
-// InitHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
-func InitHandlers(r *mux.Router) {
-	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
-	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
-	r.PathPrefix("/category/").HandlerFunc(handlerCategory).Methods("GET")
-	r.PathPrefix("/edit-category/").HandlerFunc(handlerEditCategory).Methods("GET")
-	r.PathPrefix("/category").HandlerFunc(handlerListCategory).Methods("GET")
-	prepareViews()
-}
 
 func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
+	meta := viewutil.MetaFrom(w, rq)
 	catName := util.CanonicalName(strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/edit-category"), "/"))
 	if catName == "" {
-		http.Error(w, "No category name", http.StatusBadRequest)
+		viewutil.HandlerNotFound(w, rq)
 		return
 	}
-	log.Println("Editing category", catName)
-	categoryEdit(viewutil.MetaFrom(w, rq), catName)
+
+	slog.Info("Editing category", "name", catName)
+	_ = pageCatEdit.RenderTo(meta, map[string]any{
+		"Addr":                    "/edit-category/" + catName,
+		"CatName":                 catName,
+		"Hyphae":                  categories.HyphaeInCategory(catName),
+		"GivenPermissionToModify": meta.U.CanProceed("add-to-category"),
+	})
 }
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
-	log.Println("Viewing list of categories")
-	categoryList(viewutil.MetaFrom(w, rq))
+	slog.Info("Viewing list of categories")
+	cats := categories.ListOfCategories()
+	sort.Strings(cats)
+
+	_ = pageCatList.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		"Addr":       "/category",
+		"Categories": cats,
+	})
 }
 
 func handlerCategory(w http.ResponseWriter, rq *http.Request) {
@@ -45,8 +50,15 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 		handlerListCategory(w, rq)
 		return
 	}
-	log.Println("Viewing category", catName)
-	categoryPage(viewutil.MetaFrom(w, rq), catName)
+
+	meta := viewutil.MetaFrom(w, rq)
+	slog.Info("Viewing category", "name", catName)
+	_ = pageCatPage.RenderTo(meta, map[string]any{
+		"Addr":                    "/category/" + catName,
+		"CatName":                 catName,
+		"Hyphae":                  categories.HyphaeInCategory(catName),
+		"GivenPermissionToModify": meta.U.CanProceed("add-to-category"),
+	})
 }
 
 // A request for removal of hyphae can either remove one hypha (used in the card on /hypha) or many hyphae (used in /edit-category). Both approaches are handled by /remove-from-category. This function finds all passed hyphae.
@@ -94,7 +106,7 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 	}
 	for _, hyphaName := range hyphaNames {
 		// TODO: Make it more effective.
-		removeHyphaFromCategory(hyphaName, catName)
+		categories.RemoveHyphaFromCategory(hyphaName, catName)
 	}
 	log.Printf("%s removed %q from category %s\n", u.Name, hyphaNames, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
@@ -117,6 +129,6 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	log.Println(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
-	AddHyphaToCategory(hyphaName, catName)
+	categories.AddHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }

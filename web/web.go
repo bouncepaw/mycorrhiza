@@ -16,7 +16,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/history/histweb"
 	"github.com/bouncepaw/mycorrhiza/hypview"
@@ -73,11 +72,16 @@ func Handler() http.Handler {
 	initReaders(r)
 	initMutators(r)
 	help.InitHandlers(r)
-	categories.InitHandlers(r)
 	misc.InitHandlers(r)
 	hypview.Init()
 	histweb.InitHandlers(r)
 	interwiki.InitHandlers(r)
+
+	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
+	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
+	r.PathPrefix("/category/").HandlerFunc(handlerCategory).Methods("GET")
+	r.PathPrefix("/edit-category/").HandlerFunc(handlerEditCategory).Methods("GET")
+	r.PathPrefix("/category").HandlerFunc(handlerListCategory).Methods("GET")
 
 	// Admin routes
 	if cfg.UseAuth {

@@ -23,8 +23,8 @@ package categories
 
 import "sync"
 
-// listOfCategories returns unsorted names of all categories.
-func listOfCategories() (categoryList []string) {
+// ListOfCategories returns unsorted names of all categories.
+func ListOfCategories() (categoryList []string) {
 	mutex.RLock()
 	for cat, _ := range categoryToHyphae {
 		categoryList = append(categoryList, cat)
@@ -44,8 +44,8 @@ func CategoriesWithHypha(hyphaName string) (categoryList []string) {
 	}
 }
 
-// hyphaeInCategory returns what hyphae are in the category. If the returned slice is empty, the category does not exist, and vice versa. The category name must be canonical.
-func hyphaeInCategory(catName string) (hyphaList []string) {
+// HyphaeInCategory returns what hyphae are in the category. If the returned slice is empty, the category does not exist, and vice versa. The category name must be canonical.
+func HyphaeInCategory(catName string) (hyphaList []string) {
 	mutex.RLock()
 	defer mutex.RUnlock()
 	if node, ok := categoryToHyphae[catName]; ok {
@@ -75,8 +75,8 @@ func AddHyphaToCategory(hyphaName, catName string) {
 	go saveToDisk()
 }
 
-// removeHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens. Pass canonical names.
-func removeHyphaFromCategory(hyphaName, catName string) {
+// RemoveHyphaFromCategory removes the hypha from the category and updates the records on the disk. If the hypha is not in the category, nothing happens. Pass canonical names.
+func RemoveHyphaFromCategory(hyphaName, catName string) {
 	mutex.Lock()
 	if node, ok := hyphaToCategories[hyphaName]; ok {
 		node.removeCategory(catName)

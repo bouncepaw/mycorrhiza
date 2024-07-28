@@ -12,7 +12,8 @@ var fs embed.FS
 var pageOrphans, pageBacklinks, pageUserList, pageChangePassword *newtmpl.Page
 var pageHyphaDelete, pageHyphaEdit, pageHyphaEmpty, pageHypha *newtmpl.Page
 var pageRevision, pageMedia *newtmpl.Page
-var pageAuthLock, pageAuthLogin, pageAuthLogout, pageAuthRegister, pageAuthTelegram *newtmpl.Page
+var pageAuthLock, pageAuthLogin, pageAuthLogout, pageAuthRegister *newtmpl.Page
+var pageCatPage, pageCatList, pageCatEdit *newtmpl.Page
 
 var panelChain, listChain, newUserChain, editUserChain, deleteUserChain viewutil.Chain
 
@@ -62,7 +63,7 @@ func initPages() {
 		"describe your changes":       `Опишите ваши правки`,
 		"save":                        `Сохранить`,
 		"preview":                     `Предпросмотр`,
-		"previewing hypha":            `Предпросмотр «{{beautifulName .}}»`,
+		"previewing hypha":            `Предпросмотр {{beautifulName .}}`,
 		"preview tip":                 `Заметьте, эта гифа ещё не сохранена. Вот её предпросмотр:`,
 
 		"markup":             `Разметка`,
@@ -176,4 +177,26 @@ func initPages() {
 		"register on x": "Регистрация на {{.}}",
 	}, "views/auth-telegram.html", "views/auth-register.html")
 
+	pageCatPage = newtmpl.NewPage(fs, map[string]string{
+		"category x": "Категория {{. | beautifulName}}",
+		"edit":       "Редактировать",
+		"cat":        "Категория",
+		"empty cat":  "Эта категория пуста.",
+	}, "views/cat-page.html")
+
+	pageCatEdit = newtmpl.NewPage(fs, map[string]string{
+		"edit category x":       "Редактирование категории {{beautifulName .}}",
+		"edit category heading": "Редактирование категории <a href=\"/category/{{.}}\">{{beautifulName .}}</a>",
+		"empty cat":             "Эта категория пуста.",
+		"add to category title": "Добавить гифу в эту категорию",
+		"hypha name":            "Название гифы",
+		"add":                   "Добавить",
+		"remove hyphae":         "Убрать гифы из этой категории",
+		"remove":                "Убрать",
+	}, "views/cat-edit.html")
+
+	pageCatList = newtmpl.NewPage(fs, map[string]string{
+		"category list": "Список категорий",
+		"no categories": "В этой вики нет категорий.",
+	}, "views/cat-list.html")
 }
