@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/bouncepaw/mycorrhiza/categories"
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"io"
 	"log"
 	"log/slog"

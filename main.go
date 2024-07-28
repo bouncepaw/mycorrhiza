@@ -5,10 +5,10 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"log"
 	"os"
 
-	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"

@@ -3,8 +3,8 @@ package shroom
 import (
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/categories"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
