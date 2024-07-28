@@ -128,7 +128,7 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	log.Println(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
+	slog.Info(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
 	categories.AddHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
