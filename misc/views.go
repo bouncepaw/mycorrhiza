@@ -3,13 +3,13 @@ package misc
 import (
 	"embed"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 var (
 	//go:embed *html
 	fs                          embed.FS
-	chainList, chainTitleSearch viewutil2.Chain
+	chainList, chainTitleSearch viewutil.Chain
 	ruTranslation               = `
 {{define "list of hyphae"}}Список гиф{{end}}
 {{define "search:"}}Поиск: {{.}}{{end}}
@@ -21,8 +21,8 @@ var (
 )
 
 func initViews() {
-	chainList = viewutil2.CopyEnRuWith(fs, "view_list.html", ruTranslation)
-	chainTitleSearch = viewutil2.CopyEnRuWith(fs, "view_title_search.html", ruTranslation)
+	chainList = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
+	chainTitleSearch = viewutil.CopyEnRuWith(fs, "view_title_search.html", ruTranslation)
 }
 
 type listDatum struct {
@@ -31,30 +31,30 @@ type listDatum struct {
 }
 
 type listData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	Entries    []listDatum
 	HyphaCount int
 }
 
-func viewList(meta viewutil2.Meta, entries []listDatum) {
-	viewutil2.ExecutePage(meta, chainList, listData{
-		BaseData:   &viewutil2.BaseData{},
+func viewList(meta viewutil.Meta, entries []listDatum) {
+	viewutil.ExecutePage(meta, chainList, listData{
+		BaseData:   &viewutil.BaseData{},
 		Entries:    entries,
 		HyphaCount: hyphae.Count(),
 	})
 }
 
 type titleSearchData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	Query            string
 	Results          []string
 	MatchedHyphaName string
 	HasExactMatch    bool
 }
 
-func viewTitleSearch(meta viewutil2.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
-	viewutil2.ExecutePage(meta, chainTitleSearch, titleSearchData{
-		BaseData:         &viewutil2.BaseData{},
+func viewTitleSearch(meta viewutil.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
+	viewutil.ExecutePage(meta, chainTitleSearch, titleSearchData{
+		BaseData:         &viewutil.BaseData{},
 		Query:            query,
 		Results:          results,
 		MatchedHyphaName: hyphaName,

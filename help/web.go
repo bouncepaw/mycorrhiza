@@ -2,19 +2,21 @@ package help
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
-	"git.sr.ht/~bouncepaw/mycomarkup/v5"
-	"github.com/bouncepaw/mycorrhiza/mycoopts"
-	viewutil2 "github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+
+	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
+
+	"github.com/gorilla/mux"
 )
 
 var (
-	chain         viewutil2.Chain
+	chain         viewutil.Chain
 	ruTranslation = `
 {{define "title"}}Справка{{end}}
 {{define "entry not found"}}Статья не найдена{{end}}
@@ -46,14 +48,14 @@ var (
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	chain = viewutil2.CopyEnRuWith(fs, "view_help.html", ruTranslation)
+	chain = viewutil.CopyEnRuWith(fs, "view_help.html", ruTranslation)
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	// See the history of this file to resurrect the old algorithm that supported multiple languages
 	var (
-		meta        = viewutil2.MetaFrom(w, rq)
+		meta        = viewutil.MetaFrom(w, rq)
 		articlePath = strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
 		lang        = "en"
 	)
@@ -88,14 +90,14 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 }
 
 type helpData struct {
-	*viewutil2.BaseData
+	*viewutil.BaseData
 	ContentsHTML string
 	Lang         string
 }
 
-func viewHelp(meta viewutil2.Meta, lang, contentsHTML, articlePath string) {
-	viewutil2.ExecutePage(meta, chain, helpData{
-		BaseData: &viewutil2.BaseData{
+func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
+	viewutil.ExecutePage(meta, chain, helpData{
+		BaseData: &viewutil.BaseData{
 			Addr: "/help/" + articlePath,
 		},
 		ContentsHTML: contentsHTML,

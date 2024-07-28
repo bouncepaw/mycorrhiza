@@ -1,14 +1,15 @@
 package categories
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/gorilla/mux"
 )
 
 // InitHandlers initializes HTTP handlers for the given router. Call somewhere in package web.
