@@ -271,7 +271,7 @@ mark { background: rgba(130, 80, 30, 5); color: inherit; }
 	border: none;
 	background: none;
 }
-.categories-card #_cat-name {
+.categories-card #_cat-input {
 	width: 100%;
 	margin: 0;
 	padding: 0 .5rem;
