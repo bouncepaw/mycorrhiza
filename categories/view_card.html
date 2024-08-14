@@ -22,8 +22,8 @@
             {{if .GivenPermissionToModify}}
 				<li class="categories-card__entry categories-card__add-to-cat">
 					<form method="POST" action="/add-to-category" class="categories-card__add-form js-add-cat-form">
-						<input type="text" name="cat" id="_cat-name" class="js-add-cat-name" autocomplete="off"
-						       placeholder="{{block `placeholder` .}}Category name...{{end}}">
+						<input type="text" name="cat" id="_cat-input" class="js-add-cat-name" autocomplete="off"
+						       placeholder="{{block `placeholder` .}}Category n&zwnj;ame...{{end}}">
 						<datalist class="js-add-cat-list" id="cat-name-options"></datalist>
 						<input type="hidden" name="hypha" value="{{$hyphaName}}">
 						<input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
