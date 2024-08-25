@@ -25,7 +25,7 @@ var paths struct {
 // A separate function is needed to easily know where a general storage path is
 // needed rather than a concrete Git or the whole wiki storage path, so that we
 // could easily refactor things later if we'll ever support different storages.
-func HyphaeDir() string { return paths.gitRepo }
+func HyphaeDir() string { return filepath.ToSlash(paths.gitRepo) }
 
 // GitRepo returns the path to the Git repository of the wiki.
 func GitRepo() string { return paths.gitRepo }
