@@ -72,7 +72,7 @@ func indexHelper(path string, nestLevel uint, ch chan ExistingHypha) {
 		}
 
 		var (
-			hyphaPartPath           = filepath.Join(path, node.Name())
+			hyphaPartPath           = filepath.ToSlash(filepath.Join(path, node.Name()))
 			hyphaName, isText, skip = mimetype.DataFromFilename(hyphaPartPath)
 		)
 		if !skip {
