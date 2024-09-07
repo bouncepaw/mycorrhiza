@@ -4,12 +4,7 @@ package web
 import (
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"io"
-	"log"
 	"log/slog"
 	"mime"
 	"net/http"
@@ -19,11 +14,15 @@ import (
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/history/histweb"
 	"github.com/bouncepaw/mycorrhiza/hypview"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/misc"
-	"github.com/gorilla/mux"
-
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+
+	"github.com/gorilla/mux"
 )
 
 // Handler initializes and returns the HTTP router based on the configuration.
@@ -308,7 +307,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 
 	errmsg := user.LoginDataHTTP(w, username, "")
 	if errmsg != nil {
-		log.Printf("Failed to login ‘%s’ using Telegram: %s", username, err.Error())
+		slog.Error("Failed to login using Telegram", "err", err, "username", username)
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = io.WriteString(
 			w,

@@ -3,7 +3,6 @@ package misc
 
 import (
 	"io"
-	"log"
 	"log/slog"
 	"math/rand"
 	"mime"
@@ -74,11 +73,11 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	if ok := user.CanProceed(rq, "reindex"); !ok {
 		var lc = l18n.FromRequest(rq)
 		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
-		log.Println("Rejected", rq.URL)
+		slog.Info("No rights to reindex")
 		return
 	}
 	hyphae.ResetCount()
-	log.Println("Reindexing hyphae in", files.HyphaeDir())
+	slog.Info("Reindexing hyphae", "hyphaeDir", files.HyphaeDir())
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
@@ -90,9 +89,10 @@ func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	if ok := user.CanProceed(rq, "update-header-links"); !ok {
 		var lc = l18n.FromRequest(rq)
 		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
-		log.Println("Rejected", rq.URL)
+		slog.Info("No rights to update header links")
 		return
 	}
+	slog.Info("Updated header links")
 	shroom.SetHeaderLinks()
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 }
@@ -149,7 +149,7 @@ func handlerStyle(w http.ResponseWriter, rq *http.Request) {
 		}
 		_, err = io.Copy(w, file)
 		if err != nil {
-			log.Println(err)
+			slog.Error("Failed to write stylesheet; proceeding anyway", "err", err)
 		}
 		_ = file.Close()
 	}
@@ -164,7 +164,7 @@ func handlerRobotsTxt(w http.ResponseWriter, rq *http.Request) {
 	}
 	_, err = io.Copy(w, file)
 	if err != nil {
-		log.Println()
+		slog.Error("Failed to write robots.txt; proceeding anyway", "err", err)
 	}
 	_ = file.Close()
 }

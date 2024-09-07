@@ -21,7 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"log"
+	"log/slog"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -78,7 +78,7 @@ func init() {
 
 			var strings map[string]string
 			if err := json.Unmarshal(contents, &strings); err != nil {
-				log.Fatalf("error while parsing %s: %v", path, err)
+				slog.Error("Failed to unmarshal localization file", "path", path, "err", err)
 			}
 
 			for key, value := range strings {

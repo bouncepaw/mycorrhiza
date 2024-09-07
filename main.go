@@ -24,7 +24,9 @@ import (
 )
 
 func main() {
-	parseCliArgs()
+	if err := parseCliArgs(); err != nil {
+		os.Exit(1)
+	}
 
 	if err := files.PrepareWikiRoot(); err != nil {
 		log.Fatal(err)
