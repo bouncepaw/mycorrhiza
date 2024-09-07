@@ -8,14 +8,14 @@
 package migration
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 )
 
 func genericLineMigrator(
@@ -37,7 +37,8 @@ func genericLineMigrator(
 		file, err := os.OpenFile(hypha.TextFilePath(), os.O_RDWR, 0766)
 		if err != nil {
 			hop.WithErrAbort(err)
-			log.Fatal("Something went wrong when opening ", hypha.TextFilePath(), ": ", err.Error())
+			slog.Error("Failed to open text part file", "path", hypha.TextFilePath(), "err", err)
+			os.Exit(1)
 		}
 
 		var buf strings.Builder
@@ -45,7 +46,7 @@ func genericLineMigrator(
 		if err != nil {
 			hop.WithErrAbort(err)
 			_ = file.Close()
-			log.Fatal("Something went wrong when reading ", hypha.TextFilePath(), ": ", err.Error())
+			slog.Error("Failed to read text part file", "path", hypha.TextFilePath(), "err", err)
 		}
 
 		var (
@@ -59,21 +60,24 @@ func genericLineMigrator(
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when truncating ", hypha.TextFilePath(), ": ", err.Error())
+				slog.Error("Failed to truncate text part file", "path", hypha.TextFilePath(), "err", err)
+				os.Exit(1)
 			}
 
 			_, err = file.Seek(0, 0)
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when seeking in  ", hypha.TextFilePath(), ": ", err.Error())
+				slog.Error("Failed to seek in text part file", "path", hypha.TextFilePath(), "err", err)
+				os.Exit(1)
 			}
 
 			_, err = file.WriteString(newText)
 			if err != nil {
 				hop.WithErrAbort(err)
 				_ = file.Close()
-				log.Fatal("Something went wrong when writing to ", hypha.TextFilePath(), ": ", err.Error())
+				slog.Error("Failed to write to text part file", "path", hypha.TextFilePath(), "err", err)
+				os.Exit(1)
 			}
 		}
 		_ = file.Close()
@@ -85,8 +89,8 @@ func genericLineMigrator(
 	}
 
 	if hop.WithFiles(mycoFiles...).Apply().HasErrors() {
-		log.Fatal(commitErrorMessage, hop.FirstErrorText())
+		slog.Error(commitErrorMessage + hop.FirstErrorText())
 	}
 
-	log.Println("Migrated", len(mycoFiles), "Mycomarkup documents")
+	slog.Info("Migrated Mycomarkup documents", "n", len(mycoFiles))
 }
