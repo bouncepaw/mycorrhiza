@@ -1,30 +1,27 @@
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 //
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=tree
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=auth
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=hypview
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/backlinks"
-	"github.com/bouncepaw/mycorrhiza/categories"
-	"github.com/bouncepaw/mycorrhiza/interwiki"
-	"github.com/bouncepaw/mycorrhiza/migration"
-	"github.com/bouncepaw/mycorrhiza/version"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"log"
 	"os"
 
-	"github.com/bouncepaw/mycorrhiza/cfg"
-	"github.com/bouncepaw/mycorrhiza/files"
 	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/hyphae"
-	"github.com/bouncepaw/mycorrhiza/shroom"
-	"github.com/bouncepaw/mycorrhiza/static"
-	"github.com/bouncepaw/mycorrhiza/user"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/migration"
+	"github.com/bouncepaw/mycorrhiza/internal/shroom"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/version"
+	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/web"
+	"github.com/bouncepaw/mycorrhiza/web/static"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func main() {

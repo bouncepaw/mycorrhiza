@@ -2,7 +2,7 @@ package interwiki
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"

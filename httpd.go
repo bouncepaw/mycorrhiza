@@ -1,14 +1,13 @@
 package main
 
 import (
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/bouncepaw/mycorrhiza/cfg"
 )
 
 func serveHTTP(handler http.Handler) {

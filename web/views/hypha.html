@@ -1,0 +1,160 @@
+{{define "title"}}{{.HyphaName | beautifulName}}{{end}}
+
+{{define "body"}}
+    <main class="main-width">
+        <section id="hypha">
+            {{if .Meta.U.CanProceed "edit"}}
+                <div class="btn btn_navititle">
+                    <a class="btn__link_navititle" href="/edit/{{.HyphaName}}">
+                        {{block "edit text" .}}Edit text{{end}}</a></div>
+            {{end}}
+
+            {{if .IsMyProfile}}
+                <div class="btn btn_navititle">
+                    <a class="btn__link_navititle" href="/logout">
+                        {{block "log out" .}}Log out{{end}}</a></div>
+                {{if eq .Meta.U.Group "admin"}}
+                    <div class="btn btn_navititle">
+                        <a class="btn__link_navititle" href="/admin">
+                            {{block "admin panel" .}}Admin panel{{end}}</a></div>
+                {{end}}
+            {{end}}
+
+            {{.NaviTitle}}
+
+            {{if .Contents}}{{.Contents}}{{else}}{{template "empty hypha card" .}}{{end}}
+        </section>
+
+        <section class="prevnext">
+            {{if .PrevHyphaName}}
+            <a class="prevnext__el prevnext__prev" href="/hypha/{{.PrevHyphaName}}" rel="prev">
+                ← {{.PrevHyphaName | base | beautifulName}}</a>
+            {{end}}
+            {{if .NextHyphaName}}
+            <a class="prevnext__el prevnext__next" href="/hypha/{{.NextHyphaName}}" rel="next">
+                {{.NextHyphaName | base | beautifulName}} →</a>
+            {{end}}
+        </section>
+
+        {{ if .SubhyphaeHTML }}
+            <section class="subhyphae">
+                <h2 class="subhyphae__title">{{block "subhyphae" .}}Subhyphae{{end}}</h2>
+                <nav class="subhyphae__nav">
+                    <ul class="subhyphae__list">
+                        {{.SubhyphaeHTML}}
+                    </ul>
+                </nav>
+            </section>
+        {{end}}
+
+        <section id="hypha-bottom">
+            <nav class="hypha-info">
+                <ul class="hypha-info__list">
+                    <li class="hypha-info__entry hypha-info__entry_history">
+                        <a class="hypha-info__link" href="/history/{{.HyphaName}}">
+                            {{block "history" .}}View history{{end}}</a></li>
+
+                    <li class="hypha-info__entry hypha-info__entry_rename">
+                        <a class="hypha-info__link" href="/rename/{{.HyphaName}}">
+                            {{block "rename" .}}Rename{{end}}</a></li>
+
+                    <li class="hypha-info__entry hypha-info__entry_delete">
+                        <a class="hypha-info__link" href="/delete/{{.HyphaName}}">
+                            {{block "delete" .}}Delete{{end}}</a></li>
+
+                    <li class="hypha-info__entry hypha-info__entry_text">
+                        <a class="hypha-info__link" href="/text/{{.HyphaName}}">
+                            {{block "view markup" .}}View markup{{end}}</a></li>
+
+                    <li class="hypha-info__entry hypha-info__entry_media">
+                        <a class="hypha-info__link" href="/media/{{.HyphaName}}">
+                            {{- if .IsMediaHypha -}}
+                                {{block "manage media" .}}Manage media{{end}}
+                            {{- else -}}
+                                {{block "turn to media" .}}Turn to media{{end}}
+                            {{- end}}</a></li>
+
+                    <li class="hypha-info__entry hypha-info__entry_backlinks">
+                        <a class="hypha-info__link" href="/backlinks/{{.HyphaName}}">
+                            {{block "backlinks" .}}backlink{{if gt .BacklinkCount 1}}s{{end}}{{end}}</a></li>
+                </ul>
+            </nav>
+        </section>
+    </main>
+    {{template "category card" .}}
+    {{range .ViewScripts}}<script src="{{.}}">
+    </script>{{end}}
+{{end}}
+
+{{define "category card"}}
+    {{if or .GivenPermissionToModify (len .Categories)}}
+        {{$hyphaName := .HyphaName}}
+        {{$givenPermission := .GivenPermissionToModify}}
+        <aside class="layout-card categories-card">
+            <h2 class="layout-card__title">{{block `categories` .}}Categories{{end}}</h2>
+            <ul class="categories-card__entries">
+                {{range .Categories}}
+                    <li class="categories-card__entry">
+                        <a class="categories-card__link" href="/category/{{.}}">{{beautifulName .}}</a>
+                        <form method="POST" action="/remove-from-category" class="categories-card__remove-form">
+                            <input type="hidden" name="cat" value="{{.}}">
+                            <input type="hidden" name="hypha" value="{{$hyphaName}}">
+                            <input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
+                            {{if $givenPermission}}
+                                <input type="submit" value="x" class="btn categories-card__btn"
+                                       title="{{block `remove from category title` .}}Remove the hypha from this category{{end}}">
+                            {{end}}
+                        </form>
+                    </li>
+                {{end}}
+                {{if .GivenPermissionToModify}}
+                    <li class="categories-card__entry categories-card__add-to-cat">
+                        <form method="POST" action="/add-to-category" class="categories-card__add-form js-add-cat-form">
+                            <input type="text" name="cat" id="_cat-input" class="js-add-cat-name" autocomplete="off"
+                                   placeholder="{{block `placeholder` .}}Category n&zwnj;ame...{{end}}">
+                            <datalist class="js-add-cat-list" id="cat-name-options"></datalist>
+                            <input type="hidden" name="hypha" value="{{$hyphaName}}">
+                            <input type="hidden" name="redirect-to" value="/hypha/{{$hyphaName}}">
+                            <input type="submit" class="btn categories-card__btn" value="+"
+                                   title="{{block `add to category title` .}}Add the hypha to this category{{end}}">
+                        </form>
+                    </li>
+                {{end}}
+            </ul>
+        </aside>
+    {{end}}
+{{end}}
+
+
+{{define "empty hypha card"}}
+    <section class="non-existent-hypha">
+        <h2 class="non-existent-hypha__title">{{block "empty heading" .}}This hypha does not exist{{end}}</h2>
+        {{if and .UseAuth (eq .Meta.U.Group "anon")}}
+            <p>{{block "empty no rights" .}}You are not authorized to create new hyphae. Here is what you can do:{{end}}</p>
+            <ul>
+                <li><a href="/login">{{block "empty log in" .}}Log in to your account, if you have one{{end}}</a></li>
+                {{if .AllowRegistration}}<li><a href="/register">{{block "empty register" .}}Register a new account{{end}}</a></li>{{end}}
+            </ul>
+        {{else}}
+            <div class="non-existent-hypha__ways">
+                <section class="non-existent-hypha__way">
+                    <h3 class="non-existent-hypha__subtitle">📝 {{block "write a text" .}}Write a text{{end}}</h3>
+                    <p>{{block "write a text tip" .}}Write a note, a diary, an article, a story or anything textual using <a href="/help/en/mycomarkup" class="shy-link">Mycomarkup</a>. Full history of edits to the document will be saved.{{end}}</p>
+                    <p>{{block "write a text writing conventions" .}}Make sure to follow this wiki's writing conventions if there are any.{{end}}</p>
+                    <a class="btn btn_accent stick-to-bottom" href="/edit/{{.HyphaName}}">{{block "write a text btn" .}}Create{{end}}</a>
+                </section>
+
+                <section class="non-existent-hypha__way">
+                    <h3 class="non-existent-hypha__subtitle">🖼 {{block "upload a media" .}}Upload a media{{end}}</h3>
+                    <p>{{block "upload a media tip" .}}Upload a picture, a video or an audio. Most common formats can be viewed from the browser, others can only be downloaded and viewed locally. You can write a description for the media later.{{end}}</p>
+                    <form action="/upload-binary/{{.HyphaName}}"
+                          method="post" enctype="multipart/form-data"
+                          class="upload-binary">
+                        <input type="file" id="upload-binary__input" name="binary">
+                        <button type="submit" class="btn stick-to-bottom" value="Upload">{{block "upload a media btn" .}}Upload{{end}}</button>
+                    </form>
+                </section>
+            </div>
+        {{end}}
+    </section>
+{{end}}
