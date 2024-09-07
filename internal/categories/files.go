@@ -2,9 +2,9 @@ package categories
 
 import (
 	"encoding/json"
-	"golang.org/x/exp/slices"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"sync"
 
