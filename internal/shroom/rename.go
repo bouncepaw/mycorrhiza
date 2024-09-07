@@ -3,36 +3,36 @@ package shroom
 import (
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
-	"github.com/bouncepaw/mycorrhiza/internal/categories"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"github.com/bouncepaw/mycorrhiza/internal/files"
-	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
+	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // Rename renames the old hypha to the new name and makes a history record about that. Call if and only if the user has the permission to rename.
-func Rename(oldHypha hyphae2.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *user.User) error {
+func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *user.User) error {
 	// * bouncepaw hates this function and related renaming functions
 	if newName == "" {
 		rejectRenameLog(oldHypha, u, "no new name given")
 		return errors.New("ui.rename_noname_tip")
 	}
 
-	if !hyphae2.IsValidName(newName) {
+	if !hyphae.IsValidName(newName) {
 		rejectRenameLog(oldHypha, u, fmt.Sprintf("new name ‘%s’ invalid", newName))
 		return errors.New("ui.rename_badname_tip") // FIXME: There is a bug related to this.
 	}
 
-	switch targetHypha := hyphae2.ByName(newName); targetHypha.(type) {
-	case hyphae2.ExistingHypha:
+	switch targetHypha := hyphae.ByName(newName); targetHypha.(type) {
+	case hyphae.ExistingHypha:
 		if targetHypha.CanonicalName() == oldHypha.CanonicalName() {
 			return nil
 		}
@@ -81,7 +81,7 @@ func Rename(oldHypha hyphae2.ExistingHypha, newName string, recursive bool, leav
 			oldName = h.CanonicalName()
 			newName = re.ReplaceAllString(oldName, newName)
 		)
-		hyphae2.RenameHyphaTo(h, newName, replaceName)
+		hyphae.RenameHyphaTo(h, newName, replaceName)
 		backlinks.UpdateBacklinksAfterRename(h, oldName)
 		categories.RenameHyphaInAllCategories(oldName, newName)
 		if leaveRedirections {
@@ -104,12 +104,12 @@ const redirectionTemplate = `=> %[1]s | 👁️➡️ %[2]s
 func leaveRedirection(oldName, newName string, hop *history.Op) error {
 	var (
 		text       = fmt.Sprintf(redirectionTemplate, newName, util.BeautifulName(newName))
-		emptyHypha = hyphae2.ByName(oldName)
+		emptyHypha = hyphae.ByName(oldName)
 	)
 	switch emptyHypha := emptyHypha.(type) {
-	case *hyphae2.EmptyHypha:
-		h := hyphae2.ExtendEmptyToTextual(emptyHypha, filepath.Join(files.HyphaeDir(), oldName+".myco"))
-		hyphae2.Insert(h)
+	case *hyphae.EmptyHypha:
+		h := hyphae.ExtendEmptyToTextual(emptyHypha, filepath.Join(files.HyphaeDir(), oldName+".myco"))
+		hyphae.Insert(h)
 		categories.AddHyphaToCategory(oldName, cfg.RedirectionCategory)
 		defer backlinks.UpdateBacklinksAfterEdit(h, "")
 		return writeTextToDisk(h, []byte(text), hop)
@@ -118,15 +118,15 @@ func leaveRedirection(oldName, newName string, hop *history.Op) error {
 	}
 }
 
-func findHyphaeToRename(superhypha hyphae2.ExistingHypha, recursive bool) []hyphae2.ExistingHypha {
-	hyphaList := []hyphae2.ExistingHypha{superhypha}
+func findHyphaeToRename(superhypha hyphae.ExistingHypha, recursive bool) []hyphae.ExistingHypha {
+	hyphaList := []hyphae.ExistingHypha{superhypha}
 	if recursive {
-		hyphaList = append(hyphaList, hyphae2.Subhyphae(superhypha)...)
+		hyphaList = append(hyphaList, hyphae.Subhyphae(superhypha)...)
 	}
 	return hyphaList
 }
 
-func renamingPairs(hyphaeToRename []hyphae2.ExistingHypha, replaceName func(string) string) (map[string]string, error) {
+func renamingPairs(hyphaeToRename []hyphae.ExistingHypha, replaceName func(string) string) (map[string]string, error) {
 	var (
 		renameMap = make(map[string]string)
 		newNames  = make([]string, len(hyphaeToRename))
@@ -138,12 +138,12 @@ func renamingPairs(hyphaeToRename []hyphae2.ExistingHypha, replaceName func(stri
 			renameMap[h.TextFilePath()] = replaceName(h.TextFilePath())
 		}
 		switch h := h.(type) {
-		case *hyphae2.MediaHypha:
+		case *hyphae.MediaHypha:
 			renameMap[h.MediaFilePath()] = replaceName(h.MediaFilePath())
 		}
 		h.Unlock()
 	}
-	if firstFailure, ok := hyphae2.AreFreeNames(newNames...); !ok {
+	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
 		return nil, errors.New("Hypha " + firstFailure + " already exists")
 	}
 	return renameMap, nil

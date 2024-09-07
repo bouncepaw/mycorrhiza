@@ -3,10 +3,10 @@ package user
 import (
 	"encoding/json"
 	"errors"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"log"
+	"log/slog"
 	"os"
 
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
@@ -32,19 +32,23 @@ func usersFromFile() []*User {
 		return users
 	}
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to read users.json", "err", err)
+		os.Exit(1)
 	}
+
 	err = json.Unmarshal(contents, &users)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to unmarshal users.json contents", "err", err)
+		os.Exit(1)
 	}
+
 	for _, u := range users {
 		u.Name = util.CanonicalName(u.Name)
 		if u.Source == "" {
 			u.Source = "local"
 		}
 	}
-	log.Println("Found", len(users), "users")
+	slog.Info("Indexed users", "n", len(users))
 	return users
 }
 
@@ -63,20 +67,22 @@ func readTokensToUsers() {
 		return
 	}
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to read tokens.json", "err", err)
+		os.Exit(1)
 	}
 
 	var tmp map[string]string
 	err = json.Unmarshal(contents, &tmp)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to unmarshal tokens.json contents", "err", err)
+		os.Exit(1)
 	}
 
 	for token, username := range tmp {
 		tokens.Store(token, username)
 		// commenceSession(username, token)
 	}
-	log.Println("Found", len(tmp), "active sessions")
+	slog.Info("Indexed active sessions", "n", len(tmp))
 }
 
 // SaveUserDatabase stores current user credentials into JSON file by configured path.
@@ -94,13 +100,13 @@ func dumpUserCredentials() error {
 
 	blob, err := json.MarshalIndent(userList, "", "\t")
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to marshal users.json", "err", err)
 		return err
 	}
 
 	err = os.WriteFile(files.UserCredentialsJSON(), blob, 0666)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to write users.json", "err", err)
 		return err
 	}
 
@@ -119,11 +125,11 @@ func dumpTokens() {
 
 	blob, err := json.MarshalIndent(tmp, "", "\t")
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to marshal tokens.json", "err", err)
 		return
 	}
 	err = os.WriteFile(files.TokensJSON(), blob, 0666)
 	if err != nil {
-		log.Println("an error occurred in dumpTokens function:", err)
+		slog.Error("Failed to write tokens.json", "err", err)
 	}
 }

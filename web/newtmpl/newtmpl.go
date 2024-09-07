@@ -3,11 +3,12 @@ package newtmpl
 import (
 	"embed"
 	"fmt"
+	"html/template"
+	"strings"
+
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"html/template"
-	"strings"
 )
 
 //go:embed *.html

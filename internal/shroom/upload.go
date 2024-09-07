@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -201,7 +201,7 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User
 			if err := history.Rename(prevFilePath, uploadedFilePath); err != nil {
 				return err
 			}
-			log.Printf("Move ‘%s’ to ‘%s’\n", prevFilePath, uploadedFilePath)
+			slog.Info("Move file", "from", prevFilePath, "to", uploadedFilePath)
 			h.SetMediaFilePath(uploadedFilePath)
 		}
 	}

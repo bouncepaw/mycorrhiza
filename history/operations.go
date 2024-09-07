@@ -4,11 +4,11 @@ package history
 // 	Things related to writing history.
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 

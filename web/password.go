@@ -2,12 +2,13 @@ package web
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 	"mime"
 	"net/http"
 	"reflect"
+
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {

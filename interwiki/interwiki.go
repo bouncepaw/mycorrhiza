@@ -4,29 +4,36 @@ package interwiki
 import (
 	"encoding/json"
 	"errors"
-	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
-	"github.com/bouncepaw/mycorrhiza/internal/files"
-	"github.com/bouncepaw/mycorrhiza/util"
-	"log"
+	"log/slog"
 	"os"
 	"sync"
+
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/util"
+
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
 )
 
-func Init() {
-	var (
-		record, err = readInterwiki()
-	)
+func Init() error {
+	record, err := readInterwiki()
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to read interwiki", "err", err)
+		return err
 	}
+
 	for _, wiki := range record {
 		wiki := wiki // This line is required
-		wiki.canonize()
+		if err := wiki.canonize(); err != nil {
+			return err
+		}
 		if err := addEntry(&wiki); err != nil {
-			log.Fatalln(err.Error())
+			slog.Error("Failed to add interwiki entry", "err", err)
+			return err
 		}
 	}
-	log.Printf("Loaded %d interwiki entries\n", len(listOfEntries))
+
+	slog.Info("Indexed interwiki map", "n", len(listOfEntries))
+	return nil
 }
 
 func dropEmptyStrings(ss []string) (clean []string) {
@@ -100,7 +107,6 @@ func deleteEntry(wiki *Wiki) {
 		for i, w := range listOfEntries {
 			i, w := i, w
 			if w.Name == wiki.Name {
-				log.Println("It came to delete")
 				// Drop ith element.
 				listOfEntries[i] = listOfEntries[len(listOfEntries)-1]
 				listOfEntries = listOfEntries[:len(listOfEntries)-1]
@@ -113,21 +119,22 @@ func deleteEntry(wiki *Wiki) {
 	wg.Wait()
 }
 
+// TODO: There is something clearly wrong with error-returning in this function.
 func addEntry(wiki *Wiki) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 	wiki.Aliases = dropEmptyStrings(wiki.Aliases)
+
 	var (
 		names    = append(wiki.Aliases, wiki.Name)
 		ok, name = areNamesFree(names)
 	)
-	if !ok {
-		log.Printf("There are multiple uses of the same name ‘%s’\n", name)
+	switch {
+	case !ok:
+		slog.Error("There are multiple uses of the same name", "name", name)
 		return errors.New(name)
-	}
-	if len(names) == 0 {
-		log.Println("No names passed for a new interwiki entry")
-		// There is something clearly wrong with error-returning in this function.
+	case len(names) == 0:
+		slog.Error("No names passed for a new interwiki entry")
 		return errors.New("")
 	}
 
@@ -176,10 +183,13 @@ func readInterwiki() ([]Wiki, error) {
 func saveInterwikiJson() {
 	// Trust me, wiki crashing when an admin takes an administrative action totally makes sense.
 	if data, err := json.MarshalIndent(listOfEntries, "", "\t"); err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to marshal interwiki entries", "err", err)
+		os.Exit(1)
 	} else if err = os.WriteFile(files.InterwikiJSON(), data, 0666); err != nil {
-		log.Fatalln(err)
-	} else {
-		log.Println("Saved interwiki.json")
+		slog.Error("Failed to write interwiki.json", "err", err)
+		os.Exit(1)
 	}
+
+	slog.Info("Saved interwiki.json")
+
 }

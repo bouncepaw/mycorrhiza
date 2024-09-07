@@ -2,8 +2,8 @@
 package backlinks
 
 import (
-	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	"log"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"log/slog"
 	"os"
 	"sort"
 
@@ -14,7 +14,7 @@ import (
 func yieldHyphaBacklinks(hyphaName string) <-chan string {
 	hyphaName = util.CanonicalName(hyphaName)
 	out := make(chan string)
-	sorted := hyphae2.PathographicSort(out)
+	sorted := hyphae.PathographicSort(out)
 	go func() {
 		backlinks, exists := backlinkIndex[hyphaName]
 		if exists {
@@ -43,7 +43,7 @@ var backlinkIndex = make(map[string]linkSet)
 // IndexBacklinks traverses all text hyphae, extracts links from them and forms an initial index. Call it when indexing and reindexing hyphae.
 func IndexBacklinks() {
 	// It is safe to ignore the mutex, because there is only one worker.
-	for h := range hyphae2.FilterHyphaeWithText(hyphae2.YieldExistingHyphae()) {
+	for h := range hyphae.FilterHyphaeWithText(hyphae.YieldExistingHyphae()) {
 		foundLinks := extractHyphaLinksFromContent(h.CanonicalName(), fetchText(h))
 		for _, link := range foundLinks {
 			if _, exists := backlinkIndex[link]; !exists {
@@ -72,7 +72,7 @@ func BacklinksFor(hyphaName string) []string {
 
 func Orphans() []string {
 	var orphans []string
-	for h := range hyphae2.YieldExistingHyphae() {
+	for h := range hyphae.YieldExistingHyphae() {
 		if BacklinksCount(h.CanonicalName()) == 0 {
 			orphans = append(orphans, h.CanonicalName())
 		}
@@ -92,14 +92,14 @@ func toLinkSet(xs []string) linkSet {
 	return result
 }
 
-func fetchText(h hyphae2.Hypha) string {
+func fetchText(h hyphae.Hypha) string {
 	var path string
 	switch h := h.(type) {
-	case *hyphae2.EmptyHypha:
+	case *hyphae.EmptyHypha:
 		return ""
-	case *hyphae2.TextualHypha:
+	case *hyphae.TextualHypha:
 		path = h.TextFilePath()
-	case *hyphae2.MediaHypha:
+	case *hyphae.MediaHypha:
 		if !h.HasTextFile() {
 			return ""
 		}
@@ -108,7 +108,7 @@ func fetchText(h hyphae2.Hypha) string {
 
 	text, err := os.ReadFile(path)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to read file", "path", path, "err", err, "hyphaName", h.CanonicalName())
 		return ""
 	}
 	return string(text)

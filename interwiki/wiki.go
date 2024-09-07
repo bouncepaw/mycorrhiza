@@ -1,9 +1,11 @@
 package interwiki
 
 import (
+	"errors"
 	"fmt"
+	"log/slog"
+
 	"github.com/bouncepaw/mycorrhiza/util"
-	"log"
 )
 
 // WikiEngine is an enumeration of supported interwiki targets.
@@ -47,14 +49,20 @@ type Wiki struct {
 	Engine WikiEngine `json:"engine"`
 }
 
-func (w *Wiki) canonize() {
+func (w *Wiki) canonize() error {
 	switch {
 	case w.Name == "":
-		log.Fatalln("Cannot have a wiki in the interwiki map with no name")
+		slog.Error("A site in the interwiki map has no name")
+		return errors.New("site with no name")
 	case w.URL == "":
-		log.Fatalf("Wiki ‘%s’ has no URL\n", w.Name)
+		slog.Error("Site in the interwiki map has no URL", "name", w.Name)
+		return errors.New("site with no URL")
 	case !w.Engine.Valid():
-		log.Fatalf("Unknown engine ‘%s’ for wiki ‘%s’\n", w.Engine, w.Name)
+		slog.Error("Site in the interwiki map has an unknown engine",
+			"siteName", w.Name,
+			"engine", w.Engine,
+		)
+		return errors.New("unknown engine")
 	}
 
 	w.Name = util.CanonicalName(w.Name)
@@ -83,4 +91,6 @@ func (w *Wiki) canonize() {
 			w.ImgSrcFormat = fmt.Sprintf("%s/{NAME}", w.URL)
 		}
 	}
+
+	return nil
 }

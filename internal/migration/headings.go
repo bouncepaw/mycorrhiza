@@ -1,11 +1,13 @@
 package migration
 
 import (
-	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
-	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"io/ioutil"
-	"log"
+	"log/slog"
 	"os"
+
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
 )
 
 var headingMarkerPath string
@@ -29,7 +31,8 @@ func shouldMigrateHeadings() bool {
 		return true
 	}
 	if err != nil {
-		log.Fatalln("When checking if heading migration is needed:", err.Error())
+		slog.Error("Failed to check if heading migration is needed", "err", err)
+		os.Exit(1)
 	}
 	_ = file.Close()
 	return false
@@ -42,6 +45,7 @@ func createHeadingMarker() {
 		0766,
 	)
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to create heading migration marker", "err", err)
+		os.Exit(1)
 	}
 }

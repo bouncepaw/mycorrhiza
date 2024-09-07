@@ -2,7 +2,17 @@ package web
 
 import (
 	"fmt"
-	"git.sr.ht/~bouncepaw/mycomarkup/v5"
+	"html/template"
+	"io"
+	"log/slog"
+	"net/http"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
@@ -12,26 +22,15 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"github.com/bouncepaw/mycorrhiza/internal/tree"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
+	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"html/template"
-	"io"
-	"log"
-	"log/slog"
-	"net/http"
-	"os"
-	"path"
-	"path/filepath"
-	"strings"
-	"time"
 
-	"github.com/gorilla/mux"
-
+	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
-	"github.com/bouncepaw/mycorrhiza/history"
-	"github.com/bouncepaw/mycorrhiza/l18n"
-	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/gorilla/mux"
 )
 
 func initReaders(r *mux.Router) {
@@ -109,6 +108,7 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 		h         = hyphae.ByName(hyphaName)
 	)
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha:
 		var mycoFilePath = filepath.Join(files.HyphaeDir(), h.CanonicalName()+".myco")
@@ -116,27 +116,32 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
-			log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+			slog.Error("Failed to serve text part",
+				"err", err, "hyphaName", hyphaName, "revHash", revHash)
 			_, _ = io.WriteString(w, "Error: "+err.Error())
 			return
 		}
-		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, mycoFilePath, revHash)
+		slog.Info("Serving text part",
+			"hyphaName", hyphaName, "revHash", revHash, "mycoFilePath", mycoFilePath)
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(w, textContents)
+
 	case hyphae.ExistingHypha:
 		if !h.HasTextFile() {
-			log.Printf(`Media hypha ‘%s’ has no text`)
+			slog.Info("Media hypha has no text part; cannot serve it",
+				"hyphaName", h.CanonicalName())
 			w.WriteHeader(http.StatusNotFound)
 		}
 		var textContents, err = history.FileAtRevision(h.TextFilePath(), revHash)
 
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
-			log.Printf("While serving text of ‘%s’ at revision ‘%s’: %s\n", hyphaName, revHash, err.Error())
+			slog.Error("Failed to serve text part",
+				"err", err, "hyphaName", h.CanonicalName(), "revHash", revHash)
 			_, _ = io.WriteString(w, "Error: "+err.Error())
 			return
 		}
-		log.Printf("Serving text of ‘%s’ from ‘%s’ at revision ‘%s’\n", hyphaName, h.TextFilePath(), revHash)
+		slog.Info("Serving text part", "hyphaName", h.CanonicalName(), "revHash", revHash)
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(w, textContents)
 	}
@@ -188,7 +193,7 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := util.HyphaNameFromRq(rq, "text")
 	switch h := hyphae.ByName(hyphaName).(type) {
 	case hyphae.ExistingHypha:
-		log.Println("Serving", h.TextFilePath())
+		slog.Info("Serving text part", "path", h.TextFilePath())
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		http.ServeFile(w, rq, h.TextFilePath())
 	}
@@ -201,9 +206,10 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 	switch h := hyphae.ByName(hyphaName).(type) {
 	case *hyphae.EmptyHypha, *hyphae.TextualHypha:
 		w.WriteHeader(http.StatusNotFound)
-		log.Printf("Textual hypha ‘%s’ has no media, cannot serve\n", h.CanonicalName())
+		slog.Info("Textual hypha has no media file; cannot serve it",
+			"hyphaName", h.CanonicalName())
 	case *hyphae.MediaHypha:
-		log.Println("Serving", h.MediaFilePath())
+		slog.Info("Serving media file", "path", h.MediaFilePath())
 		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.MediaFilePath())))
 		http.ServeFile(w, rq, h.MediaFilePath())
 	}

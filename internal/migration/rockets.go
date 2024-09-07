@@ -1,11 +1,13 @@
 package migration
 
 import (
-	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
-	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"io/ioutil"
-	"log"
+	"log/slog"
 	"os"
+
+	"github.com/bouncepaw/mycorrhiza/internal/files"
+
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/tools"
 )
 
 var rocketMarkerPath string
@@ -33,7 +35,8 @@ func shouldMigrateRockets() bool {
 		return true
 	}
 	if err != nil {
-		log.Fatalln("When checking if rocket migration is needed:", err.Error())
+		slog.Error("Failed to check if rocket migration is needed", "err", err)
+		os.Exit(1)
 	}
 	_ = file.Close()
 	return false
@@ -46,6 +49,7 @@ func createRocketLinkMarker() {
 		0766,
 	)
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to create rocket link migration marker")
+		os.Exit(1)
 	}
 }

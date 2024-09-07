@@ -1,11 +1,12 @@
 package viewutil
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"html/template"
 	"io"
 	"net/http"
+
+	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/l18n"
 )
 
 // Meta is a bundle of common stuffs used by views, templates.

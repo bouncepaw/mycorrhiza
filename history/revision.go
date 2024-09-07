@@ -2,7 +2,8 @@ package history
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,9 +12,11 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 )
 
-// Revision represents a revision, duh. Hash is usually short. Username is extracted from email.
+// Revision represents a revision of a hypha.
 type Revision struct {
-	Hash              string
+	// Hash is usually short.
+	Hash string
+	// Username is extracted from email.
 	Username          string
 	Time              time.Time
 	Message           string
@@ -71,7 +74,9 @@ func (stream *recentChangesStream) next(n int) []Revision {
 
 	res, err := gitLog(args...)
 	if err != nil {
-		log.Fatal(err)
+		// TODO: return error
+		slog.Error("Failed to git log", "err", err)
+		os.Exit(1)
 	}
 	if len(res) != 0 {
 		stream.currHash = res[len(res)-1].Hash
@@ -103,14 +108,14 @@ func (stream recentChangesStream) iterator() func() (Revision, bool) {
 func RecentChanges(n int) []Revision {
 	stream := newRecentChangesStream()
 	revs := stream.next(n)
-	log.Printf("Found %d recent changes", len(revs))
+	slog.Info("Found recent changes", "n", len(revs))
 	return revs
 }
 
 // Revisions returns slice of revisions for the given hypha name, ordered most recent first.
 func Revisions(hyphaName string) ([]Revision, error) {
 	revs, err := gitLog("--", hyphaName+".*")
-	log.Printf("Found %d revisions for ‘%s’\n", len(revs), hyphaName)
+	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 	return revs, err
 }
 

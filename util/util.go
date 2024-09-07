@@ -3,7 +3,7 @@ package util
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -82,7 +82,7 @@ func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 			return CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
 		}
 	}
-	log.Println("HyphaNameFromRq: this request is invalid, fall back to home hypha")
+	slog.Info("HyphaNameFromRq: this request is invalid, fall back to home hypha")
 	return cfg.HomeHypha
 }
 

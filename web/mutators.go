@@ -1,23 +1,22 @@
 package web
 
 import (
-	"git.sr.ht/~bouncepaw/mycomarkup/v5"
+	"html/template"
+	"log/slog"
+	"net/http"
+
+	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"html/template"
-	"log"
-	"net/http"
-
-	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
-	"github.com/bouncepaw/mycorrhiza/hypview"
-	"github.com/bouncepaw/mycorrhiza/mycoopts"
-
-	"github.com/gorilla/mux"
-
 	"github.com/bouncepaw/mycorrhiza/l18n"
+	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+
+	"git.sr.ht/~bouncepaw/mycomarkup/v5"
+	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
+	"github.com/gorilla/mux"
 )
 
 func initMutators(r *mux.Router) {
@@ -64,14 +63,16 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if !u.CanProceed("delete") {
-		log.Printf("%s has no rights to delete ‘%s’\n", u.Name, h.CanonicalName())
+		slog.Info("No rights to delete hypha",
+			"username", u.Name, "hyphaName", h.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
 		return
 	}
 
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
-		log.Printf("%s tries to delete empty hypha ‘%s’\n", u.Name, h.CanonicalName())
+		slog.Info("Trying to delete empty hyphae",
+			"username", u.Name, "hyphaName", h.CanonicalName())
 		// TODO: localize
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
 		return
@@ -87,7 +88,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if err := shroom.Delete(u, h.(hyphae.ExistingHypha)); err != nil {
-		log.Println(err)
+		slog.Error("Failed to delete hypha", "err", err)
 		viewutil.HttpErr(meta, http.StatusInternalServerError, h.CanonicalName(), err.Error())
 		return
 	}
@@ -105,13 +106,15 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
-		log.Printf("%s tries to rename empty hypha ‘%s’", u.Name, h.CanonicalName())
+		slog.Info("Trying to rename empty hypha",
+			"username", u.Name, "hyphaName", h.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha") // TODO: localize
 		return
 	}
 
 	if !u.CanProceed("rename") {
-		log.Printf("%s has no rights to rename ‘%s’\n", u.Name, h.CanonicalName())
+		slog.Info("No rights to rename hypha",
+			"username", u.Name, "hyphaName", h.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
 		return
 	}
@@ -129,7 +132,8 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if err := shroom.Rename(oldHypha, newName, recursive, leaveRedirections, u); err != nil {
-		log.Printf("%s tries to rename ‘%s’: %s", u.Name, oldHypha.CanonicalName(), err.Error())
+		slog.Error("Failed to rename hypha",
+			"err", err, "username", u.Name, "hyphaName", oldHypha.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), lc.Get(err.Error())) // TODO: localize
 		return
 	}
@@ -163,7 +167,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	default:
 		content, err = hyphae.FetchMycomarkupFile(h)
 		if err != nil {
-			log.Println(err)
+			slog.Error("Failed to fetch Mycomarkup file", "err", err)
 			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.error_text_fetch"))
 			return
 		}

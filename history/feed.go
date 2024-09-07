@@ -3,10 +3,11 @@ package history
 import (
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 	"github.com/gorilla/feeds"
 )

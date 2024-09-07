@@ -1,11 +1,11 @@
 package hyphae
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
-	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
+
+	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 )
 
 // Index finds all hypha files in the full `path` and saves them to the hypha storage.
@@ -51,7 +51,7 @@ func Index(path string) {
 			}
 		}
 	}
-	log.Println("Indexed", Count(), "hyphae")
+	slog.Info("Indexed hyphae", "n", Count())
 }
 
 // indexHelper finds all hypha files in the full `path` and sends them to the
@@ -60,7 +60,8 @@ func Index(path string) {
 func indexHelper(path string, nestLevel uint, ch chan ExistingHypha) {
 	nodes, err := os.ReadDir(path)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to read directory", "path", path, "err", err)
+		os.Exit(1)
 	}
 
 	for _, node := range nodes {

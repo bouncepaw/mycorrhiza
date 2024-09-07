@@ -2,6 +2,7 @@ package misc
 
 import (
 	"embed"
+
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )

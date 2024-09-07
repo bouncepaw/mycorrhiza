@@ -2,13 +2,14 @@ package tree
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	"github.com/bouncepaw/mycorrhiza/util"
 	"html/template"
 	"io"
 	"path"
 	"sort"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // Tree returns the subhypha matrix as HTML and names of the next and previous hyphae (or empty strings).
