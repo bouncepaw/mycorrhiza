@@ -1,14 +1,13 @@
 package web
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"sort"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -66,7 +65,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 // There is one hypha from the hypha field. Then there are n hyphae in fields prefixed by _. It seems like I have to do it myself. Compare with PHP which handles it for you. I hope I am doing this wrong.
 func hyphaeFromRequest(rq *http.Request) (canonicalNames []string) {
 	if err := rq.ParseForm(); err != nil {
-		log.Println(err)
+		slog.Info("Failed to parse form", "err", err)
 	}
 	if hyphaName := util.CanonicalName(rq.PostFormValue("hypha")); hyphaName != "" {
 		canonicalNames = append(canonicalNames, hyphaName)
@@ -100,7 +99,8 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	if len(hyphaNames) == 0 || catName == "" {
-		log.Printf("%s passed no data for removal of hyphae from a category\n", u.Name)
+		slog.Info("No data for removal of hyphae from category passed",
+			"username", u.Name, "catName", catName)
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
@@ -108,7 +108,8 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 		// TODO: Make it more effective.
 		categories.RemoveHyphaFromCategory(hyphaName, catName)
 	}
-	log.Printf("%s removed %q from category %s\n", u.Name, hyphaNames, catName)
+	slog.Info("Remove hyphae from category",
+		"username", u.Name, "catName", catName, "hyphaNames", hyphaNames)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }
 

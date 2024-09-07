@@ -2,6 +2,7 @@ package web
 
 import (
 	"embed"
+
 	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )

@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"mime"
 	"net/http"
 	"os"
@@ -115,7 +115,7 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 // handlerAdminShutdown kills the wiki.
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
 	if user.CanProceed(rq, "admin/shutdown") {
-		log.Println("An admin commanded the wiki to shutdown")
+		slog.Info("An admin commanded the wiki to shutdown")
 		os.Exit(0)
 	}
 }
@@ -162,7 +162,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 			u.Group = newGroup
 			if err := user.SaveUserDatabase(); err != nil {
 				u.Group = oldGroup
-				log.Println(err)
+				slog.Info("Failed to save user database", "err", err)
 				f = f.WithError(err)
 			} else {
 				http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
@@ -241,7 +241,7 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 		if !f.HasError() {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		} else {
-			log.Println(f.Error())
+			slog.Info("Failed to delete user", "err", f.Error())
 		}
 	}
 
