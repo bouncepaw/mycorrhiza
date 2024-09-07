@@ -1,16 +1,18 @@
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"log"
+	"errors"
+	"log/slog"
 	"net"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 )
 
-func serveHTTP(handler http.Handler) {
+func serveHTTP(handler http.Handler) (err error) {
 	server := &http.Server{
 		ReadTimeout:  300 * time.Second,
 		WriteTimeout: 300 * time.Second,
@@ -19,35 +21,51 @@ func serveHTTP(handler http.Handler) {
 	}
 
 	if strings.HasPrefix(cfg.ListenAddr, "/") {
-		startUnixSocketServer(server, cfg.ListenAddr)
+		err = startUnixSocketServer(server, cfg.ListenAddr)
 	} else {
 		server.Addr = cfg.ListenAddr
-		startHTTPServer(server)
+		err = startHTTPServer(server)
 	}
+	return err
 }
 
-func startUnixSocketServer(server *http.Server, socketFile string) {
-	os.Remove(socketFile)
-
-	listener, err := net.Listen("unix", socketFile)
+func startUnixSocketServer(server *http.Server, socketPath string) error {
+	err := os.Remove(socketPath)
 	if err != nil {
-		log.Fatalf("Failed to start a server: %v", err)
-	}
-	defer listener.Close()
-
-	if err := os.Chmod(socketFile, 0666); err != nil {
-		log.Fatalf("Failed to set socket permissions: %v", err)
+		return err
 	}
 
-	log.Printf("Listening on Unix socket %s", cfg.ListenAddr)
-	if err := server.Serve(listener); err != http.ErrServerClosed {
-		log.Fatalf("Failed to start a server: %v", err)
+	listener, err := net.Listen("unix", socketPath)
+	if err != nil {
+		slog.Error("Failed to start the server", "err", err)
+		return err
 	}
+	defer func(listener net.Listener) {
+		_ = listener.Close()
+	}(listener)
+
+	if err := os.Chmod(socketPath, 0666); err != nil {
+		slog.Error("Failed to set socket permissions", "err", err)
+		return err
+	}
+
+	slog.Info("Listening Unix socket", "addr", socketPath)
+
+	if err := server.Serve(listener); !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("Failed to start the server", "err", err)
+		return err
+	}
+
+	return nil
 }
 
-func startHTTPServer(server *http.Server) {
-	log.Printf("Listening on %s", server.Addr)
-	if err := server.ListenAndServe(); err != http.ErrServerClosed {
-		log.Fatalf("Failed to start a server: %v", err)
+func startHTTPServer(server *http.Server) error {
+	slog.Info("Listening over HTTP", "addr", server.Addr)
+
+	if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("Failed to start the server", "err", err)
+		return err
 	}
+
+	return nil
 }

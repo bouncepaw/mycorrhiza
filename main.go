@@ -8,6 +8,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"log"
 	"os"
+	"syscall"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
@@ -62,5 +63,8 @@ func main() {
 		log.Println("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 
-	serveHTTP(web.Handler())
+	err := serveHTTP(web.Handler())
+	if err != nil {
+		syscall.Exit(1)
+	}
 }
