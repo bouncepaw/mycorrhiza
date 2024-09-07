@@ -1,21 +1,36 @@
 package shroom
 
 import (
-	"log"
+	"log/slog"
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 )
 
 func rejectRenameLog(h hyphae.Hypha, u *user.User, errmsg string) {
-	log.Printf("Reject rename ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
+	slog.Info("Reject rename",
+		"hyphaName", h.CanonicalName(),
+		"username", u.Name,
+		"errmsg", errmsg)
 }
+
 func rejectRemoveMediaLog(h hyphae.Hypha, u *user.User, errmsg string) {
-	log.Printf("Reject remove media ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
+	slog.Info("Reject remove media",
+		"hyphaName", h.CanonicalName(),
+		"username", u.Name,
+		"errmsg", errmsg)
 }
+
 func rejectEditLog(h hyphae.Hypha, u *user.User, errmsg string) {
-	log.Printf("Reject edit ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
+	slog.Info("Reject edit",
+		"hyphaName", h.CanonicalName(),
+		"username", u.Name,
+		"errmsg", errmsg)
 }
+
 func rejectUploadMediaLog(h hyphae.Hypha, u *user.User, errmsg string) {
-	log.Printf("Reject upload media ‘%s’ by @%s: %s\n", h.CanonicalName(), u.Name, errmsg)
+	slog.Info("Reject upload media",
+		"hyphaName", h.CanonicalName(),
+		"username", u.Name,
+		"errmsg", errmsg)
 }
