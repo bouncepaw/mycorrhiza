@@ -1,9 +1,10 @@
 package hyphae
 
 import (
-	"github.com/bouncepaw/mycorrhiza/util"
 	"os"
 	"path/filepath"
+
+	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 // ExistingHypha is not EmptyHypha. *MediaHypha and *TextualHypha implement this interface.
