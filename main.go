@@ -53,7 +53,9 @@ func main() {
 	migration.MigrateRocketsMaybe()
 	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
-	categories.Init()
+	if err := categories.Init(); err != nil {
+		os.Exit(1)
+	}
 	if err := interwiki.Init(); err != nil {
 		os.Exit(1)
 	}

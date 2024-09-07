@@ -2,7 +2,7 @@ package categories
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"os"
 	"slices"
 	"sort"
@@ -16,12 +16,11 @@ var categoryToHyphae = map[string]*categoryNode{}
 var hyphaToCategories = map[string]*hyphaNode{}
 
 // Init initializes the category system. Call it after the Structure is initialized. This function might terminate the program in case of a bad mood or filesystem faults.
-func Init() {
-	var (
-		record, err = readCategoriesFromDisk()
-	)
+func Init() error {
+	record, err := readCategoriesFromDisk()
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to read categories from disk", "err", err)
+		return err
 	}
 
 	for _, cat := range record.Categories {
@@ -46,7 +45,8 @@ func Init() {
 		}
 	}
 
-	log.Println("Found", len(categoryToHyphae), "categories")
+	slog.Info("Indexed categories", "n", len(categoryToHyphae))
+	return nil
 }
 
 type categoryNode struct {
@@ -123,9 +123,7 @@ func readCategoriesFromDisk() (catFileRecord, error) {
 var fileMutex sync.Mutex
 
 func saveToDisk() {
-	var (
-		record catFileRecord
-	)
+	var record catFileRecord
 	for name, node := range categoryToHyphae {
 		record.Categories = append(record.Categories, catRecord{
 			Name:   name,
@@ -134,13 +132,16 @@ func saveToDisk() {
 	}
 	data, err := json.MarshalIndent(record, "", "\t")
 	if err != nil {
-		log.Fatalln(err) // Better fail now, than later
+		slog.Error("Failed to marshal categories record", "err", err)
+		os.Exit(1) // Better fail now, than later
 	}
+
 	// TODO: make the data safer somehow?? Back it up before overwriting?
 	fileMutex.Lock()
 	err = os.WriteFile(files.CategoriesJSON(), data, 0666)
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("Failed to write categories.json", "err", err)
+		os.Exit(1)
 	}
 	fileMutex.Unlock()
 }
