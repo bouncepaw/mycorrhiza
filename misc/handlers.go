@@ -4,6 +4,7 @@ package misc
 import (
 	"io"
 	"log"
+	"log/slog"
 	"math/rand"
 	"mime"
 	"net/http"
@@ -133,7 +134,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 		map[string]string{},
 	))
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to write About template", "err", err)
 	}
 }
 
