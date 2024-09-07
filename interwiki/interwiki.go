@@ -32,7 +32,7 @@ func Init() error {
 		}
 	}
 
-	slog.Info("Loaded interwiki map", "entryCount", len(listOfEntries))
+	slog.Info("Indexed interwiki map", "n", len(listOfEntries))
 	return nil
 }
 

@@ -44,7 +44,7 @@ func main() {
 		os.Exit(1)
 	}
 	slog.Info("Running Mycorrhiza Wiki",
-		"version", version.Long, "wikiDir", cfg.WikiDir)
+		"version", version.Short, "wikiDir", cfg.WikiDir)
 
 	// Init the subsystems:
 	// TODO: keep all crashes in main rather than somewhere there
