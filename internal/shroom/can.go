@@ -2,23 +2,23 @@ package shroom
 
 import (
 	"errors"
-	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
-	"github.com/bouncepaw/mycorrhiza/internal/user"
 
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 )
 
 // TODO: get rid of this abomination
 
 func canFactory(
-	rejectLogger func(hyphae2.Hypha, *user.User, string),
+	rejectLogger func(hyphae.Hypha, *user.User, string),
 	action string,
-	dispatcher func(hyphae2.Hypha, *user.User, *l18n.Localizer) (string, string),
+	dispatcher func(hyphae.Hypha, *user.User, *l18n.Localizer) (string, string),
 	noRightsMsg string,
 	notExistsMsg string,
 	mustExist bool,
-) func(*user.User, hyphae2.Hypha, *l18n.Localizer) error {
-	return func(u *user.User, h hyphae2.Hypha, lc *l18n.Localizer) error {
+) func(*user.User, hyphae.Hypha, *l18n.Localizer) error {
+	return func(u *user.User, h hyphae.Hypha, lc *l18n.Localizer) error {
 		if !u.CanProceed(action) {
 			rejectLogger(h, u, "no rights")
 			return errors.New(noRightsMsg)
@@ -26,7 +26,7 @@ func canFactory(
 
 		if mustExist {
 			switch h.(type) {
-			case *hyphae2.EmptyHypha:
+			case *hyphae.EmptyHypha:
 				rejectLogger(h, u, "does not exist")
 				return errors.New(notExistsMsg)
 			}

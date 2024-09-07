@@ -2,11 +2,12 @@ package user
 
 import (
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 	"golang.org/x/crypto/bcrypt"
 )

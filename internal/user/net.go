@@ -6,16 +6,16 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"log"
 	"net/http"
 	"sort"
 	"strings"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // CanProceed returns `true` if the user in `rq` has enough rights to access `route`.

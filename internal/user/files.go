@@ -3,10 +3,10 @@ package user
 import (
 	"encoding/json"
 	"errors"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"log"
 	"os"
 
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/util"
 )

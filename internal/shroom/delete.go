@@ -2,29 +2,30 @@ package shroom
 
 import (
 	"fmt"
+
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
-	hyphae2 "github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 )
 
 // Delete deletes the hypha and makes a history record about that.
-func Delete(u *user.User, h hyphae2.ExistingHypha) error {
+func Delete(u *user.User, h hyphae.ExistingHypha) error {
 	hop := history.
 		Operation(history.TypeDeleteHypha).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).
 		WithUser(u)
 
-	originalText, _ := hyphae2.FetchMycomarkupFile(h)
+	originalText, _ := hyphae.FetchMycomarkupFile(h)
 	switch h := h.(type) {
-	case *hyphae2.MediaHypha:
+	case *hyphae.MediaHypha:
 		if h.HasTextFile() {
 			hop.WithFilesRemoved(h.MediaFilePath(), h.TextFilePath())
 		} else {
 			hop.WithFilesRemoved(h.MediaFilePath())
 		}
-	case *hyphae2.TextualHypha:
+	case *hyphae.TextualHypha:
 		hop.WithFilesRemoved(h.TextFilePath())
 	}
 	if hop.Apply().HasErrors() {
@@ -32,6 +33,6 @@ func Delete(u *user.User, h hyphae2.ExistingHypha) error {
 	}
 	backlinks.UpdateBacklinksAfterDelete(h, originalText)
 	categories.RemoveHyphaFromAllCategories(h.CanonicalName())
-	hyphae2.DeleteHypha(h)
+	hyphae.DeleteHypha(h)
 	return nil
 }
