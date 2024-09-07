@@ -57,23 +57,9 @@ rrh.shortcuts = {
         if ((!event.ctrlKey && !event.metaKey && !event.altKey) &&
             event.target instanceof Node && isTextField(event.target)) return
 
-        let possibleShortcuts = [keyEventToShortcut(event)]
-        if (event.code.startsWith('Key')) {
-            possibleShortcuts.push(keyEventToShortcut({
-                ...event,
-                key: event.code.replace(/^Key/, '').toLowerCase(),
-            }))
-        }
+        let shortcut = keyEventToShortcut(event)
 
-        let shortcut = null
-        for (let possibleShortcut of possibleShortcuts) {
-            if (possibleShortcut in this.active) {
-                shortcut = possibleShortcut
-                break
-            }
-        }
-
-        if (shortcut === null) {
+        if (!this.active[shortcut]) {
             this._resetActive()
             return
         }
