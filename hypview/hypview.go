@@ -3,7 +3,7 @@ package hypview
 import (
 	"embed"
 	"html/template"
-	"log"
+	"log/slog"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
@@ -66,7 +66,7 @@ func NaviTitle(meta viewutil.Meta, hyphaName string) template.HTML {
 		HomeHypha:                 cfg.HomeHypha,
 	})
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to render NaviTitle properly; using nevertheless", "err", err)
 	}
 	return template.HTML(buf.String())
 }
