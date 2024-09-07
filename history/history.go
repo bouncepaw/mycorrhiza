@@ -4,7 +4,7 @@ package history
 import (
 	"bytes"
 	"fmt"
-	"log"
+	"log/slog"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -21,12 +21,14 @@ var renameMsgPattern = regexp.MustCompile(`^Rename ‘(.*)’ to ‘.*’`)
 var gitEnv = []string{"GIT_COMMITTER_NAME=wikimind", "GIT_COMMITTER_EMAIL=wikimind@mycorrhiza"}
 
 // Start finds git and initializes git credentials.
-func Start() {
+func Start() error {
 	path, err := exec.LookPath("git")
 	if err != nil {
-		log.Fatal("Could not find the git executable. Check your $PATH.")
+		slog.Error("Could not find the Git executable. Check your $PATH.")
+		return err
 	}
 	gitpath = path
+	return nil
 }
 
 // InitGitRepo checks a Git repository and initializes it if necessary.
@@ -44,7 +46,7 @@ func InitGitRepo() {
 		}
 	}
 	if !isGitRepo {
-		log.Println("Initializing Git repo at", files.HyphaeDir())
+		slog.Info("Initializing Git repo", "path", files.HyphaeDir())
 		gitsh("init")
 		gitsh("config", "core.quotePath", "false")
 	}
@@ -60,7 +62,7 @@ func gitsh(args ...string) (out bytes.Buffer, err error) {
 
 	b, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Println("gitsh:", err)
+		slog.Info("Git command failed", "err", err, "output", string(b))
 	}
 	return *bytes.NewBuffer(b), err
 }
@@ -77,7 +79,9 @@ func silentGitsh(args ...string) (out bytes.Buffer, err error) {
 
 // Rename renames from `from` to `to` using `git mv`.
 func Rename(from, to string) error {
-	log.Println(util.ShorterPath(from), util.ShorterPath(to))
+	slog.Info("Renaming file with git mv",
+		"from", util.ShorterPath(from),
+		"to", util.ShorterPath(to))
 	_, err := gitsh("mv", "--force", from, to)
 	return err
 }

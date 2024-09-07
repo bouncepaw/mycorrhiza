@@ -5,13 +5,9 @@
 package main
 
 import (
-	"github.com/bouncepaw/mycorrhiza/internal/categories"
-	"log"
-	"os"
-	"syscall"
-
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
+	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
@@ -23,6 +19,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/web"
 	"github.com/bouncepaw/mycorrhiza/web/static"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"log"
+	"os"
 )
 
 func main() {
@@ -48,7 +46,9 @@ func main() {
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
 	user.InitUserDatabase()
-	history.Start()
+	if err := history.Start(); err != nil {
+		os.Exit(1)
+	}
 	history.InitGitRepo()
 	migration.MigrateRocketsMaybe()
 	migration.MigrateHeadingsMaybe()
@@ -65,6 +65,6 @@ func main() {
 
 	err := serveHTTP(web.Handler())
 	if err != nil {
-		syscall.Exit(1)
+		os.Exit(1)
 	}
 }
