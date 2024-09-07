@@ -19,7 +19,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/web"
 	"github.com/bouncepaw/mycorrhiza/web/static"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"log"
+	"log/slog"
 	"os"
 )
 
@@ -29,20 +29,25 @@ func main() {
 	}
 
 	if err := files.PrepareWikiRoot(); err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to prepare wiki root", "err", err)
+		os.Exit(1)
 	}
 
 	if err := cfg.ReadConfigFile(files.ConfigPath()); err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to read config", "err", err)
+		os.Exit(1)
 	}
 
-	log.Println("Running Mycorrhiza Wiki", version.Short)
 	if err := os.Chdir(files.HyphaeDir()); err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to chdir to hyphae dir",
+			"err", err, "hyphaeDir", files.HyphaeDir())
+		os.Exit(1)
 	}
-	log.Println("Wiki directory is", cfg.WikiDir)
+	slog.Info("Running Mycorrhiza Wiki",
+		"version", version.Long, "wikiDir", cfg.WikiDir)
 
 	// Init the subsystems:
+	// TODO: keep all crashes in main rather than somewhere there
 	viewutil.Init()
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
@@ -66,7 +71,7 @@ func main() {
 	static.InitFS(files.StaticFiles())
 
 	if !user.HasAnyAdmins() {
-		log.Println("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
+		slog.Error("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 
 	err := serveHTTP(web.Handler())
