@@ -2,11 +2,13 @@ package interwiki
 
 import (
 	"embed"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
+
+	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -63,19 +65,24 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if oldData, ok = entriesByName[name]; !ok {
-		log.Printf("Could not modify interwiki entry ‘%s’ because it does not exist", name)
+		slog.Info("Could not modify entry",
+			"name", name,
+			"reason", "does not exist")
 		viewutil.HandlerNotFound(w, rq)
 		return
 	}
 
 	if err := replaceEntry(oldData, &newData); err != nil {
-		log.Printf("Could not modify interwiki entry ‘%s’ because one of the proposed aliases/name is taken\n", name)
+		slog.Info("Could not modify entry",
+			"name", name,
+			"reason", "one of the proposed aliases or the name is taken",
+			"err", err)
 		viewNameTaken(viewutil.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
 		return
 	}
 
 	saveInterwikiJson()
-	log.Printf("Modified interwiki entry ‘%s’\n", name)
+	slog.Info("Modified entry", "name", name)
 	http.Redirect(w, rq, "/interwiki", http.StatusSeeOther)
 }
 
