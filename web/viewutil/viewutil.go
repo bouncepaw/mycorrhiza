@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"io/fs"
-	"log"
+	"log/slog"
 	"strings"
 	"text/template" // TODO: save the world
 
@@ -125,7 +125,7 @@ func Base(meta Meta, title, body string, bodyAttributes map[string]string, headE
 		BodyAttributes: bodyAttributes,
 	})
 	if err != nil {
-		log.Println(err)
+		slog.Info("Failed to execute the legacy Base template; proceeding anyway", "err", err)
 	}
 	return w.String()
 }
@@ -149,7 +149,7 @@ func ExecutePage(meta Meta, chain Chain, data interface {
 }) {
 	data.withBaseValues(meta, HeaderLinks, cfg.CommonScripts)
 	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", data); err != nil {
-		log.Println(err)
+		slog.Info("Failed to execute page; proceeding anyway", "err", err)
 	}
 }
 
