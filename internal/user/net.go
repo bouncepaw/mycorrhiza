@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"sort"
 	"strings"
@@ -91,17 +91,17 @@ func LoginDataHTTP(w http.ResponseWriter, username, password string) error {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	if !HasUsername(username) {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("Unknown username", username, "was entered")
+		slog.Info("Unknown username entered", "username", username)
 		return ErrUnknownUsername
 	}
 	if !CredentialsOK(username, password) {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("A wrong password was entered for username", username)
+		slog.Info("Wrong password entered", "username", username)
 		return ErrWrongPassword
 	}
 	token, err := AddSession(username)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to add session", "username", username, "err", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return err
 	}
@@ -114,7 +114,7 @@ func AddSession(username string) (string, error) {
 	token, err := util.RandomString(16)
 	if err == nil {
 		commenceSession(username, token)
-		log.Println("New token for", username, "is", token)
+		slog.Info("Added session", "username", username)
 	}
 	return token, err
 }
