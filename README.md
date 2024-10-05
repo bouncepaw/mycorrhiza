@@ -2,7 +2,7 @@
 
 **Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
 
-<img src="https://mycorrhiza.wiki/binary/release/1.14/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
+<img src="https://mycorrhiza.wiki/binary/release/1.15/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
 
 
 ## Features
@@ -30,7 +30,7 @@ Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatri
 
 ## Installing
 
-See [the deployment guide](https://mycorrhiza.wiki/hypha/deployment) on the wiki. Also, Mycorrhiza might be available in your repositories.
+See [the deployment guide](https://mycorrhiza.wiki/hypha/deployment) on the wiki. Also, Mycorrhiza might be available in your repositories. See [Repology](https://repology.org/project/mycorrhiza/versions).
 
 
 ## Contributing and community
@@ -46,3 +46,5 @@ If you want to contribute with code, open a pull request on GitHub or send a pat
 If you want to report an issue, open an issue on GitHub or contact us directly.
 
 Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
+
+Check out [Betula](https://betula.mycorrhiza.wiki) as well.
