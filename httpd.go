@@ -32,7 +32,7 @@ func serveHTTP(handler http.Handler) (err error) {
 func startUnixSocketServer(server *http.Server, socketPath string) error {
 	err := os.Remove(socketPath)
 	if err != nil {
-		return err
+		slog.Warn("Failed to clean up old socket", "err", err)
 	}
 
 	listener, err := net.Listen("unix", socketPath)
