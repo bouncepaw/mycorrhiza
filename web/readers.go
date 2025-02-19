@@ -258,8 +258,8 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		if err == nil {
 			ctx, _ := mycocontext.ContextFromStringInput(string(fileContentsT), mycoopts.MarkupOptions(hyphaName))
 			getOpenGraph, descVisitor, imgVisitor := tools.OpenGraphVisitors(ctx)
-			openGraph = template.HTML(getOpenGraph())
 			ast := mycomarkup.BlockTree(ctx, descVisitor, imgVisitor)
+			openGraph = template.HTML(getOpenGraph())
 			contents = template.HTML(mycomarkup.BlocksToHTML(ctx, ast))
 		}
 		switch h := h.(type) {
