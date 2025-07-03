@@ -1,6 +1,4 @@
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
-//
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
 package main
 
 import (
