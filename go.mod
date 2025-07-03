@@ -7,7 +7,6 @@ require (
 	github.com/go-ini/ini v1.67.0
 	github.com/gorilla/feeds v1.2.0
 	github.com/gorilla/mux v1.8.1
-	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/crypto v0.31.0
 	golang.org/x/term v0.27.0
 	golang.org/x/text v0.21.0
@@ -15,7 +14,6 @@ require (
 
 require (
 	github.com/stretchr/testify v1.7.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 )
 
