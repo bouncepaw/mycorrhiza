@@ -1,10 +1,12 @@
 // Command mycorrhiza is a program that runs a mycorrhiza wiki.
 //
-//go:generate go run github.com/valyala/quicktemplate/qtc -dir=history
 //go:generate go run github.com/valyala/quicktemplate/qtc -dir=mycoopts
 package main
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
@@ -19,8 +21,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/web"
 	"github.com/bouncepaw/mycorrhiza/web/static"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"log/slog"
-	"os"
 )
 
 func main() {

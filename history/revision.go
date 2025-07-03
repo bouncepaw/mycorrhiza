@@ -2,15 +2,66 @@ package history
 
 import (
 	"fmt"
+	"html"
 	"log/slog"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 )
+
+// WithRevisions returns an HTML representation of `revs` that is meant to be inserted in a history page.
+func WithRevisions(hyphaName string, revs []Revision) string {
+	var buf strings.Builder
+
+	for _, grp := range groupRevisionsByMonth(revs) {
+		currentYear := grp[0].Time.Year()
+		currentMonth := grp[0].Time.Month()
+		sectionId := fmt.Sprintf("%04d-%02d", currentYear, currentMonth)
+
+		buf.WriteString(fmt.Sprintf(
+			`<section class="history__month">
+	<a href="#%s" class="history__month-anchor">
+		<h2 id="%s" class="history__month-title">%d %s</h2>
+	</a>
+	<ul class="history__entries">`,
+			sectionId, sectionId, currentYear, currentMonth.String(),
+		))
+
+		for _, rev := range grp {
+			buf.WriteString(fmt.Sprintf(
+				`<li class="history__entry">
+	<a class="history-entry" href="/rev/%s/%s">
+		<time class="history-entry__time">%s</time>
+	</a>
+	<span class="history-entry__hash"><a href="/primitive-diff/%s/%s">%s</a></span>
+	<span class="history-entry__msg">%s</span>`,
+				rev.Hash, hyphaName,
+				rev.timeToDisplay(),
+				rev.Hash, hyphaName, rev.Hash,
+				html.EscapeString(rev.Message),
+			))
+
+			if rev.Username != "anon" {
+				buf.WriteString(fmt.Sprintf(
+					`<span class="history-entry__author">by <a href="/hypha/%s/%s" rel="author">%s</a></span>`,
+					cfg.UserHypha, rev.Username, rev.Username,
+				))
+			}
+
+			buf.WriteString("</li>\n")
+		}
+
+		buf.WriteString(`</ul></section>`)
+	}
+
+	return buf.String()
+}
 
 // Revision represents a revision of a hypha.
 type Revision struct {
@@ -22,6 +73,62 @@ type Revision struct {
 	Message           string
 	filesAffectedBuf  []string
 	hyphaeAffectedBuf []string
+}
+
+// HyphaeDiffsHTML returns a comma-separated list of diffs links of current revision for every affected file as HTML string.
+func (rev Revision) HyphaeDiffsHTML() string {
+	entries := rev.hyphaeAffected()
+	if len(entries) == 1 {
+		return fmt.Sprintf(
+			`<a href="/primitive-diff/%s/%s">%s</a>`,
+			rev.Hash, entries[0], rev.Hash,
+		)
+	}
+
+	var buf strings.Builder
+	for i, hyphaName := range entries {
+		if i > 0 {
+			buf.WriteString(`<span aria-hidden="true">, </span>`)
+		}
+		buf.WriteString(`<a href="/primitive-diff/`)
+		buf.WriteString(rev.Hash)
+		buf.WriteString(`/`)
+		buf.WriteString(hyphaName)
+		buf.WriteString(`">`)
+		if i == 0 {
+			buf.WriteString(rev.Hash)
+			buf.WriteString("&nbsp;")
+		}
+		buf.WriteString(hyphaName)
+		buf.WriteString(`</a>`)
+	}
+	return buf.String()
+}
+
+// descriptionForFeed generates a good enough HTML contents for a web feed.
+func (rev *Revision) descriptionForFeed() string {
+	return fmt.Sprintf(
+		`<p><b>%s</b> (by %s at %s)</p>
+<p>Hyphae affected: %s</p>
+<pre><code>%s</code></pre>`,
+		rev.Message, rev.Username, rev.TimeString(),
+		rev.HyphaeLinksHTML(),
+		rev.textDiff(),
+	)
+}
+
+// HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
+func (rev Revision) HyphaeLinksHTML() string {
+	var buf strings.Builder
+	for i, hyphaName := range rev.hyphaeAffected() {
+		if i > 0 {
+			buf.WriteString(`<span aria-hidden="true">, <span>`)
+		}
+
+		urlSafeHyphaName := url.PathEscape(hyphaName)
+		buf.WriteString(fmt.Sprintf(`<a href="/hypha/%s">%s</a>`, urlSafeHyphaName, hyphaName))
+	}
+	return buf.String()
 }
 
 // gitLog calls `git log` and parses the results.
