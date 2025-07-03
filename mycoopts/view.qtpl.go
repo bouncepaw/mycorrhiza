@@ -112,7 +112,7 @@ func StreamMedia(qw422016 *qt422016.Writer, h *hyphae.MediaHypha, lc *l18n.Local
 
 	`)
 //line mycoopts/view.qtpl:24
-	case ".mp3":
+	case ".mp3", ".wav", ".flac":
 //line mycoopts/view.qtpl:24
 		qw422016.N().S(`
 	<div class="binary-container binary-container_with-audio">

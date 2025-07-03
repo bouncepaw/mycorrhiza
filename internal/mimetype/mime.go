@@ -40,20 +40,33 @@ func DataFromFilename(fullPath string) (name string, isText bool, skip bool) {
 
 var mapMime2Ext = map[string]string{
 	"application/octet-stream": "bin",
-	"image/jpeg":               "jpg",
-	"image/gif":                "gif",
-	"image/png":                "png",
-	"image/webp":               "webp",
-	"image/svg+xml":            "svg",
-	"image/x-icon":             "ico",
-	"application/ogg":          "ogg",
-	"video/webm":               "webm",
-	"audio/mp3":                "mp3",
-	"video/mp4":                "mp4",
+
+	"image/jpeg":    "jpg",
+	"image/gif":     "gif",
+	"image/png":     "png",
+	"image/webp":    "webp",
+	"image/svg+xml": "svg",
+	"image/x-icon":  "ico",
+
+	"application/ogg": "ogg",
+	"video/webm":      "webm",
+	"audio/mp3":       "mp3",
+	"audio/mpeg":      "mp3",
+	"audio/mpeg3":     "mp3",
+	"video/mp4":       "mp4",
+	"audio/flac":      "flac",
+
+	"audio/wav":      "wav",
+	"audio/vnd.wav":  "wav",
+	"audio/vnd.wave": "wav",
+	"audio/wave":     "wav",
+	"audio/x-pn-wav": "wav",
+	"audio/x-wav":    "wav",
 }
 
 var mapExt2Mime = map[string]string{
-	".bin":  "application/octet-stream",
+	".bin": "application/octet-stream",
+
 	".jpg":  "image/jpeg",
 	".jpeg": "image/jpeg",
 	".gif":  "image/gif",
@@ -61,8 +74,12 @@ var mapExt2Mime = map[string]string{
 	".webp": "image/webp",
 	".svg":  "image/svg+xml",
 	".ico":  "image/x-icon",
+
 	".ogg":  "application/ogg",
 	".webm": "video/webm",
-	".mp3":  "audio/mp3",
+	".mp3":  "audio/mpeg",
 	".mp4":  "video/mp4",
+	".flac": "audio/flac",
+
+	"wav": "audio/wav",
 }

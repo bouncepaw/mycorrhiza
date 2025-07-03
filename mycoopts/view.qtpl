@@ -21,7 +21,7 @@
 		</video>
 	</div>
 
-	{% case ".mp3" %}
+	{% case ".mp3", ".wav", ".flac" %}
 	<div class="binary-container binary-container_with-audio">
 		<audio controls>
 			<source src="/binary/{%s= h.CanonicalName() %}"/>
