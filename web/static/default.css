@@ -317,7 +317,7 @@ kbd {
 	top: 0;
 	left: 50%;
 	width: 100%;
-	max-width: 800px;
+	max-width: 1000px;
 	margin: 96px auto;
 	padding: 24px;
 	transform: translate(-50%, 0);

@@ -285,8 +285,8 @@ rrh.shortcuts.addGroup(new ShortcutGroup('Common', null, [
 if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
     rrh.shortcuts.addGroup(new ShortcutGroup('Hypha', null, [
         new Shortcut('', $$('article .wikilink'), 'First 9 hypha′s links'),
-        new Shortcut(['p', 'Alt+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Previous hypha'),
-        new Shortcut(['n', 'Alt+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Next hypha'),
+        new Shortcut(['p', 'Alt+Shift+ArrowLeft', 'Ctrl+Alt+ArrowLeft'], $('.prevnext__prev'), 'Previous hypha'),
+        new Shortcut(['n', 'Alt+Shift+ArrowRight', 'Ctrl+Alt+ArrowRight'], $('.prevnext__next'), 'Next hypha'),
         new Shortcut(['s', 'Alt+ArrowUp', 'Ctrl+Alt+ArrowUp'], $$('.navi-title a').slice(1, -1).slice(-1)[0], 'Parent hypha'),
         new Shortcut(['c', 'Alt+ArrowDown', 'Ctrl+Alt+ArrowDown'], $('.subhyphae__link'), 'First child hypha'),
         new Shortcut(['e', isMac ? 'Meta+Enter' : 'Ctrl+Enter'], $('.btn__link_navititle[href^="/edit/"]'), 'Edit this hypha'),
