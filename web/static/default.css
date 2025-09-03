@@ -354,7 +354,7 @@ kbd {
 	margin: 0;
 	padding: 8px;
 	border: none;
-	background: url(/web/static/icon/x.svg) no-repeat 8px 8px / 16px 16px;
+	background: url(/static/icon/x.svg) no-repeat 8px 8px / 16px 16px;
 	width: 32px;
 	height: 32px;
 	cursor: pointer;
