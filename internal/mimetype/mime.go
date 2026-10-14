@@ -1,6 +1,7 @@
 package mimetype
 
 import (
+	"mime"
 	"path/filepath"
 	"strings"
 
@@ -8,17 +9,17 @@ import (
 )
 
 // ToExtension returns dotted extension for given mime-type.
-func ToExtension(mime string) string {
-	if ext, ok := mapMime2Ext[mime]; ok {
-		return "." + ext
+func ToExtension(mimeType string) string {
+	if exts, err := mime.ExtensionsByType(mimeType); err == nil && len(exts) > 0 {
+		return exts[0]
 	}
 	return ".bin"
 }
 
 // FromExtension returns mime-type for given extension. The extension must start with a dot.
 func FromExtension(ext string) string {
-	if mime, ok := mapExt2Mime[strings.ToLower(ext)]; ok {
-		return mime
+	if mimeType := mime.TypeByExtension(strings.ToLower(ext)); mimeType != "" {
+		return mimeType
 	}
 	return "application/octet-stream"
 }
@@ -36,50 +37,4 @@ func DataFromFilename(fullPath string) (name string, isText bool, skip bool) {
 	}
 
 	return
-}
-
-var mapMime2Ext = map[string]string{
-	"application/octet-stream": "bin",
-
-	"image/jpeg":    "jpg",
-	"image/gif":     "gif",
-	"image/png":     "png",
-	"image/webp":    "webp",
-	"image/svg+xml": "svg",
-	"image/x-icon":  "ico",
-
-	"application/ogg": "ogg",
-	"video/webm":      "webm",
-	"audio/mp3":       "mp3",
-	"audio/mpeg":      "mp3",
-	"audio/mpeg3":     "mp3",
-	"video/mp4":       "mp4",
-	"audio/flac":      "flac",
-
-	"audio/wav":      "wav",
-	"audio/vnd.wav":  "wav",
-	"audio/vnd.wave": "wav",
-	"audio/wave":     "wav",
-	"audio/x-pn-wav": "wav",
-	"audio/x-wav":    "wav",
-}
-
-var mapExt2Mime = map[string]string{
-	".bin": "application/octet-stream",
-
-	".jpg":  "image/jpeg",
-	".jpeg": "image/jpeg",
-	".gif":  "image/gif",
-	".png":  "image/png",
-	".webp": "image/webp",
-	".svg":  "image/svg+xml",
-	".ico":  "image/x-icon",
-
-	".ogg":  "application/ogg",
-	".webm": "video/webm",
-	".mp3":  "audio/mpeg",
-	".mp4":  "video/mp4",
-	".flac": "audio/flac",
-
-	"wav": "audio/wav",
 }
