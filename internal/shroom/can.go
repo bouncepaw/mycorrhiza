@@ -2,6 +2,7 @@ package shroom
 
 import (
 	"errors"
+	"log/slog"
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
@@ -9,7 +10,10 @@ import (
 
 func CanAttach(u *user.User, h hyphae.Hypha) error {
 	if !u.CanProceed("upload-binary") {
-		rejectUploadMediaLog(h, u, "no rights")
+		slog.Info("Reject upload media",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
 		return errors.New("ui.act_norights_media")
 	}
 
@@ -18,7 +22,10 @@ func CanAttach(u *user.User, h hyphae.Hypha) error {
 
 func CanEdit(u *user.User, h hyphae.Hypha) error {
 	if !u.CanProceed("upload-text") {
-		rejectEditLog(h, u, "no rights")
+		slog.Info("Reject edit",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
 		return errors.New("ui.act_norights_edit")
 	}
 

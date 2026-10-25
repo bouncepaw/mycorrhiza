@@ -2,6 +2,7 @@ package shroom
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
@@ -18,7 +19,9 @@ func RemoveMedia(u *user.User, h *hyphae.MediaHypha) error {
 		Apply()
 
 	if len(hop.Errs) > 0 {
-		rejectRemoveMediaLog(h, u, "fail")
+		slog.Info("Reject remove media",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name)
 		// FIXME: something may be wrong here
 		return fmt.Errorf("Could not unattach this hypha due to internal server errors: <code>%v</code>", hop.Errs)
 	}

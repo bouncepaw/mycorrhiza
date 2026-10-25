@@ -3,6 +3,7 @@ package shroom
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -22,12 +23,19 @@ import (
 func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *user.User) error {
 	// * bouncepaw hates this function and related renaming functions
 	if newName == "" {
-		rejectRenameLog(oldHypha, u, "no new name given")
+		slog.Info("Reject rename",
+			"hyphaName", oldHypha.CanonicalName(),
+			"username", u.Name,
+			"reason", "no new name given")
 		return errors.New("ui.rename_noname_tip")
 	}
 
 	if !hyphae.IsValidName(newName) {
-		rejectRenameLog(oldHypha, u, fmt.Sprintf("new name ‘%s’ invalid", newName))
+		slog.Info("Reject rename",
+			"hyphaName", oldHypha.CanonicalName(),
+			"username", u.Name,
+			"reason", "new name is invalid",
+			"newName", newName)
 		return errors.New("ui.rename_badname_tip") // FIXME: There is a bug related to this.
 	}
 
@@ -36,7 +44,11 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 		if targetHypha.CanonicalName() == oldHypha.CanonicalName() {
 			return nil
 		}
-		rejectRenameLog(oldHypha, u, fmt.Sprintf("name ‘%s’ taken already", newName))
+		slog.Info("Reject rename",
+			"hyphaName", oldHypha.CanonicalName(),
+			"username", u.Name,
+			"reason", "new name is taken already",
+			"newName", newName)
 		return errors.New("ui.rename_taken_tip") // FIXME: There is a bug related to this.
 	}
 
