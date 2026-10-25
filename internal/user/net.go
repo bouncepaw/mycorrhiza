@@ -122,10 +122,12 @@ func AddSession(username string) (string, error) {
 // A handy cookie constructor
 func cookie(nameSuffix, val string, t time.Time) *http.Cookie {
 	return &http.Cookie{
-		Name:    "mycorrhiza_" + nameSuffix,
-		Value:   val,
-		Expires: t,
-		Path:    "/",
+		Name:     "mycorrhiza_" + nameSuffix,
+		Value:    val,
+		Expires:  t,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
 	}
 }
 
