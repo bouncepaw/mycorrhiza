@@ -1,7 +1,6 @@
 package migration
 
 import (
-	"io/ioutil"
 	"log/slog"
 	"os"
 
@@ -43,7 +42,7 @@ func shouldMigrateRockets() bool {
 }
 
 func createRocketLinkMarker() {
-	err := ioutil.WriteFile(
+	err := os.WriteFile(
 		rocketMarkerPath,
 		[]byte(`This file is used to mark that the rocket link migration was made successfully. If this file is deleted, the migration might happen again depending on the version. You should probably not touch this file at all and let it be.`),
 		0766,

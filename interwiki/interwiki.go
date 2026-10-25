@@ -22,7 +22,6 @@ func Init() error {
 	}
 
 	for _, wiki := range record {
-		wiki := wiki // This line is required
 		if err := wiki.canonize(); err != nil {
 			return err
 		}
@@ -97,7 +96,6 @@ func deleteEntry(wiki *Wiki) {
 	go func() {
 		names := append(wiki.Aliases, wiki.Name)
 		for _, name := range names {
-			name := name // I guess we need that
 			delete(entriesByName, name)
 		}
 		wg.Done()
@@ -105,7 +103,6 @@ func deleteEntry(wiki *Wiki) {
 
 	go func() {
 		for i, w := range listOfEntries {
-			i, w := i, w
 			if w.Name == wiki.Name {
 				// Drop ith element.
 				listOfEntries[i] = listOfEntries[len(listOfEntries)-1]

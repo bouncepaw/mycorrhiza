@@ -116,7 +116,7 @@ func dumpUserCredentials() error {
 func dumpTokens() {
 	tmp := make(map[string]string)
 
-	tokens.Range(func(k, v interface{}) bool {
+	tokens.Range(func(k, v any) bool {
 		token := k.(string)
 		username := v.(string)
 		tmp[token] = username

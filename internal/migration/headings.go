@@ -1,7 +1,6 @@
 package migration
 
 import (
-	"io/ioutil"
 	"log/slog"
 	"os"
 
@@ -39,7 +38,7 @@ func shouldMigrateHeadings() bool {
 }
 
 func createHeadingMarker() {
-	err := ioutil.WriteFile(
+	err := os.WriteFile(
 		headingMarkerPath,
 		[]byte(`This file is used to mark that the heading migration was successful. If this file is deleted, the migration might happen again depending on the version. You should probably not touch this file at all and let it be.`),
 		0766,

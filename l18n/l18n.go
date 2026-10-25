@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"maps"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -31,7 +32,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-type Replacements map[string]interface{}
+type Replacements map[string]any
 
 type Localizer struct {
 	Locale         string
@@ -181,9 +182,7 @@ func (t Localizer) replace(str string, replacements ...*Replacements) string {
 
 	replacementsMerge := Replacements{}
 	for _, replacement := range replacements {
-		for k, v := range *replacement {
-			replacementsMerge[k] = v
-		}
+		maps.Copy(replacementsMerge, *replacement)
 	}
 
 	err = template.Must(tmpl, err).Execute(b, replacementsMerge)

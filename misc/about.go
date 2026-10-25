@@ -71,7 +71,7 @@ const aboutTemplateString = `
 var aboutData = struct {
 	L                 map[string]L10nEntry
 	Version           string
-	Cfg               map[string]interface{}
+	Cfg               map[string]any
 	Admins            []string
 	UserCount         uint64
 	RegistrationLimit uint64
@@ -105,7 +105,7 @@ func AboutHTML(lc *l18n.Localizer) string {
 	data.Admins = user.ListUsersWithGroup("admin")
 	data.UserCount = user.Count()
 	data.RegistrationLimit = cfg.RegistrationLimit
-	data.Cfg = map[string]interface{}{
+	data.Cfg = map[string]any{
 		"UseAuth":           cfg.UseAuth,
 		"WikiName":          cfg.WikiName,
 		"HomeHypha":         cfg.HomeHypha,

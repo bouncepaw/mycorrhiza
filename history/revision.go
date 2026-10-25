@@ -154,7 +154,7 @@ func gitLog(args ...string) ([]Revision, error) {
 	}
 
 	var revs []Revision
-	for _, line := range strings.Split(outStr, "\n") {
+	for line := range strings.SplitSeq(outStr, "\n") {
 		revs = append(revs, parseRevisionLine(line))
 	}
 	return revs, nil
