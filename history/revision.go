@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -131,14 +132,21 @@ func (rev Revision) HyphaeLinksHTML() string {
 	return buf.String()
 }
 
+// gitLogFollowRenames the same as gitLog but used for single file history
+func gitLogFollowRenames(args ...string) ([]Revision, error) {
+	args = append([]string{"--follow", "--"}, args...)
+	return gitLog(args...)
+}
+
 // gitLog calls `git log` and parses the results.
 func gitLog(args ...string) ([]Revision, error) {
 	args = append([]string{
 		"log", "--abbrev-commit", "--no-merges",
 		"--pretty=format:%h\t%ae\t%at\t%s",
 	}, args...)
-	args = append(args, "--")
+	slog.With("args", args).Debug("gitLog()")
 	out, err := silentGitsh(args...)
+	slog.With("out", out.String()).Debug("gitLog()")
 	if strings.Contains(out.String(), "bad revision 'HEAD'") {
 		// Then we have no recent changes! It's a hack.
 		return nil, nil
@@ -221,7 +229,12 @@ func RecentChanges(n int) []Revision {
 
 // Revisions returns slice of revisions for the given hypha name, ordered most recent first.
 func Revisions(hyphaName string) ([]Revision, error) {
-	revs, err := gitLog("--", hyphaName+".*")
+	ext := filepath.Ext(hyphaName)
+	if ext == "" { // treating an empty extension as a potential mycopage
+		hyphaName = hyphaName + ".myco"
+	}
+
+	revs, err := gitLogFollowRenames(hyphaName) //+".*")
 	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 	return revs, err
 }
