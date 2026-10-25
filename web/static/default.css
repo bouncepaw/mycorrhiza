@@ -106,11 +106,26 @@ textarea {font-size:16px; font-family: inherit; line-height: 150%; }
 
 main h1:not(.navi-title) {font-size:1.7rem;}
 blockquote { margin: 0; padding-left: .75rem; }
-.wikilink_external { padding-left: 1.2rem; }
-.wikilink_gopher { background: transparent left no-repeat url("/static/icon/gopher-proto.svg"); }
-.wikilink_http, .wikilink_https { background: transparent left no-repeat url("/static/icon/http-proto.svg"); }
-.wikilink_gemini { background: transparent left no-repeat url("/static/icon/gemini-proto.svg"); }
-.wikilink_mailto { background: transparent left no-repeat url("/static/icon/mailto-proto.svg"); }
+.wikilink_gopher {
+	padding-left: 1.2rem;
+	background: transparent left no-repeat url("/static/icon/gopher-proto.svg");
+}
+.wikilink_http, .wikilink_https {
+	padding-left: 1.2rem;
+	background: transparent left no-repeat url("/static/icon/http-proto.svg");
+}
+.wikilink_gemini {
+	padding-left: 1.2rem;
+	background: transparent left no-repeat url("/static/icon/gemini-proto.svg");
+}
+.wikilink_mailto {
+	padding-left: 1.2rem;
+	background: transparent left no-repeat url("/static/icon/mailto-proto.svg");
+}
+.wikilink_tel {
+	padding-left: 1.2rem;
+	background: transparent left no-repeat url("/static/icon/tel-proto.svg");
+}
 
 article { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; line-height: 150%; }
 main h1 { margin: .5rem 0 0 0; }
