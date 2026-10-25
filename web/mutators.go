@@ -223,6 +223,10 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		viewutil.HttpErr(meta, http.StatusForbidden, hyphaName, err.Error())
 		return
 	}
+	if action == "save-and-edit" {
+		http.Redirect(w, rq, "/edit/"+hyphaName, http.StatusSeeOther)
+		return
+	}
 	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)
 }
 

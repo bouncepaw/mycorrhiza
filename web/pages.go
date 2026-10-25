@@ -63,6 +63,7 @@ func initPages() {
 		"you're creating a new hypha": `Вы создаёте новую гифу.`,
 		"describe your changes":       `Опишите ваши правки`,
 		"save":                        `Сохранить`,
+		"save and edit":               `Сохранить и продолжить`,
 		"preview":                     `Предпросмотр`,
 		"previewing hypha":            `Предпросмотр {{beautifulName .}}`,
 		"preview tip":                 `Заметьте, эта гифа ещё не сохранена. Вот её предпросмотр:`,

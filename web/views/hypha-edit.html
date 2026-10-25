@@ -82,6 +82,9 @@
             <button type="submit" name="action" class="btn btn_accent edit-form__save" value="save">
                 {{template "save" .}}
             </button>
+            <button type="submit" name="action" class="btn edit-form__save-and-edit" value="save-and-edit">
+                {{block "save and edit" .}}Save and edit{{end}}
+            </button>
             <button type="submit" name="action" class="btn edit-form__preview" value="preview">
                 {{block "preview" .}}Preview{{end}}
             </button>
