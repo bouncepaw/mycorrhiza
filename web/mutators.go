@@ -156,8 +156,12 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		err     error
 	)
 
-	if err := shroom.CanEdit(u, h); err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
+	if !u.CanProceed("upload-text") {
+		slog.Info("Reject edit",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.act_norights_edit"))
 		return
 	}
 
@@ -237,8 +241,12 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 	}
-	if err := shroom.CanAttach(u, h); err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
+	if !u.CanProceed("upload-binary") {
+		slog.Info("Reject upload media",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.act_norights_media"))
 	}
 
 	// If file is not passed:
