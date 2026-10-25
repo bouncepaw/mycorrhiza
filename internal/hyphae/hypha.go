@@ -15,7 +15,7 @@ func IsValidName(hyphaName string) bool {
 	if !hyphaNamePattern.MatchString(hyphaName) {
 		return false
 	}
-	for _, segment := range strings.Split(hyphaName, "/") {
+	for segment := range strings.SplitSeq(hyphaName, "/") {
 		if segment == ".git" || segment == ".." {
 			return false
 		}

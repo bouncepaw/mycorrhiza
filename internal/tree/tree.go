@@ -22,8 +22,8 @@ func Tree(hyphaName string) (childrenHTML template.HTML, prev, next string) {
 	)
 	for h := range hyphae.YieldExistingHyphae() {
 		name := h.CanonicalName()
-		if strings.HasPrefix(name, descendantPrefix) {
-			var subPath = strings.TrimPrefix(name, descendantPrefix)
+		if after, ok := strings.CutPrefix(name, descendantPrefix); ok {
+			var subPath = after
 			addHyphaToChild(name, subPath, &root)
 			// A child is not a sibling, so we skip the rest.
 			continue

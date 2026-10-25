@@ -34,7 +34,7 @@ func ListUsersWithGroup(group string) []string {
 
 // Count returns total users count
 func Count() (i uint64) {
-	users.Range(func(k, v interface{}) bool {
+	users.Range(func(k, v any) bool {
 		i++
 		return true
 	})

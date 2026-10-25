@@ -109,35 +109,25 @@ type Telegram struct {
 // configuration. Call it sometime during the initialization.
 func ReadConfigFile(path string) error {
 	cfg := &Config{
-		WikiName:      "Mycorrhiza Wiki",
-		NaviTitleIcon: "🍄",
-		Hyphae: Hyphae{
-			HomeHypha:           "home",
-			UserHypha:           "u",
-			HeaderLinksHypha:    "",
-			RedirectionCategory: "redirection",
-		},
-		Network: Network{
-			ListenAddr: "127.0.0.1:1737",
-			URL:        "",
-		},
-		Authorization: Authorization{
-			UseAuth:           false,
-			AllowRegistration: false,
-			RegistrationLimit: 0,
-			Locked:            false,
-			UseWhiteList:      false,
-			WhiteList:         []string{},
-		},
-		CustomScripts: CustomScripts{
-			CommonScripts: []string{},
-			ViewScripts:   []string{},
-			EditScripts:   []string{},
-		},
-		Telegram: Telegram{
-			TelegramBotToken: "",
-			TelegramBotName:  "",
-		},
+		WikiName:            "Mycorrhiza Wiki",
+		NaviTitleIcon:       "🍄",
+		HomeHypha:           "home",
+		UserHypha:           "u",
+		HeaderLinksHypha:    "",
+		RedirectionCategory: "redirection",
+		ListenAddr:          "127.0.0.1:1737",
+		URL:                 "",
+		UseAuth:             false,
+		AllowRegistration:   false,
+		RegistrationLimit:   0,
+		Locked:              false,
+		UseWhiteList:        false,
+		WhiteList:           []string{},
+		CommonScripts:       []string{},
+		ViewScripts:         []string{},
+		EditScripts:         []string{},
+		TelegramBotToken:    "",
+		TelegramBotName:     "",
 	}
 
 	f, err := ini.Load(path)

@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -69,12 +70,7 @@ var groupRight = map[string]int{
 
 // ValidGroup checks whether provided user group name exists.
 func ValidGroup(group string) bool {
-	for _, grp := range groups {
-		if grp == group {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(groups, group)
 }
 
 // ValidSource checks whether provided user source name exists.
@@ -167,10 +163,5 @@ func usernameIsWhiteListed(username string) bool {
 	if !cfg.UseWhiteList {
 		return true
 	}
-	for _, allowedUsername := range cfg.WhiteList {
-		if allowedUsername == username {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(cfg.WhiteList, username)
 }

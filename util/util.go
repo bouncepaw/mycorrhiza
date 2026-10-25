@@ -21,8 +21,8 @@ func PrepareRq(rq *http.Request) {
 // ShorterPath is used by handlerList to display shorter path to the files. It
 // simply strips the hyphae directory name.
 func ShorterPath(path string) string {
-	if strings.HasPrefix(path, files.HyphaeDir()) {
-		tmp := strings.TrimPrefix(path, files.HyphaeDir())
+	if after, ok := strings.CutPrefix(path, files.HyphaeDir()); ok {
+		tmp := after
 		if tmp == "" {
 			return ""
 		}
@@ -78,8 +78,8 @@ func IsProfileName(hyphaName string) bool {
 func HyphaNameFromRq(rq *http.Request, actions ...string) string {
 	p := rq.URL.Path
 	for _, action := range actions {
-		if strings.HasPrefix(p, "/"+action+"/") {
-			return CanonicalName(strings.TrimPrefix(p, "/"+action+"/"))
+		if after, ok := strings.CutPrefix(p, "/"+action+"/"); ok {
+			return CanonicalName(after)
 		}
 	}
 	slog.Info("HyphaNameFromRq: this request is invalid, fall back to home hypha")
