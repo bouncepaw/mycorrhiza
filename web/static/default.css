@@ -16,6 +16,7 @@
 
 ol:not(.mycomarkup-doc ol) a { text-decoration: none; display: inline-block; padding: .25rem; }
 ol:not(.mycomarkup-doc ol) a:hover { text-decoration: underline; }
+.hypha-list .hypha-list { margin-block: 0; }
 .media-type-badge { font-size: smaller; color: #999; }
 
 /* General element positions, from small to big */

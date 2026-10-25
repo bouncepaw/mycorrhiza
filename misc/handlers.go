@@ -59,9 +59,9 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 	for hyphaName := range sortedHypha {
 		switch h := hyphae.ByName(hyphaName).(type) {
 		case *hyphae.TextualHypha:
-			entries = append(entries, listDatum{h.CanonicalName(), ""})
+			entries = append(entries, listDatum{Name: h.CanonicalName()})
 		case *hyphae.MediaHypha:
-			entries = append(entries, listDatum{h.CanonicalName(), filepath.Ext(h.MediaFilePath())[1:]})
+			entries = append(entries, listDatum{Name: h.CanonicalName(), Ext: filepath.Ext(h.MediaFilePath())[1:]})
 		}
 	}
 	viewList(viewutil.MetaFrom(w, rq), entries)

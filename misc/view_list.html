@@ -1,16 +1,18 @@
-{{define "list of hyphae"}}List of hyphae{{end}}
-{{define "title"}}{{template "list of hyphae"}}{{end}}
-{{define "body"}}
-<main class="main-width">
-	<h1>{{template "list of hyphae"}}</h1>
-	<p>{{block "x total" .HyphaCount}}{{.}} total.{{end}}</p>
-	<ol>
-		{{range .Entries}}
+{{define "title"}}{{block "hypha count" .}}{{.HyphaCount}} {{if eq .HyphaCount 1}}hypha{{else}}hyphae{{end}}{{end}}{{end}}
+{{define "hypha list"}}
+	<ol class="hypha-list">
+		{{range .}}
 			<li>
-				<a href="/hypha/{{.Name}}">{{beautifulName .Name}}</a>
+				<a class="wikilink{{if not .Exists}} wikilink_new{{end}}" href="/hypha/{{.Name}}">{{beautifulName .Label}}</a>
 				{{if .Ext}}<span class="media-type-badge">{{.Ext}}</span>{{end}}
+				{{if .Children}}{{template "hypha list" .Children}}{{end}}
 			</li>
 		{{end}}
 	</ol>
+{{end}}
+{{define "body"}}
+<main class="main-width">
+	<h1>{{template "title" .}}</h1>
+	{{template "hypha list" .Entries}}
 </main>
 {{end}}
