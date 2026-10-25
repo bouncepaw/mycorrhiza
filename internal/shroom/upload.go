@@ -52,7 +52,10 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 
 	// Privilege check
 	if !u.CanProceed("upload-text") {
-		rejectEditLog(h, u, "no rights")
+		slog.Info("Reject edit",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
 		hop.Abort()
 		return errors.New("ui.act_no_rights")
 	}
@@ -162,7 +165,10 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User
 
 	// Privilege check
 	if !u.CanProceed("upload-binary") {
-		rejectUploadMediaLog(h, u, "no rights")
+		slog.Info("Reject upload media",
+			"hyphaName", h.CanonicalName(),
+			"username", u.Name,
+			"reason", "unauthorized")
 		return errors.New("ui.act_no_rights")
 	}
 
