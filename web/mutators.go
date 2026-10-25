@@ -156,7 +156,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		err     error
 	)
 
-	if err := shroom.CanEdit(u, h, lc); err != nil {
+	if err := shroom.CanEdit(u, h); err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
 		return
 	}
@@ -237,7 +237,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 	}
-	if err := shroom.CanAttach(u, h, lc); err != nil {
+	if err := shroom.CanAttach(u, h); err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
 	}
 
