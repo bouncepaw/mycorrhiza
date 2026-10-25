@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/go-ini/ini"
+	"gopkg.in/ini.v1"
 )
 
 // These variables represent the configuration. You are not meant to modify
