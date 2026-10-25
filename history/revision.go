@@ -144,9 +144,9 @@ func gitLog(args ...string) ([]Revision, error) {
 		"log", "--abbrev-commit", "--no-merges",
 		"--pretty=format:%h\t%ae\t%at\t%s",
 	}, args...)
-	slog.With("args", args).Debug("gitLog()")
+	slog.Debug("gitLog()", "args", args)
 	out, err := silentGitsh(args...)
-	slog.With("out", out.String()).Debug("gitLog()")
+	slog.Debug("gitLog()", "out", out.String())
 	if strings.Contains(out.String(), "bad revision 'HEAD'") {
 		// Then we have no recent changes! It's a hack.
 		return nil, nil
