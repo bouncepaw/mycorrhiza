@@ -24,11 +24,11 @@
             </form>
             {{template "telegram widget" .}}
         {{else if .UseAuth}}
-            <p>{%s lc.Get("auth.noregister") %}</p>
-            <p><a href="/{{.RawQuery}}">← {%s lc.Get("auth.go_back") %}</a></p>
+            <p>{{.Meta.Lc.Get "auth.noregister"}}</p>
+            <p><a href="/{{.RawQuery}}">← {{.Meta.Lc.Get "auth.go_back"}}</a></p>
         {{else}}
-            <p>{%s lc.Get("auth.noauth") %}</p>
-            <p><a href="/{{.RawQuery}}">← {%s lc.Get("auth.go_back") %}</a></p>
+            <p>{{.Meta.Lc.Get "auth.noauth"}}</p>
+            <p><a href="/{{.RawQuery}}">← {{.Meta.Lc.Get "auth.go_back"}}</a></p>
         {{end}}
     </section>
 </main>

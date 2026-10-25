@@ -1,69 +1,20 @@
 {
-	"login": "Login",
-	"register": "Register",
-	"title_search": "Search by title",
-	"admin_panel": "Admin panel",
-
-	"subhyphae": "Subhyphae",
-
-	"random_no_hyphae": "There are no hyphae",
-	"random_no_hyphae_tip": "It is impossible to display a random hypha because the wiki does not contain any hyphae",
-
-	"error": "Error",
-	"error_text_fetch": "Could not fetch text data",
-	"error_try_again": "Try again",
-	"error_go_back": "Go back to the hypha.",
-	
-	"ask_rename": "Rename %s",
-	"rename_to": "New name",
-	"rename_recurse": "Rename subhyphae too",
-	"rename_tip": "If you rename this hypha, all incoming links and all relative outcoming links will break. You will also lose all history for the new name. Rename carefully.",
-	"rename_taken": "Name taken",
-	"rename_taken_tip": "Hypha named {{.name}} already exists, cannot rename",
-	"rename_noname": "No name given",
-	"rename_noname_tip": "No new name is given",
-	"rename_badname": "Invalid name",
-	"rename_badname_tip": "Invalid new name. Names cannot contain characters {{.chars}}.",
-
-	"act_no_media": "No media",
-	"act_no_media_tip": "Cannot remove media because this is not a media hypha",
-	"act_norights": "Not enough rights",
-	"act_notexist": "Does not exist",
-	"act_norights_delete": "Not enough rights to delete, you must be a moderator",
-	"act_notexist_delete": "Cannot delete this hypha because it does not exist",
-	"act_norights_rename": "Not enough rights to rename, you must be a trusted editor",
-	"act_notexist_rename": "Cannot rename this hypha because it does not exist",
-	"act_norights_remove_media": "Not enough rights to remove media, you must be a trusted editor",
-	"act_notexist_remove_media": "Cannot remove media because this hypha does not exist",
-	"act_norights_edit": "You must be an editor to edit a hypha",
-	"act_norights_upload_media": "You must be an editor to upload media",
-
-	"ask_remove_media": "Remove media from %s?",
-	"ask_really": "Do you really want to {{.verb}} hypha {{.name}}?",
-	"ask_delete_verb": "delete",
-	"ask_remove_media_verb": "remove_media",
-	
-	"diff_title": "Diff of {{.name}} at {{.rev}}",
-	
-	"revision_title": "",
-	"revision_warning": "",
-	"revision_link": "",
-	"revision_no_text": "This hypha had no text at this revision.",
-
-	"about_title": "About {{.name}}",
-
-	"users_title": "User list",
-
-	"no_rights": "Not enough rights",
-	"reindex_no_rights": "You must be an admin to reindex hyphae.",
-	"header_no_rights": "You must be a moderator to update header links.",
-
-	"media_download": "Download media",
-	"media_novideo": "Your browser does not support video.",
-	"media_novideo_link": "Download video",
-	"media_noaudio": "Your browser does not support audio.",
-	"media_noaudio_link": "Download audio",
-
-	"confirm": "Confirm",
-	"cancel": "Cancel"
+  "random_no_hyphae_tip": "It is impossible to display a random hypha because the wiki does not contain any hyphae",
+  "error": "Error",
+  "error_text_fetch": "Could not fetch text data",
+  "error_go_back": "Go back to the hypha.",
+  "rename_taken_tip": "Hypha named {{.name}} already exists, cannot rename",
+  "rename_noname_tip": "No new name is given",
+  "rename_badname_tip": "Invalid new name. Names cannot contain characters {{.chars}}.",
+  "act_norights_edit": "You must be an editor to edit a hypha",
+  "act_norights_media": "You must be an editor to upload media",
+  "revision_no_text": "This hypha had no text at this revision.",
+  "about_title": "About {{.name}}",
+  "reindex_no_rights": "You must be an admin to reindex hyphae.",
+  "header_no_rights": "You must be a moderator to update header links.",
+  "media_download": "Download media",
+  "media_novideo": "Your browser does not support video.",
+  "media_novideo_link": "Download video",
+  "media_noaudio": "Your browser does not support audio.",
+  "media_noaudio_link": "Download audio"
 }
