@@ -4,7 +4,7 @@
 	{{if .Ext}}<span class="media-type-badge">{{.Ext}}</span>{{end}}
 {{end}}
 {{define "hypha list"}}
-	<ul class="hypha-list">
+	<ol class="hypha-list">
 		{{range .}}
 			<li>
 				{{if .Children}}
@@ -17,7 +17,7 @@
 				{{end}}
 			</li>
 		{{end}}
-	</ul>
+	</ol>
 {{end}}
 {{define "body"}}
 <main class="main-width">
