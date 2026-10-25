@@ -16,9 +16,8 @@
 
 ol:not(.mycomarkup-doc ol) a { text-decoration: none; display: inline-block; padding: .25rem; }
 ol:not(.mycomarkup-doc ol) a:hover { text-decoration: underline; }
-.hypha-list { list-style: decimal; padding-left: 2rem; margin: .5rem 0; }
-.hypha-list .hypha-list { margin: 0; }
-.hypha-list li { padding-left: .375rem; }
+.hypha-list { list-style: none; padding: 0; margin: .5rem 0; }
+.hypha-list .hypha-list { margin: 0; padding-left: 1.5rem; }
 .hypha-list a { text-decoration: none; display: inline-block; padding: .25rem; overflow-wrap: anywhere; }
 .hypha-list a:hover { text-decoration: underline; }
 .hypha-list li > a { margin-left: 1.25rem; }
