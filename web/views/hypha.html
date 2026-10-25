@@ -53,19 +53,19 @@
                     <li class="hypha-info__entry hypha-info__entry_history">
                         <a class="hypha-info__link" href="/history/{{.HyphaName}}">
                             {{block "history" .}}View history{{end}}</a></li>
-
+                {{if .Meta.U.CanProceed "rename"}}
                     <li class="hypha-info__entry hypha-info__entry_rename">
                         <a class="hypha-info__link" href="/rename/{{.HyphaName}}">
                             {{block "rename" .}}Rename{{end}}</a></li>
-
+                {{end}}{{if .Meta.U.CanProceed "delete"}}
                     <li class="hypha-info__entry hypha-info__entry_delete">
                         <a class="hypha-info__link" href="/delete/{{.HyphaName}}">
                             {{block "delete" .}}Delete{{end}}</a></li>
-
+                {{end}}
                     <li class="hypha-info__entry hypha-info__entry_text">
                         <a class="hypha-info__link" href="/text/{{.HyphaName}}">
                             {{block "view markup" .}}View markup{{end}}</a></li>
-
+                {{if .Meta.U.CanProceed "upload-binary"}}
                     <li class="hypha-info__entry hypha-info__entry_media">
                         <a class="hypha-info__link" href="/media/{{.HyphaName}}">
                             {{- if .IsMediaHypha -}}
@@ -73,7 +73,7 @@
                             {{- else -}}
                                 {{block "turn to media" .}}Turn to media{{end}}
                             {{- end}}</a></li>
-
+                {{end}}
                     <li class="hypha-info__entry hypha-info__entry_backlinks">
                         <a class="hypha-info__link" href="/backlinks/{{.HyphaName}}">
                             {{block "backlinks" .}}{{.BacklinkCount}} backlink{{if ne .BacklinkCount 1}}s{{end}}{{end}}</a></li>
