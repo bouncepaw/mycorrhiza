@@ -157,7 +157,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if err := shroom.CanEdit(u, h, lc); err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
 		return
 	}
 
@@ -238,7 +238,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 	}
 	if err := shroom.CanAttach(u, h, lc); err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get(err.Error()))
 	}
 
 	// If file is not passed:
