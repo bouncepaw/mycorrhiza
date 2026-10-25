@@ -14,6 +14,8 @@ var (
 	fs                          embed.FS
 	chainList, chainTitleSearch viewutil.Chain
 	ruTranslation               = `
+{{define "expand all"}}Развернуть всё{{end}}
+{{define "collapse all"}}Свернуть всё{{end}}
 {{define "hypha count"}}{{.HyphaCount}} {{if eq .RussianHyphaCountForm "one"}}гифа{{else if eq .RussianHyphaCountForm "few"}}гифы{{else}}гиф{{end}}{{end}}
 {{define "search:"}}Поиск: {{.}}{{end}}
 {{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
