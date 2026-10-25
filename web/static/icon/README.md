@@ -1,7 +1,9 @@
 # Icons
 
-#### `{http,gemini,mailto}-proto`
+#### `{http,gemini,mailto,tel}-proto`
 These are from https://remixicon.com/.
+
+License terms: https://github.com/Remix-Design/remixicon/blob/master/License
 
 #### `gopher-proto`
 This is a modified version of https://www.svgrepo.com/svg/232085/rat.
