@@ -153,7 +153,7 @@ article pre.codeblock { padding:.5rem; white-space: pre-wrap; border-radius: .25
 .binary-container_with-audio audio { max-width: 100%; max-height: 30em; width: auto; }
 
 .subhyphae__title { padding-bottom: .5rem; clear: both; }
-.navi-title { padding-bottom: .5rem; margin: .25rem 0; }
+.navi-title { padding-bottom: .5rem; margin: .25rem 0; font-size: 1.5rem; }
 .navi-title a {text-decoration:none; }
 .navi-title__separator { margin: 0 .25rem; }
 .navi-title__colon { margin-right: .5rem; }
@@ -820,7 +820,6 @@ a.btn_destructive:visited,
  */
 .btn_navititle {
 	float: right;
-	margin: -0.25rem 0;
 	padding: 0;
 }
 .btn__link_navititle {
