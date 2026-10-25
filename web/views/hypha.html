@@ -76,7 +76,7 @@
 
                     <li class="hypha-info__entry hypha-info__entry_backlinks">
                         <a class="hypha-info__link" href="/backlinks/{{.HyphaName}}">
-                            {{block "backlinks" .}}backlink{{if gt .BacklinkCount 1}}s{{end}}{{end}}</a></li>
+                            {{block "backlinks" .}}{{.BacklinkCount}} backlink{{if ne .BacklinkCount 1}}s{{end}}{{end}}</a></li>
                 </ul>
             </nav>
         </section>
