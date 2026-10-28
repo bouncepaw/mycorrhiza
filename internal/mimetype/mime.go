@@ -17,21 +17,11 @@ func ToExtension(mimeType string) string {
 		return ".ico"
 	case "application/ogg":
 		return ".ogg"
-	case "audio/mp3":
-		return ".mp3"
-	case "audio/mpeg3":
+	case "audio/mp3", "audio/mpeg3", "audio/mpeg":
 		return ".mp3"
 	case "video/mp4":
 		return ".mp4"
-	case "audio/vnd.wav":
-		return ".wav"
-	case "audio/vnd.wave":
-		return ".wav"
-	case "audio/wave":
-		return ".wav"
-	case "audio/x-pn-wav":
-		return ".wav"
-	case "audio/x-wav":
+	case "audio/vnd.wav", "audio/vnd.wave", "audio/wave", "audio/x-pn-wav", "audio/x-wav":
 		return ".wav"
 	}
 	if exts, err := mime.ExtensionsByType(mimeType); err == nil && len(exts) > 0 {
@@ -47,6 +37,10 @@ func FromExtension(ext string) string {
 		return "image/x-icon"
 	case ".ogg":
 		return "application/ogg"
+	case ".flac":
+		return "audio/flac"
+	case ".wav":
+		return "audio/wav"
 	}
 	if mimeType := mime.TypeByExtension(strings.ToLower(ext)); mimeType != "" {
 		return mimeType
