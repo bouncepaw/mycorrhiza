@@ -16,6 +16,15 @@
 
 ol:not(.mycomarkup-doc ol) a { text-decoration: none; display: inline-block; padding: .25rem; }
 ol:not(.mycomarkup-doc ol) a:hover { text-decoration: underline; }
+.hypha-list { list-style: none; padding: 0; margin: .5rem 0; }
+.hypha-list .hypha-list { margin: 0; padding-left: 1.5rem; }
+.hypha-list a { text-decoration: none; display: inline-block; padding: .25rem; overflow-wrap: anywhere; }
+.hypha-list a:hover { text-decoration: underline; }
+.hypha-list li > a { margin-left: 1.25rem; }
+.hypha-list summary { list-style: none; cursor: pointer; }
+.hypha-list summary::-webkit-details-marker { display: none; }
+.hypha-list summary::before { content: '▸'; display: inline-block; width: 1.25rem; }
+.hypha-list details[open] > summary::before { content: '▾'; }
 .media-type-badge { font-size: smaller; color: #999; }
 
 /* General element positions, from small to big */
