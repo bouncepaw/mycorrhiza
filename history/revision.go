@@ -1,6 +1,7 @@
 package history
 
 import (
+	"cmp"
 	"fmt"
 	"html"
 	"log/slog"
@@ -8,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -132,6 +134,34 @@ func (rev Revision) HyphaeLinksHTML() string {
 	return buf.String()
 }
 
+// gitLogFollowRenamesMany gets the files' history and merges it into a single []Revision. Fails at the first error encountered.
+func gitLogFollowRenamesMany(filesWildcard string) ([]Revision, error) {
+	matches, err := filepath.Glob(filesWildcard)
+	if err != nil {
+		return nil, err
+	}
+
+	var revsWithDuplicates []Revision
+	for _, r := range matches {
+		revs, err := gitLogFollowRenames(r)
+		if err != nil {
+			return nil, err
+		}
+		revsWithDuplicates = append(revsWithDuplicates, revs...)
+	}
+
+	slices.SortFunc(revsWithDuplicates, func(a, b Revision) int {
+		return cmp.Or(cmp.Compare(a.Hash, b.Hash), a.Time.Compare(b.Time))
+	})
+
+	deduplicatedRevs := slices.CompactFunc(revsWithDuplicates, func(a, b Revision) bool {
+		return cmp.Compare(a.Hash, b.Hash) == 0
+	})
+
+	// revs already sorted by hash and time
+	return deduplicatedRevs, nil
+}
+
 // gitLogFollowRenames the same as gitLog but used for single file history
 func gitLogFollowRenames(args ...string) ([]Revision, error) {
 	args = append([]string{"--follow", "--"}, args...)
@@ -144,9 +174,9 @@ func gitLog(args ...string) ([]Revision, error) {
 		"log", "--abbrev-commit", "--no-merges",
 		"--pretty=format:%h\t%ae\t%at\t%s",
 	}, args...)
-	slog.Debug("gitLog()", "args", args)
+	slog.Info("gitLog()", "args", args)
 	out, err := silentGitsh(args...)
-	slog.Debug("gitLog()", "out", out.String())
+	slog.Info("gitLog()", "out", out.String())
 	if strings.Contains(out.String(), "bad revision 'HEAD'") {
 		// Then we have no recent changes! It's a hack.
 		return nil, nil
@@ -234,7 +264,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 		hyphaName = hyphaName + ".myco"
 	}
 
-	revs, err := gitLogFollowRenames(hyphaName) //+".*")
+	revs, err := gitLogFollowRenamesMany(hyphaName + ".*")
 	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 	return revs, err
 }
