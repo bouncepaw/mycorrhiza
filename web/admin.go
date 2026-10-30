@@ -8,11 +8,12 @@ import (
 	"os"
 	"sort"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
-	"github.com/gorilla/mux"
 )
 
 const adminTranslationRu = `
@@ -156,9 +157,9 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 
 	if rq.Method == http.MethodPost {
 		oldGroup := u.Group
-		newGroup := f.Get("group")
+		newGroup := user.GroupKind(f.Get("group"))
 
-		if user.ValidGroup(newGroup) {
+		if newGroup.IsValid() {
 			u.Group = newGroup
 			if err := user.SaveUserDatabase(); err != nil {
 				u.Group = oldGroup
@@ -173,7 +174,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 
-	f.Put("group", u.Group)
+	f.Put("group", u.Group.String())
 
 	if f.HasError() {
 		w.WriteHeader(http.StatusBadRequest)
@@ -260,7 +261,13 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		// Create a user
 		f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
 
-		err := user.Register(f.Get("name"), f.Get("password"), f.Get("group"), "local", true)
+		err := user.Register(
+			f.Get("name"),
+			f.Get("password"),
+			user.GroupKind(f.Get("group")),
+			"local",
+			true,
+		)
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)

@@ -17,7 +17,7 @@ import (
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
 	Name         string    `json:"name"`
-	Group        string    `json:"group"`
+	Group        GroupKind `json:"group"`
 	Password     string    `json:"hashed_password"`
 	RegisteredAt time.Time `json:"registered_on"`
 	// Source is where the user from. Valid values: local, telegram.
@@ -30,7 +30,7 @@ type User struct {
 }
 
 // Route — Right (more is more right)
-var minimalRights = map[string]int{
+var minimalRights = map[string]GroupLevel{
 	"text":                 0,
 	"backlinks":            0,
 	"history":              0,
@@ -47,30 +47,6 @@ var minimalRights = map[string]int{
 	"reindex":              4,
 	"admin":                4,
 	"admin/shutdown":       4,
-}
-
-var groups = []string{
-	"anon",
-	"reader",
-	"editor",
-	"trusted",
-	"moderator",
-	"admin",
-}
-
-// Group — Right level
-var groupRight = map[string]int{
-	"anon":      0,
-	"reader":    0,
-	"editor":    1,
-	"trusted":   2,
-	"moderator": 3,
-	"admin":     4,
-}
-
-// ValidGroup checks whether provided user group name exists.
-func ValidGroup(group string) bool {
-	return slices.Contains(groups, group)
 }
 
 // ValidSource checks whether provided user source name exists.
@@ -107,7 +83,7 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right := groupRight[user.Group]
+	right := GroupKind(user.Group).Level()
 	minimalRight, specified := minimalRights[route]
 
 	if !specified {

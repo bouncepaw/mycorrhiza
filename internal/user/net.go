@@ -42,7 +42,12 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 }
 
 // Register registers the given user. If it fails, a non-nil error is returned.
-func Register(username, password, group, source string, force bool) error {
+func Register(
+	username, password string,
+	group GroupKind,
+	source string,
+	force bool,
+) error {
 	if !IsValidUsername(username) {
 		return fmt.Errorf("illegal username ‘%s’", username)
 	}
@@ -51,7 +56,7 @@ func Register(username, password, group, source string, force bool) error {
 	switch {
 	case !IsValidUsername(username):
 		return fmt.Errorf("illegal username ‘%s’", username)
-	case !ValidGroup(group):
+	case !group.IsValid():
 		return fmt.Errorf("invalid group ‘%s’", group)
 	case !ValidSource(source):
 		return fmt.Errorf("invalid source ‘%s’", source)

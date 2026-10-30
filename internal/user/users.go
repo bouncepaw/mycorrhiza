@@ -22,7 +22,7 @@ func YieldUsers() chan *User {
 }
 
 // ListUsersWithGroup returns a slice with users of desired group.
-func ListUsersWithGroup(group string) []string {
+func ListUsersWithGroup(group GroupKind) []string {
 	var filtered []string
 	for u := range YieldUsers() {
 		if u.Group == group {
