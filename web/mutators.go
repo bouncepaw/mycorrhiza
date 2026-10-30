@@ -9,6 +9,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -40,7 +41,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
-	if !u.CanProceed("remove-media") {
+	if !u.CanProceed(userdomain.ActionRemoveMedia) {
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no rights")
 		return
 	}
@@ -65,7 +66,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 		meta = viewutil.MetaFrom(w, rq)
 	)
 
-	if !u.CanProceed("delete") {
+	if !u.CanProceed(userdomain.ActionDelete) {
 		slog.Info("No rights to delete hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
@@ -115,7 +116,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	if !u.CanProceed("rename") {
+	if !u.CanProceed(userdomain.ActionRename) {
 		slog.Info("No rights to rename hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
@@ -159,7 +160,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		err     error
 	)
 
-	if !u.CanProceed("upload-text") {
+	if !u.CanProceed(userdomain.ActionUploadText) {
 		slog.Info("Reject edit",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
@@ -248,7 +249,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 	}
-	if !u.CanProceed("upload-binary") {
+	if !u.CanProceed(userdomain.ActionUploadMedia) {
 		slog.Info("Reject upload media",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,

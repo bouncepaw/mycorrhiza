@@ -22,6 +22,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"github.com/bouncepaw/mycorrhiza/internal/tree"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -238,7 +239,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			"IsMyProfile":             isMyProfile,
 			"NaviTitle":               hypview.NaviTitle(meta, h.CanonicalName()),
 			"BacklinkCount":           backlinks.BacklinksCount(h.CanonicalName()),
-			"GivenPermissionToModify": user.CanProceed(rq, "edit"),
+			"GivenPermissionToModify": user.CanProceed(rq, userdomain.ActionEdit),
 			"Categories":              cats,
 			"IsMediaHypha":            false,
 		}

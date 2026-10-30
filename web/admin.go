@@ -116,7 +116,7 @@ func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 
 // handlerAdminShutdown kills the wiki.
 func handlerAdminShutdown(w http.ResponseWriter, rq *http.Request) {
-	if user.CanProceed(rq, "admin/shutdown") {
+	if user.CanProceed(rq, userdomain.ActionAdminShutdown) {
 		slog.Info("An admin commanded the wiki to shutdown")
 		os.Exit(0)
 	}

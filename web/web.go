@@ -16,6 +16,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/misc"
@@ -85,7 +86,7 @@ func Handler() http.Handler {
 	// Admin routes
 	if cfg.UseAuth {
 		adminRouter := r.PathPrefix("/admin").Subrouter()
-		adminRouter.Use(groupMiddleware("admin"))
+		adminRouter.Use(actionMiddleware(userdomain.ActionAdmin))
 
 		adminRouter.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
 		adminRouter.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
@@ -117,10 +118,10 @@ func Handler() http.Handler {
 	return router
 }
 
-func groupMiddleware(group string) func(http.Handler) http.Handler {
+func actionMiddleware(action userdomain.Action) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
-			if cfg.UseAuth && user.CanProceed(rq, group) {
+			if cfg.UseAuth && user.CanProceed(rq, action) {
 				next.ServeHTTP(w, rq)
 				return
 			}

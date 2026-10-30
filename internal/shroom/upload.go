@@ -17,6 +17,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 )
 
 func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
@@ -51,7 +52,7 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) e
 		WithUser(u)
 
 	// Privilege check
-	if !u.CanProceed("upload-text") {
+	if !u.CanProceed(userdomain.ActionUploadText) {
 		slog.Info("Reject edit",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
@@ -164,7 +165,7 @@ func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) 
 func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User) error {
 
 	// Privilege check
-	if !u.CanProceed("upload-binary") {
+	if !u.CanProceed(userdomain.ActionUploadMedia) {
 		slog.Info("Reject upload media",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,

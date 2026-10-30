@@ -21,8 +21,7 @@ type User struct {
 	Group        userdomain.GroupKind `json:"group"`
 	Password     string               `json:"hashed_password"`
 	RegisteredAt time.Time            `json:"registered_on"`
-	// Source is where the user from. Valid values: local, telegram.
-	Source userdomain.Source `json:"source"`
+	Source       userdomain.Source    `json:"source"`
 	sync.RWMutex
 
 	// A note about why HashedPassword is string and not []byte. The reason is
@@ -30,33 +29,13 @@ type User struct {
 	// acceptable.
 }
 
-// Route — Right (more is more right)
-var minimalRights = map[string]userdomain.GroupLevel{
-	"text":                 0,
-	"backlinks":            0,
-	"history":              0,
-	"media":                1,
-	"edit":                 1,
-	"upload-binary":        1,
-	"rename":               1,
-	"upload-text":          1,
-	"add-to-category":      1,
-	"remove-from-category": 1,
-	"remove-media":         2,
-	"update-header-links":  3,
-	"delete":               3,
-	"reindex":              4,
-	"admin":                4,
-	"admin/shutdown":       4,
-}
-
 // EmptyUser constructs an anonymous user.
 func EmptyUser() *User {
 	return &User{
 		Name:     "anon",
-		Group:    "anon",
+		Group:    userdomain.GroupAnon,
 		Password: "",
-		Source:   "local",
+		Source:   userdomain.SourceLocal,
 	}
 }
 
@@ -64,14 +43,14 @@ func EmptyUser() *User {
 func WikimindUser() *User {
 	return &User{
 		Name:     "wikimind",
-		Group:    "admin",
+		Group:    userdomain.GroupAdmin,
 		Password: "",
-		Source:   "local",
+		Source:   userdomain.SourceLocal,
 	}
 }
 
 // CanProceed checks whether user has rights to visit the provided path (and perform an action).
-func (user *User) CanProceed(route string) bool {
+func (user *User) CanProceed(action userdomain.Action) bool {
 	if !cfg.UseAuth {
 		return true
 	}
@@ -79,13 +58,7 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right := userdomain.GroupKind(user.Group).Level()
-	minimalRight, specified := minimalRights[route]
-
-	if !specified {
-		return false
-	}
-	return right >= minimalRight
+	return user.Group.Level() >= action.MinimalLevel()
 }
 
 func (user *User) isCorrectPassword(password string) bool {

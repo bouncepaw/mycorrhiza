@@ -19,9 +19,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CanProceed returns `true` if the user in `rq` has enough rights to access `route`.
-func CanProceed(rq *http.Request, route string) bool {
-	return FromRequest(rq).CanProceed(route)
+// CanProceed returns `true` if the user in `rq` has enough rights to perform action.
+func CanProceed(rq *http.Request, action userdomain.Action) bool {
+	return FromRequest(rq).CanProceed(action)
 }
 
 // FromRequest returns user from `rq`. If there is no user, an anon user is returned instead.
