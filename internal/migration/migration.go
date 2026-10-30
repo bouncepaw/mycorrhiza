@@ -27,7 +27,7 @@ func genericLineMigrator(
 		hop = history.
 			Operation(history.TypeMarkupMigration).
 			WithMsg(commitMessage).
-			WithUser(user.WikimindUser())
+			WithUser(usersvc.WikimindUser())
 		mycoFiles = []string{}
 	)
 

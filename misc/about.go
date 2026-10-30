@@ -102,8 +102,8 @@ func AboutHTML(lc *l18n.Localizer) string {
 	}
 	data := aboutData
 	data.Version = version.Short
-	data.Admins = user.ListUsersWithGroup("admin")
-	data.UserCount = user.Count()
+	data.Admins = usersvc.ListUsersWithGroup("admin")
+	data.UserCount = usersvc.Count()
 	data.RegistrationLimit = cfg.RegistrationLimit
 	data.Cfg = map[string]any{
 		"UseAuth":           cfg.UseAuth,

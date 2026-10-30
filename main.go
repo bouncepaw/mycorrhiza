@@ -50,7 +50,7 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	user.InitUserDatabase()
+	usersvc.InitUserDatabase()
 	if err := history.Start(); err != nil {
 		os.Exit(1)
 	}
@@ -68,7 +68,7 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
-	if !user.HasAnyAdmins() {
+	if !usersvc.HasAnyAdmins() {
 		slog.Error("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 

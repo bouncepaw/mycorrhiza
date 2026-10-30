@@ -1,4 +1,4 @@
-package user
+package usersvc
 
 import (
 	"crypto/hmac"

@@ -1,4 +1,4 @@
-package user
+package usersvc
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
@@ -14,19 +13,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User contains information about a given user required for identification.
 type User struct {
-	// Name is a username. It must follow hypha naming rules.
-	Name         string               `json:"name"`
-	Group        userdomain.GroupKind `json:"group"`
-	Password     string               `json:"hashed_password"`
-	RegisteredAt time.Time            `json:"registered_on"`
-	Source       userdomain.Source    `json:"source"`
+	userdomain.UserDTO
 	sync.RWMutex
-
-	// A note about why HashedPassword is string and not []byte. The reason is
-	// simple: golang's json marshals []byte as slice of numbers, which is not
-	// acceptable.
 }
 
 // EmptyUser constructs an anonymous user.
@@ -71,7 +60,7 @@ func (user *User) isCorrectPassword(password string) bool {
 
 // ShowLockMaybe redirects to the lock page if the user is anon and the wiki has been configured to use the lock. It returns true if the user was redirected.
 func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
-	if cfg.Locked && user.Group == "anon" {
+	if cfg.Locked && user.Group == userdomain.GroupAnon {
 		http.Redirect(w, rq, "/lock", http.StatusSeeOther)
 		return true
 	}
@@ -80,7 +69,7 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 
 // Sets a new password for the user.
 func (user *User) ChangePassword(password string) error {
-	if user.Source != "local" {
+	if user.Source != userdomain.SourceLocal {
 		return fmt.Errorf("Only local users can change their passwords.")
 	}
 

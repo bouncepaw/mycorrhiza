@@ -71,7 +71,7 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if ok := user.CanProceed(rq, userdomain.ActionReindex); !ok {
+	if ok := usersvc.CanProceed(rq, userdomain.ActionReindex); !ok {
 		var lc = l18n.FromRequest(rq)
 		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.reindex_no_rights"))
 		slog.Info("No rights to reindex")
@@ -87,7 +87,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 // handlerUpdateHeaderLinks updates header links by reading the configured hypha, if there is any, or resorting to default values.
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	if ok := user.CanProceed(rq, userdomain.ActionUpdateHeaderLinks); !ok {
+	if ok := usersvc.CanProceed(rq, userdomain.ActionUpdateHeaderLinks); !ok {
 		var lc = l18n.FromRequest(rq)
 		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, lc.Get("ui.header_no_rights"))
 		slog.Info("No rights to update header links")

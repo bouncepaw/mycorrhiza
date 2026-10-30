@@ -37,7 +37,7 @@ func initMutators(r *mux.Router) {
 func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = user.FromRequest(rq)
+		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
@@ -61,7 +61,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = user.FromRequest(rq)
+		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
@@ -102,7 +102,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = user.FromRequest(rq)
+		u    = usersvc.FromRequest(rq)
 		lc   = l18n.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "rename"))
 		meta = viewutil.MetaFrom(w, rq)
@@ -148,7 +148,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = user.FromRequest(rq)
+		u    = usersvc.FromRequest(rq)
 		lc   = l18n.FromRequest(rq)
 		meta = viewutil.MetaFrom(w, rq)
 
@@ -195,7 +195,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = user.FromRequest(rq)
+		u    = usersvc.FromRequest(rq)
 		meta = viewutil.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "upload-text")
@@ -241,7 +241,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName          = util.HyphaNameFromRq(rq, "upload-binary")
 		h                  = hyphae.ByName(hyphaName)
-		u                  = user.FromRequest(rq)
+		u                  = usersvc.FromRequest(rq)
 		lc                 = l18n.FromRequest(rq)
 		file, handler, err = rq.FormFile("binary")
 		meta               = viewutil.MetaFrom(w, rq)

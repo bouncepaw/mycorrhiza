@@ -65,7 +65,7 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName = util.HyphaNameFromRq(rq, "media")
 		h         = hyphae.ByName(hyphaName)
-		u         = user.FromRequest(rq)
+		u         = usersvc.FromRequest(rq)
 		isMedia   = false
 
 		mime     string
@@ -239,7 +239,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 			"IsMyProfile":             isMyProfile,
 			"NaviTitle":               hypview.NaviTitle(meta, h.CanonicalName()),
 			"BacklinkCount":           backlinks.BacklinksCount(h.CanonicalName()),
-			"GivenPermissionToModify": user.CanProceed(rq, userdomain.ActionEdit),
+			"GivenPermissionToModify": usersvc.CanProceed(rq, userdomain.ActionEdit),
 			"Categories":              cats,
 			"IsMediaHypha":            false,
 		}

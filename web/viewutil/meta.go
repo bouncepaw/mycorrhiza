@@ -12,7 +12,7 @@ import (
 // Meta is a bundle of common stuffs used by views, templates.
 type Meta struct {
 	Lc   *l18n.Localizer
-	U    *user.User
+	U    *usersvc.User
 	W    io.Writer
 	Addr string
 
@@ -25,7 +25,7 @@ type Meta struct {
 func MetaFrom(w http.ResponseWriter, rq *http.Request) Meta {
 	return Meta{
 		Lc:   l18n.FromRequest(rq),
-		U:    user.FromRequest(rq),
+		U:    usersvc.FromRequest(rq),
 		W:    w,
 		Addr: rq.URL.Path,
 	}

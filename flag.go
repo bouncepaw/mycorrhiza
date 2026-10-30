@@ -78,14 +78,14 @@ func createAdminCommand(name string) error {
 	}
 	cfg.UseAuth = true
 	cfg.AllowRegistration = true
-	user.InitUserDatabase()
+	usersvc.InitUserDatabase()
 
 	password, err := askPass("Password")
 	if err != nil {
 		slog.Error("Failed to prompt password", "err", err)
 		return err
 	}
-	if err := user.Register(name, password, "admin", "local", true); err != nil {
+	if err := usersvc.Register(name, password, "admin", "local", true); err != nil {
 		slog.Error("Failed to register admin", "err", err)
 		return err
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 // Delete deletes the hypha and makes a history record about that.
-func Delete(u *user.User, h hyphae.ExistingHypha) error {
+func Delete(u *usersvc.User, h hyphae.ExistingHypha) error {
 	hop := history.
 		Operation(history.TypeDeleteHypha).
 		WithMsg(fmt.Sprintf("Delete ‘%s’", h.CanonicalName())).

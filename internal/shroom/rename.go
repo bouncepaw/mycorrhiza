@@ -20,7 +20,7 @@ import (
 )
 
 // Rename renames the old hypha to the new name and makes a history record about that. Call if and only if the user has the permission to rename.
-func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *user.User) error {
+func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leaveRedirections bool, u *usersvc.User) error {
 	// * bouncepaw hates this function and related renaming functions
 	if newName == "" {
 		slog.Info("Reject rename",
