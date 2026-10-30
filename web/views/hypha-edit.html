@@ -47,7 +47,9 @@
 {{define "editing hypha"}}Edit {{beautifulName .}}{{end}}
 {{define "previewing hypha"}}Preview of {{beautifulName .}}{{end}}
 {{define "title"}}
-{{- if .Preview -}}
+{{- if .IsUnnamed -}}
+    {{template "new hypha" .}}
+{{- else if .Preview -}}
     {{template "previewing hypha" .HyphaName}}
 {{- else -}}
     {{template "editing hypha" .HyphaName}}
@@ -55,9 +57,11 @@
 {{end}}
 {{define "body"}}
 <main class="main-width edit {{if .Preview}}edit_with-preview{{else}}edit_no-preview{{end}}">
-    <form method="post" class="edit-form" action="/upload-text/{{.HyphaName}}">
+    <form method="post" class="edit-form" {{if .IsUnnamed}}action="/new" enctype="multipart/form-data"{{else}}action="/upload-text/{{.HyphaName}}"{{end}}>
         <h1 class="edit__title">
-            {{if .IsNew}}
+            {{if .IsUnnamed}}
+                {{template "new hypha" .}}
+            {{else if .IsNew}}
                 {{block "creating [[hypha]]" .HyphaName}}
                     Create <a href="/hypha/{{.}}">{{beautifulName .}}</a>
                 {{end}}
@@ -67,7 +71,32 @@
                 {{end}}
             {{end}}
         </h1>
+        {{if .Problem}}
+        <p class="warning" role="alert">
+            {{if eq .Problem "name"}}{{block "new invalid name" .}}Enter a valid hypha name.{{end}}{{end}}
+            {{if eq .Problem "empty"}}{{block "new empty" .}}Write some text or choose a media file.{{end}}{{end}}
+            {{if eq .Problem "upload"}}{{block "new upload failed" .}}The media could not be uploaded. Check the file and try again.{{end}}{{end}}
+            {{if eq .Problem "media-rights"}}{{block "new media forbidden" .}}You are not authorized to upload media.{{end}}{{end}}
+            {{if eq .Problem "save"}}{{block "new save failed" .}}The text could not be saved. Your draft is below.{{end}}{{end}}
+            {{if eq .Problem "partial"}}{{block "new partial" .}}The media was saved, but the text could not be saved. Copy your draft below and <a href="/edit/{{.CreatedName}}">edit the created hypha</a> to add it.{{end}}{{end}}
+        </p>
+        {{end}}
         <textarea name="text" class="edit-form__textarea" autofocus>{{.Content}}</textarea>
+        {{if .IsUnnamed}}
+        <p>
+            <label for="new-hypha-name">{{block "hypha name" .}}Name{{end}}</label>
+            <input id="new-hypha-name" class="edit-form__message" type="text" name="name" value="{{.HyphaName}}" required>
+        </p>
+        {{if .Meta.U.CanProceed "upload-binary"}}
+        <p>
+            <label for="new-hypha-media">{{block "optional media" .}}Media (optional){{end}}</label>
+            <input id="new-hypha-media" type="file" name="binary">
+        </p>
+        {{end}}
+        {{if .ReselectMedia}}
+        <p class="warning">{{block "reselect media" .}}Please select your media file again before saving.{{end}}</p>
+        {{end}}
+        {{end}}
         <p class="edit-form__message-zone">
             <input
                 id="text"
@@ -85,10 +114,10 @@
             <button type="submit" name="action" class="btn edit-form__save-and-edit" value="save-and-edit">
                 {{block "save and edit" .}}Save and edit{{end}}
             </button>
-            <button type="submit" name="action" class="btn edit-form__preview" value="preview">
+            <button type="submit" name="action" class="btn edit-form__preview" value="preview" {{if .IsUnnamed}}formnovalidate{{end}}>
                 {{block "preview" .}}Preview{{end}}
             </button>
-            <a href="/hypha/{{.HyphaName}}" class="btn btn_weak">
+            <a href="{{if .IsUnnamed}}/{{else}}/hypha/{{.HyphaName}}{{end}}" class="btn btn_weak">
                 {{template "cancel" .}}
             </a>
         </p>

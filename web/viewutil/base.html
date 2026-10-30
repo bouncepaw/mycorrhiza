@@ -34,6 +34,9 @@
 			</li>
 			<li class="top-bar__section top-bar__section_highlights">
 				<ul class="top-bar__highlights">
+					{{if .Meta.U.CanProceed "upload-text"}}
+					<li class="top-bar__highlight"><a class="top-bar__highlight-link" href="/new">{{block "new hypha" .}}New hypha{{end}}</a></li>
+					{{end}}
 					{{range .HeaderLinks}}
 						<li class="top-bar__highlight">
 							<a class="top-bar__highlight-link" href="{{.Href}}">{{.Display}}</a>

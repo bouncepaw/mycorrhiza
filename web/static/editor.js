@@ -8,7 +8,7 @@ let warnBeforeClosing = function (ev) {
     return ev.returnValue = 'Are you sure you want to exit? You have unsaved changes.';
 };
 
-textarea.addEventListener('input', function () {
+form.addEventListener('input', function () {
     window.hyphaChanged = true;
 });
 
