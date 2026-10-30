@@ -1,7 +1,5 @@
 package userdomain
 
-import "slices"
-
 type (
 	GroupKind  string
 	GroupLevel int
@@ -17,14 +15,16 @@ const (
 )
 
 func (k GroupKind) IsValid() bool {
-	return slices.Contains(
-		[]GroupKind{GroupAnon,
-			GroupReader,
-			GroupEditor,
-			GroupLegacyTrustedEditor,
-			GroupModerator,
-			GroupAdmin},
-		k)
+	switch k {
+	case GroupAnon,
+		GroupReader,
+		GroupEditor,
+		GroupLegacyTrustedEditor,
+		GroupModerator,
+		GroupAdmin:
+		return true
+	}
+	return false
 }
 
 func (k GroupKind) String() string {

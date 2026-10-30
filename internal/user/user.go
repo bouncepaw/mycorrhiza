@@ -22,7 +22,7 @@ type User struct {
 	Password     string               `json:"hashed_password"`
 	RegisteredAt time.Time            `json:"registered_on"`
 	// Source is where the user from. Valid values: local, telegram.
-	Source string `json:"source"`
+	Source userdomain.Source `json:"source"`
 	sync.RWMutex
 
 	// A note about why HashedPassword is string and not []byte. The reason is
@@ -48,11 +48,6 @@ var minimalRights = map[string]userdomain.GroupLevel{
 	"reindex":              4,
 	"admin":                4,
 	"admin/shutdown":       4,
-}
-
-// ValidSource checks whether provided user source name exists.
-func ValidSource(source string) bool {
-	return source == "local" || source == "telegram"
 }
 
 // EmptyUser constructs an anonymous user.

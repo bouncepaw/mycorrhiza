@@ -46,7 +46,7 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 func Register(
 	username, password string,
 	group userdomain.GroupKind,
-	source string,
+	source userdomain.Source,
 	force bool,
 ) error {
 	if !IsValidUsername(username) {
@@ -59,7 +59,7 @@ func Register(
 		return fmt.Errorf("illegal username ‘%s’", username)
 	case !group.IsValid():
 		return fmt.Errorf("invalid group ‘%s’", group)
-	case !ValidSource(source):
+	case !source.IsValid():
 		return fmt.Errorf("invalid source ‘%s’", source)
 	case HasUsername(username):
 		return fmt.Errorf("username ‘%s’ is already taken", username)
