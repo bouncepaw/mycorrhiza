@@ -2,6 +2,7 @@
 package hyphae
 
 import (
+	"path"
 	"regexp"
 	"strings"
 	"sync"
@@ -12,11 +13,14 @@ var hyphaNamePattern = regexp.MustCompile(`^[^?!:#@><*|"'&%{}]+$`)
 
 // IsValidName checks for invalid characters and path traversals.
 func IsValidName(hyphaName string) bool {
+	if path.IsAbs(hyphaName) {
+		return false
+	}
 	if !hyphaNamePattern.MatchString(hyphaName) {
 		return false
 	}
 	for segment := range strings.SplitSeq(hyphaName, "/") {
-		if segment == ".git" || segment == ".." {
+		if segment == ".git" || segment == ".." || segment == "." {
 			return false
 		}
 	}

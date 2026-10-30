@@ -19,7 +19,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const multipartMemoryThreshold = 10 << 20 // 10 MiB
+
 func initMutators(r *mux.Router) {
+	r.HandleFunc("/new", handlerNewHypha).Methods("GET", "POST")
 	r.PathPrefix("/edit/").HandlerFunc(handlerEdit)
 	r.PathPrefix("/rename/").HandlerFunc(handlerRename).Methods("GET", "POST")
 	r.PathPrefix("/delete/").HandlerFunc(handlerDelete).Methods("GET", "POST")
@@ -233,7 +236,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 // handlerUploadBinary uploads a new media for the hypha.
 func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	rq.ParseMultipartForm(10 << 20) // Set upload limit
+	rq.ParseMultipartForm(multipartMemoryThreshold)
 	var (
 		hyphaName          = util.HyphaNameFromRq(rq, "upload-binary")
 		h                  = hyphae.ByName(hyphaName)

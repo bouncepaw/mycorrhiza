@@ -57,6 +57,15 @@ func initPages() {
 		"delete tip":        "Нельзя отменить удаление гифы, но её история останется доступной.",
 	}, "views/hypha-delete.html")
 	pageHyphaEdit = newtmpl.NewPage(fs, map[string]string{
+		"hypha name":                  "Название",
+		"optional media":              "Медиа (необязательно)",
+		"new invalid name":            "Введите допустимое название гифы.",
+		"new empty":                   "Напишите текст или выберите медиафайл.",
+		"new upload failed":           "Не удалось загрузить медиа. Проверьте файл и попробуйте снова.",
+		"new media forbidden":         "У вас нет прав на загрузку медиа.",
+		"new save failed":             "Не удалось сохранить текст. Ваш черновик ниже.",
+		"new partial":                 `Медиа сохранено, но текст сохранить не удалось. Скопируйте черновик ниже и <a href="/edit/{{.CreatedName}}">отредактируйте созданную гифу</a>, чтобы добавить его.`,
+		"reselect media":              "Выберите медиафайл ещё раз перед сохранением.",
 		"editing hypha":               `Редактирование {{beautifulName .}}`,
 		"editing [[hypha]]":           `Редактирование <a href="/hypha/{{.}}">{{beautifulName .}}</a>`,
 		"creating [[hypha]]":          `Создание <a href="/hypha/{{.}}">{{beautifulName .}}</a>`,

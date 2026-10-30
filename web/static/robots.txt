@@ -13,6 +13,7 @@ Disallow: /rev-text/
 Disallow: /primitive-diff/
 Disallow: /media/
 Disallow: /edit/
+Disallow: /new
 Disallow: /delete/
 Disallow: /rename/
 Disallow: /remove-media/

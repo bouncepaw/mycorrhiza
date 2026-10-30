@@ -77,6 +77,7 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 	}
 
 	russianTranslation["search by title"] = "Поиск по названию"
+	russianTranslation["new hypha"] = "Новая гифа"
 	russianTranslation["login"] = "Войти"
 	russianTranslation["register"] = "Регистрация"
 	russianTranslation["cancel"] = "Отмена"

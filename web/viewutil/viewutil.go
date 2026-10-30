@@ -22,6 +22,7 @@ var (
 )
 
 const ruText = `
+{{define "new hypha"}}Новая гифа{{end}}
 {{define "search by title"}}Поиск по названию{{end}}
 {{define "login"}}Войти{{end}}
 {{define "register"}}Регистрация{{end}}
