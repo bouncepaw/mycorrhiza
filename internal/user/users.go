@@ -45,7 +45,7 @@ func Count() (i uint64) {
 
 func HasAnyAdmins() bool {
 	for u := range YieldUsers() {
-		if u.Group == "admin" {
+		if u.Group == userdomain.GroupAdmin {
 			return true
 		}
 	}
@@ -88,7 +88,7 @@ func DeleteUser(name string) error {
 	if loaded {
 		u := user.(*User)
 		u.Name = "anon"
-		u.Group = "anon"
+		u.Group = userdomain.GroupAnon
 		u.Password = ""
 		return SaveUserDatabase()
 	}
@@ -109,13 +109,13 @@ func UsersInGroups() (admins []string, moderators []string, editors []string, re
 	for u := range YieldUsers() {
 		switch u.Group {
 		// What if we place the users into sorted slices?
-		case "admin":
+		case userdomain.GroupAdmin:
 			admins = append(admins, u.Name)
-		case "moderator":
+		case userdomain.GroupModerator:
 			moderators = append(moderators, u.Name)
-		case "editor", "trusted":
+		case userdomain.GroupEditor, userdomain.GroupLegacyTrustedEditor:
 			editors = append(editors, u.Name)
-		case "reader":
+		case userdomain.GroupReader:
 			readers = append(readers, u.Name)
 		}
 	}
