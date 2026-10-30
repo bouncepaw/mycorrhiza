@@ -12,6 +12,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
@@ -157,7 +158,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 
 	if rq.Method == http.MethodPost {
 		oldGroup := u.Group
-		newGroup := user.GroupKind(f.Get("group"))
+		newGroup := userdomain.GroupKind(f.Get("group"))
 
 		if newGroup.IsValid() {
 			u.Group = newGroup
@@ -264,7 +265,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		err := user.Register(
 			f.Get("name"),
 			f.Get("password"),
-			user.GroupKind(f.Get("group")),
+			userdomain.GroupKind(f.Get("group")),
 			"local",
 			true,
 		)

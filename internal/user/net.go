@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 
 	"golang.org/x/crypto/bcrypt"
@@ -44,7 +45,7 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 // Register registers the given user. If it fails, a non-nil error is returned.
 func Register(
 	username, password string,
-	group GroupKind,
+	group userdomain.GroupKind,
 	source string,
 	force bool,
 ) error {

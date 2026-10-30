@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,10 +17,10 @@ import (
 // User contains information about a given user required for identification.
 type User struct {
 	// Name is a username. It must follow hypha naming rules.
-	Name         string    `json:"name"`
-	Group        GroupKind `json:"group"`
-	Password     string    `json:"hashed_password"`
-	RegisteredAt time.Time `json:"registered_on"`
+	Name         string               `json:"name"`
+	Group        userdomain.GroupKind `json:"group"`
+	Password     string               `json:"hashed_password"`
+	RegisteredAt time.Time            `json:"registered_on"`
 	// Source is where the user from. Valid values: local, telegram.
 	Source string `json:"source"`
 	sync.RWMutex
@@ -30,7 +31,7 @@ type User struct {
 }
 
 // Route — Right (more is more right)
-var minimalRights = map[string]GroupLevel{
+var minimalRights = map[string]userdomain.GroupLevel{
 	"text":                 0,
 	"backlinks":            0,
 	"history":              0,
@@ -83,7 +84,7 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right := GroupKind(user.Group).Level()
+	right := userdomain.GroupKind(user.Group).Level()
 	minimalRight, specified := minimalRights[route]
 
 	if !specified {
