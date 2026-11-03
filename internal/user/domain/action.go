@@ -43,7 +43,7 @@ var minimalRights = map[Action]GroupLevel{
 	ActionUploadText:        1,
 	ActionAddToCat:          1,
 	ActionRemoveFromCat:     1,
-	ActionRemoveMedia:       2,
+	ActionRemoveMedia:       1,
 	ActionUpdateHeaderLinks: 3,
 	ActionDelete:            3,
 	ActionReindex:           4,

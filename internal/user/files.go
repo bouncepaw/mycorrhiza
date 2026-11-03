@@ -1,19 +1,20 @@
 package usersvc
 
 import (
-	"encoding/json"
-	"errors"
 	"log/slog"
 	"os"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
+	"github.com/bouncepaw/mycorrhiza/internal/user/storage"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
+var database *storage.Storage
+
 // InitUserDatabase loads users, if necessary. Call it during initialization.
-func InitUserDatabase() {
+func InitUserDatabase(store *storage.Storage) {
+	database = store
 	ReadUsersFromFilesystem()
 }
 
@@ -27,26 +28,32 @@ func ReadUsersFromFilesystem() {
 }
 
 func usersFromFile() []*User {
-	var users []*User
-	contents, err := os.ReadFile(files.UserCredentialsJSON())
-	if errors.Is(err, os.ErrNotExist) {
-		return users
-	}
+	records, err := database.LoadUsers()
 	if err != nil {
-		slog.Error("Failed to read users.json", "err", err)
+		slog.Error("Failed to load users", "err", err)
 		os.Exit(1)
 	}
-
-	err = json.Unmarshal(contents, &users)
-	if err != nil {
-		slog.Error("Failed to unmarshal users.json contents", "err", err)
-		os.Exit(1)
+	users := make([]*User, 0, len(records))
+	for _, record := range records {
+		users = append(users, &User{UserDTO: record})
 	}
 
+	migrated := false
 	for _, u := range users {
+		// Upgrade accounts from the legacy trusted editor group.
+		if u.Group == "trusted" {
+			u.Group = userdomain.GroupEditor
+			migrated = true
+		}
 		u.Name = util.CanonicalName(u.Name)
 		if u.Source == "" {
 			u.Source = userdomain.SourceLocal
+		}
+	}
+	if migrated {
+		slog.Info("Migrated from the legacy trusted editors group")
+		if err := writeUserCredentials(users); err != nil {
+			slog.Error("Failed to persist trusted editor migration", "err", err)
 		}
 	}
 	slog.Info("Indexed users", "n", len(users))
@@ -63,25 +70,14 @@ func rememberUsers(userList []*User) {
 }
 
 func readTokensToUsers() {
-	contents, err := os.ReadFile(files.TokensJSON())
-	if os.IsNotExist(err) {
-		return
-	}
+	tmp, err := database.LoadTokens()
 	if err != nil {
-		slog.Error("Failed to read tokens.json", "err", err)
-		os.Exit(1)
-	}
-
-	var tmp map[string]string
-	err = json.Unmarshal(contents, &tmp)
-	if err != nil {
-		slog.Error("Failed to unmarshal tokens.json contents", "err", err)
+		slog.Error("Failed to load sessions", "err", err)
 		os.Exit(1)
 	}
 
 	for token, username := range tmp {
 		tokens.Store(token, username)
-		// commenceSession(username, token)
 	}
 	slog.Info("Indexed active sessions", "n", len(tmp))
 }
@@ -99,19 +95,17 @@ func dumpUserCredentials() error {
 		userList = append(userList, u)
 	}
 
-	blob, err := json.MarshalIndent(userList, "", "\t")
-	if err != nil {
-		slog.Error("Failed to marshal users.json", "err", err)
-		return err
-	}
+	return writeUserCredentials(userList)
+}
 
-	err = os.WriteFile(files.UserCredentialsJSON(), blob, 0666)
-	if err != nil {
-		slog.Error("Failed to write users.json", "err", err)
-		return err
+func writeUserCredentials(userList []*User) error {
+	records := make([]userdomain.UserDTO, 0, len(userList))
+	for _, u := range userList {
+		u.RLock()
+		records = append(records, u.UserDTO)
+		u.RUnlock()
 	}
-
-	return nil
+	return database.SaveUsers(records)
 }
 
 func dumpTokens() {
@@ -124,13 +118,7 @@ func dumpTokens() {
 		return true
 	})
 
-	blob, err := json.MarshalIndent(tmp, "", "\t")
-	if err != nil {
-		slog.Error("Failed to marshal tokens.json", "err", err)
-		return
-	}
-	err = os.WriteFile(files.TokensJSON(), blob, 0666)
-	if err != nil {
-		slog.Error("Failed to write tokens.json", "err", err)
+	if err := database.SaveTokens(tmp); err != nil {
+		slog.Error("Failed to save sessions", "err", err)
 	}
 }

@@ -113,7 +113,7 @@ func UsersInGroups() (admins []string, moderators []string, editors []string, re
 			admins = append(admins, u.Name)
 		case userdomain.GroupModerator:
 			moderators = append(moderators, u.Name)
-		case userdomain.GroupEditor, userdomain.GroupLegacyTrustedEditor:
+		case userdomain.GroupEditor:
 			editors = append(editors, u.Name)
 		case userdomain.GroupReader:
 			readers = append(readers, u.Name)

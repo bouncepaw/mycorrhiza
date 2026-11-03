@@ -6,12 +6,11 @@ type (
 )
 
 const (
-	GroupAnon                GroupKind = "anon"
-	GroupReader              GroupKind = "reader"
-	GroupEditor              GroupKind = "editor"
-	GroupLegacyTrustedEditor GroupKind = "trusted"
-	GroupModerator           GroupKind = "moderator"
-	GroupAdmin               GroupKind = "admin"
+	GroupAnon      GroupKind = "anon"
+	GroupReader    GroupKind = "reader"
+	GroupEditor    GroupKind = "editor"
+	GroupModerator GroupKind = "moderator"
+	GroupAdmin     GroupKind = "admin"
 )
 
 func (k GroupKind) IsValid() bool {
@@ -19,7 +18,6 @@ func (k GroupKind) IsValid() bool {
 	case GroupAnon,
 		GroupReader,
 		GroupEditor,
-		GroupLegacyTrustedEditor,
 		GroupModerator,
 		GroupAdmin:
 		return true
@@ -37,8 +35,6 @@ func (k GroupKind) Level() GroupLevel {
 		return 0
 	case GroupEditor:
 		return 1
-	case GroupLegacyTrustedEditor:
-		return 2
 	case GroupModerator:
 		return 3
 	case GroupAdmin:
