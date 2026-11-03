@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
@@ -127,7 +128,7 @@ func viewInterwiki(meta viewutil.Meta) {
 	viewutil.ExecutePage(meta, chainInterwiki, interwikiData{
 		BaseData: &viewutil.BaseData{},
 		Entries:  listOfEntries,
-		CanEdit:  meta.U.Group == "admin",
+		CanEdit:  meta.U.Group == userdomain.GroupAdmin,
 		Error:    "",
 	})
 }

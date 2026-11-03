@@ -8,6 +8,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 )
@@ -102,7 +103,7 @@ func AboutHTML(lc *l18n.Localizer) string {
 	}
 	data := aboutData
 	data.Version = version.Short
-	data.Admins = usersvc.ListUsersWithGroup("admin")
+	data.Admins = usersvc.ListUsersWithGroup(userdomain.GroupAdmin)
 	data.UserCount = usersvc.Count()
 	data.RegistrationLimit = cfg.RegistrationLimit
 	data.Cfg = map[string]any{

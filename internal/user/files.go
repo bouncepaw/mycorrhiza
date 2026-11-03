@@ -8,6 +8,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -45,7 +46,7 @@ func usersFromFile() []*User {
 	for _, u := range users {
 		u.Name = util.CanonicalName(u.Name)
 		if u.Source == "" {
-			u.Source = "local"
+			u.Source = userdomain.SourceLocal
 		}
 	}
 	slog.Info("Indexed users", "n", len(users))

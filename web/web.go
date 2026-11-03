@@ -168,7 +168,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	var (
 		username = rq.PostFormValue("username")
 		password = rq.PostFormValue("password")
-		err      = usersvc.Register(username, password, "editor", "local", false)
+		err      = usersvc.Register(username, password, userdomain.GroupEditor, userdomain.SourceLocal, false)
 	)
 	if err != nil {
 		slog.Info("Failed to register", "username", username, "err", err.Error())
@@ -271,14 +271,14 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		err        = usersvc.Register(
 			username,
 			"", // Password matters not
-			"editor",
-			"telegram",
+			userdomain.GroupEditor,
+			userdomain.SourceTelegram,
 			false,
 		)
 	)
 	// If registering a user via Telegram failed, because a Telegram user with this name
 	// has already registered, then everything is actually ok!
-	if usersvc.HasUsername(username) && usersvc.ByName(username).Source == "telegram" {
+	if usersvc.HasUsername(username) && usersvc.ByName(username).Source == userdomain.SourceTelegram {
 		err = nil
 	}
 

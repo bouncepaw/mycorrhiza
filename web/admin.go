@@ -266,7 +266,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 			f.Get("name"),
 			f.Get("password"),
 			userdomain.GroupKind(f.Get("group")),
-			"local",
+			userdomain.SourceLocal,
 			true,
 		)
 

@@ -65,7 +65,7 @@ func Register(
 		return fmt.Errorf("username ‘%s’ is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
-	case password == "" && source != "telegram":
+	case password == "" && source != userdomain.SourceTelegram:
 		return fmt.Errorf("password must not be empty")
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 
 	"golang.org/x/term"
@@ -85,7 +86,7 @@ func createAdminCommand(name string) error {
 		slog.Error("Failed to prompt password", "err", err)
 		return err
 	}
-	if err := usersvc.Register(name, password, "admin", "local", true); err != nil {
+	if err := usersvc.Register(name, password, userdomain.GroupAdmin, userdomain.SourceLocal, true); err != nil {
 		slog.Error("Failed to register admin", "err", err)
 		return err
 	}
