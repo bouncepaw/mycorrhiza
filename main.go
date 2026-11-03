@@ -14,6 +14,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/migration"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/web"
@@ -50,7 +51,7 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	usersvc.InitUserDatabase()
+	usersvc.InitUserDatabase(storage.New(files.UserCredentialsJSON(), files.TokensJSON()))
 	if err := history.Start(); err != nil {
 		os.Exit(1)
 	}
