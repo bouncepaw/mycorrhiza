@@ -12,9 +12,9 @@ import (
 )
 
 func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
-	u := user.FromRequest(rq)
+	u := usersvc.FromRequest(rq)
 	// TODO: is there a better way?
-	if reflect.DeepEqual(u, user.EmptyUser()) || u == nil {
+	if reflect.DeepEqual(u, usersvc.EmptyUser()) || u == nil {
 		util.HTTP404Page(w, "404 page not found")
 		return
 	}
@@ -22,7 +22,7 @@ func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	f := util.FormDataFromRequest(rq, []string{"current_password", "password", "password_confirm"})
 	currentPassword := f.Get("current_password")
 
-	if user.CredentialsOK(u.Name, currentPassword) {
+	if usersvc.CredentialsOK(u.Name, currentPassword) {
 		password := f.Get("password")
 		passwordConfirm := f.Get("password_confirm")
 		// server side validation
@@ -35,7 +35,7 @@ func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 			if err := u.ChangePassword(password); err != nil {
 				f = f.WithError(err)
 			} else {
-				if err := user.SaveUserDatabase(); err != nil {
+				if err := usersvc.SaveUserDatabase(); err != nil {
 					u.Password = previousPassword
 					f = f.WithError(err)
 				} else {

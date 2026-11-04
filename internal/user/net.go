@@ -1,4 +1,4 @@
-package user
+package usersvc
 
 import (
 	"crypto/hmac"
@@ -13,14 +13,15 @@ import (
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CanProceed returns `true` if the user in `rq` has enough rights to access `route`.
-func CanProceed(rq *http.Request, route string) bool {
-	return FromRequest(rq).CanProceed(route)
+// CanProceed returns `true` if the user in `rq` has enough rights to perform action.
+func CanProceed(rq *http.Request, action userdomain.Action) bool {
+	return FromRequest(rq).CanProceed(action)
 }
 
 // FromRequest returns user from `rq`. If there is no user, an anon user is returned instead.
@@ -42,7 +43,12 @@ func LogoutFromRequest(w http.ResponseWriter, rq *http.Request) {
 }
 
 // Register registers the given user. If it fails, a non-nil error is returned.
-func Register(username, password, group, source string, force bool) error {
+func Register(
+	username, password string,
+	group userdomain.GroupKind,
+	source userdomain.Source,
+	force bool,
+) error {
 	if !IsValidUsername(username) {
 		return fmt.Errorf("illegal username ‘%s’", username)
 	}
@@ -51,15 +57,15 @@ func Register(username, password, group, source string, force bool) error {
 	switch {
 	case !IsValidUsername(username):
 		return fmt.Errorf("illegal username ‘%s’", username)
-	case !ValidGroup(group):
+	case !group.IsValid():
 		return fmt.Errorf("invalid group ‘%s’", group)
-	case !ValidSource(source):
+	case !source.IsValid():
 		return fmt.Errorf("invalid source ‘%s’", source)
 	case HasUsername(username):
 		return fmt.Errorf("username ‘%s’ is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
-	case password == "" && source != "telegram":
+	case password == "" && source != userdomain.SourceTelegram:
 		return fmt.Errorf("password must not be empty")
 	}
 

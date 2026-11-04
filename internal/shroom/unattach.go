@@ -10,7 +10,7 @@ import (
 )
 
 // RemoveMedia removes media from the media hypha and makes a history record about that. If it only had media, the hypha will be deleted. If it also had text, the hypha will become textual.
-func RemoveMedia(u *user.User, h *hyphae.MediaHypha) error {
+func RemoveMedia(u *usersvc.User, h *hyphae.MediaHypha) error {
 	hop := history.
 		Operation(history.TypeRemoveMedia).
 		WithFilesRemoved(h.MediaFilePath()).

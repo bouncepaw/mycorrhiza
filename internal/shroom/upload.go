@@ -17,6 +17,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/mimetype"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 )
 
 func historyMessageForTextUpload(h hyphae.Hypha, userMessage string) string {
@@ -44,14 +45,14 @@ func writeTextToDisk(h hyphae.ExistingHypha, data []byte, hop *history.Op) error
 }
 
 // UploadText edits the hypha's text part and makes a history record about that.
-func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *user.User) error {
+func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *usersvc.User) error {
 	hop := history.
 		Operation(history.TypeEditText).
 		WithMsg(historyMessageForTextUpload(h, userMessage)).
 		WithUser(u)
 
 	// Privilege check
-	if !u.CanProceed("upload-text") {
+	if !u.CanProceed(userdomain.ActionUploadText) {
 		slog.Info("Reject edit",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
@@ -161,10 +162,10 @@ func writeMediaToDisk(h hyphae.Hypha, mime string, data []byte) (string, error) 
 }
 
 // UploadBinary edits the hypha's media part and makes a history record about that.
-func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *user.User) error {
+func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *usersvc.User) error {
 
 	// Privilege check
-	if !u.CanProceed("upload-binary") {
+	if !u.CanProceed(userdomain.ActionUploadMedia) {
 		slog.Info("Reject upload media",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,

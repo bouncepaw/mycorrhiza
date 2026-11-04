@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
@@ -142,8 +143,8 @@ func (hop *Op) WithMsg(userMsg string) *Op {
 }
 
 // WithUser sets a user for the commit.
-func (hop *Op) WithUser(u *user.User) *Op {
-	if u.Group != "anon" {
+func (hop *Op) WithUser(u *usersvc.User) *Op {
+	if u.Group != userdomain.GroupAnon {
 		hop.name = u.Name
 		hop.email = u.Name + "@mycorrhiza"
 	}

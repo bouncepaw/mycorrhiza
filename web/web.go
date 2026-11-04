@@ -16,6 +16,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/hypview"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/misc"
@@ -61,7 +62,7 @@ func Handler() http.Handler {
 	r := router.PathPrefix("").Subrouter()
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
-			user := user.FromRequest(rq)
+			user := usersvc.FromRequest(rq)
 			if !user.ShowLockMaybe(w, rq) {
 				next.ServeHTTP(w, rq)
 			}
@@ -85,7 +86,7 @@ func Handler() http.Handler {
 	// Admin routes
 	if cfg.UseAuth {
 		adminRouter := r.PathPrefix("/admin").Subrouter()
-		adminRouter.Use(groupMiddleware("admin"))
+		adminRouter.Use(actionMiddleware(userdomain.ActionAdmin))
 
 		adminRouter.HandleFunc("/shutdown", handlerAdminShutdown).Methods(http.MethodPost)
 		adminRouter.HandleFunc("/reindex-users", handlerAdminReindexUsers).Methods(http.MethodPost)
@@ -117,10 +118,10 @@ func Handler() http.Handler {
 	return router
 }
 
-func groupMiddleware(group string) func(http.Handler) http.Handler {
+func actionMiddleware(action userdomain.Action) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
-			if cfg.UseAuth && user.CanProceed(rq, group) {
+			if cfg.UseAuth && usersvc.CanProceed(rq, action) {
 				next.ServeHTTP(w, rq)
 				return
 			}
@@ -136,7 +137,7 @@ func groupMiddleware(group string) func(http.Handler) http.Handler {
 
 // Auth
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
-	admins, moderators, editors, readers := user.UsersInGroups()
+	admins, moderators, editors, readers := usersvc.UsersInGroups()
 	_ = pageUserList.RenderTo(viewutil.MetaFrom(w, rq),
 		map[string]any{
 			"Admins":     admins,
@@ -167,7 +168,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	var (
 		username = rq.PostFormValue("username")
 		password = rq.PostFormValue("password")
-		err      = user.Register(username, password, "editor", "local", false)
+		err      = usersvc.Register(username, password, userdomain.GroupEditor, userdomain.SourceLocal, false)
 	)
 	if err != nil {
 		slog.Info("Failed to register", "username", username, "err", err.Error())
@@ -187,7 +188,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	slog.Info("Registered user", "username", username)
-	if err := user.LoginDataHTTP(w, username, password); err != nil {
+	if err := usersvc.LoginDataHTTP(w, username, password); err != nil {
 		return
 	}
 	http.Redirect(w, rq, "/"+rq.URL.RawQuery, http.StatusSeeOther)
@@ -197,13 +198,13 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodPost {
 		slog.Info("Somebody logged out")
-		user.LogoutFromRequest(w, rq)
+		usersvc.LogoutFromRequest(w, rq)
 		http.Redirect(w, rq, "/", http.StatusSeeOther)
 		return
 	}
 
 	var (
-		u   = user.FromRequest(rq)
+		u   = usersvc.FromRequest(rq)
 		can = u != nil
 	)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
@@ -238,14 +239,14 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	var (
 		username = util.CanonicalName(rq.PostFormValue("username"))
 		password = rq.PostFormValue("password")
-		err      = user.LoginDataHTTP(w, username, password)
+		err      = usersvc.LoginDataHTTP(w, username, password)
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = pageAuthLogin.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
 			"UseAuth":            cfg.UseAuth,
-			"ErrUnknownUsername": errors.Is(err, user.ErrUnknownUsername),
-			"ErrWrongPassword":   errors.Is(err, user.ErrWrongPassword),
+			"ErrUnknownUsername": errors.Is(err, usersvc.ErrUnknownUsername),
+			"ErrWrongPassword":   errors.Is(err, usersvc.ErrWrongPassword),
 			"ErrTelegram":        false, // TODO: ?
 			"Err":                err.Error(),
 			"WikiName":           cfg.WikiName,
@@ -266,18 +267,18 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	var (
 		values     = rq.URL.Query()
 		username   = strings.ToLower(values.Get("username"))
-		seemsValid = user.TelegramAuthParamsAreValid(values)
-		err        = user.Register(
+		seemsValid = usersvc.TelegramAuthParamsAreValid(values)
+		err        = usersvc.Register(
 			username,
 			"", // Password matters not
-			"editor",
-			"telegram",
+			userdomain.GroupEditor,
+			userdomain.SourceTelegram,
 			false,
 		)
 	)
 	// If registering a user via Telegram failed, because a Telegram user with this name
 	// has already registered, then everything is actually ok!
-	if user.HasUsername(username) && user.ByName(username).Source == "telegram" {
+	if usersvc.HasUsername(username) && usersvc.ByName(username).Source == userdomain.SourceTelegram {
 		err = nil
 	}
 
@@ -305,7 +306,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	errmsg := user.LoginDataHTTP(w, username, "")
+	errmsg := usersvc.LoginDataHTTP(w, username, "")
 	if errmsg != nil {
 		slog.Error("Failed to login using Telegram", "err", err, "username", username)
 		w.WriteHeader(http.StatusBadRequest)

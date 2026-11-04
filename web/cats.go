@@ -9,6 +9,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
@@ -27,7 +28,7 @@ func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
 		"Addr":                    "/edit-category/" + catName,
 		"CatName":                 catName,
 		"Hyphae":                  categories.HyphaeInCategory(catName),
-		"GivenPermissionToModify": meta.U.CanProceed("add-to-category"),
+		"GivenPermissionToModify": meta.U.CanProceed(userdomain.ActionAddToCat),
 	})
 }
 
@@ -56,7 +57,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 		"Addr":                    "/category/" + catName,
 		"CatName":                 catName,
 		"Hyphae":                  categories.HyphaeInCategory(catName),
-		"GivenPermissionToModify": meta.U.CanProceed("add-to-category"),
+		"GivenPermissionToModify": meta.U.CanProceed(userdomain.ActionAddToCat),
 	})
 }
 
@@ -88,12 +89,12 @@ func hyphaeFromRequest(rq *http.Request) (canonicalNames []string) {
 func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u          = user.FromRequest(rq)
+		u          = usersvc.FromRequest(rq)
 		hyphaNames = hyphaeFromRequest(rq)
 		catName    = util.CanonicalName(rq.PostFormValue("cat"))
 		redirectTo = rq.PostFormValue("redirect-to")
 	)
-	if !u.CanProceed("remove-from-category") {
+	if !u.CanProceed(userdomain.ActionRemoveFromCat) {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = io.WriteString(w, "403 Forbidden")
 		return
@@ -120,7 +121,7 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		catName    = util.CanonicalName(rq.PostFormValue("cat"))
 		redirectTo = rq.PostFormValue("redirect-to")
 	)
-	if !user.FromRequest(rq).CanProceed("add-to-category") {
+	if !usersvc.FromRequest(rq).CanProceed(userdomain.ActionAddToCat) {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = io.WriteString(w, "403 Forbidden")
 		return
@@ -129,7 +130,7 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 		return
 	}
-	slog.Info(user.FromRequest(rq).Name, "added", hyphaName, "to", catName)
+	slog.Info(usersvc.FromRequest(rq).Name, "added", hyphaName, "to", catName)
 	categories.AddHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }

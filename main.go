@@ -14,6 +14,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/migration"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
+	"github.com/bouncepaw/mycorrhiza/internal/user/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/web"
@@ -50,7 +51,7 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	user.InitUserDatabase()
+	usersvc.InitUserDatabase(storage.New(files.UserCredentialsJSON(), files.TokensJSON()))
 	if err := history.Start(); err != nil {
 		os.Exit(1)
 	}
@@ -68,7 +69,7 @@ func main() {
 	// Static files:
 	static.InitFS(files.StaticFiles())
 
-	if !user.HasAnyAdmins() {
+	if !usersvc.HasAnyAdmins() {
 		slog.Error("Your wiki has no admin yet. Run Mycorrhiza with -create-admin <username> option to create an admin.")
 	}
 

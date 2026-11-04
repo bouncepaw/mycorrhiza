@@ -11,6 +11,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
+	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/util/fp"
@@ -22,7 +23,7 @@ func handlerNewHypha(w http.ResponseWriter, rq *http.Request) {
 		meta = viewutil.MetaFrom(w, rq)
 		u    = meta.U
 	)
-	if !u.CanProceed("upload-text") || !u.CanProceed("upload-binary") {
+	if !u.CanProceed(userdomain.ActionUploadText) || !u.CanProceed(userdomain.ActionUploadMedia) {
 		viewutil.HttpErr(meta, http.StatusForbidden, "", meta.Lc.Get("ui.act_norights_edit"))
 		return
 	}

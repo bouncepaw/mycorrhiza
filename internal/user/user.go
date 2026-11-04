@@ -1,4 +1,4 @@
-package user
+package usersvc
 
 import (
 	"fmt"
@@ -6,85 +6,25 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User contains information about a given user required for identification.
 type User struct {
-	// Name is a username. It must follow hypha naming rules.
-	Name         string    `json:"name"`
-	Group        string    `json:"group"`
-	Password     string    `json:"hashed_password"`
-	RegisteredAt time.Time `json:"registered_on"`
-	// Source is where the user from. Valid values: local, telegram.
-	Source string `json:"source"`
+	userdomain.UserDTO
 	sync.RWMutex
-
-	// A note about why HashedPassword is string and not []byte. The reason is
-	// simple: golang's json marshals []byte as slice of numbers, which is not
-	// acceptable.
-}
-
-// Route — Right (more is more right)
-var minimalRights = map[string]int{
-	"text":                 0,
-	"backlinks":            0,
-	"history":              0,
-	"media":                1,
-	"edit":                 1,
-	"upload-binary":        1,
-	"rename":               1,
-	"upload-text":          1,
-	"add-to-category":      1,
-	"remove-from-category": 1,
-	"remove-media":         2,
-	"update-header-links":  3,
-	"delete":               3,
-	"reindex":              4,
-	"admin":                4,
-	"admin/shutdown":       4,
-}
-
-var groups = []string{
-	"anon",
-	"reader",
-	"editor",
-	"trusted",
-	"moderator",
-	"admin",
-}
-
-// Group — Right level
-var groupRight = map[string]int{
-	"anon":      0,
-	"reader":    0,
-	"editor":    1,
-	"trusted":   2,
-	"moderator": 3,
-	"admin":     4,
-}
-
-// ValidGroup checks whether provided user group name exists.
-func ValidGroup(group string) bool {
-	return slices.Contains(groups, group)
-}
-
-// ValidSource checks whether provided user source name exists.
-func ValidSource(source string) bool {
-	return source == "local" || source == "telegram"
 }
 
 // EmptyUser constructs an anonymous user.
 func EmptyUser() *User {
 	return &User{
 		Name:     "anon",
-		Group:    "anon",
+		Group:    userdomain.GroupAnon,
 		Password: "",
-		Source:   "local",
+		Source:   userdomain.SourceLocal,
 	}
 }
 
@@ -92,14 +32,14 @@ func EmptyUser() *User {
 func WikimindUser() *User {
 	return &User{
 		Name:     "wikimind",
-		Group:    "admin",
+		Group:    userdomain.GroupAdmin,
 		Password: "",
-		Source:   "local",
+		Source:   userdomain.SourceLocal,
 	}
 }
 
 // CanProceed checks whether user has rights to visit the provided path (and perform an action).
-func (user *User) CanProceed(route string) bool {
+func (user *User) CanProceed(action userdomain.Action) bool {
 	if !cfg.UseAuth {
 		return true
 	}
@@ -107,13 +47,7 @@ func (user *User) CanProceed(route string) bool {
 	user.RLock()
 	defer user.RUnlock()
 
-	right := groupRight[user.Group]
-	minimalRight, specified := minimalRights[route]
-
-	if !specified {
-		return false
-	}
-	return right >= minimalRight
+	return user.Group.Level() >= action.MinimalLevel()
 }
 
 func (user *User) isCorrectPassword(password string) bool {
@@ -126,7 +60,7 @@ func (user *User) isCorrectPassword(password string) bool {
 
 // ShowLockMaybe redirects to the lock page if the user is anon and the wiki has been configured to use the lock. It returns true if the user was redirected.
 func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
-	if cfg.Locked && user.Group == "anon" {
+	if cfg.Locked && user.Group == userdomain.GroupAnon {
 		http.Redirect(w, rq, "/lock", http.StatusSeeOther)
 		return true
 	}
@@ -135,7 +69,7 @@ func (user *User) ShowLockMaybe(w http.ResponseWriter, rq *http.Request) bool {
 
 // Sets a new password for the user.
 func (user *User) ChangePassword(password string) error {
-	if user.Source != "local" {
+	if user.Source != userdomain.SourceLocal {
 		return fmt.Errorf("Only local users can change their passwords.")
 	}
 
