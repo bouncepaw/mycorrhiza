@@ -1,29 +1,34 @@
-package categories
+package catsvc
 
 import (
-	"encoding/json"
 	"log/slog"
 	"os"
 	"slices"
 	"sort"
 	"sync"
 
-	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/internal/categories/domain"
+	"github.com/bouncepaw/mycorrhiza/internal/categories/storage"
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-var categoryToHyphae = map[string]*categoryNode{}
-var hyphaToCategories = map[string]*hyphaNode{}
+var (
+	categoryToHyphae  = map[string]*categoryNode{}
+	hyphaToCategories = map[string]*hyphaNode{}
+
+	store *catstorage.Storage
+)
 
 // Init initializes the category system. Call it after the Structure is initialized. This function might terminate the program in case of a bad mood or filesystem faults.
-func Init() error {
-	record, err := readCategoriesFromDisk()
+func Init(s *catstorage.Storage) error {
+	store = s
+	record, err := store.LoadCategories()
 	if err != nil {
 		slog.Error("Failed to read categories from disk", "err", err)
 		return err
 	}
 
-	for _, cat := range record.Categories {
+	for _, cat := range record {
 		if len(cat.Hyphae) == 0 {
 			continue
 		}
@@ -90,58 +95,24 @@ func (hn *hyphaNode) removeCategory(cat string) {
 	hn.categoryList = slices.Delete(hn.categoryList, i, i+1)
 }
 
-type catFileRecord struct {
-	Categories []catRecord `json:"categories"`
-}
-
-type catRecord struct {
-	Name   string   `json:"name"`
-	Hyphae []string `json:"hyphae"`
-}
-
-func readCategoriesFromDisk() (catFileRecord, error) {
-	var (
-		record            catFileRecord
-		categoriesFile    = files.CategoriesJSON()
-		fileContents, err = os.ReadFile(categoriesFile)
-	)
-	if os.IsNotExist(err) {
-		return record, nil
-	}
-	if err != nil {
-		return record, err
-	}
-
-	err = json.Unmarshal(fileContents, &record)
-	if err != nil {
-		return record, err
-	}
-
-	return record, nil
-}
-
 var fileMutex sync.Mutex
 
 func saveToDisk() {
-	var record catFileRecord
+	fileMutex.Lock()
+	defer fileMutex.Unlock()
+
+	var record []catdomain.Category
+	mutex.RLock()
 	for name, node := range categoryToHyphae {
-		record.Categories = append(record.Categories, catRecord{
+		record = append(record, catdomain.Category{
 			Name:   name,
-			Hyphae: node.hyphaList,
+			Hyphae: slices.Clone(node.hyphaList),
 		})
 	}
-	data, err := json.MarshalIndent(record, "", "\t")
-	if err != nil {
-		slog.Error("Failed to marshal categories record", "err", err)
-		os.Exit(1) // Better fail now, than later
-	}
+	mutex.RUnlock()
 
-	// TODO: make the data safer somehow?? Back it up before overwriting?
-	fileMutex.Lock()
-	err = os.WriteFile(files.CategoriesJSON(), data, 0666)
-	if err != nil {
+	if err := store.SaveCategories(record); err != nil {
 		slog.Error("Failed to write categories.json", "err", err)
 		os.Exit(1)
 	}
-	fileMutex.Unlock()
 }

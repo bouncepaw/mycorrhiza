@@ -27,14 +27,14 @@ func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
 	_ = pageCatEdit.RenderTo(meta, map[string]any{
 		"Addr":                    "/edit-category/" + catName,
 		"CatName":                 catName,
-		"Hyphae":                  categories.HyphaeInCategory(catName),
+		"Hyphae":                  catsvc.HyphaeInCategory(catName),
 		"GivenPermissionToModify": meta.U.CanProceed(userdomain.ActionAddToCat),
 	})
 }
 
 func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
 	slog.Info("Viewing list of categories")
-	cats := categories.ListOfCategories()
+	cats := catsvc.ListOfCategories()
 	sort.Strings(cats)
 
 	_ = pageCatList.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
@@ -56,7 +56,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 	_ = pageCatPage.RenderTo(meta, map[string]any{
 		"Addr":                    "/category/" + catName,
 		"CatName":                 catName,
-		"Hyphae":                  categories.HyphaeInCategory(catName),
+		"Hyphae":                  catsvc.HyphaeInCategory(catName),
 		"GivenPermissionToModify": meta.U.CanProceed(userdomain.ActionAddToCat),
 	})
 }
@@ -107,7 +107,7 @@ func handlerRemoveFromCategory(w http.ResponseWriter, rq *http.Request) {
 	}
 	for _, hyphaName := range hyphaNames {
 		// TODO: Make it more effective.
-		categories.RemoveHyphaFromCategory(hyphaName, catName)
+		catsvc.RemoveHyphaFromCategory(hyphaName, catName)
 	}
 	slog.Info("Remove hyphae from category",
 		"username", u.Name, "catName", catName, "hyphaNames", hyphaNames)
@@ -131,6 +131,6 @@ func handlerAddToCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	slog.Info(usersvc.FromRequest(rq).Name, "added", hyphaName, "to", catName)
-	categories.AddHyphaToCategory(hyphaName, catName)
+	catsvc.AddHyphaToCategory(hyphaName, catName)
 	http.Redirect(w, rq, redirectTo, http.StatusSeeOther)
 }

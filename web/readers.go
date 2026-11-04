@@ -227,7 +227,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		lc                                      = l18n.FromRequest(rq)
 		meta                                    = viewutil.MetaFrom(w, rq)
 		subhyphae, prevHyphaName, nextHyphaName = tree.Tree(h.CanonicalName())
-		cats                                    = categories.CategoriesWithHypha(h.CanonicalName())
+		cats                                    = catsvc.CategoriesWithHypha(h.CanonicalName())
 		category_list                           = ":" + strings.Join(cats, ":") + ":"
 		isMyProfile                             = cfg.UseAuth && util.IsProfileName(h.CanonicalName()) && meta.U.Name == strings.TrimPrefix(h.CanonicalName(), cfg.UserHypha+"/")
 

@@ -8,15 +8,17 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
+	categorystorage "github.com/bouncepaw/mycorrhiza/internal/categories/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/internal/migration"
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
-	"github.com/bouncepaw/mycorrhiza/internal/user/storage"
+	userstorage "github.com/bouncepaw/mycorrhiza/internal/user/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
+	interwikistorage "github.com/bouncepaw/mycorrhiza/interwiki/storage"
 	"github.com/bouncepaw/mycorrhiza/web"
 	"github.com/bouncepaw/mycorrhiza/web/static"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -51,7 +53,7 @@ func main() {
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()
-	usersvc.InitUserDatabase(storage.New(files.UserCredentialsJSON(), files.TokensJSON()))
+	usersvc.InitUserDatabase(userstorage.New(files.UserCredentialsJSON(), files.TokensJSON()))
 	if err := history.Start(); err != nil {
 		os.Exit(1)
 	}
@@ -59,10 +61,10 @@ func main() {
 	migration.MigrateRocketsMaybe()
 	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
-	if err := categories.Init(); err != nil {
+	if err := catsvc.Init(categorystorage.New(files.CategoriesJSON())); err != nil {
 		os.Exit(1)
 	}
-	if err := interwiki.Init(); err != nil {
+	if err := interwikisvc.Init(interwikistorage.New(files.InterwikiJSON())); err != nil {
 		os.Exit(1)
 	}
 

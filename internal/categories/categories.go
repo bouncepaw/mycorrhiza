@@ -1,4 +1,4 @@
-// Package categories provides category management.
+// Package catsvc provides category management.
 //
 // As per the long pondering, this is how categories (cats for short)
 // work in Mycorrhiza:
@@ -19,7 +19,7 @@
 //   - Rename categories.
 //   - Delete categories.
 //   - Bind hyphae.
-package categories
+package catsvc
 
 import "sync"
 

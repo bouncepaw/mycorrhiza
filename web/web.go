@@ -75,7 +75,7 @@ func Handler() http.Handler {
 	misc.InitHandlers(r)
 	hypview.Init()
 	histweb.InitHandlers(r)
-	interwiki.InitHandlers(r)
+	interwikisvc.InitHandlers(r)
 
 	r.PathPrefix("/add-to-category").HandlerFunc(handlerAddToCategory).Methods("POST")
 	r.PathPrefix("/remove-from-category").HandlerFunc(handlerRemoveFromCategory).Methods("POST")
