@@ -62,7 +62,7 @@ func usersFromFile() []*User {
 
 func rememberUsers(userList []*User) {
 	for _, user := range userList {
-		if !IsValidUsername(user.Name) {
+		if !isValidUsername(user.Name) || !usernameIsWhiteListed(user.Name) {
 			continue
 		}
 		users.Store(user.Name, user)
