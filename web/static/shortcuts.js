@@ -6,6 +6,9 @@ rrh.l10n('Home', { ru: 'Главная' })
 
 rrh.l10n('Hypha', { ru: 'Гифа' })
 
+rrh.l10n('Backlinks', { ru: 'Обратные ссылки' })
+rrh.l10n('First 9 backlinks', { ru: 'Первые 9 обратных ссылок' })
+
 rrh.l10n('Editor', { ru: 'Редактор' })
 
 rrh.l10n('Format', { ru: 'Форматирование' })
@@ -295,6 +298,12 @@ if (document.body.dataset.rrhAddr.startsWith('/hypha')) {
         new Shortcut('h', $('.hypha-info__link[href^="/history/"]'), 'Go to history'),
         new Shortcut('r', $('.hypha-info__link[href^="/rename/"]'), 'Rename this hypha'),
         new Shortcut('b', $('.hypha-info__link[href^="/backlinks/"]'), 'Backlinks'),
+    ]))
+}
+
+if (document.body.dataset.rrhAddr.startsWith('/backlinks/')) {
+    rrh.shortcuts.addGroup(new ShortcutGroup('Backlinks', null, [
+        new Shortcut('', $$('main .wikilink'), 'First 9 backlinks'),
     ]))
 }
 
