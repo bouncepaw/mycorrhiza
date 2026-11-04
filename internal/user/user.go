@@ -81,16 +81,14 @@ func (user *User) ChangePassword(password string) error {
 	return SaveUserDatabase()
 }
 
-// IsValidUsername checks if the given username is valid.
-func IsValidUsername(username string) bool {
+// isValidUsername checks username syntax and reserved names, independently of the whitelist.
+func isValidUsername(username string) bool {
 	for _, r := range username {
 		if strings.ContainsRune("?!:#@><*|\"'&%{}/", r) {
 			return false
 		}
 	}
-	return username != "anon" &&
-		username != "wikimind" &&
-		usernameIsWhiteListed(username)
+	return username != "anon" && username != "wikimind"
 }
 
 func usernameIsWhiteListed(username string) bool {

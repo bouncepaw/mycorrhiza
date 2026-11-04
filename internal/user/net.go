@@ -49,14 +49,16 @@ func Register(
 	source userdomain.Source,
 	force bool,
 ) error {
-	if !IsValidUsername(username) {
+	if !isValidUsername(username) {
 		return fmt.Errorf("illegal username ‘%s’", username)
 	}
 	username = util.CanonicalName(username)
 
 	switch {
-	case !IsValidUsername(username):
+	case !isValidUsername(username):
 		return fmt.Errorf("illegal username ‘%s’", username)
+	case !usernameIsWhiteListed(username):
+		return fmt.Errorf("username ‘%s’ is not in the whitelist", username)
 	case !group.IsValid():
 		return fmt.Errorf("invalid group ‘%s’", group)
 	case !source.IsValid():
