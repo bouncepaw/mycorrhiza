@@ -10,11 +10,11 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-var database *storage.Storage
+var store *userstorage.Storage
 
 // InitUserDatabase loads users, if necessary. Call it during initialization.
-func InitUserDatabase(store *storage.Storage) {
-	database = store
+func InitUserDatabase(s *userstorage.Storage) {
+	store = s
 	ReadUsersFromFilesystem()
 }
 
@@ -28,7 +28,7 @@ func ReadUsersFromFilesystem() {
 }
 
 func usersFromFile() []*User {
-	records, err := database.LoadUsers()
+	records, err := store.LoadUsers()
 	if err != nil {
 		slog.Error("Failed to load users", "err", err)
 		os.Exit(1)
@@ -70,7 +70,7 @@ func rememberUsers(userList []*User) {
 }
 
 func readTokensToUsers() {
-	tmp, err := database.LoadTokens()
+	tmp, err := store.LoadTokens()
 	if err != nil {
 		slog.Error("Failed to load sessions", "err", err)
 		os.Exit(1)
@@ -105,7 +105,7 @@ func writeUserCredentials(userList []*User) error {
 		records = append(records, u.UserDTO)
 		u.RUnlock()
 	}
-	return database.SaveUsers(records)
+	return store.SaveUsers(records)
 }
 
 func dumpTokens() {
@@ -118,7 +118,7 @@ func dumpTokens() {
 		return true
 	})
 
-	if err := database.SaveTokens(tmp); err != nil {
+	if err := store.SaveTokens(tmp); err != nil {
 		slog.Error("Failed to save sessions", "err", err)
 	}
 }

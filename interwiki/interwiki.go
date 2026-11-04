@@ -1,27 +1,32 @@
-// Package interwiki provides interwiki capabilities. Most of them, at least.
-package interwiki
+// Package interwikisvc provides interwiki capabilities. Most of them, at least.
+package interwikisvc
 
 import (
-	"encoding/json"
 	"errors"
 	"log/slog"
 	"os"
+	"slices"
 	"sync"
 
-	"github.com/bouncepaw/mycorrhiza/internal/files"
+	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
+	"github.com/bouncepaw/mycorrhiza/interwiki/storage"
 	"github.com/bouncepaw/mycorrhiza/util"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
 )
 
-func Init() error {
-	record, err := readInterwiki()
+var store *interwikistorage.Storage
+
+func Init(s *interwikistorage.Storage) error {
+	store = s
+	record, err := store.LoadEntries()
 	if err != nil {
 		slog.Error("Failed to read interwiki", "err", err)
 		return err
 	}
 
-	for _, wiki := range record {
+	for _, entry := range record {
+		wiki := Wiki{WikiDTO: entry}
 		if err := wiki.canonize(); err != nil {
 			return err
 		}
@@ -158,35 +163,19 @@ func ImgSrcFormatFor(prefix string) (string, options.InterwikiError) {
 	return "", options.UnknownPrefix
 }
 
-func readInterwiki() ([]Wiki, error) {
-	var (
-		record            []Wiki
-		fileContents, err = os.ReadFile(files.InterwikiJSON())
-	)
-	if os.IsNotExist(err) {
-		return record, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(fileContents, &record)
-	if err != nil {
-		return nil, err
-	}
-	return record, nil
-}
-
 func saveInterwikiJson() {
-	// Trust me, wiki crashing when an admin takes an administrative action totally makes sense.
-	if data, err := json.MarshalIndent(listOfEntries, "", "\t"); err != nil {
-		slog.Error("Failed to marshal interwiki entries", "err", err)
-		os.Exit(1)
-	} else if err = os.WriteFile(files.InterwikiJSON(), data, 0666); err != nil {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	entries := make([]interwikidomain.WikiDTO, 0, len(listOfEntries))
+	for _, wiki := range listOfEntries {
+		entry := wiki.WikiDTO
+		entry.Aliases = slices.Clone(entry.Aliases)
+		entries = append(entries, entry)
+	}
+	if err := store.SaveEntries(entries); err != nil {
 		slog.Error("Failed to write interwiki.json", "err", err)
 		os.Exit(1)
 	}
-
 	slog.Info("Saved interwiki.json")
-
 }

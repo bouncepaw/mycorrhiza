@@ -54,8 +54,8 @@ func MarkupOptions(hyphaName string) options.Options {
 		LocalImgSrc: func(hyphaName string) string {
 			return "/binary/" + util.CanonicalName(hyphaName)
 		},
-		LinkHrefFormatForInterwikiPrefix: interwiki.HrefLinkFormatFor,
-		ImgSrcFormatForInterwikiPrefix:   interwiki.ImgSrcFormatFor,
+		LinkHrefFormatForInterwikiPrefix: interwikisvc.HrefLinkFormatFor,
+		ImgSrcFormatForInterwikiPrefix:   interwikisvc.ImgSrcFormatFor,
 	}.FillTheRest()
 }
 

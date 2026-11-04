@@ -1,4 +1,4 @@
-package interwiki
+package interwikisvc
 
 import (
 	"embed"
@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
+	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
@@ -45,14 +46,14 @@ func InitHandlers(rtr *mux.Router) {
 }
 
 func readInterwikiEntryFromRequest(rq *http.Request) Wiki {
-	wiki := Wiki{
+	wiki := Wiki{WikiDTO: interwikidomain.WikiDTO{
 		Name:           rq.PostFormValue("name"),
 		Aliases:        strings.Split(rq.PostFormValue("aliases"), ","),
 		URL:            rq.PostFormValue("url"),
 		LinkHrefFormat: rq.PostFormValue("link-href-format"),
 		ImgSrcFormat:   rq.PostFormValue("img-src-format"),
-		Engine:         WikiEngine(rq.PostFormValue("engine")),
-	}
+		Engine:         interwikidomain.WikiEngine(rq.PostFormValue("engine")),
+	}}
 	wiki.canonize()
 	return wiki
 }

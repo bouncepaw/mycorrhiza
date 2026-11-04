@@ -95,7 +95,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 		)
 		hyphae.RenameHyphaTo(h, newName, replaceName)
 		backlinks.UpdateBacklinksAfterRename(h, oldName)
-		categories.RenameHyphaInAllCategories(oldName, newName)
+		catsvc.RenameHyphaInAllCategories(oldName, newName)
 		if leaveRedirections {
 			if err := leaveRedirection(oldName, newName, hop); err != nil {
 				hop.WithErrAbort(err)
@@ -122,7 +122,7 @@ func leaveRedirection(oldName, newName string, hop *history.Op) error {
 	case *hyphae.EmptyHypha:
 		h := hyphae.ExtendEmptyToTextual(emptyHypha, filepath.Join(files.HyphaeDir(), oldName+".myco"))
 		hyphae.Insert(h)
-		categories.AddHyphaToCategory(oldName, cfg.RedirectionCategory)
+		catsvc.AddHyphaToCategory(oldName, cfg.RedirectionCategory)
 		defer backlinks.UpdateBacklinksAfterEdit(h, "")
 		return writeTextToDisk(h, []byte(text), hop)
 	default:

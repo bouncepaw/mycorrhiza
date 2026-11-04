@@ -32,7 +32,7 @@ func Delete(u *usersvc.User, h hyphae.ExistingHypha) error {
 		return hop.Errs[0]
 	}
 	backlinks.UpdateBacklinksAfterDelete(h, originalText)
-	categories.RemoveHyphaFromAllCategories(h.CanonicalName())
+	catsvc.RemoveHyphaFromAllCategories(h.CanonicalName())
 	hyphae.DeleteHypha(h)
 	return nil
 }
