@@ -10,10 +10,10 @@ import (
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
-var store *storage.Storage
+var store *userstorage.Storage
 
 // InitUserDatabase loads users, if necessary. Call it during initialization.
-func InitUserDatabase(s *storage.Storage) {
+func InitUserDatabase(s *userstorage.Storage) {
 	store = s
 	ReadUsersFromFilesystem()
 }

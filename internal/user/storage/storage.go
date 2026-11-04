@@ -1,5 +1,5 @@
 // Package storage persists user accounts and sessions as JSON files.
-package storage
+package userstorage
 
 import (
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"

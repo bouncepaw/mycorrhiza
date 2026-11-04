@@ -80,7 +80,7 @@ func createAdminCommand(name string) error {
 	}
 	cfg.UseAuth = true
 	cfg.AllowRegistration = true
-	usersvc.InitUserDatabase(storage.New(files.UserCredentialsJSON(), files.TokensJSON()))
+	usersvc.InitUserDatabase(userstorage.New(files.UserCredentialsJSON(), files.TokensJSON()))
 
 	password, err := askPass("Password")
 	if err != nil {

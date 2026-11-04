@@ -8,7 +8,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/categories"
-	categorystorage "github.com/bouncepaw/mycorrhiza/internal/categories/storage"
+	catstorage "github.com/bouncepaw/mycorrhiza/internal/categories/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
@@ -18,7 +18,7 @@ import (
 	userstorage "github.com/bouncepaw/mycorrhiza/internal/user/storage"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
-	interwikistorage "github.com/bouncepaw/mycorrhiza/interwiki/storage"
+	"github.com/bouncepaw/mycorrhiza/interwiki/storage"
 	"github.com/bouncepaw/mycorrhiza/web"
 	"github.com/bouncepaw/mycorrhiza/web/static"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -61,7 +61,7 @@ func main() {
 	migration.MigrateRocketsMaybe()
 	migration.MigrateHeadingsMaybe()
 	shroom.SetHeaderLinks()
-	if err := catsvc.Init(categorystorage.New(files.CategoriesJSON())); err != nil {
+	if err := catsvc.Init(catstorage.New(files.CategoriesJSON())); err != nil {
 		os.Exit(1)
 	}
 	if err := interwikisvc.Init(interwikistorage.New(files.InterwikiJSON())); err != nil {
