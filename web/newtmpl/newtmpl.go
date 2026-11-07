@@ -79,13 +79,43 @@ func NewPage(fs embed.FS, tmpls ...string) *Page {
 }
 
 func (p *Page) RenderTo(meta viewdata.Meta, data map[string]any) error {
-	data["Meta"] = meta
-	data["HeadElements"] = meta.HeadElements
-	data["BodyAttributes"] = meta.BodyAttributes
-	data["CommonScripts"] = cfg.CommonScripts
-	data["EditScripts"] = cfg.EditScripts
-	data["HeaderLinks"] = viewdata.HeaderLinks
-	data["UseAuth"] = cfg.UseAuth
+	var common BaseData
+	common.setBaseValuesFrom(meta)
+	data["Meta"] = common.Meta
+	data["HeadElements"] = common.HeadElements
+	data["BodyAttributes"] = common.BodyAttributes
+	data["CommonScripts"] = common.CommonScripts
+	data["EditScripts"] = common.EditScripts
+	data["HeaderLinks"] = common.HeaderLinks
+	data["UseAuth"] = common.UseAuth
 
+	return p.Template.ExecuteTemplate(meta.W, "page", data)
+}
+
+type BaseData struct {
+	Meta           viewdata.Meta
+	HeadElements   []template.HTML
+	BodyAttributes map[string]string
+	CommonScripts  []string
+	EditScripts    []string
+	HeaderLinks    []viewdata.HeaderLink
+	UseAuth        bool
+	Addr           string
+}
+
+func (bd *BaseData) setBaseValuesFrom(meta viewdata.Meta) {
+	bd.Meta = meta
+	bd.HeadElements = meta.HeadElements
+	bd.BodyAttributes = meta.BodyAttributes
+	bd.CommonScripts = cfg.CommonScripts
+	bd.EditScripts = cfg.EditScripts
+	bd.HeaderLinks = viewdata.HeaderLinks
+	bd.UseAuth = cfg.UseAuth
+}
+
+func (p *Page) RenderDataTo(meta viewdata.Meta, data interface {
+	setBaseValuesFrom(viewdata.Meta)
+}) error {
+	data.setBaseValuesFrom(meta)
 	return p.Template.ExecuteTemplate(meta.W, "page", data)
 }
