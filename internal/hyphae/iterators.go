@@ -61,7 +61,7 @@ func PathographicSort(src chan string) <-chan string {
 			c := 0
 			for {
 				if c == len(raw[i]) {
-					return true
+					return c < len(raw[j])
 				}
 				if c == len(raw[j]) {
 					return false
