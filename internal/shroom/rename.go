@@ -141,7 +141,7 @@ func findHyphaeToRename(superhypha hyphae.ExistingHypha, recursive bool) []hypha
 func renamingPairs(hyphaeToRename []hyphae.ExistingHypha, replaceName func(string) string) (map[string]string, error) {
 	var (
 		renameMap = make(map[string]string)
-		newNames  = make([]string, len(hyphaeToRename))
+		newNames  = make([]string, 0, len(hyphaeToRename))
 	)
 	for _, h := range hyphaeToRename {
 		h.Lock()
