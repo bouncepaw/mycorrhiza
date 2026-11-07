@@ -307,7 +307,7 @@ if (document.body.dataset.rrhAddr.startsWith('/backlinks/')) {
     ]))
 }
 
-if (document.body.dataset.rrhAddr.startsWith('/edit')) {
+if ($('.edit-form')) {
     rrh.shortcuts.addGroup(new ShortcutGroup('Editor', null, [
         new Shortcut(isMac ? 'Meta+Enter' : 'Ctrl+Enter', $('.edit-form__save'), 'Save changes'),
         new Shortcut(isMac ? 'Meta+Shift+Enter' : 'Ctrl+Shift+Enter', $('.edit-form__preview'), 'Preview changes'),
