@@ -12,9 +12,12 @@ mycorrhiza:
 	$(GO) generate $(GOFLAGS)
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -o mycorrhiza .
 
+vet:
+	$(GO) vet $(GOFLAGS) ./...
+
 install:
 	mkdir -m755 -p $(DESTDIR)$(BINDIR) $(DESTDIR)$(MANDIR)/man1
 	install -m755 mycorrhiza $(DESTDIR)$(BINDIR)/mycorrhiza
 	install -m644 help/mycorrhiza.1 $(DESTDIR)$(MANDIR)/man1/mycorrhiza.1
 
-.PHONY: all mycorrhiza install
+.PHONY: all mycorrhiza vet install

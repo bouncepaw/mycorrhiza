@@ -32,11 +32,11 @@ func SetHeaderLinks() {
 // setDefaultHeaderLinks sets the header links to the default list of: home hypha, recent changes, hyphae list, random hypha.
 func setDefaultHeaderLinks() {
 	viewutil.HeaderLinks = []viewutil.HeaderLink{
-		{"/recent-changes", "Recent changes"},
-		{"/list", "All hyphae"},
-		{"/random", "Random"},
-		{"/help", "Help"},
-		{"/category", "Categories"},
+		{Href: "/recent-changes", Display: "Recent changes"},
+		{Href: "/list", Display: "All hyphae"},
+		{Href: "/random", Display: "Random"},
+		{Href: "/help", Display: "Help"},
+		{Href: "/category", Display: "Categories"},
 	}
 }
 

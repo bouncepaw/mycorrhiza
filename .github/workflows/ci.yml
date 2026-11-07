@@ -20,5 +20,7 @@ jobs:
           go-version-file: go.mod
       - name: Build
         run: make
+      - name: Vet
+        run: make vet
       - name: Test
         run: go test ./...
