@@ -12,90 +12,51 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/version"
 )
 
-type L10nEntry struct {
-	_en string
-	_ru string
-}
-
-func En(v string) L10nEntry {
-	return L10nEntry{_en: v}
-}
-
-func (e L10nEntry) Ru(v string) L10nEntry {
-	e._ru = v
-	return e
-}
-
-func (e L10nEntry) Get(lang string) string {
-	if lang == "ru" && e._ru != "" {
-		return e._ru
-	}
-	return e._en
-}
-
 const aboutTemplateString = `
 <main class="main-width">
 	<section class="about-page">
-		<h1>{{ printf (get .L.Title) .Cfg.WikiName }}</h1>
+		<h1>About {{ .Cfg.WikiName }}</h1>
 		<dl>
-			<dt>{{ get .L.Version }}</dt>
+			<dt><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version</dt>
 			<dd>{{ .Version }}</dd>
 		{{ if .Cfg.UseAuth }}
-			<dt>{{ get .L.HomeHypha }}</dt>
+			<dt>Home hypha</dt>
 			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
 
-			<dt>{{get .L.Auth}}</dt>
-			<dd>{{ get .L.AuthOn }}</dd>
-			{{if .Cfg.TelegramEnabled}}<dd>{{get .L.TelegramOn}}</dd>{{end}}
+			<dt>Authentication</dt>
+			<dd>Authentication is on</dd>
+			{{if .Cfg.TelegramEnabled}}<dd>Telegram authentication is on</dd>{{end}}
 
-			<dt>{{ get .L.UserCount }}</dt>
+			<dt>User count</dt>
 			<dd>{{ .UserCount }}</dd>
 			{{if .Cfg.RegistrationLimit}}
-			<dt>{{get .L.RegistrationLimit}}</dt>
+			<dt>Registration limit</dt>
 			<dd>{{.RegistrationLimit}}</dd>
 			{{end}}
 
-			<dt>{{ get .L.Admins }}</dt>
+			<dt>Administrators</dt>
 			{{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
 				<dd><a href="/hypha/{{ $cfg.UserHypha }}/{{ $username }}">{{ $username }}</a></dd>
 			{{ end }}
 
 		{{ else }}
-			<dt>{{get .L.Auth}}</dt>
-			<dd>{{ get .L.AuthOff }}</dd>
+			<dt>Authentication</dt>
+			<dd>Authentication is off</dd>
 		{{ end }}
 		</dl>
 	</section>
 </main>`
 
 var aboutData = struct {
-	L                 map[string]L10nEntry
 	Version           string
 	Cfg               map[string]any
 	Admins            []string
 	UserCount         uint64
 	RegistrationLimit uint64
-}{
-	L: map[string]L10nEntry{
-		"Title":             En("About %s").Ru("О %s"),
-		"Version":           En("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version").Ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>"),
-		"UserCount":         En("User count").Ru("Число пользователей"),
-		"HomeHypha":         En("Home hypha").Ru("Домашняя гифа"),
-		"RegistrationLimit": En("Registration limit").Ru("Максимум пользователей"),
-		"Admins":            En("Administrators").Ru("Администраторы"),
+}{}
 
-		"Auth":       En("Authentication").Ru("Аутентификация"),
-		"AuthOn":     En("Authentication is on").Ru("Аутентификация включена"),
-		"AuthOff":    En("Authentication is off").Ru("Аутентификация не включена"),
-		"TelegramOn": En("Telegram authentication is on").Ru("Вход через Телеграм включён"),
-	},
-}
-
-func AboutHTML(locale string) string {
-	get := func(e L10nEntry) string {
-		return e.Get(locale)
-	}
-	temp, err := template.New("about wiki").Funcs(template.FuncMap{"get": get}).Parse(aboutTemplateString)
+func AboutHTML() string {
+	temp, err := template.New("about wiki").Parse(aboutTemplateString)
 	if err != nil {
 		slog.Error("Failed to parse About template", "err", err)
 		os.Exit(1)

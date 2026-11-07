@@ -125,7 +125,7 @@ func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	_, err := io.WriteString(w, viewutil.Base(
 		meta,
 		title,
-		AboutHTML(meta.Locale()),
+		AboutHTML(),
 		map[string]string{},
 	))
 	if err != nil {
