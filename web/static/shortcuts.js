@@ -3,6 +3,7 @@ rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
 
 rrh.l10n('Common', { ru: 'Общее' })
 rrh.l10n('Home', { ru: 'Главная' })
+rrh.l10n('New hypha', { ru: 'Новая гифа' })
 
 rrh.l10n('Hypha', { ru: 'Гифа' })
 
@@ -279,6 +280,7 @@ function openHelp() {
 rrh.shortcuts.addGroup(new ShortcutGroup('Common', null, [
     new Shortcut('g', $$('.top-bar__highlight-link'), 'First 9 header links'),
     new Shortcut('g h', '/', 'Home'),
+    new Shortcut('g n', '/new', 'New hypha'),
     new Shortcut('g l', '/list/', 'List of hyphae'),
     new Shortcut('g r', '/recent-changes/', 'Recent changes'),
     new Shortcut('g u', $('.auth-links__user-link'), 'Your profile′s hypha'),
