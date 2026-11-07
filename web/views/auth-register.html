@@ -24,11 +24,11 @@
             </form>
             {{template "telegram widget" .}}
         {{else if .UseAuth}}
-            <p>{{.Meta.Lc.Get "auth.noregister"}}</p>
-            <p><a href="/{{.RawQuery}}">← {{.Meta.Lc.Get "auth.go_back"}}</a></p>
+            <p>Registrations are currently closed. Administrators can make an account for you by hand; contact them.</p>
+            <p><a href="/{{.RawQuery}}">← Go back</a></p>
         {{else}}
-            <p>{{.Meta.Lc.Get "auth.noauth"}}</p>
-            <p><a href="/{{.RawQuery}}">← {{.Meta.Lc.Get "auth.go_back"}}</a></p>
+            <p>Authentication is disabled. You can edit anonymously.</p>
+            <p><a href="/{{.RawQuery}}">← Go back</a></p>
         {{end}}
     </section>
 </main>

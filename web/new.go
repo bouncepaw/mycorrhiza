@@ -24,7 +24,7 @@ func handlerNewHypha(w http.ResponseWriter, rq *http.Request) {
 		u    = meta.U
 	)
 	if !u.CanProceed(userdomain.ActionUploadText) || !u.CanProceed(userdomain.ActionUploadMedia) {
-		viewutil.HttpErr(meta, http.StatusForbidden, "", meta.Lc.Get("ui.act_norights_edit"))
+		viewutil.HttpErr(meta, http.StatusForbidden, "", "You must be an editor to edit a hypha")
 		return
 	}
 

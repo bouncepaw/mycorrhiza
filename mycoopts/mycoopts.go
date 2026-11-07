@@ -8,7 +8,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/util"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/options"
@@ -59,10 +58,10 @@ func MarkupOptions(hyphaName string) options.Options {
 }
 
 func mediaRaw(h *hyphae.MediaHypha) string {
-	return Media(h, l18n.New("en", "en"))
+	return Media(h)
 }
 
-func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
+func Media(h *hyphae.MediaHypha) string {
 	name := html.EscapeString(h.CanonicalName())
 
 	switch filepath.Ext(h.MediaFilePath()) {
@@ -83,9 +82,9 @@ func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
 	</video>
 </div>`,
 			name,
-			html.EscapeString(lc.Get("ui.media_novideo")),
+			html.EscapeString("Your browser does not support video."),
 			name,
-			html.EscapeString(lc.Get("ui.media_novideo_link")),
+			html.EscapeString("Download video"),
 		)
 
 	case ".mp3", ".wav", ".flac":
@@ -97,9 +96,9 @@ func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
 	</audio>
 </div>`,
 			name,
-			html.EscapeString(lc.Get("ui.media_noaudio")),
+			html.EscapeString("Your browser does not support audio."),
 			name,
-			html.EscapeString(lc.Get("ui.media_noaudio_link")),
+			html.EscapeString("Download audio"),
 		)
 
 	default:
@@ -108,7 +107,7 @@ func Media(h *hyphae.MediaHypha, lc *l18n.Localizer) string {
 	<p><a href="/binary/%s">%s</a></p>
 </div>`,
 			name,
-			html.EscapeString(lc.Get("ui.media_download")),
+			html.EscapeString("Download media"),
 		)
 	}
 }

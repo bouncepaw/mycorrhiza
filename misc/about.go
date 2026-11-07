@@ -10,7 +10,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/internal/version"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 )
 
 type L10nEntry struct {
@@ -92,9 +91,9 @@ var aboutData = struct {
 	},
 }
 
-func AboutHTML(lc *l18n.Localizer) string {
+func AboutHTML(locale string) string {
 	get := func(e L10nEntry) string {
-		return e.Get(lc.Locale)
+		return e.Get(locale)
 	}
 	temp, err := template.New("about wiki").Funcs(template.FuncMap{"get": get}).Parse(aboutTemplateString)
 	if err != nil {

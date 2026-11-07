@@ -10,7 +10,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/shroom"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -102,8 +101,8 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = usersvc.FromRequest(rq)
-		lc   = l18n.FromRequest(rq)
+		u = usersvc.FromRequest(rq)
+
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "rename"))
 		meta = viewutil.MetaFrom(w, rq)
 	)
@@ -112,7 +111,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	case *hyphae.EmptyHypha:
 		slog.Info("Trying to rename empty hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha") // TODO: localize
+		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha")
 		return
 	}
 
@@ -138,7 +137,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	if err := shroom.Rename(oldHypha, newName, recursive, leaveRedirections, u); err != nil {
 		slog.Error("Failed to rename hypha",
 			"err", err, "username", u.Name, "hyphaName", oldHypha.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), lc.Get(err.Error())) // TODO: localize
+		viewutil.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), err.Error())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+newName, http.StatusSeeOther)
@@ -148,8 +147,8 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		u    = usersvc.FromRequest(rq)
-		lc   = l18n.FromRequest(rq)
+		u = usersvc.FromRequest(rq)
+
 		meta = viewutil.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "edit")
@@ -165,7 +164,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
 			"reason", "unauthorized")
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.act_norights_edit"))
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to edit a hypha")
 		return
 	}
 
@@ -176,7 +175,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		content, err = hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			slog.Error("Failed to fetch Mycomarkup file", "err", err)
-			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.error_text_fetch"))
+			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "Could not fetch text data")
 			return
 		}
 	}
@@ -239,10 +238,10 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	rq.ParseMultipartForm(multipartMemoryThreshold)
 	var (
-		hyphaName          = util.HyphaNameFromRq(rq, "upload-binary")
-		h                  = hyphae.ByName(hyphaName)
-		u                  = usersvc.FromRequest(rq)
-		lc                 = l18n.FromRequest(rq)
+		hyphaName = util.HyphaNameFromRq(rq, "upload-binary")
+		h         = hyphae.ByName(hyphaName)
+		u         = usersvc.FromRequest(rq)
+
 		file, handler, err = rq.FormFile("binary")
 		meta               = viewutil.MetaFrom(w, rq)
 	)
@@ -254,7 +253,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
 			"reason", "unauthorized")
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, lc.Get("ui.act_norights_media"))
+		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to upload media")
 	}
 
 	// If file is not passed:

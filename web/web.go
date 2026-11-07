@@ -18,7 +18,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -261,7 +260,6 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 
 func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	// Note there is no lock here.
-	lc := l18n.FromRequest(rq)
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	_ = rq.ParseForm()
 	var (
@@ -293,12 +291,12 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 			w,
 			viewutil.Base(
 				viewutil.MetaFrom(w, rq),
-				lc.Get("ui.error"),
+				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
-					lc.Get("auth.error_telegram"),
+					"",
 					err.Error(),
-					lc.Get("auth.go_login"),
+					"Go to the login page",
 				),
 				map[string]string{},
 			),
@@ -317,9 +315,9 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
-					lc.Get("auth.error_telegram"),
+					"",
 					err.Error(),
-					lc.Get("auth.go_login"),
+					"Go to the login page",
 				),
 				map[string]string{},
 			),
