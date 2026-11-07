@@ -82,7 +82,7 @@ var aboutData = struct {
 		"Version":           En("<a href=\"https://mycorrhiza.wiki\">Mycorrhiza Wiki</a> version").Ru("Версия <a href=\"https://mycorrhiza.wiki\">Микоризы</a>"),
 		"UserCount":         En("User count").Ru("Число пользователей"),
 		"HomeHypha":         En("Home hypha").Ru("Домашняя гифа"),
-		"RegistrationLimit": En("RegistrationLimit").Ru("Максимум пользователей"),
+		"RegistrationLimit": En("Registration limit").Ru("Максимум пользователей"),
 		"Admins":            En("Administrators").Ru("Администраторы"),
 
 		"Auth":       En("Authentication").Ru("Аутентификация"),
