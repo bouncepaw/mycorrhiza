@@ -17,13 +17,12 @@ var fs embed.FS
 var base = template.Must(template.ParseFS(fs, "base.html"))
 
 type Page struct {
-	TemplateEnglish *template.Template
-	TemplateRussian *template.Template
+	Template *template.Template
 }
 
-func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string) *Page {
+func NewPage(fs embed.FS, tmpls ...string) *Page {
 	must := template.Must
-	en := must(must(must(
+	tmpl := must(must(must(
 		base.Clone()).
 		Funcs(template.FuncMap{
 			"beautifulName": util.BeautifulName,
@@ -45,7 +44,7 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 		ParseFS(fs, tmpls...))
 
 	if cfg.UseAuth {
-		en = must(en.Parse(`
+		tmpl = must(tmpl.Parse(`
 {{define "auth"}}
 <ul class="top-bar__auth auth-links">
 	<li class="auth-links__box auth-links__user-box">
@@ -65,7 +64,7 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 `))
 	}
 	if cfg.AllowRegistration {
-		must(en.Parse(`{{define "registration"}}
+		must(tmpl.Parse(`{{define "registration"}}
 {{if .Meta.U.Group | eq "anon"}}
 	 <li class="auth-links__box auth-links__register-box">
 		 <a href="/register" class="auth-links__link auth-links__register-link">
@@ -76,30 +75,7 @@ func NewPage(fs embed.FS, russianTranslation map[string]string, tmpls ...string)
 {{end}}`))
 	}
 
-	russianTranslation["search by title"] = "Поиск по названию"
-	russianTranslation["new hypha"] = "Новая гифа"
-	russianTranslation["login"] = "Войти"
-	russianTranslation["register"] = "Регистрация"
-	russianTranslation["cancel"] = "Отмена"
-	russianTranslation["categories"] = "Категории"
-	russianTranslation["remove from category title"] = "Убрать гифу из этой категории"
-	russianTranslation["placeholder"] = "Название категории..."
-	russianTranslation["add to category title"] = "Добавить гифу в эту категорию"
-
-	return &Page{
-		TemplateEnglish: en,
-		TemplateRussian: must(must(en.Clone()).
-			Parse(translationsIntoTemplates(russianTranslation))),
-	}
-}
-
-func translationsIntoTemplates(m map[string]string) string {
-	var sb strings.Builder
-	for k, v := range m {
-		sb.WriteString(fmt.Sprintf(`{{define "%s"}}%s{{end}}
-`, k, v))
-	}
-	return sb.String()
+	return &Page{Template: tmpl}
 }
 
 func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
@@ -111,10 +87,5 @@ func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
 	data["HeaderLinks"] = viewutil.HeaderLinks
 	data["UseAuth"] = cfg.UseAuth
 
-	tmpl := p.TemplateEnglish
-	if meta.LocaleIsRussian() {
-		tmpl = p.TemplateRussian
-	}
-
-	return tmpl.ExecuteTemplate(meta.W, "page", data)
+	return p.Template.ExecuteTemplate(meta.W, "page", data)
 }

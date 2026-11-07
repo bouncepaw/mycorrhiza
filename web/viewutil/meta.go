@@ -36,10 +36,6 @@ func (m Meta) Locale() string {
 	return m.locale
 }
 
-func (m Meta) LocaleIsRussian() bool {
-	return m.Locale() == "ru"
-}
-
 func localeFromRequest(r *http.Request) string {
 	tags, _, _ := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	tag, _, _ := supportedLocales.Match(tags...)
