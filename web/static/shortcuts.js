@@ -1,19 +1,3 @@
-rrh.l10n('List of shortcuts', { ru: 'Горячие клавиши' })
-rrh.l10n('Close this dialog', { ru: 'Закрыть диалог' })
-
-rrh.l10n('Common', { ru: 'Общее' })
-rrh.l10n('Home', { ru: 'Главная' })
-rrh.l10n('New hypha', { ru: 'Новая гифа' })
-
-rrh.l10n('Hypha', { ru: 'Гифа' })
-
-rrh.l10n('Backlinks', { ru: 'Обратные ссылки' })
-rrh.l10n('First 9 backlinks', { ru: 'Первые 9 обратных ссылок' })
-
-rrh.l10n('Editor', { ru: 'Редактор' })
-
-rrh.l10n('Format', { ru: 'Форматирование' })
-
 rrh.shortcuts = {
     // map is the whole shortcut graph. active points to the node of the
     // shortcut graph that's currently "selected". When the user presses a
@@ -165,14 +149,14 @@ class Shortcut {
     constructor(shortcuts, target, description, other) {
         this.shortcuts = shortcuts
         this.target = target
-        this.description = rrh.l10n(description)
+        this.description = description
         Object.assign(this, other)
     }
 }
 
 class ShortcutGroup {
     constructor(name, element = null, bindings = []) {
-        this.name = rrh.l10n(name)
+        this.name = name
         this.shortcuts = []
         this.element = element
         bindings.forEach(binding => this.bind(binding))
@@ -231,8 +215,8 @@ function openHelp() {
     let dialog = rrh.html`
         <div class="dialog shortcuts-help" tabindex="0">
             <div class="dialog__header">
-                <h1 class="dialog__title">${rrh.l10n('List of shortcuts')}</h1>
-                <button class="dialog__close-button" aria-label="${rrh.l10n('Close this dialog')}"></button>
+                <h1 class="dialog__title">List of shortcuts</h1>
+                <button class="dialog__close-button" aria-label="Close this dialog"></button>
             </div>
             <div class="dialog__content"></div>
         </div>
