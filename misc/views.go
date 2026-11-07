@@ -4,6 +4,7 @@ import (
 	"embed"
 	"iter"
 	"strings"
+	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -11,22 +12,13 @@ import (
 
 var (
 	//go:embed *html
-	fs                          embed.FS
-	chainList, chainTitleSearch viewutil.Chain
-	ruTranslation               = `
-{{define "expand all"}}Развернуть всё{{end}}
-{{define "collapse all"}}Свернуть всё{{end}}
-{{define "hypha count"}}{{.HyphaCount}} {{if eq .RussianHyphaCountForm "one"}}гифа{{else if eq .RussianHyphaCountForm "few"}}гифы{{else}}гиф{{end}}{{end}}
-{{define "search:"}}Поиск: {{.}}{{end}}
-{{define "search results for"}}Результаты поиска для «{{.}}»{{end}}
-{{define "search no results"}}Ничего не найдено.{{end}}
-{{define "go to hypha"}}Перейти к гифе <a class="wikilink{{if .HasExactMatch | not}} wikilink_new{{end}}" href="/hypha/{{.MatchedHyphaName}}">{{beautifulName .MatchedHyphaName}}</a>.{{end}}
-`
+	fs                        embed.FS
+	tmplList, tmplTitleSearch *template.Template
 )
 
 func initViews() {
-	chainList = viewutil.CopyEnRuWith(fs, "view_list.html", ruTranslation)
-	chainTitleSearch = viewutil.CopyEnRuWith(fs, "view_title_search.html", ruTranslation)
+	tmplList = viewutil.CopyWith(fs, "view_list.html")
+	tmplTitleSearch = viewutil.CopyWith(fs, "view_title_search.html")
 }
 
 type listDatum struct {
@@ -76,20 +68,8 @@ type listData struct {
 	HyphaCount int
 }
 
-func (d listData) RussianHyphaCountForm() string {
-	lastDigit, lastTwoDigits := d.HyphaCount%10, d.HyphaCount%100
-	switch {
-	case lastDigit == 1 && lastTwoDigits != 11:
-		return "one"
-	case lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14):
-		return "few"
-	default:
-		return "many"
-	}
-}
-
 func viewList(meta viewutil.Meta, entries []listDatum) {
-	viewutil.ExecutePage(meta, chainList, listData{
+	viewutil.ExecutePage(meta, tmplList, listData{
 		BaseData:   &viewutil.BaseData{},
 		Entries:    nestList(entries),
 		HyphaCount: hyphae.Count(),
@@ -105,7 +85,7 @@ type titleSearchData struct {
 }
 
 func viewTitleSearch(meta viewutil.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
-	viewutil.ExecutePage(meta, chainTitleSearch, titleSearchData{
+	viewutil.ExecutePage(meta, tmplTitleSearch, titleSearchData{
 		BaseData:         &viewutil.BaseData{},
 		Query:            query,
 		Results:          results,

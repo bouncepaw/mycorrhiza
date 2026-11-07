@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
@@ -16,30 +17,13 @@ import (
 var (
 	//go:embed *html
 	fs            embed.FS
-	ruTranslation = `
-{{define "interwiki map"}}Интеркарта{{end}}
-{{define "name"}}Название:{{end}}
-{{define "aliases"}}Псевдонимы:{{end}}
-{{define "aliases (,)"}}Псевдонимы (разделённые запятыми):{{end}}
-{{define "engine"}}Движок:{{end}}
-	{{define "engine/mycorrhiza"}}Микориза{{end}}
-	{{define "engine/betula"}}Бетула{{end}}
-	{{define "engine/agora"}}Агора{{end}}
-	{{define "engine/generic"}}Любой сайт{{end}}
-{{define "link href format"}}Строка форматирования атрибута href ссылки:{{end}}
-{{define "img src format"}}Строка форматирования атрибута src изображения:{{end}}
-{{define "unset map"}}Интеркарта не задана.{{end}}
-{{define "documentation."}}Документация.{{end}}
-{{define "edit separately."}}Изменяйте записи по отдельности.{{end}}
-{{define "add interwiki entry"}}Добавить запись в интеркарту{{end}}
-`
-	chainInterwiki viewutil.Chain
-	chainNameTaken viewutil.Chain
+	tmplInterwiki *template.Template
+	tmplNameTaken *template.Template
 )
 
 func InitHandlers(rtr *mux.Router) {
-	chainInterwiki = viewutil.CopyEnRuWith(fs, "view_interwiki.html", ruTranslation)
-	chainNameTaken = viewutil.CopyEnRuWith(fs, "view_name_taken.html", ruTranslation)
+	tmplInterwiki = viewutil.CopyWith(fs, "view_interwiki.html")
+	tmplNameTaken = viewutil.CopyWith(fs, "view_name_taken.html")
 	rtr.HandleFunc("/interwiki", handlerInterwiki)
 	rtr.HandleFunc("/interwiki/add-entry", handlerAddEntry).Methods(http.MethodPost)
 	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)
@@ -106,7 +90,7 @@ type nameTakenData struct {
 }
 
 func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
-	viewutil.ExecutePage(meta, chainNameTaken, nameTakenData{
+	viewutil.ExecutePage(meta, tmplNameTaken, nameTakenData{
 		BaseData:  &viewutil.BaseData{},
 		Wiki:      wiki,
 		TakenName: takenName,
@@ -126,7 +110,7 @@ type interwikiData struct {
 }
 
 func viewInterwiki(meta viewutil.Meta) {
-	viewutil.ExecutePage(meta, chainInterwiki, interwikiData{
+	viewutil.ExecutePage(meta, tmplInterwiki, interwikiData{
 		BaseData: &viewutil.BaseData{},
 		Entries:  listOfEntries,
 		CanEdit:  meta.U.Group == userdomain.GroupAdmin,

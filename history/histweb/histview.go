@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	texttemplate "text/template"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
@@ -32,9 +33,9 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
-	chainPrimitiveDiff = viewutil.CopyEnRuWith(fs, "view_primitive_diff.html", ruTranslation)
-	chainRecentChanges = viewutil.CopyEnRuWith(fs, "view_recent_changes.html", ruTranslation)
-	chainHistory = viewutil.CopyEnRuWith(fs, "view_history.html", ruTranslation)
+	tmplPrimitiveDiff = viewutil.CopyWith(fs, "view_primitive_diff.html")
+	tmplRecentChanges = viewutil.CopyWith(fs, "view_recent_changes.html")
+	tmplHistory = viewutil.CopyWith(fs, "view_history.html")
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -123,23 +124,8 @@ func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
 
 var (
 	//go:embed *.html
-	fs            embed.FS
-	ruTranslation = `
-{{define "history of title"}}История «{{.}}»{{end}}
-{{define "history of heading"}}История <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}
-
-{{define "diff for at title"}}Разница для {{beautifulName .HyphaName}} для {{.Hash}}{{end}}
-{{define "diff for at heading"}}Разница для <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> для {{.Hash}}{{end}}
-{{define "no text diff available"}}Нет текстовой разницы.{{end}}
-
-{{define "count pre"}}Отобразить{{end}}
-{{define "count post"}}свежих правок.{{end}}
-{{define "subscribe via"}}Подписаться через <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> или <a href="/recent-changes-json">JSON-ленту</a>.{{end}}
-{{define "recent changes"}}Свежие правки{{end}}
-{{define "n recent changes"}}{{.}} свеж{{if eq . 1}}ая правка{{else if le . 4}}их правок{{else}}их правок{{end}}{{end}}
-{{define "recent empty"}}Правки не найдены.{{end}}
-`
-	chainPrimitiveDiff, chainRecentChanges, chainHistory viewutil.Chain
+	fs                                                embed.FS
+	tmplPrimitiveDiff, tmplRecentChanges, tmplHistory *texttemplate.Template
 )
 
 type recentChangesData struct {
@@ -151,7 +137,7 @@ type recentChangesData struct {
 }
 
 func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
-	viewutil.ExecutePage(meta, chainRecentChanges, recentChangesData{
+	viewutil.ExecutePage(meta, tmplRecentChanges, recentChangesData{
 		BaseData:  &viewutil.BaseData{},
 		EditCount: editCount,
 		Changes:   changes,
@@ -202,7 +188,7 @@ func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
 		text = fmt.Sprintf(
 			`<pre class="codeblock"><code>%s</code></pre>`, text)
 	}
-	viewutil.ExecutePage(meta, chainPrimitiveDiff, primitiveDiffData{
+	viewutil.ExecutePage(meta, tmplPrimitiveDiff, primitiveDiffData{
 		BaseData:  &viewutil.BaseData{},
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
@@ -217,7 +203,7 @@ type historyData struct {
 }
 
 func historyView(meta viewutil.Meta, hyphaName, contents string) {
-	viewutil.ExecutePage(meta, chainHistory, historyData{
+	viewutil.ExecutePage(meta, tmplHistory, historyData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/history/" + util.CanonicalName(hyphaName),
 		},

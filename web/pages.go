@@ -2,6 +2,7 @@ package web
 
 import (
 	"embed"
+	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -16,15 +17,15 @@ var pageRevision, pageMedia *newtmpl.Page
 var pageAuthLock, pageAuthLogin, pageAuthLogout, pageAuthRegister *newtmpl.Page
 var pageCatPage, pageCatList, pageCatEdit *newtmpl.Page
 
-var panelChain, listChain, newUserChain, editUserChain, deleteUserChain viewutil.Chain
+var panelTemplate, listTemplate, newUserTemplate, editUserTemplate, deleteUserTemplate *template.Template
 
 func initPages() {
 
-	panelChain = viewutil.CopyEnRuWith(fs, "views/admin-panel.html", adminTranslationRu)
-	listChain = viewutil.CopyEnRuWith(fs, "views/admin-user-list.html", adminTranslationRu)
-	newUserChain = viewutil.CopyEnRuWith(fs, "views/admin-new-user.html", adminTranslationRu)
-	editUserChain = viewutil.CopyEnRuWith(fs, "views/admin-edit-user.html", adminTranslationRu)
-	deleteUserChain = viewutil.CopyEnRuWith(fs, "views/admin-delete-user.html", adminTranslationRu)
+	panelTemplate = viewutil.CopyWith(fs, "views/admin-panel.html")
+	listTemplate = viewutil.CopyWith(fs, "views/admin-user-list.html")
+	newUserTemplate = viewutil.CopyWith(fs, "views/admin-new-user.html")
+	editUserTemplate = viewutil.CopyWith(fs, "views/admin-edit-user.html")
+	deleteUserTemplate = viewutil.CopyWith(fs, "views/admin-delete-user.html")
 
 	pageOrphans = newtmpl.NewPage(fs, "views/orphans.html")
 	pageBacklinks = newtmpl.NewPage(fs, "views/backlinks.html")

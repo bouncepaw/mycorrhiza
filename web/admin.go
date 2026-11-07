@@ -17,46 +17,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
-const adminTranslationRu = `
-{{define "panel title"}}Панель админстратора{{end}}
-{{define "panel safe section title"}}Безопасная секция{{end}}
-{{define "panel link about"}}Об этой вики{{end}}
-{{define "panel update header"}}Обновить ссылки в верхней панели{{end}}
-{{define "panel link user list"}}Список пользователей{{end}}
-{{define "panel users"}}Управление пользователями{{end}}
-{{define "panel unsafe section title"}}Опасная секция{{end}}
-{{define "panel shutdown"}}Выключить вики{{end}}
-{{define "panel reindex hyphae"}}Переиндексировать гифы{{end}}
-{{define "panel interwiki"}}Интервики{{end}}
-
-{{define "manage users"}}Управление пользователями{{end}}
-{{define "create user"}}Создать пользователя{{end}}
-{{define "reindex users"}}Переиндексировать пользователей{{end}}
-{{define "name"}}Имя{{end}}
-{{define "group"}}Группа{{end}}
-{{define "registered at"}}Зарегистрирован{{end}}
-{{define "actions"}}Действия{{end}}
-{{define "edit"}}Изменить{{end}}
-
-{{define "new user"}}Новый пользователь{{end}}
-{{define "password"}}Пароль{{end}}
-{{define "confirm password"}}Подтвердить пароль{{end}}
-{{define "change password"}}Изменить пароль{{end}}
-{{define "non local password change"}}Поменять пароль можно только у локальных пользователей.{{end}}
-{{define "create"}}Создать{{end}}
-
-{{define "change group"}}Изменить группу{{end}}
-{{define "user x"}}Пользователь {{.}}{{end}}
-{{define "update"}}Обновить{{end}}
-{{define "delete user"}}Удалить пользователя{{end}}
-{{define "delete user tip"}}Удаляет пользователя из базы данных. Правки пользователя будут сохранены. Имя пользователя освободится для повторной регистрации.{{end}}
-
-{{define "delete user?"}}Удалить пользователя {{.}}?{{end}}
-{{define "delete user warning"}}Вы уверены, что хотите удалить этого пользователя из базы данных? Это действие нельзя отменить.{{end}}
-`
-
 func viewPanel(meta viewutil.Meta) {
-	viewutil.ExecutePage(meta, panelChain, &viewutil.BaseData{})
+	viewutil.ExecutePage(meta, panelTemplate, &viewutil.BaseData{})
 }
 
 type listData struct {
@@ -66,7 +28,7 @@ type listData struct {
 }
 
 func viewList(meta viewutil.Meta, users []*usersvc.User) {
-	viewutil.ExecutePage(meta, listChain, listData{
+	viewutil.ExecutePage(meta, listTemplate, listData{
 		BaseData:  &viewutil.BaseData{},
 		UserHypha: cfg.UserHypha,
 		Users:     users,
@@ -79,7 +41,7 @@ type newUserData struct {
 }
 
 func viewNewUser(meta viewutil.Meta, form util.FormData) {
-	viewutil.ExecutePage(meta, newUserChain, newUserData{
+	viewutil.ExecutePage(meta, newUserTemplate, newUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
 	})
@@ -92,7 +54,7 @@ type editDeleteUserData struct {
 }
 
 func viewEditUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
-	viewutil.ExecutePage(meta, editUserChain, editDeleteUserData{
+	viewutil.ExecutePage(meta, editUserTemplate, editDeleteUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
 		U:        u,
@@ -100,7 +62,7 @@ func viewEditUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
 }
 
 func viewDeleteUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
-	viewutil.ExecutePage(meta, deleteUserChain, editDeleteUserData{
+	viewutil.ExecutePage(meta, deleteUserTemplate, editDeleteUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
 		U:        u,
