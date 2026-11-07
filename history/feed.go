@@ -1,7 +1,6 @@
 package history
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -234,16 +233,16 @@ func (parser *feedOptionParserState) parseFeedGroupingSame(query url.Values) err
 				switch sameCond {
 				case "author":
 					if cond.author {
-						return errors.New("set same=author twice")
+						return fmt.Errorf("set same=author twice")
 					}
 					cond.author = true
 				case "message":
 					if cond.message {
-						return errors.New("set same=message twice")
+						return fmt.Errorf("set same=message twice")
 					}
 					cond.message = true
 				default:
-					return errors.New("unknown same option " + sameCond)
+					return fmt.Errorf("unknown same option %s", sameCond)
 				}
 			}
 			parser.conds = append(parser.conds, cond)
@@ -273,7 +272,7 @@ func (parser *feedOptionParserState) parseFeedGroupingOrder(query url.Values) er
 		case "new-to-old":
 			parser.order = newToOld
 		default:
-			return errors.New("unknown order option " + query.Get("order"))
+			return fmt.Errorf("unknown order option %s", query.Get("order"))
 		}
 	} else {
 		parser.order = oldToNew

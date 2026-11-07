@@ -283,7 +283,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if !seemsValid {
-		err = errors.New("Wrong parameters")
+		err = fmt.Errorf("Wrong parameters")
 	}
 
 	if err != nil {

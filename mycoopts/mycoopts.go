@@ -1,7 +1,6 @@
 package mycoopts
 
 import (
-	"errors"
 	"fmt"
 	"html"
 	"path/filepath"
@@ -38,7 +37,7 @@ func MarkupOptions(hyphaName string) options.Options {
 		HyphaHTMLData: func(hyphaName string) (rawText, binaryBlock string, err error) {
 			switch h := hyphae.ByName(hyphaName).(type) {
 			case *hyphae.EmptyHypha:
-				err = errors.New("Hypha " + hyphaName + " does not exist")
+				err = fmt.Errorf("Hypha %s does not exist", hyphaName)
 			case *hyphae.TextualHypha:
 				rawText, err = hyphae.FetchMycomarkupFile(h)
 			case *hyphae.MediaHypha:

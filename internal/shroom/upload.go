@@ -2,7 +2,6 @@ package shroom
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -58,14 +57,14 @@ func UploadText(h hyphae.Hypha, data []byte, userMessage string, u *usersvc.User
 			"username", u.Name,
 			"reason", "unauthorized")
 		hop.Abort()
-		return errors.New("ui.act_no_rights")
+		return fmt.Errorf("ui.act_no_rights")
 	}
 
 	// Hypha name exploit check
 	if !hyphae.IsValidName(h.CanonicalName()) {
 		// We check for the name only. I suppose the filepath would be valid as well.
 		hop.Abort()
-		return errors.New("invalid hypha name")
+		return fmt.Errorf("invalid hypha name")
 	}
 
 	oldText, err := hyphae.FetchMycomarkupFile(h)
@@ -170,13 +169,13 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *usersvc.U
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
 			"reason", "unauthorized")
-		return errors.New("ui.act_no_rights")
+		return fmt.Errorf("ui.act_no_rights")
 	}
 
 	// Hypha name exploit check
 	if !hyphae.IsValidName(h.CanonicalName()) {
 		// We check for the name only. I suppose the filepath would be valid as well.
-		return errors.New("invalid hypha name")
+		return fmt.Errorf("invalid hypha name")
 	}
 
 	data, err := io.ReadAll(file)
@@ -186,7 +185,7 @@ func UploadBinary(h hyphae.Hypha, mime string, file multipart.File, u *usersvc.U
 
 	// Empty data check
 	if len(data) == 0 {
-		return errors.New("No data passed")
+		return fmt.Errorf("No data passed")
 	}
 
 	// At this point, we have a savable media document. Gotta save it.

@@ -1,7 +1,6 @@
 package shroom
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 	"path"
@@ -27,7 +26,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 			"hyphaName", oldHypha.CanonicalName(),
 			"username", u.Name,
 			"reason", "no new name given")
-		return errors.New("ui.rename_noname_tip")
+		return fmt.Errorf("ui.rename_noname_tip")
 	}
 
 	if !hyphae.IsValidName(newName) {
@@ -36,7 +35,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 			"username", u.Name,
 			"reason", "new name is invalid",
 			"newName", newName)
-		return errors.New("ui.rename_badname_tip") // FIXME: There is a bug related to this.
+		return fmt.Errorf("ui.rename_badname_tip") // FIXME: There is a bug related to this.
 	}
 
 	switch targetHypha := hyphae.ByName(newName); targetHypha.(type) {
@@ -49,7 +48,7 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 			"username", u.Name,
 			"reason", "new name is taken already",
 			"newName", newName)
-		return errors.New("ui.rename_taken_tip") // FIXME: There is a bug related to this.
+		return fmt.Errorf("ui.rename_taken_tip") // FIXME: There is a bug related to this.
 	}
 
 	var (
@@ -126,7 +125,7 @@ func leaveRedirection(oldName, newName string, hop *history.Op) error {
 		defer backlinks.UpdateBacklinksAfterEdit(h, "")
 		return writeTextToDisk(h, []byte(text), hop)
 	default:
-		return errors.New("invalid state for hypha " + oldName + " renamed to " + newName)
+		return fmt.Errorf("invalid state for hypha %s renamed to %s", oldName, newName)
 	}
 }
 
@@ -156,7 +155,7 @@ func renamingPairs(hyphaeToRename []hyphae.ExistingHypha, replaceName func(strin
 		h.Unlock()
 	}
 	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
-		return nil, errors.New("Hypha " + firstFailure + " already exists")
+		return nil, fmt.Errorf("Hypha %s already exists", firstFailure)
 	}
 	return renameMap, nil
 }

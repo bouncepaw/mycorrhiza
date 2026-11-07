@@ -2,7 +2,7 @@
 package interwikisvc
 
 import (
-	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"slices"
@@ -83,7 +83,7 @@ func replaceEntry(oldWiki *Wiki, newWiki *Wiki) error {
 		append(oldWiki.Aliases, oldWiki.Name),
 	)
 	if ok, name := areNamesFree(diff); !ok {
-		return errors.New(name)
+		return fmt.Errorf("%s", name)
 	}
 	deleteEntry(oldWiki)
 	return addEntry(newWiki)
@@ -134,10 +134,10 @@ func addEntry(wiki *Wiki) error {
 	switch {
 	case !ok:
 		slog.Error("There are multiple uses of the same name", "name", name)
-		return errors.New(name)
+		return fmt.Errorf("%s", name)
 	case len(names) == 0:
 		slog.Error("No names passed for a new interwiki entry")
-		return errors.New("")
+		return fmt.Errorf("")
 	}
 
 	listOfEntries = append(listOfEntries, wiki)

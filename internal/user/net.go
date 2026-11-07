@@ -4,7 +4,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -88,8 +87,8 @@ func Register(
 }
 
 var (
-	ErrUnknownUsername = errors.New("unknown username")
-	ErrWrongPassword   = errors.New("wrong password")
+	ErrUnknownUsername = fmt.Errorf("unknown username")
+	ErrWrongPassword   = fmt.Errorf("wrong password")
 )
 
 // LoginDataHTTP logs such user in and returns string representation of an error if there is any.

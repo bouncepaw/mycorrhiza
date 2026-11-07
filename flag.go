@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	_ "embed"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -52,7 +51,7 @@ func parseCliArgs() error {
 	args := flag.Args()
 	if len(args) == 0 {
 		slog.Error("Pass a wiki directory")
-		return errors.New("wiki directory not passed")
+		return fmt.Errorf("wiki directory not passed")
 	}
 
 	wikiDir, err := filepath.Abs(args[0])

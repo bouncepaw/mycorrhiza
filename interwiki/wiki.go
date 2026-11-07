@@ -1,7 +1,6 @@
 package interwikisvc
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 
@@ -18,16 +17,16 @@ func (w *Wiki) canonize() error {
 	switch {
 	case w.Name == "":
 		slog.Error("A site in the interwiki map has no name")
-		return errors.New("site with no name")
+		return fmt.Errorf("site with no name")
 	case w.URL == "":
 		slog.Error("Site in the interwiki map has no URL", "name", w.Name)
-		return errors.New("site with no URL")
+		return fmt.Errorf("site with no URL")
 	case !w.Engine.Valid():
 		slog.Error("Site in the interwiki map has an unknown engine",
 			"siteName", w.Name,
 			"engine", w.Engine,
 		)
-		return errors.New("unknown engine")
+		return fmt.Errorf("unknown engine")
 	}
 
 	w.Name = util.CanonicalName(w.Name)
