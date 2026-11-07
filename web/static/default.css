@@ -947,6 +947,15 @@ body[data-rrh-addr^="/interwiki"] main form + form {
 .img-gallery img { max-width: 100%; max-height: 50vh; }
 figure { margin: 0; }
 figcaption { padding-bottom: .5rem; }
+@media (prefers-color-scheme: dark) {
+	img {
+		filter: brightness(.8);
+		transition: filter .15s;
+	}
+	img:hover {
+		filter: none;
+	}
+}
 
 /*
  * Primitive diff
