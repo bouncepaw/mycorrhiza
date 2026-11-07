@@ -1,9 +1,8 @@
-{{define "orphaned hyphae"}}Orphaned hyphae{{end}}
-{{define "title"}}{{template "orphaned hyphae"}}{{end}}
+{{define "title"}}Orphaned hyphae{{end}}
 {{define "body"}}
 	<main class="main-width">
-		<h1>{{template "orphaned hyphae"}}</h1>
-		<p>{{block "orphan description" .}}Hyphae which have no backlinks are listed here.{{end}}</p>
+		<h1>Orphaned hyphae</h1>
+		<p>Hyphae which have no backlinks are listed here.</p>
 		<ol>
             {{range .Orphans}}
 				<li>

@@ -1,5 +1,4 @@
-{{define "user x"}}User {{.}}{{end}}
-{{define "title"}}{{template "user x" .U.Name}}{{end}}
+{{define "title"}}User {{.U.Name}}{{end}}
 {{define "body"}}
 	<main class="main-width form-wrap">
 		<h1>
@@ -9,16 +8,16 @@
 
 		{{if .Form.HasError}}
 		<div class="notice notice--error">
-			<strong>{{template "error"}}:</strong>
+			<strong>Error:</strong>
 			{{.Form.Error}}
 		</div>
 		{{end}}
 
-		<h2>{{block "change group" .}}Change group{{end}}</h2>
+		<h2>Change group</h2>
 
 		<form action="" method="post">
 			<div class="form-field">
-				<select id="group" name="group" aria-label="{{block "group" .}}Group{{end}}">
+				<select id="group" name="group" aria-label="Group">
 					<option {{if .Form.Get "group" | eq "anon" }}selected{{end}}>anon</option>
 					<option {{if .Form.Get "group" | eq "reader" }}selected{{end}}>reader</option>
 					<option {{if .Form.Get "group" | eq "editor" }}selected{{end}}>editor</option>
@@ -28,32 +27,32 @@
 			</div>
 
 			<div class="form-field">
-				<button class="btn" type="submit">{{block "update" .}}Update{{end}}</button>
+				<button class="btn" type="submit">Update</button>
 			</div>
 		</form>
 
-		<h2>{{block "change password" .}}Change password{{end}}</h2>
+		<h2>Change password</h2>
 
 		{{if eq .U.Source "local"}}
 		<form action="/admin/users/{{.U.Name}}/change-password" method="post">
 			<div class="form-field">
-				<label for="pass">{{block "password" .}}Password{{end}}</label>
+				<label for="pass">Password</label>
 				<input required type="password" autocomplete="new-password" id="pass" name="password">
 				<br>
-				<label for="pass_confirm">{{block "confirm password" .}}Confirm password{{end}}</label>
+				<label for="pass_confirm">Confirm password</label>
 				<input required type="password" autocomplete="new-password" id="pass_confirm" name="password_confirm">
 			</div>
 
 			<div class="form-field">
-				<input class="btn" type="submit" value='{{block "submit" .}}Submit{{end}}'>
+				<input class="btn" type="submit" value='Submit'>
 			</div>
 		</form>
         {{else}}
-        <p>{{block "non local password change" .}}Non-local accounts cannot have their passwords changed.{{end}}</p>
+        <p>Non-local accounts cannot have their passwords changed.</p>
         {{end}}
 
-		<h2>{{block "delete user" .}}Delete user{{end}}</h2>
-		<p>{{block "delete user tip" .}}Remove the user from the database. Changes made by the user will be preserved. It will be possible to take this username later.{{end}}</p>
-		<a class="btn btn_destructive" href="/admin/users/{{.U.Name}}/delete">{{template "delete"}}</a>
+		<h2>Delete user</h2>
+		<p>Remove the user from the database. Changes made by the user will be preserved. It will be possible to take this username later.</p>
+		<a class="btn btn_destructive" href="/admin/users/{{.U.Name}}/delete">Delete</a>
 	</main>
 {{end}}

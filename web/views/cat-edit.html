@@ -1,24 +1,23 @@
-{{define "edit category x"}}Edit category {{beautifulName .}}{{end}}
-{{define "title"}}{{template "edit category x" .CatName}}{{end}}
+{{define "title"}}Edit category {{beautifulName .CatName}}{{end}}
 {{define "body"}}
     <main class="main-width category">
-        <h1>{{block "edit category heading" .CatName}}Edit category <a href="/category/{{.}}">{{beautifulName .}}</a>{{end}}</h1>
+        <h1>Edit category <a href="/category/{{.CatName}}">{{beautifulName .CatName}}</a></h1>
         {{if len .Hyphae | not}}
-            <p>{{block "empty cat" .}}This category is empty{{end}}</p>
+            <p>This category is empty</p>
         {{end}}
 
         {{if .GivenPermissionToModify}}
-            <h2>{{block "add to category title" .}}Add a hypha to the category{{end}}</h2>
+            <h2>Add a hypha to the category</h2>
             <form method="POST" action="/add-to-category" class="add-to-category">
                 <input type="text" name="hypha" id="_hypha-name"
-                       placeholder="{{block `hypha name` .}}Hypha name{{end}}">
+                       placeholder="Hypha name">
                 <input type="hidden" name="cat" value="{{.CatName}}">
                 <input type="hidden" name="redirect-to" value="/category/{{.CatName}}">
-                <input type="submit" class="btn" value="{{block `add` .}}Add{{end}}">
+                <input type="submit" class="btn" value="Add">
             </form>
 
             {{if len .Hyphae}}
-                <h2>{{block "remove hyphae" .}}Remove hyphae from the category{{end}}</h2>
+                <h2>Remove hyphae from the category</h2>
                 <form method="POST" action="/remove-from-category" class="multi-remove-from-category">
                     <ol>
                         {{range .Hyphae}}
@@ -30,7 +29,7 @@
                     </ol>
                     <input type="hidden" name="cat" value="{{.CatName}}">
                     <input type="hidden" name="redirect-to" value="/edit-category/{{.CatName}}">
-                    <input type="submit" class="btn" value="{{block `remove` .}}Remove{{end}}">
+                    <input type="submit" class="btn" value="Remove">
                 </form>
             {{end}}{{end}}
     </main>

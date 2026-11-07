@@ -1,5 +1,4 @@
-{{define "category list"}}Category list{{end}}
-{{define "title"}}{{template "category list"}}{{end}}
+{{define "title"}}Category list{{end}}
 {{define "body"}}
 	<main class="main-width mv-tags">
 		<h1 class="p-name">{{template "title"}}</h1>
@@ -12,7 +11,7 @@
                 {{end}}
 			</ol>
         {{else}}
-			<p>{{block `no categories` .}}This wiki has no categories.{{end}}</p>
+			<p>This wiki has no categories.</p>
         {{end}}
 	</main>
 {{end}}

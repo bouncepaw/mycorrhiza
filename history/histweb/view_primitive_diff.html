@@ -1,12 +1,9 @@
-{{define "diff for at title"}}Diff of {{beautifulName .HyphaName}} at {{.Hash}}{{end}}
-{{define "diff for at heading"}}Diff of <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> at {{.Hash}}{{end}}
-{{define "no text diff available"}}No text diff available.{{end}}
-{{define "title"}}{{template "diff for at title" .}}{{end}}
+{{define "title"}}Diff of {{beautifulName .HyphaName}} at {{.Hash}}{{end}}
 {{define "body"}}
 <main class="main-width">
 	<article>
-		<h1>{{template "diff for at heading" .}}</h1>
-		{{if .Text}}{{.Text}}{{else}}{{template "no text diff available" .}}{{end}}
+		<h1>Diff of <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a> at {{.Hash}}</h1>
+		{{if .Text}}{{.Text}}{{else}}No text diff available.{{end}}
 	</article>
 </main>
 {{end}}

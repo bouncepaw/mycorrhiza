@@ -50,7 +50,7 @@ func NewPage(fs embed.FS, tmpls ...string) *Page {
 	<li class="auth-links__box auth-links__user-box">
 		{{if .Meta.U.Group | eq "anon" }}
 			<a href="/login" class="auth-links__link auth-links__login-link">
-				{{block "login" .}}Login{{end}}
+				Login
 			</a>
 		{{else}}
 			<a href="/hypha/{{block "user hypha" .}}{{end}}/{{.Meta.U.Name}}" class="auth-links__link auth-links__user-link">
@@ -68,7 +68,7 @@ func NewPage(fs embed.FS, tmpls ...string) *Page {
 {{if .Meta.U.Group | eq "anon"}}
 	 <li class="auth-links__box auth-links__register-box">
 		 <a href="/register" class="auth-links__link auth-links__register-link">
-			 {{block "register" .}}Register{{end}}
+			 Register
 		 </a>
 	 </li>
 {{end}}

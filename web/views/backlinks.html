@@ -1,9 +1,8 @@
-{{define "backlinks to text"}}Backlinks to {{.}}{{end}}
-{{define "title"}}{{template "backlinks to text" .HyphaName}}{{end}}
+{{define "title"}}Backlinks to {{.HyphaName}}{{end}}
 {{define "body"}}
 <main class="main-width">
-	<h1>{{block "backlinks to link" .HyphaName}}Backlinks to <a href="/hypha/{{.}}">{{beautifulName .}}</a>{{end}}</h1>
-	<p>{{block "description" .}}Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.{{end}}</p>
+	<h1>Backlinks to <a href="/hypha/{{.HyphaName}}">{{beautifulName .HyphaName}}</a></h1>
+	<p>Hyphae which have a link to this hypha, embed it as an image or transclude it are listed below.</p>
 	<ol>
 		{{range .Backlinks}}
 		<li>
