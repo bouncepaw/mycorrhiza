@@ -14,60 +14,66 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func viewPanel(meta viewdata.Meta) {
-	viewutil.ExecutePage(meta, panelTemplate, &viewutil.BaseData{})
+	if err := pageAdminPanel.RenderDataTo(meta, &newtmpl.BaseData{}); err != nil {
+		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-panel", "err", err)
+	}
 }
 
 type listData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	UserHypha string
 	Users     []*usersvc.User
 }
 
 func viewList(meta viewdata.Meta, users []*usersvc.User) {
-	viewutil.ExecutePage(meta, listTemplate, listData{
-		BaseData:  &viewutil.BaseData{},
+	if err := pageAdminUserList.RenderDataTo(meta, &listData{
 		UserHypha: cfg.UserHypha,
 		Users:     users,
-	})
+	}); err != nil {
+		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-user-list", "err", err)
+	}
 }
 
 type newUserData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	Form util.FormData
 }
 
 func viewNewUser(meta viewdata.Meta, form util.FormData) {
-	viewutil.ExecutePage(meta, newUserTemplate, newUserData{
-		BaseData: &viewutil.BaseData{},
-		Form:     form,
-	})
+	if err := pageAdminNewUser.RenderDataTo(meta, &newUserData{
+		Form: form,
+	}); err != nil {
+		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-new-user", "err", err)
+	}
 }
 
 type editDeleteUserData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	Form util.FormData
 	U    *usersvc.User
 }
 
 func viewEditUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
-	viewutil.ExecutePage(meta, editUserTemplate, editDeleteUserData{
-		BaseData: &viewutil.BaseData{},
-		Form:     form,
-		U:        u,
-	})
+	if err := pageAdminEditUser.RenderDataTo(meta, &editDeleteUserData{
+		Form: form,
+		U:    u,
+	}); err != nil {
+		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-edit-user", "err", err)
+	}
 }
 
 func viewDeleteUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
-	viewutil.ExecutePage(meta, deleteUserTemplate, editDeleteUserData{
-		BaseData: &viewutil.BaseData{},
-		Form:     form,
-		U:        u,
-	})
+	if err := pageAdminDeleteUser.RenderDataTo(meta, &editDeleteUserData{
+		Form: form,
+		U:    u,
+	}); err != nil {
+		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-delete-user", "err", err)
+	}
 }
 
 // handlerAdmin provides the admin panel.
