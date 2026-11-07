@@ -17,6 +17,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
@@ -61,7 +62,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	primitiveDiff(viewutil.MetaFrom(w, rq), h, revHash, text)
+	primitiveDiff(viewdata.MetaFrom(w, rq), h, revHash, text)
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.
@@ -71,7 +72,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	if editCount > 100 {
 		return
 	}
-	recentChanges(viewutil.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
+	recentChanges(viewdata.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
 }
 
 // handlerHistory lists all revisions of a hypha.
@@ -88,7 +89,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	// TODO: extra log, not needed?
 	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 
-	historyView(viewutil.MetaFrom(w, rq), hyphaName, list)
+	historyView(viewdata.MetaFrom(w, rq), hyphaName, list)
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
@@ -136,7 +137,7 @@ type recentChangesData struct {
 	Stops     []int
 }
 
-func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
+func recentChanges(meta viewdata.Meta, editCount int, changes []history.Revision) {
 	viewutil.ExecutePage(meta, tmplRecentChanges, recentChangesData{
 		BaseData:  &viewutil.BaseData{},
 		EditCount: editCount,
@@ -153,7 +154,7 @@ type primitiveDiffData struct {
 	Text      template.HTML
 }
 
-func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
+func primitiveDiff(meta viewdata.Meta, h hyphae.Hypha, hash, text string) {
 	hunks := history.SplitPrimitiveDiff(text)
 	if len(hunks) > 0 {
 		var buf strings.Builder
@@ -202,7 +203,7 @@ type historyData struct {
 	Contents  string
 }
 
-func historyView(meta viewutil.Meta, hyphaName, contents string) {
+func historyView(meta viewdata.Meta, hyphaName, contents string) {
 	viewutil.ExecutePage(meta, tmplHistory, historyData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/history/" + util.CanonicalName(hyphaName),

@@ -14,10 +14,11 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
-func viewPanel(meta viewutil.Meta) {
+func viewPanel(meta viewdata.Meta) {
 	viewutil.ExecutePage(meta, panelTemplate, &viewutil.BaseData{})
 }
 
@@ -27,7 +28,7 @@ type listData struct {
 	Users     []*usersvc.User
 }
 
-func viewList(meta viewutil.Meta, users []*usersvc.User) {
+func viewList(meta viewdata.Meta, users []*usersvc.User) {
 	viewutil.ExecutePage(meta, listTemplate, listData{
 		BaseData:  &viewutil.BaseData{},
 		UserHypha: cfg.UserHypha,
@@ -40,7 +41,7 @@ type newUserData struct {
 	Form util.FormData
 }
 
-func viewNewUser(meta viewutil.Meta, form util.FormData) {
+func viewNewUser(meta viewdata.Meta, form util.FormData) {
 	viewutil.ExecutePage(meta, newUserTemplate, newUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
@@ -53,7 +54,7 @@ type editDeleteUserData struct {
 	U    *usersvc.User
 }
 
-func viewEditUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
+func viewEditUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
 	viewutil.ExecutePage(meta, editUserTemplate, editDeleteUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
@@ -61,7 +62,7 @@ func viewEditUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
 	})
 }
 
-func viewDeleteUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
+func viewDeleteUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
 	viewutil.ExecutePage(meta, deleteUserTemplate, editDeleteUserData{
 		BaseData: &viewutil.BaseData{},
 		Form:     form,
@@ -73,7 +74,7 @@ func viewDeleteUser(meta viewutil.Meta, form util.FormData, u *usersvc.User) {
 func handlerAdmin(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	viewPanel(viewutil.MetaFrom(w, rq))
+	viewPanel(viewdata.MetaFrom(w, rq))
 }
 
 // handlerAdminShutdown kills the wiki.
@@ -105,7 +106,7 @@ func handlerAdminUsers(w http.ResponseWriter, rq *http.Request) {
 		less := users[i].RegisteredAt.Before(users[j].RegisteredAt)
 		return less
 	})
-	viewList(viewutil.MetaFrom(w, rq), users)
+	viewList(viewdata.MetaFrom(w, rq), users)
 }
 
 func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
@@ -144,7 +145,7 @@ func handlerAdminUserEdit(w http.ResponseWriter, rq *http.Request) {
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 
-	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
+	viewEditUser(viewdata.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
@@ -187,7 +188,7 @@ func handlerAdminUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 
-	viewEditUser(viewutil.MetaFrom(w, rq), f, u)
+	viewEditUser(viewdata.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
@@ -213,13 +214,13 @@ func handlerAdminUserDelete(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-	viewDeleteUser(viewutil.MetaFrom(w, rq), f, u)
+	viewDeleteUser(viewdata.MetaFrom(w, rq), f, u)
 }
 
 func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-		viewNewUser(viewutil.MetaFrom(w, rq), util.NewFormData())
+		viewNewUser(viewdata.MetaFrom(w, rq), util.NewFormData())
 	} else if rq.Method == http.MethodPost {
 		// Create a user
 		f := util.FormDataFromRequest(rq, []string{"name", "password", "group"})
@@ -235,7 +236,7 @@ func handlerAdminUserNew(w http.ResponseWriter, rq *http.Request) {
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
-			viewNewUser(viewutil.MetaFrom(w, rq), f.WithError(err))
+			viewNewUser(viewdata.MetaFrom(w, rq), f.WithError(err))
 		} else {
 			http.Redirect(w, rq, "/admin/users/", http.StatusSeeOther)
 		}

@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"mime"
 	"net/http"
+
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 // HttpErr is used by many handlers to signal errors in a compact way.
 // TODO: get rid of this abomination
-func HttpErr(meta Meta, status int, name, errMsg string) {
+func HttpErr(meta viewdata.Meta, status int, name, errMsg string) {
 	meta.W.(http.ResponseWriter).Header().Set("Content-Type", mime.TypeByExtension(".html"))
 	meta.W.(http.ResponseWriter).WriteHeader(status)
 	fmt.Fprint(

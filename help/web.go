@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
@@ -29,7 +30,7 @@ func InitHandlers(r *mux.Router) {
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	// See the history of this file to resurrect the old algorithm that supported multiple languages
 	var (
-		meta        = viewutil.MetaFrom(w, rq)
+		meta        = viewdata.MetaFrom(w, rq)
 		articlePath = strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
 		lang        = "en"
 	)
@@ -69,7 +70,7 @@ type helpData struct {
 	Lang         string
 }
 
-func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
+func viewHelp(meta viewdata.Meta, lang, contentsHTML, articlePath string) {
 	viewutil.ExecutePage(meta, tmpl, helpData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/help/" + articlePath,

@@ -8,7 +8,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
@@ -50,7 +50,7 @@ func handlerUserChangePassword(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	_ = pageChangePassword.RenderTo(
-		viewutil.MetaFrom(w, rq),
+		viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"Form": f,
 			"U":    u,

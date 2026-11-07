@@ -9,6 +9,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
@@ -63,7 +64,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 			"name", name,
 			"reason", "one of the proposed aliases or the name is taken",
 			"err", err)
-		viewNameTaken(viewutil.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
+		viewNameTaken(viewdata.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
 		return
 	}
 
@@ -75,7 +76,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 	wiki := readInterwikiEntryFromRequest(rq)
 	if err := addEntry(&wiki); err != nil {
-		viewNameTaken(viewutil.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
+		viewNameTaken(viewdata.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
 		return
 	}
 	saveInterwikiJson()
@@ -89,7 +90,7 @@ type nameTakenData struct {
 	Action    string
 }
 
-func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
+func viewNameTaken(meta viewdata.Meta, wiki *Wiki, takenName, action string) {
 	viewutil.ExecutePage(meta, tmplNameTaken, nameTakenData{
 		BaseData:  &viewutil.BaseData{},
 		Wiki:      wiki,
@@ -99,7 +100,7 @@ func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
 }
 
 func handlerInterwiki(w http.ResponseWriter, rq *http.Request) {
-	viewInterwiki(viewutil.MetaFrom(w, rq))
+	viewInterwiki(viewdata.MetaFrom(w, rq))
 }
 
 type interwikiData struct {
@@ -109,7 +110,7 @@ type interwikiData struct {
 	Error   string
 }
 
-func viewInterwiki(meta viewutil.Meta) {
+func viewInterwiki(meta viewdata.Meta) {
 	viewutil.ExecutePage(meta, tmplInterwiki, interwikiData{
 		BaseData: &viewutil.BaseData{},
 		Entries:  listOfEntries,

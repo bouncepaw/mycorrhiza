@@ -1,4 +1,4 @@
-package viewutil
+package viewdata
 
 import (
 	"html/template"

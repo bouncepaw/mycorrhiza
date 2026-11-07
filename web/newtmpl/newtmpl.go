@@ -8,7 +8,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 //go:embed *.html
@@ -78,13 +78,13 @@ func NewPage(fs embed.FS, tmpls ...string) *Page {
 	return &Page{Template: tmpl}
 }
 
-func (p *Page) RenderTo(meta viewutil.Meta, data map[string]any) error {
+func (p *Page) RenderTo(meta viewdata.Meta, data map[string]any) error {
 	data["Meta"] = meta
 	data["HeadElements"] = meta.HeadElements
 	data["BodyAttributes"] = meta.BodyAttributes
 	data["CommonScripts"] = cfg.CommonScripts
 	data["EditScripts"] = cfg.EditScripts
-	data["HeaderLinks"] = viewutil.HeaderLinks
+	data["HeaderLinks"] = viewdata.HeaderLinks
 	data["UseAuth"] = cfg.UseAuth
 
 	return p.Template.ExecuteTemplate(meta.W, "page", data)

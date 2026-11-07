@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
@@ -68,7 +69,7 @@ type listData struct {
 	HyphaCount int
 }
 
-func viewList(meta viewutil.Meta, entries []listDatum) {
+func viewList(meta viewdata.Meta, entries []listDatum) {
 	viewutil.ExecutePage(meta, tmplList, listData{
 		BaseData:   &viewutil.BaseData{},
 		Entries:    nestList(entries),
@@ -84,7 +85,7 @@ type titleSearchData struct {
 	HasExactMatch    bool
 }
 
-func viewTitleSearch(meta viewutil.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
+func viewTitleSearch(meta viewdata.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
 	viewutil.ExecutePage(meta, tmplTitleSearch, titleSearchData{
 		BaseData:         &viewutil.BaseData{},
 		Query:            query,

@@ -9,6 +9,7 @@ import (
 
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
@@ -30,7 +31,7 @@ type renameData struct {
 	LeaveRedirectionDefault bool
 }
 
-func RenameHypha(meta viewutil.Meta, hyphaName string) {
+func RenameHypha(meta viewdata.Meta, hyphaName string) {
 	viewutil.ExecutePage(meta, tmplRenameHypha, renameData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/rename/" + hyphaName,
@@ -47,7 +48,7 @@ type naviTitleData struct {
 	HomeHypha                 string
 }
 
-func NaviTitle(meta viewutil.Meta, hyphaName string) template.HTML {
+func NaviTitle(meta viewdata.Meta, hyphaName string) template.HTML {
 	parts, partsWithParents := naviTitleify(hyphaName)
 	var buf strings.Builder
 	err := tmplNaviTitle.ExecuteTemplate(&buf, "navititle", naviTitleData{

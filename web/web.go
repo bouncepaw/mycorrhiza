@@ -20,6 +20,7 @@ import (
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
@@ -137,7 +138,7 @@ func actionMiddleware(action userdomain.Action) func(http.Handler) http.Handler 
 // Auth
 func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 	admins, moderators, editors, readers := usersvc.UsersInGroups()
-	_ = pageUserList.RenderTo(viewutil.MetaFrom(w, rq),
+	_ = pageUserList.RenderTo(viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"Admins":     admins,
 			"Moderators": moderators,
@@ -147,7 +148,7 @@ func handlerUserList(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerLock(w http.ResponseWriter, rq *http.Request) {
-	_ = pageAuthLock.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{})
+	_ = pageAuthLock.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{})
 }
 
 // handlerRegister displays the register form (GET) or registers the user (POST).
@@ -155,7 +156,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if rq.Method == http.MethodGet {
 		slog.Info("Showing registration form")
-		_ = pageAuthRegister.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		_ = pageAuthRegister.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 			"UseAuth":           cfg.UseAuth,
 			"AllowRegistration": cfg.AllowRegistration,
 			"RawQuery":          rq.URL.RawQuery,
@@ -173,7 +174,7 @@ func handlerRegister(w http.ResponseWriter, rq *http.Request) {
 		slog.Info("Failed to register", "username", username, "err", err.Error())
 		w.Header().Set("Content-Type", mime.TypeByExtension(".html"))
 		w.WriteHeader(http.StatusBadRequest)
-		_ = pageAuthRegister.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		_ = pageAuthRegister.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 			"UseAuth":           cfg.UseAuth,
 			"AllowRegistration": cfg.AllowRegistration,
 			"RawQuery":          rq.URL.RawQuery,
@@ -214,7 +215,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 		slog.Info("Unknown user logging out")
 		w.WriteHeader(http.StatusForbidden)
 	}
-	_ = pageAuthLogout.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+	_ = pageAuthLogout.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 		"CanLogout": can,
 	})
 }
@@ -223,7 +224,7 @@ func handlerLogout(w http.ResponseWriter, rq *http.Request) {
 func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	if rq.Method == http.MethodGet {
 		w.WriteHeader(http.StatusOK)
-		_ = pageAuthLogin.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		_ = pageAuthLogin.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 			"UseAuth":            cfg.UseAuth,
 			"ErrUnknownUsername": false,
 			"ErrWrongPassword":   false,
@@ -242,7 +243,7 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = pageAuthLogin.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+		_ = pageAuthLogin.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 			"UseAuth":            cfg.UseAuth,
 			"ErrUnknownUsername": errors.Is(err, usersvc.ErrUnknownUsername),
 			"ErrWrongPassword":   errors.Is(err, usersvc.ErrWrongPassword),
@@ -290,7 +291,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
+				viewdata.MetaFrom(w, rq),
 				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
@@ -311,7 +312,7 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 		_, _ = io.WriteString(
 			w,
 			viewutil.Base(
-				viewutil.MetaFrom(w, rq),
+				viewdata.MetaFrom(w, rq),
 				"Error",
 				fmt.Sprintf(
 					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,

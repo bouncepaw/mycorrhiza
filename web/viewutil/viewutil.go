@@ -10,8 +10,8 @@ import (
 	"text/template" // TODO: save the world
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
-
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 var (
@@ -73,9 +73,9 @@ func baseWithWeirdBody() *template.Template {
 }
 
 type BaseData struct {
-	Meta           Meta
+	Meta           viewdata.Meta
 	HeadElements   []string
-	HeaderLinks    []HeaderLink
+	HeaderLinks    []viewdata.HeaderLink
 	CommonScripts  []string
 	EditScripts    []string
 	Addr           string
@@ -84,7 +84,7 @@ type BaseData struct {
 	BodyAttributes map[string]string
 }
 
-func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonScripts []string) {
+func (bd *BaseData) withBaseValues(meta viewdata.Meta, headerLinks []viewdata.HeaderLink, commonScripts []string) {
 	bd.Meta = meta
 	bd.HeaderLinks = headerLinks
 	bd.CommonScripts = commonScripts
@@ -92,7 +92,7 @@ func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonSc
 
 // Base is a temporary wrapper around the base template, meant to facilitate the migration from qtpl.
 // TODO: get rid of this
-func Base(meta Meta, title, body string, bodyAttributes map[string]string, headElements ...string) string {
+func Base(meta viewdata.Meta, title, body string, bodyAttributes map[string]string, headElements ...string) string {
 	var w strings.Builder
 	meta.W = &w
 	t := baseWithWeirdBody()
@@ -100,7 +100,7 @@ func Base(meta Meta, title, body string, bodyAttributes map[string]string, headE
 		Meta:           meta,
 		Title:          title,
 		HeadElements:   headElements,
-		HeaderLinks:    HeaderLinks,
+		HeaderLinks:    viewdata.HeaderLinks,
 		CommonScripts:  cfg.CommonScripts,
 		EditScripts:    cfg.EditScripts,
 		Body:           body,
@@ -117,22 +117,11 @@ func CopyWith(fsys fs.FS, filename string) *template.Template {
 }
 
 // ExecutePage executes template page in the given template with the given data that has BaseData nested. It also sets some common BaseData fields
-func ExecutePage(meta Meta, tmpl *template.Template, data interface {
-	withBaseValues(meta Meta, headerLinks []HeaderLink, commonScripts []string)
+func ExecutePage(meta viewdata.Meta, tmpl *template.Template, data interface {
+	withBaseValues(meta viewdata.Meta, headerLinks []viewdata.HeaderLink, commonScripts []string)
 }) {
-	data.withBaseValues(meta, HeaderLinks, cfg.CommonScripts)
+	data.withBaseValues(meta, viewdata.HeaderLinks, cfg.CommonScripts)
 	if err := tmpl.ExecuteTemplate(meta.W, "page", data); err != nil {
 		slog.Info("Failed to execute page; proceeding anyway", "err", err)
 	}
-}
-
-// HeaderLinks is a list off current header links. Feel free to iterate it directly but do not modify it by yourself. Call ParseHeaderLinks if you need to set new header links.
-var HeaderLinks []HeaderLink
-
-// HeaderLink represents a header link. Header links are the links shown in the top gray bar.
-type HeaderLink struct {
-	// Href is the URL of the link. It goes <a href="here">...</a>.
-	Href string
-	// Display is what is shown when the link is rendered. It goes <a href="...">here</a>.
-	Display string
 }

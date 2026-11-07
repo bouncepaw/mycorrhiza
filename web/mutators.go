@@ -12,6 +12,7 @@ import (
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
@@ -38,7 +39,7 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 	if !u.CanProceed(userdomain.ActionRemoveMedia) {
 		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no rights")
@@ -62,7 +63,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 
 	if !u.CanProceed(userdomain.ActionDelete) {
@@ -83,7 +84,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 
 	if rq.Method == "GET" {
 		_ = pageHyphaDelete.RenderTo(
-			viewutil.MetaFrom(w, rq),
+			viewdata.MetaFrom(w, rq),
 			map[string]any{
 				"HyphaName": h.CanonicalName(),
 			})
@@ -104,7 +105,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 		u = usersvc.FromRequest(rq)
 
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "rename"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 
 	switch h.(type) {
@@ -149,7 +150,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u = usersvc.FromRequest(rq)
 
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "edit")
 		h         = hyphae.ByName(hyphaName)
@@ -180,7 +181,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		}
 	}
 	_ = pageHyphaEdit.RenderTo(
-		viewutil.MetaFrom(w, rq),
+		viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"HyphaName": hyphaName,
 			"Content":   content,
@@ -195,7 +196,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u    = usersvc.FromRequest(rq)
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "upload-text")
 		h         = hyphae.ByName(hyphaName)
@@ -211,7 +212,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		preview := template.HTML(mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))
 
 		_ = pageHyphaEdit.RenderTo(
-			viewutil.MetaFrom(w, rq),
+			viewdata.MetaFrom(w, rq),
 			map[string]any{
 				"HyphaName": hyphaName,
 				"Content":   textData,
@@ -243,7 +244,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		u         = usersvc.FromRequest(rq)
 
 		file, handler, err = rq.FormFile("binary")
-		meta               = viewutil.MetaFrom(w, rq)
+		meta               = viewdata.MetaFrom(w, rq)
 	)
 	if err != nil {
 		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
