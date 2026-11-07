@@ -1,13 +1,13 @@
 # 🍄 Mycorrhiza Wiki
 
-**Mycorrhiza Wiki** is a lightweight file-system wiki engine that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
+**Mycorrhiza Wiki** is a lightweight wiki engine for the independent web that uses Git for keeping history. [Main wiki](https://mycorrhiza.wiki)
 
-<img src="https://mycorrhiza.wiki/binary/release/1.16.0/screenshot" alt="A screenshot of mycorrhiza.wiki's home page in the Safari browser" width="700">
+<img src="https://mycorrhiza.wiki/binary/release/1.16.0/screenshot" alt="A screenshot of mycorrhiza.wiki's home page" width="700">
 
 
 ## Features
 
-* **No database used.** Everything is stored in plain files. It makes installation super easy, and you can modify the content directly by yourself.
+* **No database server used.** Everything is stored in plain files. It makes installation super easy, and you can modify the content directly by yourself.
 * **Everything is hyphae.** A hypha is a unit of content such as a picture, video or a text article. Hyphae can [transclude] and link each other, forming a tight network of hypertext pages.
 * **Hyphae are authored in [Mycomarkup],** a markup language that's designed to be unambiguous yet easy to use.
 * **Categories** let you organize hyphae without any hierarchy restrictions, with all the benefits of a category system.
@@ -45,6 +45,4 @@ See [the deployment guide](https://mycorrhiza.wiki/hypha/deployment) on the wiki
 If you want to contribute with code, open a pull request on GitHub or send a patch to the [mailing list](https://lists.sr.ht/~bouncepaw/mycorrhiza-devel).
 If you want to report an issue, open an issue on GitHub or contact us directly.
 
-Consider supporting the development on [Boosty](https://boosty.to/bouncepaw).
-
-Check out [Betula](https://betula.mycorrhiza.wiki) as well.
+Check out [Betula](https://joinbetula.org) as well.

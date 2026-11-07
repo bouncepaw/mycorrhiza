@@ -39,14 +39,6 @@ func HTTP404Page(w http.ResponseWriter, page string) {
 	_, _ = w.Write([]byte(page))
 }
 
-// HTTP200Page wraps some frequently used things for successful 200 responses.
-// TODO: demolish
-func HTTP200Page(w http.ResponseWriter, page string) {
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(page))
-}
-
 // RandomString generates a random string of the given length. It is cryptographically secure to some extent.
 func RandomString(n int) (string, error) {
 	bytes := make([]byte, n)
