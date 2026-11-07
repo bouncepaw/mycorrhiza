@@ -99,13 +99,16 @@ func Subhyphae(h Hypha) []ExistingHypha {
 	return hyphae
 }
 
-// AreFreeNames checks if all given `hyphaNames` are not taken. If they are not taken, `ok` is true. If not, `firstFailure` is the name of the first met hypha that is not free.
+// AreFreeNames checks if all given `hyphaNames` are not taken.
+// If they are not taken, `ok` is true.
+// If a name is taken, `firstFailure` is the name of the first met hypha that is not free.
 func AreFreeNames(hyphaNames ...string) (firstFailure string, ok bool) {
-	for h := range YieldExistingHyphae() {
-		for _, hn := range hyphaNames {
-			if hn == h.CanonicalName() {
-				return hn, false
-			}
+	byNamesMutex.Lock()
+	defer byNamesMutex.Unlock()
+
+	for _, name := range hyphaNames {
+		if _, exists := byNames[name]; exists {
+			return name, false
 		}
 	}
 	return "", true
