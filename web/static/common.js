@@ -11,17 +11,4 @@ const rrh = {
         wrapper.innerHTML = s
         return wrapper.children[0]
     },
-
-    l10nMap: {},
-    l10n(text, translations) {
-        // Choose the translation on load to be consistent with the
-        // server-rendered interface.
-        if (translations) {
-            translations.en = text
-            this.l10nMap[text] = translations[navigator.languages
-                .map(lang => lang.split('-')[0])
-                .find(lang => translations[lang])] || text
-        }
-        return this.l10nMap[text] || text
-    },
 }

@@ -1,4 +1,4 @@
-{{define "title"}}{{block "hypha count" .}}{{.HyphaCount}} {{if eq .HyphaCount 1}}hypha{{else}}hyphae{{end}}{{end}}{{end}}
+{{define "title"}}{{.HyphaCount}} {{if eq .HyphaCount 1}}hypha{{else}}hyphae{{end}}{{end}}
 {{define "hypha list label" -}}
 	<a class="wikilink{{if not .Exists}} wikilink_new{{end}}" href="/hypha/{{.Name}}">{{beautifulName .Label}}</a>
 	{{if .Ext}}<span class="media-type-badge">{{.Ext}}</span>{{end}}
@@ -23,8 +23,8 @@
 <main class="main-width">
 	<h1>{{template "title" .}}</h1>
 	<p id="hypha-list-controls" hidden>
-		<button type="button" class="btn" data-open="true" aria-controls="hypha-list">{{block "expand all" .}}Expand all{{end}}</button>
-		<button type="button" class="btn" data-open="false" aria-controls="hypha-list">{{block "collapse all" .}}Collapse all{{end}}</button>
+		<button type="button" class="btn" data-open="true" aria-controls="hypha-list">Expand all</button>
+		<button type="button" class="btn" data-open="false" aria-controls="hypha-list">Collapse all</button>
 	</p>
 	<div id="hypha-list">{{template "hypha list" .Entries}}</div>
 </main>

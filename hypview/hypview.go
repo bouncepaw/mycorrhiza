@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log/slog"
 	"strings"
+	texttemplate "text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/backlinks"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
@@ -13,24 +14,14 @@ import (
 
 var (
 	//go:embed *.html
-	fs            embed.FS
-	ruTranslation = `
-{{define "rename hypha?"}}Переименовать {{beautifulName .}}?{{end}}
-{{define "rename [[hypha]]?"}}Переименовать <a href="/hypha/{{.}}">{{beautifulName .}}</a>?{{end}}
-{{define "new name"}}Новое название:{{end}}
-{{define "rename recursively"}}Также переименовать подгифы{{end}}
-{{define "rename tip"}}Переименовывайте аккуратно. <a href="/help/en/rename">Документация на английском.</a>{{end}}
-{{define "leave redirection"}}Оставить перенаправление{{end}}
-
-
-`
-	chainNaviTitle   viewutil.Chain
-	chainRenameHypha viewutil.Chain
+	fs              embed.FS
+	tmplNaviTitle   *texttemplate.Template
+	tmplRenameHypha *texttemplate.Template
 )
 
 func Init() {
-	chainNaviTitle = viewutil.CopyEnRuWith(fs, "view_navititle.html", "")
-	chainRenameHypha = viewutil.CopyEnRuWith(fs, "view_rename.html", ruTranslation)
+	tmplNaviTitle = viewutil.CopyWith(fs, "view_navititle.html")
+	tmplRenameHypha = viewutil.CopyWith(fs, "view_rename.html")
 }
 
 type renameData struct {
@@ -40,7 +31,7 @@ type renameData struct {
 }
 
 func RenameHypha(meta viewutil.Meta, hyphaName string) {
-	viewutil.ExecutePage(meta, chainRenameHypha, renameData{
+	viewutil.ExecutePage(meta, tmplRenameHypha, renameData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/rename/" + hyphaName,
 		},
@@ -59,7 +50,7 @@ type naviTitleData struct {
 func NaviTitle(meta viewutil.Meta, hyphaName string) template.HTML {
 	parts, partsWithParents := naviTitleify(hyphaName)
 	var buf strings.Builder
-	err := chainNaviTitle.Get(meta).ExecuteTemplate(&buf, "navititle", naviTitleData{
+	err := tmplNaviTitle.ExecuteTemplate(&buf, "navititle", naviTitleData{
 		HyphaNameParts:            parts,
 		HyphaNamePartsWithParents: partsWithParents,
 		Icon:                      cfg.NaviTitleIcon,

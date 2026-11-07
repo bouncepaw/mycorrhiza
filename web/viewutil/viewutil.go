@@ -4,54 +4,42 @@ package viewutil
 import (
 	"embed"
 	"fmt"
-	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"io/fs"
 	"log/slog"
 	"strings"
 	"text/template" // TODO: save the world
+
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 
 	"github.com/bouncepaw/mycorrhiza/util"
 )
 
 var (
 	//go:embed *.html
-	fsys   embed.FS
-	BaseEn *template.Template
-	BaseRu *template.Template
-	m      = template.Must
+	fsys         embed.FS
+	baseTemplate *template.Template
+	m            = template.Must
 )
-
-const ruText = `
-{{define "new hypha"}}Новая гифа{{end}}
-{{define "search by title"}}Поиск по названию{{end}}
-{{define "login"}}Войти{{end}}
-{{define "register"}}Регистрация{{end}}
-{{define "confirm"}}Подтвердить{{end}}
-{{define "cancel"}}Отмена{{end}}
-{{define "save"}}Сохранить{{end}}
-{{define "error"}}Ошибка{{end}}
-{{define "delete"}}Удалить{{end}}
-`
 
 func Init() {
 	dataText := fmt.Sprintf(`
 {{define "wiki name"}}%s{{end}}
 {{define "user hypha"}}%s{{end}}
 `, cfg.WikiName, cfg.UserHypha)
-	BaseEn = m(m(template.New("").
+	baseTemplate = m(m(template.New("").
 		Funcs(template.FuncMap{
 			"beautifulName": util.BeautifulName,
 			"inc":           func(i int) int { return i + 1 },
 		}).ParseFS(fsys, "base.html")).
 		Parse(dataText))
 	if cfg.UseAuth {
-		BaseEn = m(BaseEn.Parse(`
+		baseTemplate = m(baseTemplate.Parse(`
 {{define "auth"}}
 <ul class="top-bar__auth auth-links">
 	<li class="auth-links__box auth-links__user-box">
 		{{if .Meta.U.Group | eq "anon" }}
 			<a href="/login" class="auth-links__link auth-links__login-link">
-				{{block "login" .}}Login{{end}}
+				Login
 			</a>
 		{{else}}
 			<a href="/hypha/{{block "user hypha" .}}{{end}}/{{.Meta.U.Name}}" class="auth-links__link auth-links__user-link">
@@ -65,27 +53,20 @@ func Init() {
 `))
 	}
 	if cfg.AllowRegistration {
-		m(BaseEn.Parse(`{{define "registration"}}
+		m(baseTemplate.Parse(`{{define "registration"}}
 {{if .Meta.U.Group | eq "anon"}}
 	 <li class="auth-links__box auth-links__register-box">
 		 <a href="/register" class="auth-links__link auth-links__register-link">
-			 {{block "register" .}}Register{{end}}
+			 Register
 		 </a>
 	 </li>
 {{end}}
 {{end}}`))
 	}
-	BaseRu = m(m(BaseEn.Clone()).Parse(ruText))
 }
 
-func localizedBaseWithWeirdBody(meta Meta) *template.Template {
-	t := func() *template.Template {
-		if meta.Locale() == "ru" {
-			return BaseRu
-		}
-		return BaseEn
-	}()
-	return m(m(t.Clone()).Parse(`
+func baseWithWeirdBody() *template.Template {
+	return m(m(baseTemplate.Clone()).Parse(`
 {{define "body"}}{{.Body}}{{end}}
 {{define "title"}}{{.Title}}{{end}}
 `))
@@ -109,12 +90,12 @@ func (bd *BaseData) withBaseValues(meta Meta, headerLinks []HeaderLink, commonSc
 	bd.CommonScripts = commonScripts
 }
 
-// Base is a temporary wrapper around BaseEn and BaseRu, meant to facilitate the migration from qtpl.
+// Base is a temporary wrapper around the base template, meant to facilitate the migration from qtpl.
 // TODO: get rid of this
 func Base(meta Meta, title, body string, bodyAttributes map[string]string, headElements ...string) string {
 	var w strings.Builder
 	meta.W = &w
-	t := localizedBaseWithWeirdBody(meta)
+	t := baseWithWeirdBody()
 	err := t.ExecuteTemplate(&w, "page", BaseData{
 		Meta:           meta,
 		Title:          title,
@@ -131,25 +112,16 @@ func Base(meta Meta, title, body string, bodyAttributes map[string]string, headE
 	return w.String()
 }
 
-func CopyEnRuWith(fsys fs.FS, filename, ruTranslation string) Chain {
-	return en(copyEnWith(fsys, filename)).
-		ru(template.Must(copyRuWith(fsys, filename).Parse(ruTranslation)))
+func CopyWith(fsys fs.FS, filename string) *template.Template {
+	return m(m(baseTemplate.Clone()).ParseFS(fsys, filename))
 }
 
-func copyEnWith(fsys fs.FS, f string) *template.Template {
-	return m(m(BaseEn.Clone()).ParseFS(fsys, f))
-}
-
-func copyRuWith(fsys fs.FS, f string) *template.Template {
-	return m(m(BaseRu.Clone()).ParseFS(fsys, f))
-}
-
-// ExecutePage executes template page in the given chain with the given data that has BaseData nested. It also sets some common BaseData fields
-func ExecutePage(meta Meta, chain Chain, data interface {
+// ExecutePage executes template page in the given template with the given data that has BaseData nested. It also sets some common BaseData fields
+func ExecutePage(meta Meta, tmpl *template.Template, data interface {
 	withBaseValues(meta Meta, headerLinks []HeaderLink, commonScripts []string)
 }) {
 	data.withBaseValues(meta, HeaderLinks, cfg.CommonScripts)
-	if err := chain.Get(meta).ExecuteTemplate(meta.W, "page", data); err != nil {
+	if err := tmpl.ExecuteTemplate(meta.W, "page", data); err != nil {
 		slog.Info("Failed to execute page; proceeding anyway", "err", err)
 	}
 }

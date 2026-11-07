@@ -1,28 +1,28 @@
-{{define "title"}}{{block "create user" .}}Create a new user{{end}}{{end}}
+{{define "title"}}Create a new user{{end}}
 {{define "body"}}
 	<main class="main-width form-wrap">
-		<h1>{{block "new user" .}}New user{{end}}</h1>
+		<h1>New user</h1>
 
 		{{if .Form.HasError}}
 		<div class="notice notice--error">
-			<strong>{{template "error"}}:</strong>
+			<strong>Error:</strong>
 			{{.Form.Error}}
 		</div>
 		{{end}}
 
 		<form class="form--double" action="" method="post">
 			<div class="form-field">
-				<label for="name">{{block "name" .}}Name{{end}}:</label>
+				<label for="name">Name:</label>
 				<input type="text" name="name" id="name" value="{{.Form.Get `name`}}" autofocus>
 			</div>
 
 			<div class="form-field">
-				<label for="password">{{block "password" .}}Password{{end}}:</label>
+				<label for="password">Password:</label>
 				<input type="password" name="password" id="password" value="{{.Form.Get `password`}}">
 			</div>
 
 			<div class="form-field">
-				<label for="group">{{block "group" .}}Group{{end}}:</label>
+				<label for="group">Group:</label>
 				<select id="group" name="group">
 					<option {{if .Form.Get "group" | eq "anon" }}selected{{end}}>anon</option>
 					<option {{if .Form.Get "group" | eq "reader" }}selected{{end}}>reader</option>
@@ -34,8 +34,8 @@
 
 			<div class="form-field">
 				<div class="form-field__input">
-					<button class="btn" type="submit">{{block "create" .}}Create{{end}}</button>
-					<a class="btn btn_weak" href="/admin/users/">{{template "cancel"}}</a>
+					<button class="btn" type="submit">Create</button>
+					<a class="btn btn_weak" href="/admin/users/">Cancel</a>
 				</div>
 			</div>
 		</form>

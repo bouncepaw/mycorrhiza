@@ -23,7 +23,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/tree"
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
-	"github.com/bouncepaw/mycorrhiza/l18n"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -151,7 +150,7 @@ func handlerRevisionText(w http.ResponseWriter, rq *http.Request) {
 // handlerRevision displays a specific revision of the text part the hypha
 func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	lc := l18n.FromRequest(rq)
+
 	shorterURL := strings.TrimPrefix(rq.URL.Path, "/rev/")
 	revHash, slug, found := strings.Cut(shorterURL, "/")
 	if !found || !util.IsRevHash(revHash) || len(slug) < 1 {
@@ -161,7 +160,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 	var (
 		hyphaName    = util.CanonicalName(slug)
 		h            = hyphae.ByName(hyphaName)
-		contents     = template.HTML(fmt.Sprintf(`<p>%s</p>`, lc.Get("ui.revision_no_text")))
+		contents     = template.HTML(fmt.Sprintf(`<p>%s</p>`, "This hypha had no text at this revision."))
 		textContents string
 		err          error
 		mycoFilePath string
@@ -220,11 +219,11 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
-		hyphaName                               = util.HyphaNameFromRq(rq, "page", "hypha")
-		h                                       = hyphae.ByName(hyphaName)
-		contents                                template.HTML
-		openGraph                               template.HTML
-		lc                                      = l18n.FromRequest(rq)
+		hyphaName = util.HyphaNameFromRq(rq, "page", "hypha")
+		h         = hyphae.ByName(hyphaName)
+		contents  template.HTML
+		openGraph template.HTML
+
 		meta                                    = viewutil.MetaFrom(w, rq)
 		subhyphae, prevHyphaName, nextHyphaName = tree.Tree(h.CanonicalName())
 		cats                                    = catsvc.CategoriesWithHypha(h.CanonicalName())
@@ -265,7 +264,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		}
 		switch h := h.(type) {
 		case *hyphae.MediaHypha:
-			contents = template.HTML(mycoopts.Media(h, lc)) + contents
+			contents = template.HTML(mycoopts.Media(h)) + contents
 			data["IsMediaHypha"] = true
 		}
 

@@ -20,7 +20,7 @@ func HttpErr(meta Meta, status int, name, errMsg string) {
 				`<main class="main-width"><p>%s. <a href="/hypha/%s">%s<a></p></main>`,
 				errMsg,
 				name,
-				meta.Lc.Get("ui.error_go_back"),
+				"Go back to the hypha.",
 			),
 			map[string]string{},
 		),

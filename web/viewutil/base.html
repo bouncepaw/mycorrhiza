@@ -1,11 +1,6 @@
-{{define "confirm"}}Confirm{{end}}
-{{define "cancel"}}Cancel{{end}}
-{{define "save"}}Save{{end}}
-{{define "error"}}Error{{end}}
-{{define "delete"}}Delete{{end}}
 {{define "page"}}
 <!doctype html>
-<html lang="{{.Meta.Locale}}">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +21,7 @@
 			<li class="top-bar__section top-bar__section_search">
 				<form class="top-bar__search" method="GET" action="/title-search">
 					<input type="text" name="q" class="top-bar__search-bar"
-					       placeholder="{{block `search by title` .}}Search by title{{end}}">
+					       placeholder="Search by title">
 				</form>
 			</li>
 			<li class="top-bar__section top-bar__section_auth">
@@ -35,7 +30,7 @@
 			<li class="top-bar__section top-bar__section_highlights">
 				<ul class="top-bar__highlights">
 					{{if .Meta.U.CanProceed "upload-text"}}
-					<li class="top-bar__highlight"><a class="top-bar__highlight-link" href="/new">{{block "new hypha" .}}New hypha{{end}}</a></li>
+					<li class="top-bar__highlight"><a class="top-bar__highlight-link" href="/new">New hypha</a></li>
 					{{end}}
 					{{range .HeaderLinks}}
 						<li class="top-bar__highlight">

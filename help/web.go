@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/web/viewutil"
@@ -16,39 +17,12 @@ import (
 )
 
 var (
-	chain         viewutil.Chain
-	ruTranslation = `
-{{define "title"}}Справка{{end}}
-{{define "entry not found"}}Статья не найдена{{end}}
-{{define "entry not found invitation"}}Если вы хотите написать эту статью сами, то будем рады вашим правкам <a class="wikilink wikilink_external wikilink_https" href="https://github.com/bouncepaw/mycorrhiza">в репозитории Микоризы</a>.{{end}}
-
-{{define "topics"}}Темы справки{{end}}
-{{define "main"}}Введение{{end}}
-{{define "hypha"}}Гифа{{end}}
-{{define "media"}}Медиа{{end}}
-{{define "mycomarkup"}}Микоразметка{{end}}
-{{define "category"}}Категории{{end}}
-{{define "interface"}}Интерфейс{{end}}
-{{define "prevnext"}}Пред/след{{end}}
-{{define "top_bar"}}Верхняя панель{{end}}
-{{define "rename"}}Переименовывание{{end}}
-{{define "special pages"}}Специальные страницы{{end}}
-{{define "recent_changes"}}Свежие правки{{end}}
-{{define "feeds"}}Ленты{{end}}
-{{define "orphans"}}Гифы-сироты{{end}}
-{{define "configuration"}}Конфигурация (для администраторов){{end}}
-{{define "config_file"}}Файл конфигурации{{end}}
-{{define "lock"}}Замок{{end}}
-{{define "whitelist"}}Белый список{{end}}
-{{define "telegram"}}Вход через Телеграм{{end}}
-{{define "interwiki"}}Интервики{{end}}
-{{define "file structure"}}Файловая структура{{end}}
-`
+	tmpl *template.Template
 )
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	chain = viewutil.CopyEnRuWith(fs, "view_help.html", ruTranslation)
+	tmpl = viewutil.CopyWith(fs, "view_help.html")
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
@@ -96,7 +70,7 @@ type helpData struct {
 }
 
 func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
-	viewutil.ExecutePage(meta, chain, helpData{
+	viewutil.ExecutePage(meta, tmpl, helpData{
 		BaseData: &viewutil.BaseData{
 			Addr: "/help/" + articlePath,
 		},

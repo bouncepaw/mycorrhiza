@@ -1,10 +1,8 @@
-{{define "recent changes"}}Recent changes{{end}}
-{{define "n recent changes"}}{{.}} recent change{{if ne . 1}}s{{end}}{{end}}
-{{define "title"}}{{template "n recent changes" .EditCount}}{{end}}
+{{define "title"}}{{.EditCount}} recent change{{if ne .EditCount 1}}s{{end}}{{end}}
 
 {{define "body"}}
 <main class="main-width recent-changes">
-	<h1>{{template "recent changes"}}</h1>
+	<h1>Recent changes</h1>
 
 	{{$userHypha := .UserHypha}}
 	{{$year := 0}}{{$month := 0}}{{$day := 0}}
@@ -43,12 +41,12 @@
 				</div>
 			</div>
 		{{else}}
-			<p>{{block "recent empty" .}}No recent changes found.{{end}}</p>
+			<p>No recent changes found.</p>
 		{{end}}
 	</section>
 
 	<p class="recent-changes__count">
-        {{block "count pre" .}}See{{end}}
+        See
         {{ $editCount := .EditCount }}
         {{range $i, $m := .Stops }}
             {{if gt $i 0}}
@@ -60,12 +58,12 @@
 				<a href="/recent-changes/{{$m}}">{{$m}}</a>
             {{end}}
         {{end}}
-        {{block "count post" .}}recent changes{{end}}
+        recent changes
 	</p>
 
 	<p>
 		<img class="icon" width="20" height="20" src="/static/icon/feed.svg" aria-hidden="true" alt="RSS icon">
-        {{block "subscribe via" .}}Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.{{end}}
+        Subscribe via <a href="/recent-changes-rss">RSS</a>, <a href="/recent-changes-atom">Atom</a> or <a href="/recent-changes-json">JSON feed</a>.
 	</p>
 </main>
 {{end}}
