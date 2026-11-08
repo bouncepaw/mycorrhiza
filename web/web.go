@@ -20,8 +20,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
 )
@@ -287,42 +287,14 @@ func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
 
 	if err != nil {
 		slog.Info("Failed to register", "username", username, "err", err.Error(), "method", "telegram")
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = io.WriteString(
-			w,
-			viewutil.Base(
-				viewdata.MetaFrom(w, rq),
-				"Error",
-				fmt.Sprintf(
-					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
-					"",
-					err.Error(),
-					"Go to the login page",
-				),
-				map[string]string{},
-			),
-		)
+		newtmpl.Error(viewdata.MetaFrom(w, rq), http.StatusBadRequest, err.Error(), "/login", "Go to the login page")
 		return
 	}
 
 	errmsg := usersvc.LoginDataHTTP(w, username, "")
 	if errmsg != nil {
-		slog.Error("Failed to login using Telegram", "err", err, "username", username)
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = io.WriteString(
-			w,
-			viewutil.Base(
-				viewdata.MetaFrom(w, rq),
-				"Error",
-				fmt.Sprintf(
-					`<main class="main-width"><p>%s</p><p>%s</p><p><a href="/login">%s<a></p></main>`,
-					"",
-					err.Error(),
-					"Go to the login page",
-				),
-				map[string]string{},
-			),
-		)
+		slog.Error("Failed to login using Telegram", "err", errmsg, "username", username)
+		newtmpl.Error(viewdata.MetaFrom(w, rq), http.StatusBadRequest, errmsg.Error(), "/login", "Go to the login page")
 		return
 	}
 	http.Redirect(w, rq, "/", http.StatusSeeOther)

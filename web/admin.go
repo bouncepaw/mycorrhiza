@@ -20,7 +20,7 @@ import (
 
 func viewPanel(meta viewdata.Meta) {
 	if err := pageAdminPanel.RenderDataTo(meta, &newtmpl.BaseData{}); err != nil {
-		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-panel", "err", err)
+		slog.Error("Failed to execute page", "page", "admin-panel", "err", err)
 	}
 }
 
@@ -35,7 +35,7 @@ func viewList(meta viewdata.Meta, users []*usersvc.User) {
 		UserHypha: cfg.UserHypha,
 		Users:     users,
 	}); err != nil {
-		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-user-list", "err", err)
+		slog.Error("Failed to execute page", "page", "admin-user-list", "err", err)
 	}
 }
 
@@ -48,7 +48,7 @@ func viewNewUser(meta viewdata.Meta, form util.FormData) {
 	if err := pageAdminNewUser.RenderDataTo(meta, &newUserData{
 		Form: form,
 	}); err != nil {
-		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-new-user", "err", err)
+		slog.Error("Failed to execute page", "page", "admin-new-user", "err", err)
 	}
 }
 
@@ -63,7 +63,7 @@ func viewEditUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
 		Form: form,
 		U:    u,
 	}); err != nil {
-		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-edit-user", "err", err)
+		slog.Error("Failed to execute page", "page", "admin-edit-user", "err", err)
 	}
 }
 
@@ -72,7 +72,7 @@ func viewDeleteUser(meta viewdata.Meta, form util.FormData, u *usersvc.User) {
 		Form: form,
 		U:    u,
 	}); err != nil {
-		slog.Info("Failed to execute page; proceeding anyway", "page", "admin-delete-user", "err", err)
+		slog.Error("Failed to execute page", "page", "admin-delete-user", "err", err)
 	}
 }
 

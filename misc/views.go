@@ -3,23 +3,24 @@ package misc
 import (
 	"embed"
 	"iter"
+	"log/slog"
 	"strings"
-	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 var (
 	//go:embed *html
 	fs                        embed.FS
-	tmplList, tmplTitleSearch *template.Template
+	pageList, pageTitleSearch *newtmpl.Page
 )
 
 func initViews() {
-	tmplList = viewutil.CopyWith(fs, "view_list.html")
-	tmplTitleSearch = viewutil.CopyWith(fs, "view_title_search.html")
+	pageAbout = newtmpl.NewPage(fs, "view_about.html")
+	pageList = newtmpl.NewPage(fs, "view_list.html")
+	pageTitleSearch = newtmpl.NewPage(fs, "view_title_search.html")
 }
 
 type listDatum struct {
@@ -64,21 +65,22 @@ func nestList(entries []listDatum) []*listDatum {
 }
 
 type listData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	Entries    []*listDatum
 	HyphaCount int
 }
 
 func viewList(meta viewdata.Meta, entries []listDatum) {
-	viewutil.ExecutePage(meta, tmplList, listData{
-		BaseData:   &viewutil.BaseData{},
+	if err := pageList.RenderDataTo(meta, &listData{
 		Entries:    nestList(entries),
 		HyphaCount: hyphae.Count(),
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "list", "err", err)
+	}
 }
 
 type titleSearchData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	Query            string
 	Results          []string
 	MatchedHyphaName string
@@ -86,11 +88,12 @@ type titleSearchData struct {
 }
 
 func viewTitleSearch(meta viewdata.Meta, query string, hyphaName string, hasExactMatch bool, results []string) {
-	viewutil.ExecutePage(meta, tmplTitleSearch, titleSearchData{
-		BaseData:         &viewutil.BaseData{},
+	if err := pageTitleSearch.RenderDataTo(meta, &titleSearchData{
 		Query:            query,
 		Results:          results,
 		MatchedHyphaName: hyphaName,
 		HasExactMatch:    hasExactMatch,
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "title-search", "err", err)
+	}
 }

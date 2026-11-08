@@ -11,8 +11,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
@@ -20,7 +20,7 @@ func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
 	meta := viewdata.MetaFrom(w, rq)
 	catName := util.CanonicalName(strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/edit-category"), "/"))
 	if catName == "" {
-		viewutil.HandlerNotFound(w, rq)
+		newtmpl.HandlerNotFound(w, rq)
 		return
 	}
 

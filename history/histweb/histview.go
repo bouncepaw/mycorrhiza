@@ -10,15 +10,14 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	texttemplate "text/template"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 
 	"github.com/gorilla/mux"
 )
@@ -34,9 +33,9 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
-	tmplPrimitiveDiff = viewutil.CopyWith(fs, "view_primitive_diff.html")
-	tmplRecentChanges = viewutil.CopyWith(fs, "view_recent_changes.html")
-	tmplHistory = viewutil.CopyWith(fs, "view_history.html")
+	pagePrimitiveDiff = newtmpl.NewPage(fs, "view_primitive_diff.html")
+	pageRecentChanges = newtmpl.NewPage(fs, "view_recent_changes.html")
+	pageHistory = newtmpl.NewPage(fs, "view_history.html")
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -126,11 +125,11 @@ func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
 var (
 	//go:embed *.html
 	fs                                                embed.FS
-	tmplPrimitiveDiff, tmplRecentChanges, tmplHistory *texttemplate.Template
+	pagePrimitiveDiff, pageRecentChanges, pageHistory *newtmpl.Page
 )
 
 type recentChangesData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	EditCount int
 	Changes   []history.Revision
 	UserHypha string
@@ -138,17 +137,18 @@ type recentChangesData struct {
 }
 
 func recentChanges(meta viewdata.Meta, editCount int, changes []history.Revision) {
-	viewutil.ExecutePage(meta, tmplRecentChanges, recentChangesData{
-		BaseData:  &viewutil.BaseData{},
+	if err := pageRecentChanges.RenderDataTo(meta, &recentChangesData{
 		EditCount: editCount,
 		Changes:   changes,
 		UserHypha: cfg.UserHypha,
 		Stops:     []int{20, 50, 100},
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "recent-changes", "err", err)
+	}
 }
 
 type primitiveDiffData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	HyphaName string
 	Hash      string
 	Text      template.HTML
@@ -189,26 +189,29 @@ func primitiveDiff(meta viewdata.Meta, h hyphae.Hypha, hash, text string) {
 		text = fmt.Sprintf(
 			`<pre class="codeblock"><code>%s</code></pre>`, text)
 	}
-	viewutil.ExecutePage(meta, tmplPrimitiveDiff, primitiveDiffData{
-		BaseData:  &viewutil.BaseData{},
+	if err := pagePrimitiveDiff.RenderDataTo(meta, &primitiveDiffData{
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
 		Text:      template.HTML(text),
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "primitive-diff", "err", err)
+	}
 }
 
 type historyData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	HyphaName string
-	Contents  string
+	Contents  template.HTML
 }
 
 func historyView(meta viewdata.Meta, hyphaName, contents string) {
-	viewutil.ExecutePage(meta, tmplHistory, historyData{
-		BaseData: &viewutil.BaseData{
+	if err := pageHistory.RenderDataTo(meta, &historyData{
+		BaseData: newtmpl.BaseData{
 			Addr: "/history/" + util.CanonicalName(hyphaName),
 		},
 		HyphaName: hyphaName,
-		Contents:  contents,
-	})
+		Contents:  template.HTML(contents),
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "history", "err", err)
+	}
 }
