@@ -2,7 +2,6 @@
 package histweb
 
 import (
-	"embed"
 	"fmt"
 	"html/template"
 	"log/slog"
@@ -33,9 +32,9 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
-	pagePrimitiveDiff = newtmpl.NewPage(fs, "view_primitive_diff.html")
-	pageRecentChanges = newtmpl.NewPage(fs, "view_recent_changes.html")
-	pageHistory = newtmpl.NewPage(fs, "view_history.html")
+	pagePrimitiveDiff = newtmpl.NewPage("primitive-diff.html")
+	pageRecentChanges = newtmpl.NewPage("recent-changes.html")
+	pageHistory = newtmpl.NewPage("history.html")
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -123,8 +122,6 @@ func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
 }
 
 var (
-	//go:embed *.html
-	fs                                                embed.FS
 	pagePrimitiveDiff, pageRecentChanges, pageHistory *newtmpl.Page
 )
 

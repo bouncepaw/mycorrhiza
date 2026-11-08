@@ -10,7 +10,7 @@ import (
 var pageError *Page
 
 func Init() {
-	pageError = NewPage(fs, "error.html")
+	pageError = NewPage("error.html")
 }
 
 type errorData struct {

@@ -1,7 +1,6 @@
 package misc
 
 import (
-	"embed"
 	"iter"
 	"log/slog"
 	"strings"
@@ -12,15 +11,13 @@ import (
 )
 
 var (
-	//go:embed *html
-	fs                        embed.FS
 	pageList, pageTitleSearch *newtmpl.Page
 )
 
 func initViews() {
-	pageAbout = newtmpl.NewPage(fs, "view_about.html")
-	pageList = newtmpl.NewPage(fs, "view_list.html")
-	pageTitleSearch = newtmpl.NewPage(fs, "view_title_search.html")
+	pageAbout = newtmpl.NewPage("about.html")
+	pageList = newtmpl.NewPage("hypha-list.html")
+	pageTitleSearch = newtmpl.NewPage("title-search.html")
 }
 
 type listDatum struct {

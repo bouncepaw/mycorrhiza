@@ -1,7 +1,6 @@
 package interwikisvc
 
 import (
-	"embed"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -15,15 +14,13 @@ import (
 )
 
 var (
-	//go:embed *html
-	fs            embed.FS
 	pageInterwiki *newtmpl.Page
 	pageNameTaken *newtmpl.Page
 )
 
 func InitHandlers(rtr *mux.Router) {
-	pageInterwiki = newtmpl.NewPage(fs, "view_interwiki.html")
-	pageNameTaken = newtmpl.NewPage(fs, "view_name_taken.html")
+	pageInterwiki = newtmpl.NewPage("interwiki.html")
+	pageNameTaken = newtmpl.NewPage("interwiki-name-taken.html")
 	rtr.HandleFunc("/interwiki", handlerInterwiki)
 	rtr.HandleFunc("/interwiki/add-entry", handlerAddEntry).Methods(http.MethodPost)
 	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)

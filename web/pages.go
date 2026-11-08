@@ -1,13 +1,8 @@
 package web
 
 import (
-	"embed"
-
 	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 )
-
-//go:embed views/*.html
-var fs embed.FS
 
 var (
 	pageOrphans, pageBacklinks, pageUserList, pageChangePassword                                *newtmpl.Page
@@ -19,29 +14,29 @@ var (
 )
 
 func initPages() {
-	pageOrphans = newtmpl.NewPage(fs, "views/orphans.html")
-	pageBacklinks = newtmpl.NewPage(fs, "views/backlinks.html")
-	pageUserList = newtmpl.NewPage(fs, "views/user-list.html")
-	pageChangePassword = newtmpl.NewPage(fs, "views/change-password.html")
-	pageHyphaDelete = newtmpl.NewPage(fs, "views/hypha-delete.html")
-	pageHyphaEdit = newtmpl.NewPage(fs, "views/hypha-edit.html")
-	pageHypha = newtmpl.NewPage(fs, "views/hypha.html")
-	pageRevision = newtmpl.NewPage(fs, "views/hypha-revision.html")
-	pageMedia = newtmpl.NewPage(fs, "views/hypha-media.html")
+	pageOrphans = newtmpl.NewPage("orphans.html")
+	pageBacklinks = newtmpl.NewPage("backlinks.html")
+	pageUserList = newtmpl.NewPage("user-list.html")
+	pageChangePassword = newtmpl.NewPage("change-password.html")
+	pageHyphaDelete = newtmpl.NewPage("hypha-delete.html")
+	pageHyphaEdit = newtmpl.NewPage("hypha-edit.html")
+	pageHypha = newtmpl.NewPage("hypha.html")
+	pageRevision = newtmpl.NewPage("hypha-revision.html")
+	pageMedia = newtmpl.NewPage("hypha-media.html")
 
-	pageAuthLock = newtmpl.NewPage(fs, "views/auth-telegram.html", "views/auth-lock.html")
-	pageAuthLogin = newtmpl.NewPage(fs, "views/auth-telegram.html", "views/auth-login.html")
-	pageAuthLogout = newtmpl.NewPage(fs, "views/auth-logout.html")
-	pageAuthRegister = newtmpl.NewPage(fs, "views/auth-telegram.html", "views/auth-register.html")
+	pageAuthLock = newtmpl.NewPage("auth-telegram.html", "auth-lock.html")
+	pageAuthLogin = newtmpl.NewPage("auth-telegram.html", "auth-login.html")
+	pageAuthLogout = newtmpl.NewPage("auth-logout.html")
+	pageAuthRegister = newtmpl.NewPage("auth-telegram.html", "auth-register.html")
 
-	pageCatPage = newtmpl.NewPage(fs, "views/cat-page.html")
-	pageCatEdit = newtmpl.NewPage(fs, "views/cat-edit.html")
-	pageCatList = newtmpl.NewPage(fs, "views/cat-list.html")
+	pageCatPage = newtmpl.NewPage("cat-page.html")
+	pageCatEdit = newtmpl.NewPage("cat-edit.html")
+	pageCatList = newtmpl.NewPage("cat-list.html")
 
-	pageAdminPanel = newtmpl.NewPage(fs, "views/admin-panel.html")
-	pageAdminUserList = newtmpl.NewPage(fs, "views/admin-user-list.html")
-	pageAdminNewUser = newtmpl.NewPage(fs, "views/admin-new-user.html")
-	pageAdminEditUser = newtmpl.NewPage(fs, "views/admin-edit-user.html")
-	pageAdminDeleteUser = newtmpl.NewPage(fs, "views/admin-delete-user.html")
+	pageAdminPanel = newtmpl.NewPage("admin-panel.html")
+	pageAdminUserList = newtmpl.NewPage("admin-user-list.html")
+	pageAdminNewUser = newtmpl.NewPage("admin-new-user.html")
+	pageAdminEditUser = newtmpl.NewPage("admin-edit-user.html")
+	pageAdminDeleteUser = newtmpl.NewPage("admin-delete-user.html")
 
 }

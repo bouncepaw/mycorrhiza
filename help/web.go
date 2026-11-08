@@ -24,7 +24,7 @@ var (
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	pageHelp = newtmpl.NewPage(fs, "view_help.html")
+	pageHelp = newtmpl.NewPage("help.html")
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.

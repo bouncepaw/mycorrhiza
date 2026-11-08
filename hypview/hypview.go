@@ -1,7 +1,6 @@
 package hypview
 
 import (
-	"embed"
 	"html/template"
 	"log/slog"
 	"strings"
@@ -13,15 +12,13 @@ import (
 )
 
 var (
-	//go:embed *.html
-	fs              embed.FS
 	tmplNaviTitle   *template.Template
 	pageRenameHypha *newtmpl.Page
 )
 
 func Init() {
-	tmplNaviTitle = newtmpl.NewPage(fs, "view_navititle.html").Template
-	pageRenameHypha = newtmpl.NewPage(fs, "view_rename.html")
+	tmplNaviTitle = newtmpl.NewPage("navititle.html").Template
+	pageRenameHypha = newtmpl.NewPage("hypha-rename.html")
 }
 
 type renameData struct {
