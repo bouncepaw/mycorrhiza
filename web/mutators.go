@@ -12,7 +12,8 @@ import (
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
@@ -38,19 +39,19 @@ func handlerRemoveMedia(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "remove-media"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 	if !u.CanProceed(userdomain.ActionRemoveMedia) {
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no rights")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no rights")
 		return
 	}
 	switch h := h.(type) {
 	case *hyphae.EmptyHypha, *hyphae.TextualHypha:
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no media to remove")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "no media to remove")
 		return
 	case *hyphae.MediaHypha:
 		if err := shroom.RemoveMedia(u, h); err != nil {
-			viewutil.HttpErr(meta, http.StatusInternalServerError, h.CanonicalName(), err.Error())
+			newtmpl.HttpErr(meta, http.StatusInternalServerError, h.CanonicalName(), err.Error())
 			return
 		}
 	}
@@ -62,13 +63,13 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u    = usersvc.FromRequest(rq)
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "delete"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 
 	if !u.CanProceed(userdomain.ActionDelete) {
 		slog.Info("No rights to delete hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
 		return
 	}
 
@@ -77,13 +78,13 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 		slog.Info("Trying to delete empty hyphae",
 			"username", u.Name, "hyphaName", h.CanonicalName())
 		// TODO: localize
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot delete an empty hypha")
 		return
 	}
 
 	if rq.Method == "GET" {
 		_ = pageHyphaDelete.RenderTo(
-			viewutil.MetaFrom(w, rq),
+			viewdata.MetaFrom(w, rq),
 			map[string]any{
 				"HyphaName": h.CanonicalName(),
 			})
@@ -92,7 +93,7 @@ func handlerDelete(w http.ResponseWriter, rq *http.Request) {
 
 	if err := shroom.Delete(u, h.(hyphae.ExistingHypha)); err != nil {
 		slog.Error("Failed to delete hypha", "err", err)
-		viewutil.HttpErr(meta, http.StatusInternalServerError, h.CanonicalName(), err.Error())
+		newtmpl.HttpErr(meta, http.StatusInternalServerError, h.CanonicalName(), err.Error())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+h.CanonicalName(), http.StatusSeeOther)
@@ -104,21 +105,21 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 		u = usersvc.FromRequest(rq)
 
 		h    = hyphae.ByName(util.HyphaNameFromRq(rq, "rename"))
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 	)
 
 	switch h.(type) {
 	case *hyphae.EmptyHypha:
 		slog.Info("Trying to rename empty hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "Cannot rename an empty hypha")
 		return
 	}
 
 	if !u.CanProceed(userdomain.ActionRename) {
 		slog.Info("No rights to rename hypha",
 			"username", u.Name, "hyphaName", h.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
+		newtmpl.HttpErr(meta, http.StatusForbidden, h.CanonicalName(), "No rights")
 		return
 	}
 
@@ -137,7 +138,7 @@ func handlerRename(w http.ResponseWriter, rq *http.Request) {
 	if err := shroom.Rename(oldHypha, newName, recursive, leaveRedirections, u); err != nil {
 		slog.Error("Failed to rename hypha",
 			"err", err, "username", u.Name, "hyphaName", oldHypha.CanonicalName())
-		viewutil.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), err.Error())
+		newtmpl.HttpErr(meta, http.StatusForbidden, oldHypha.CanonicalName(), err.Error())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+newName, http.StatusSeeOther)
@@ -149,7 +150,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 	var (
 		u = usersvc.FromRequest(rq)
 
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "edit")
 		h         = hyphae.ByName(hyphaName)
@@ -164,7 +165,7 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
 			"reason", "unauthorized")
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to edit a hypha")
+		newtmpl.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to edit a hypha")
 		return
 	}
 
@@ -175,12 +176,12 @@ func handlerEdit(w http.ResponseWriter, rq *http.Request) {
 		content, err = hyphae.FetchMycomarkupFile(h)
 		if err != nil {
 			slog.Error("Failed to fetch Mycomarkup file", "err", err)
-			viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "Could not fetch text data")
+			newtmpl.HttpErr(meta, http.StatusInternalServerError, hyphaName, "Could not fetch text data")
 			return
 		}
 	}
 	_ = pageHyphaEdit.RenderTo(
-		viewutil.MetaFrom(w, rq),
+		viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"HyphaName": hyphaName,
 			"Content":   content,
@@ -195,7 +196,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	var (
 		u    = usersvc.FromRequest(rq)
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 
 		hyphaName = util.HyphaNameFromRq(rq, "upload-text")
 		h         = hyphae.ByName(hyphaName)
@@ -211,7 +212,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 		preview := template.HTML(mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))
 
 		_ = pageHyphaEdit.RenderTo(
-			viewutil.MetaFrom(w, rq),
+			viewdata.MetaFrom(w, rq),
 			map[string]any{
 				"HyphaName": hyphaName,
 				"Content":   textData,
@@ -223,7 +224,7 @@ func handlerUploadText(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if err := shroom.UploadText(h, []byte(textData), message, u); err != nil {
-		viewutil.HttpErr(meta, http.StatusForbidden, hyphaName, err.Error())
+		newtmpl.HttpErr(meta, http.StatusForbidden, hyphaName, err.Error())
 		return
 	}
 	if action == "save-and-edit" {
@@ -243,17 +244,17 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 		u         = usersvc.FromRequest(rq)
 
 		file, handler, err = rq.FormFile("binary")
-		meta               = viewutil.MetaFrom(w, rq)
+		meta               = viewdata.MetaFrom(w, rq)
 	)
 	if err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
+		newtmpl.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 	}
 	if !u.CanProceed(userdomain.ActionUploadMedia) {
 		slog.Info("Reject upload media",
 			"hyphaName", h.CanonicalName(),
 			"username", u.Name,
 			"reason", "unauthorized")
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to upload media")
+		newtmpl.HttpErr(meta, http.StatusInternalServerError, hyphaName, "You must be an editor to upload media")
 	}
 
 	// If file is not passed:
@@ -271,7 +272,7 @@ func handlerUploadBinary(w http.ResponseWriter, rq *http.Request) {
 	)
 
 	if err := shroom.UploadBinary(h, mime, file, u); err != nil {
-		viewutil.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
+		newtmpl.HttpErr(meta, http.StatusInternalServerError, hyphaName, err.Error())
 		return
 	}
 	http.Redirect(w, rq, "/hypha/"+hyphaName, http.StatusSeeOther)

@@ -15,16 +15,17 @@ import (
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
 	"github.com/bouncepaw/mycorrhiza/util/fp"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 func handlerNewHypha(w http.ResponseWriter, rq *http.Request) {
 	var (
-		meta = viewutil.MetaFrom(w, rq)
+		meta = viewdata.MetaFrom(w, rq)
 		u    = meta.U
 	)
 	if !u.CanProceed(userdomain.ActionUploadText) || !u.CanProceed(userdomain.ActionUploadMedia) {
-		viewutil.HttpErr(meta, http.StatusForbidden, "", "You must be an editor to edit a hypha")
+		newtmpl.HttpErr(meta, http.StatusForbidden, "", "You must be an editor to edit a hypha")
 		return
 	}
 

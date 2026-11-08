@@ -1,0 +1,36 @@
+{{define "title"}}About {{.Cfg.WikiName}}{{end}}
+{{define "body"}}
+<main class="main-width">
+	<section class="about-page">
+		<h1>About {{ .Cfg.WikiName }}</h1>
+		<dl>
+			<dt><a href="https://mycorrhiza.wiki">Mycorrhiza Wiki</a> version</dt>
+			<dd>{{ .Version }}</dd>
+		{{ if .Cfg.UseAuth }}
+			<dt>Home hypha</dt>
+			<dd><a href="/">{{ .Cfg.HomeHypha }}</a></dd>
+
+			<dt>Authentication</dt>
+			<dd>Authentication is on</dd>
+			{{if .Cfg.TelegramEnabled}}<dd>Telegram authentication is on</dd>{{end}}
+
+			<dt>User count</dt>
+			<dd>{{ .UserCount }}</dd>
+			{{if .Cfg.RegistrationLimit}}
+			<dt>Registration limit</dt>
+			<dd>{{.RegistrationLimit}}</dd>
+			{{end}}
+
+			<dt>Administrators</dt>
+			{{$cfg := .Cfg}}{{ range $i, $username := .Admins }}
+				<dd><a href="/hypha/{{ $cfg.UserHypha }}/{{ $username }}">{{ $username }}</a></dd>
+			{{ end }}
+
+		{{ else }}
+			<dt>Authentication</dt>
+			<dd>Authentication is off</dd>
+		{{ end }}
+		</dl>
+	</section>
+</main>
+{{end}}

@@ -3,6 +3,7 @@ package history
 import (
 	"fmt"
 	"html"
+	"html/template"
 	"log/slog"
 	"net/url"
 	"os"
@@ -76,13 +77,13 @@ type Revision struct {
 }
 
 // HyphaeDiffsHTML returns a comma-separated list of diffs links of current revision for every affected file as HTML string.
-func (rev Revision) HyphaeDiffsHTML() string {
+func (rev Revision) HyphaeDiffsHTML() template.HTML {
 	entries := rev.hyphaeAffected()
 	if len(entries) == 1 {
-		return fmt.Sprintf(
+		return template.HTML(fmt.Sprintf(
 			`<a href="/primitive-diff/%s/%s">%s</a>`,
 			rev.Hash, entries[0], rev.Hash,
-		)
+		))
 	}
 
 	var buf strings.Builder
@@ -102,7 +103,7 @@ func (rev Revision) HyphaeDiffsHTML() string {
 		buf.WriteString(hyphaName)
 		buf.WriteString(`</a>`)
 	}
-	return buf.String()
+	return template.HTML(buf.String())
 }
 
 // descriptionForFeed generates a good enough HTML contents for a web feed.
@@ -118,7 +119,7 @@ func (rev *Revision) descriptionForFeed() string {
 }
 
 // HyphaeLinksHTML returns a comma-separated list of hyphae that were affected by this revision as HTML string.
-func (rev Revision) HyphaeLinksHTML() string {
+func (rev Revision) HyphaeLinksHTML() template.HTML {
 	var buf strings.Builder
 	for i, hyphaName := range rev.hyphaeAffected() {
 		if i > 0 {
@@ -128,7 +129,7 @@ func (rev Revision) HyphaeLinksHTML() string {
 		urlSafeHyphaName := url.PathEscape(hyphaName)
 		buf.WriteString(fmt.Sprintf(`<a href="/hypha/%s">%s</a>`, urlSafeHyphaName, hyphaName))
 	}
-	return buf.String()
+	return template.HTML(buf.String())
 }
 
 // gitLog calls `git log` and parses the results.

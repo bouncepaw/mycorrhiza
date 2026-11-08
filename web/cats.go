@@ -11,15 +11,16 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 func handlerEditCategory(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
-	meta := viewutil.MetaFrom(w, rq)
+	meta := viewdata.MetaFrom(w, rq)
 	catName := util.CanonicalName(strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/edit-category"), "/"))
 	if catName == "" {
-		viewutil.HandlerNotFound(w, rq)
+		newtmpl.HandlerNotFound(w, rq)
 		return
 	}
 
@@ -37,7 +38,7 @@ func handlerListCategory(w http.ResponseWriter, rq *http.Request) {
 	cats := catsvc.ListOfCategories()
 	sort.Strings(cats)
 
-	_ = pageCatList.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+	_ = pageCatList.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 		"Addr":       "/category",
 		"Categories": cats,
 	})
@@ -51,7 +52,7 @@ func handlerCategory(w http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	meta := viewutil.MetaFrom(w, rq)
+	meta := viewdata.MetaFrom(w, rq)
 	slog.Info("Viewing category", "name", catName)
 	_ = pageCatPage.RenderTo(meta, map[string]any{
 		"Addr":                    "/category/" + catName,

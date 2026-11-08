@@ -2,13 +2,15 @@ package help
 
 // stuff.go is used for meta stuff about the wiki or all hyphae at once.
 import (
+	"html/template"
 	"io"
+	"log/slog"
 	"net/http"
 	"strings"
-	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
@@ -17,19 +19,19 @@ import (
 )
 
 var (
-	tmpl *template.Template
+	pageHelp *newtmpl.Page
 )
 
 func InitHandlers(r *mux.Router) {
 	r.PathPrefix("/help").HandlerFunc(handlerHelp)
-	tmpl = viewutil.CopyWith(fs, "view_help.html")
+	pageHelp = newtmpl.NewPage("help.html")
 }
 
 // handlerHelp gets the appropriate documentation or tells you where you (personally) have failed.
 func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	// See the history of this file to resurrect the old algorithm that supported multiple languages
 	var (
-		meta        = viewutil.MetaFrom(w, rq)
+		meta        = viewdata.MetaFrom(w, rq)
 		articlePath = strings.TrimPrefix(strings.TrimPrefix(rq.URL.Path, "/help/"), "/help")
 		lang        = "en"
 	)
@@ -51,7 +53,7 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		viewHelp(meta, lang, err.Error(), articlePath)
+		viewHelp(meta, lang, template.HTML(template.HTMLEscapeString(err.Error())), articlePath)
 		return
 	}
 
@@ -60,21 +62,23 @@ func handlerHelp(w http.ResponseWriter, rq *http.Request) {
 	ast := mycomarkup.BlockTree(ctx)
 	result := mycomarkup.BlocksToHTML(ctx, ast)
 	w.WriteHeader(http.StatusOK)
-	viewHelp(meta, lang, result, articlePath)
+	viewHelp(meta, lang, template.HTML(result), articlePath)
 }
 
 type helpData struct {
-	*viewutil.BaseData
-	ContentsHTML string
+	newtmpl.BaseData
+	ContentsHTML template.HTML
 	Lang         string
 }
 
-func viewHelp(meta viewutil.Meta, lang, contentsHTML, articlePath string) {
-	viewutil.ExecutePage(meta, tmpl, helpData{
-		BaseData: &viewutil.BaseData{
+func viewHelp(meta viewdata.Meta, lang string, contentsHTML template.HTML, articlePath string) {
+	if err := pageHelp.RenderDataTo(meta, &helpData{
+		BaseData: newtmpl.BaseData{
 			Addr: "/help/" + articlePath,
 		},
 		ContentsHTML: contentsHTML,
 		Lang:         lang,
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "help", "err", err)
+	}
 }

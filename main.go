@@ -20,8 +20,8 @@ import (
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/interwiki/storage"
 	"github.com/bouncepaw/mycorrhiza/web"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/static"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
 )
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 
 	// Init the subsystems:
 	// TODO: keep all crashes in main rather than somewhere there
-	viewutil.Init()
+	newtmpl.Init()
 	hyphae.Index(files.HyphaeDir())
 	backlinks.IndexBacklinks()
 	go backlinks.RunBacklinksConveyor()

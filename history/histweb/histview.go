@@ -2,7 +2,6 @@
 package histweb
 
 import (
-	"embed"
 	"fmt"
 	"html/template"
 	"log/slog"
@@ -10,14 +9,14 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	texttemplate "text/template"
 
 	"github.com/bouncepaw/mycorrhiza/history"
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/internal/files"
 	"github.com/bouncepaw/mycorrhiza/internal/hyphae"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"github.com/gorilla/mux"
 )
@@ -33,9 +32,9 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/recent-changes-atom", handlerRecentChangesAtom)
 	rtr.HandleFunc("/recent-changes-json", handlerRecentChangesJSON)
 
-	tmplPrimitiveDiff = viewutil.CopyWith(fs, "view_primitive_diff.html")
-	tmplRecentChanges = viewutil.CopyWith(fs, "view_recent_changes.html")
-	tmplHistory = viewutil.CopyWith(fs, "view_history.html")
+	pagePrimitiveDiff = newtmpl.NewPage("primitive-diff.html")
+	pageRecentChanges = newtmpl.NewPage("recent-changes.html")
+	pageHistory = newtmpl.NewPage("history.html")
 }
 
 func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
@@ -61,7 +60,7 @@ func handlerPrimitiveDiff(w http.ResponseWriter, rq *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	primitiveDiff(viewutil.MetaFrom(w, rq), h, revHash, text)
+	primitiveDiff(viewdata.MetaFrom(w, rq), h, revHash, text)
 }
 
 // handlerRecentChanges displays the /recent-changes/ page.
@@ -71,7 +70,7 @@ func handlerRecentChanges(w http.ResponseWriter, rq *http.Request) {
 	if editCount > 100 {
 		return
 	}
-	recentChanges(viewutil.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
+	recentChanges(viewdata.MetaFrom(w, rq), editCount, history.RecentChanges(editCount))
 }
 
 // handlerHistory lists all revisions of a hypha.
@@ -88,7 +87,7 @@ func handlerHistory(w http.ResponseWriter, rq *http.Request) {
 	// TODO: extra log, not needed?
 	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 
-	historyView(viewutil.MetaFrom(w, rq), hyphaName, list)
+	historyView(viewdata.MetaFrom(w, rq), hyphaName, list)
 }
 
 // genericHandlerOfFeeds is a helper function for the web feed handlers.
@@ -123,37 +122,36 @@ func handlerRecentChangesJSON(w http.ResponseWriter, rq *http.Request) {
 }
 
 var (
-	//go:embed *.html
-	fs                                                embed.FS
-	tmplPrimitiveDiff, tmplRecentChanges, tmplHistory *texttemplate.Template
+	pagePrimitiveDiff, pageRecentChanges, pageHistory *newtmpl.Page
 )
 
 type recentChangesData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	EditCount int
 	Changes   []history.Revision
 	UserHypha string
 	Stops     []int
 }
 
-func recentChanges(meta viewutil.Meta, editCount int, changes []history.Revision) {
-	viewutil.ExecutePage(meta, tmplRecentChanges, recentChangesData{
-		BaseData:  &viewutil.BaseData{},
+func recentChanges(meta viewdata.Meta, editCount int, changes []history.Revision) {
+	if err := pageRecentChanges.RenderDataTo(meta, &recentChangesData{
 		EditCount: editCount,
 		Changes:   changes,
 		UserHypha: cfg.UserHypha,
 		Stops:     []int{20, 50, 100},
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "recent-changes", "err", err)
+	}
 }
 
 type primitiveDiffData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	HyphaName string
 	Hash      string
 	Text      template.HTML
 }
 
-func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
+func primitiveDiff(meta viewdata.Meta, h hyphae.Hypha, hash, text string) {
 	hunks := history.SplitPrimitiveDiff(text)
 	if len(hunks) > 0 {
 		var buf strings.Builder
@@ -188,26 +186,29 @@ func primitiveDiff(meta viewutil.Meta, h hyphae.Hypha, hash, text string) {
 		text = fmt.Sprintf(
 			`<pre class="codeblock"><code>%s</code></pre>`, text)
 	}
-	viewutil.ExecutePage(meta, tmplPrimitiveDiff, primitiveDiffData{
-		BaseData:  &viewutil.BaseData{},
+	if err := pagePrimitiveDiff.RenderDataTo(meta, &primitiveDiffData{
 		HyphaName: h.CanonicalName(),
 		Hash:      hash,
 		Text:      template.HTML(text),
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "primitive-diff", "err", err)
+	}
 }
 
 type historyData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	HyphaName string
-	Contents  string
+	Contents  template.HTML
 }
 
-func historyView(meta viewutil.Meta, hyphaName, contents string) {
-	viewutil.ExecutePage(meta, tmplHistory, historyData{
-		BaseData: &viewutil.BaseData{
+func historyView(meta viewdata.Meta, hyphaName, contents string) {
+	if err := pageHistory.RenderDataTo(meta, &historyData{
+		BaseData: newtmpl.BaseData{
 			Addr: "/history/" + util.CanonicalName(hyphaName),
 		},
 		HyphaName: hyphaName,
-		Contents:  contents,
-	})
+		Contents:  template.HTML(contents),
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "history", "err", err)
+	}
 }

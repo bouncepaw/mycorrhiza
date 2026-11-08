@@ -1,43 +1,40 @@
 package interwikisvc
 
 import (
-	"embed"
 	"log/slog"
 	"net/http"
 	"strings"
-	"text/template"
 
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"github.com/gorilla/mux"
 )
 
 var (
-	//go:embed *html
-	fs            embed.FS
-	tmplInterwiki *template.Template
-	tmplNameTaken *template.Template
+	pageInterwiki *newtmpl.Page
+	pageNameTaken *newtmpl.Page
 )
 
 func InitHandlers(rtr *mux.Router) {
-	tmplInterwiki = viewutil.CopyWith(fs, "view_interwiki.html")
-	tmplNameTaken = viewutil.CopyWith(fs, "view_name_taken.html")
+	pageInterwiki = newtmpl.NewPage("interwiki.html")
+	pageNameTaken = newtmpl.NewPage("interwiki-name-taken.html")
 	rtr.HandleFunc("/interwiki", handlerInterwiki)
 	rtr.HandleFunc("/interwiki/add-entry", handlerAddEntry).Methods(http.MethodPost)
 	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)
 }
 
 func readInterwikiEntryFromRequest(rq *http.Request) Wiki {
-	wiki := Wiki{WikiDTO: interwikidomain.WikiDTO{
+	wiki := Wiki{
 		Name:           rq.PostFormValue("name"),
 		Aliases:        strings.Split(rq.PostFormValue("aliases"), ","),
 		URL:            rq.PostFormValue("url"),
 		LinkHrefFormat: rq.PostFormValue("link-href-format"),
 		ImgSrcFormat:   rq.PostFormValue("img-src-format"),
 		Engine:         interwikidomain.WikiEngine(rq.PostFormValue("engine")),
-	}}
+	}
 	wiki.canonize()
 	return wiki
 }
@@ -54,7 +51,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 		slog.Info("Could not modify entry",
 			"name", name,
 			"reason", "does not exist")
-		viewutil.HandlerNotFound(w, rq)
+		newtmpl.HandlerNotFound(w, rq)
 		return
 	}
 
@@ -63,7 +60,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 			"name", name,
 			"reason", "one of the proposed aliases or the name is taken",
 			"err", err)
-		viewNameTaken(viewutil.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
+		viewNameTaken(viewdata.MetaFrom(w, rq), oldData, err.Error(), "modify-entry/"+name)
 		return
 	}
 
@@ -75,7 +72,7 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 	wiki := readInterwikiEntryFromRequest(rq)
 	if err := addEntry(&wiki); err != nil {
-		viewNameTaken(viewutil.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
+		viewNameTaken(viewdata.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
 		return
 	}
 	saveInterwikiJson()
@@ -83,37 +80,39 @@ func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
 }
 
 type nameTakenData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	*Wiki
 	TakenName string
 	Action    string
 }
 
-func viewNameTaken(meta viewutil.Meta, wiki *Wiki, takenName, action string) {
-	viewutil.ExecutePage(meta, tmplNameTaken, nameTakenData{
-		BaseData:  &viewutil.BaseData{},
+func viewNameTaken(meta viewdata.Meta, wiki *Wiki, takenName, action string) {
+	if err := pageNameTaken.RenderDataTo(meta, &nameTakenData{
 		Wiki:      wiki,
 		TakenName: takenName,
 		Action:    action,
-	})
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "interwiki-name-taken", "err", err)
+	}
 }
 
 func handlerInterwiki(w http.ResponseWriter, rq *http.Request) {
-	viewInterwiki(viewutil.MetaFrom(w, rq))
+	viewInterwiki(viewdata.MetaFrom(w, rq))
 }
 
 type interwikiData struct {
-	*viewutil.BaseData
+	newtmpl.BaseData
 	Entries []*Wiki
 	CanEdit bool
 	Error   string
 }
 
-func viewInterwiki(meta viewutil.Meta) {
-	viewutil.ExecutePage(meta, tmplInterwiki, interwikiData{
-		BaseData: &viewutil.BaseData{},
-		Entries:  listOfEntries,
-		CanEdit:  meta.U.Group == userdomain.GroupAdmin,
-		Error:    "",
-	})
+func viewInterwiki(meta viewdata.Meta) {
+	if err := pageInterwiki.RenderDataTo(meta, &interwikiData{
+		Entries: listOfEntries,
+		CanEdit: meta.U.Group == userdomain.GroupAdmin,
+		Error:   "",
+	}); err != nil {
+		slog.Error("Failed to execute page", "page", "interwiki", "err", err)
+	}
 }

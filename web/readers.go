@@ -25,7 +25,7 @@ import (
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/mycoopts"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"git.sr.ht/~bouncepaw/mycomarkup/v5"
 	"git.sr.ht/~bouncepaw/mycomarkup/v5/mycocontext"
@@ -83,7 +83,7 @@ func handlerMedia(w http.ResponseWriter, rq *http.Request) {
 
 		fileSize = fileinfo.Size()
 	}
-	_ = pageMedia.RenderTo(viewutil.MetaFrom(w, rq), map[string]any{
+	_ = pageMedia.RenderTo(viewdata.MetaFrom(w, rq), map[string]any{
 		"HyphaName":    h.CanonicalName(),
 		"U":            u,
 		"IsMediaHypha": isMedia,
@@ -177,7 +177,7 @@ func handlerRevision(w http.ResponseWriter, rq *http.Request) {
 		contents = template.HTML(mycomarkup.BlocksToHTML(ctx, mycomarkup.BlockTree(ctx)))
 	}
 
-	meta := viewutil.MetaFrom(w, rq)
+	meta := viewdata.MetaFrom(w, rq)
 	_ = pageRevision.RenderTo(meta, map[string]any{
 		"ViewScripts": cfg.ViewScripts,
 		"Contents":    contents,
@@ -224,7 +224,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 		contents  template.HTML
 		openGraph template.HTML
 
-		meta                                    = viewutil.MetaFrom(w, rq)
+		meta                                    = viewdata.MetaFrom(w, rq)
 		subhyphae, prevHyphaName, nextHyphaName = tree.Tree(h.CanonicalName())
 		cats                                    = catsvc.CategoriesWithHypha(h.CanonicalName())
 		category_list                           = ":" + strings.Join(cats, ":") + ":"
@@ -281,7 +281,7 @@ func handlerHypha(w http.ResponseWriter, rq *http.Request) {
 func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 	hyphaName := util.HyphaNameFromRq(rq, "backlinks")
 
-	_ = pageBacklinks.RenderTo(viewutil.MetaFrom(w, rq),
+	_ = pageBacklinks.RenderTo(viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"Addr":      "/backlinks/" + hyphaName,
 			"HyphaName": hyphaName,
@@ -290,7 +290,7 @@ func handlerBacklinks(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerOrphans(w http.ResponseWriter, rq *http.Request) {
-	_ = pageOrphans.RenderTo(viewutil.MetaFrom(w, rq),
+	_ = pageOrphans.RenderTo(viewdata.MetaFrom(w, rq),
 		map[string]any{
 			"Addr":    "/orphans",
 			"Orphans": backlinks.Orphans(),

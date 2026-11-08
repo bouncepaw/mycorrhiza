@@ -19,8 +19,9 @@ import (
 	"github.com/bouncepaw/mycorrhiza/internal/user"
 	userdomain "github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/static"
-	"github.com/bouncepaw/mycorrhiza/web/viewutil"
+	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 )
 
 func InitAssetHandlers(rtr *mux.Router) {
@@ -64,14 +65,14 @@ func handlerList(w http.ResponseWriter, rq *http.Request) {
 			entries = append(entries, listDatum{Name: h.CanonicalName(), Ext: filepath.Ext(h.MediaFilePath())[1:]})
 		}
 	}
-	viewList(viewutil.MetaFrom(w, rq), entries)
+	viewList(viewdata.MetaFrom(w, rq), entries)
 }
 
 // handlerReindex reindexes all hyphae by checking the wiki storage directory anew.
 func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := usersvc.CanProceed(rq, userdomain.ActionReindex); !ok {
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, "You must be an admin to reindex hyphae.")
+		newtmpl.HttpErr(viewdata.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, "You must be an admin to reindex hyphae.")
 		slog.Info("No rights to reindex")
 		return
 	}
@@ -86,7 +87,7 @@ func handlerReindex(w http.ResponseWriter, rq *http.Request) {
 func handlerUpdateHeaderLinks(w http.ResponseWriter, rq *http.Request) {
 	util.PrepareRq(rq)
 	if ok := usersvc.CanProceed(rq, userdomain.ActionUpdateHeaderLinks); !ok {
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, "You must be a moderator to update header links.")
+		newtmpl.HttpErr(viewdata.MetaFrom(w, rq), http.StatusForbidden, cfg.HomeHypha, "You must be a moderator to update header links.")
 		slog.Info("No rights to update header links")
 		return
 	}
@@ -103,7 +104,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 		amountOfHyphae  = hyphae.Count()
 	)
 	if amountOfHyphae == 0 {
-		viewutil.HttpErr(viewutil.MetaFrom(w, rq), http.StatusNotFound, cfg.HomeHypha, "It is impossible to display a random hypha because the wiki does not contain any hyphae")
+		newtmpl.HttpErr(viewdata.MetaFrom(w, rq), http.StatusNotFound, cfg.HomeHypha, "It is impossible to display a random hypha because the wiki does not contain any hyphae")
 		return
 	}
 	i := rand.Intn(amountOfHyphae)
@@ -120,17 +121,7 @@ func handlerRandom(w http.ResponseWriter, rq *http.Request) {
 func handlerAbout(w http.ResponseWriter, rq *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	meta := viewutil.MetaFrom(w, rq)
-	title := "About " + cfg.WikiName
-	_, err := io.WriteString(w, viewutil.Base(
-		meta,
-		title,
-		AboutHTML(),
-		map[string]string{},
-	))
-	if err != nil {
-		slog.Error("Failed to write About template", "err", err)
-	}
+	viewAbout(viewdata.MetaFrom(w, rq))
 }
 
 var stylesheets = []string{"default.css", "custom.css"}
@@ -177,5 +168,5 @@ func handlerTitleSearch(w http.ResponseWriter, rq *http.Request) {
 		results = append(results, hyphaName)
 	}
 	w.WriteHeader(http.StatusOK)
-	viewTitleSearch(viewutil.MetaFrom(w, rq), query, hyphaName, !nameFree, results)
+	viewTitleSearch(viewdata.MetaFrom(w, rq), query, hyphaName, !nameFree, results)
 }

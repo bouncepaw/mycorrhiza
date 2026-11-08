@@ -5,7 +5,7 @@ import (
 	"embed"
 )
 
-//go:embed en en.myco *.html
+//go:embed en en.myco
 var fs embed.FS
 
 // Get determines what help text you need and returns it. The path is a substring from URL, it follows this form:

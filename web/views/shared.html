@@ -1,0 +1,30 @@
+{{define "wiki name"}}{{wikiName}}{{end}}
+{{define "user hypha"}}{{userHypha}}{{end}}
+
+{{define "auth"}}{{if useAuth}}
+<ul class="top-bar__auth auth-links">
+	<li class="auth-links__box auth-links__user-box">
+		{{if .Meta.U.Group | eq "anon" }}
+			<a href="/login" class="auth-links__link auth-links__login-link">
+				Login
+			</a>
+		{{else}}
+			<a href='/hypha/{{block "user hypha" .}}{{end}}/{{.Meta.U.Name}}' class="auth-links__link auth-links__user-link">
+				{{beautifulName .Meta.U.Name}}
+			</a>
+		{{end}}
+	</li>
+	{{block "registration" .}}{{end}}
+</ul>
+{{end}}
+{{end}}
+{{define "registration"}}{{if allowRegistration}}
+{{if .Meta.U.Group | eq "anon"}}
+	 <li class="auth-links__box auth-links__register-box">
+		 <a href="/register" class="auth-links__link auth-links__register-link">
+			 Register
+		 </a>
+	 </li>
+{{end}}
+{{end}}
+{{end}}
