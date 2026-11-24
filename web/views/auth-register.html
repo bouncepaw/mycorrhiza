@@ -21,7 +21,6 @@
                     <a class="btn btn_weak" href="/{{.RawQuery}}">Cancel</a>
                 </fieldset>
             </form>
-            {{template "telegram widget" .}}
         {{else if .UseAuth}}
             <p>Registrations are currently closed. Administrators can make an account for you by hand; contact them.</p>
             <p><a href="/{{.RawQuery}}">← Go back</a></p>

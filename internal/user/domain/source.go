@@ -3,13 +3,12 @@ package userdomain
 type Source string
 
 const (
-	SourceLocal    Source = "local"
-	SourceTelegram Source = "telegram"
+	SourceLocal Source = "local"
 )
 
 func (s Source) IsValid() bool {
 	switch s {
-	case SourceLocal, SourceTelegram:
+	case SourceLocal:
 		return true
 	}
 	return false

@@ -46,14 +46,21 @@ func usersFromFile() []*User {
 			migrated = true
 		}
 		u.Name = util.CanonicalName(u.Name)
+		if u.Source == "telegram" {
+			u.Source = userdomain.SourceLocal
+			u.Password = ""
+			migrated = true
+			slog.Warn("Telegram authorization is no longer supported; set a new password for the user in the admin panel",
+				"username", u.Name)
+		}
 		if u.Source == "" {
 			u.Source = userdomain.SourceLocal
 		}
 	}
 	if migrated {
-		slog.Info("Migrated from the legacy trusted editors group")
+		slog.Info("Migrated legacy user records")
 		if err := writeUserCredentials(users); err != nil {
-			slog.Error("Failed to persist trusted editor migration", "err", err)
+			slog.Error("Failed to persist user migration", "err", err)
 		}
 	}
 	slog.Info("Indexed users", "n", len(users))

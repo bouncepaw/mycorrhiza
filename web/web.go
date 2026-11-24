@@ -3,13 +3,11 @@ package web
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"log/slog"
 	"mime"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/help"
 	"github.com/bouncepaw/mycorrhiza/history/histweb"
@@ -20,7 +18,6 @@ import (
 	"github.com/bouncepaw/mycorrhiza/interwiki"
 	"github.com/bouncepaw/mycorrhiza/misc"
 	"github.com/bouncepaw/mycorrhiza/util"
-	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
 	"github.com/bouncepaw/mycorrhiza/web/viewdata"
 
 	"github.com/gorilla/mux"
@@ -33,7 +30,7 @@ func Handler() http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
 			util.PrepareRq(rq)
 			w.Header().Add("Content-Security-Policy",
-				"default-src 'self' telegram.org *.telegram.org; "+
+				"default-src 'self'; "+
 					"img-src * data:; media-src *; style-src *; font-src * data:")
 			next.ServeHTTP(w, rq)
 		})
@@ -50,9 +47,6 @@ func Handler() http.Handler {
 	if cfg.UseAuth {
 		if cfg.AllowRegistration {
 			router.HandleFunc("/register", handlerRegister).Methods(http.MethodPost, http.MethodGet)
-		}
-		if cfg.TelegramEnabled {
-			router.HandleFunc("/telegram-login", handlerTelegramLogin)
 		}
 		router.HandleFunc("/login", handlerLogin)
 		router.HandleFunc("/logout", handlerLogout)
@@ -228,7 +222,6 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 			"UseAuth":            cfg.UseAuth,
 			"ErrUnknownUsername": false,
 			"ErrWrongPassword":   false,
-			"ErrTelegram":        false,
 			"Err":                nil,
 			"WikiName":           cfg.WikiName,
 		})
@@ -247,7 +240,6 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 			"UseAuth":            cfg.UseAuth,
 			"ErrUnknownUsername": errors.Is(err, usersvc.ErrUnknownUsername),
 			"ErrWrongPassword":   errors.Is(err, usersvc.ErrWrongPassword),
-			"ErrTelegram":        false, // TODO: ?
 			"Err":                err.Error(),
 			"WikiName":           cfg.WikiName,
 			"Username":           username,
@@ -257,46 +249,4 @@ func handlerLogin(w http.ResponseWriter, rq *http.Request) {
 	}
 	http.Redirect(w, rq, "/", http.StatusSeeOther)
 	slog.Info("Logged in", "username", username)
-}
-
-func handlerTelegramLogin(w http.ResponseWriter, rq *http.Request) {
-	// Note there is no lock here.
-	w.Header().Set("Content-Type", "text/html;charset=utf-8")
-	_ = rq.ParseForm()
-	var (
-		values     = rq.URL.Query()
-		username   = strings.ToLower(values.Get("username"))
-		seemsValid = usersvc.TelegramAuthParamsAreValid(values)
-		err        = usersvc.Register(
-			username,
-			"", // Password matters not
-			userdomain.GroupEditor,
-			userdomain.SourceTelegram,
-			false,
-		)
-	)
-	// If registering a user via Telegram failed, because a Telegram user with this name
-	// has already registered, then everything is actually ok!
-	if usersvc.HasUsername(username) && usersvc.ByName(username).Source == userdomain.SourceTelegram {
-		err = nil
-	}
-
-	if !seemsValid {
-		err = fmt.Errorf("Wrong parameters")
-	}
-
-	if err != nil {
-		slog.Info("Failed to register", "username", username, "err", err.Error(), "method", "telegram")
-		newtmpl.Error(viewdata.MetaFrom(w, rq), http.StatusBadRequest, err.Error(), "/login", "Go to the login page")
-		return
-	}
-
-	errmsg := usersvc.LoginDataHTTP(w, username, "")
-	if errmsg != nil {
-		slog.Error("Failed to login using Telegram", "err", errmsg, "username", username)
-		newtmpl.Error(viewdata.MetaFrom(w, rq), http.StatusBadRequest, errmsg.Error(), "/login", "Go to the login page")
-		return
-	}
-	http.Redirect(w, rq, "/", http.StatusSeeOther)
-	slog.Info("Logged in", "username", username, "method", "telegram")
 }

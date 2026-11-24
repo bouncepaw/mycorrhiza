@@ -66,7 +66,5 @@ You can specify URLs of JavaScript files you want to load.
 * `ViewScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on //view// pages: `/hypha`, `/rev`.
 * `EditScripts`: //list of urls//. Comma-separated list of unquoted URLs to JS files to load on the `/edit` page.
 
-=== [Telegram]
-You can set up Telegram-based authorization. You have to define both parameters.
-* `TelegramBotToken`: //string// Token of your bot. There is no default.
-* `TelegramBotName`: //string// Username of your bot, sans @. There is no default.
+=== Deleted: [Telegram]
+There used to be Telegram integration. It was removed in v1.16.1. If you had users sourced from Telegram, they need their passwords set.

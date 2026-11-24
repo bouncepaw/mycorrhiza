@@ -7,8 +7,6 @@
                 <p class="error">Unknown username.</p>
             {{else if .ErrWrongPassword}}
                 <p class="error">Wrong password.</p>
-            {{else if .ErrTelegram}}
-                <p class="error">Could not authorize using Telegram.</p>
             {{else if .Err}}
                 <p class="error">{{.Err}}</p>
             {{end}}
@@ -28,7 +26,6 @@
                     <a class="btn btn_weak" href="/">Cancel</a>
                 </fieldset>
             </form>
-            {{template "telegram widget" .}}
         {{else}}
             <p>Authentication is disabled. You can make edits anonymously.</p>
             <p><a class="btn btn_weak" href="/">← Go home</a></p>

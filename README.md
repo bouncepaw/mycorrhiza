@@ -14,7 +14,7 @@
 * **Nesting of hyphae** is also supported if you like hierarchies.
 * **History of changes.** Every change is safely stored in [Git]. Web feeds (RSS, Atom, JSON Feed) for recent changes included.
 * **Keyboard-driven navigation.** Press `?` to see the list of shortcuts.
-* **Support for [authorization].** Both plain username-password pairs and [Telegram]'s login widget are supported.
+* **Optional [authorization]**. You can enable or disable it if you miss the classic wiki experience.
 * **[Open Graph] support.** The most relevant info about a hypha is made available through OG meta tags for consumption by other software.
 * **Interwiki support.**
 
@@ -22,7 +22,6 @@
 [Mycomarkup]: https://mycorrhiza.wiki/help/en/mycomarkup
 [Git]: https://mycorrhiza.wiki/hypha/integration/git
 [authorization]: https://mycorrhiza.wiki/hypha/authorization
-[Telegram]: https://mycorrhiza.wiki/help/en/telegram
 [Open Graph]: https://mycorrhiza.wiki/hypha/opengraph
 
 Compare Mycorrhiza Wiki with other engines on [WikiMatrix](https://www.wikimatrix.org/show/mycorrhiza).
