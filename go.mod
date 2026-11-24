@@ -7,6 +7,7 @@ require (
 	github.com/gorilla/feeds v1.2.0
 	github.com/gorilla/mux v1.8.1
 	golang.org/x/crypto v0.58.0
+	golang.org/x/exp/collection v0.0.0-20261124000051-d6646c509b6d
 	golang.org/x/term v0.47.0
 	golang.org/x/text v0.43.0
 	gopkg.in/ini.v1 v1.67.3

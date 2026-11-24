@@ -1,11 +1,15 @@
 package mimetype
 
 import (
+	"log/slog"
 	"mime"
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/exp/collection/set"
+
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/util/fp"
 )
 
 // ToExtension returns dotted extension for given mime-type.
@@ -46,6 +50,43 @@ func FromExtension(ext string) string {
 		return mimeType
 	}
 	return "application/octet-stream"
+}
+
+// Defined by the WHATWG MIME Sniffing Standard:
+// => https://mimesniff.spec.whatwg.org/#javascript-mime-type
+// With X-Content-Type-Options: nosniff, browsers execute a script only if its response has one of these types.
+var javaScriptTypes = set.Of(
+	"application/ecmascript",
+	"application/javascript",
+	"application/x-ecmascript",
+	"application/x-javascript",
+	"text/ecmascript",
+	"text/javascript",
+	"text/javascript1.0",
+	"text/javascript1.1",
+	"text/javascript1.2",
+	"text/javascript1.3",
+	"text/javascript1.4",
+	"text/javascript1.5",
+	"text/jscript",
+	"text/livescript",
+	"text/x-ecmascript",
+	"text/x-javascript",
+)
+
+func IsJavaScript(contentType string) bool {
+	mediaType, _, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		slog.Warn("Failed to parse media type; considering it as JavaScript. Better safe than sorry",
+			"type", contentType)
+		return true
+	}
+	return javaScriptTypes.Contains(mediaType)
+}
+
+func ForServing(ext string) string {
+	contentType := FromExtension(ext)
+	return fp.If(IsJavaScript(contentType), "text/plain; charset=utf-8", contentType)
 }
 
 // DataFromFilename fetches all meta information from hypha content file with path `fullPath`. If it is not a content file, `skip` is true, and you are expected to ignore this file when indexing hyphae. `name` is name of the hypha to which this file relates. `isText` is true when the content file is text, false when is binary.
