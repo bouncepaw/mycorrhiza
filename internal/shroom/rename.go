@@ -79,9 +79,8 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 			newName))
 	}
 
-	hop.WithFilesRenamed(movedFiles)
-
-	if len(hop.Errs) != 0 {
+	if hop.WithFilesRenamed(movedFiles).HasErrors() {
+		hop.Abort()
 		return hop.Errs[0]
 	}
 

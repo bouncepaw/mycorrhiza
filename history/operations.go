@@ -91,17 +91,35 @@ func (hop *Op) WithFilesRemoved(paths ...string) *Op {
 }
 
 // WithFilesRenamed git-mv-s all passed keys of `pairs` to values of `pairs`. Paths can be rooted ot not. Empty keys are ignored.
+// It is atomic.
 func (hop *Op) WithFilesRenamed(pairs map[string]string) *Op {
+	var moved []string // sources moved so far
 	for from, to := range pairs {
-		if from != "" {
-			if err := os.MkdirAll(filepath.Dir(to), 0777); err != nil {
-				hop.Errs = append(hop.Errs, err)
-				continue
-			}
-			hop.gitop("mv", "--force", from, to)
+		if from == "" {
+			continue
 		}
+		if err := gitMove(from, to); err != nil {
+			hop.Errs = append(hop.Errs, err)
+			for _, from := range moved {
+				if _, err := gitsh("mv", pairs[from], from); err != nil {
+					hop.Errs = append(hop.Errs, fmt.Errorf("failed to move %s back to %s: %w", pairs[from], from, err))
+				}
+			}
+			return hop
+		}
+		moved = append(moved, from)
 	}
 	return hop
+}
+
+func gitMove(from, to string) error {
+	if err := os.MkdirAll(filepath.Dir(to), 0777); err != nil {
+		return err
+	}
+	if out, err := gitsh("mv", "--force", from, to); err != nil {
+		return fmt.Errorf("git mv %s %s: %w: %s", from, to, err, out.String())
+	}
+	return nil
 }
 
 // WithFiles stages all passed `paths`. Paths can be rooted or not.
