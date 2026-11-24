@@ -229,7 +229,7 @@ func Revisions(hyphaName string) ([]Revision, error) {
 
 // FileChanged tells you if the file has been changed since the last commit.
 func FileChanged(path string) bool {
-	_, err := gitsh("diff", "--exit-code", path)
+	_, err := gitsh("diff", "--no-ext-diff", "--exit-code", path)
 	return err != nil
 }
 
@@ -368,7 +368,7 @@ func FileAtRevision(filepath, hash string) (string, error) {
 
 // PrimitiveDiffAtRevision generates a plain-text diff for the given filepath at the commit with the given hash. It may return an error if git fails.
 func PrimitiveDiffAtRevision(filepath, hash string) (string, error) {
-	out, err := silentGitsh("diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
+	out, err := silentGitsh("diff", "--no-ext-diff", "--unified=1", "--no-color", hash+"~", hash, "--", filepath)
 	if err != nil {
 		return "", err
 	}

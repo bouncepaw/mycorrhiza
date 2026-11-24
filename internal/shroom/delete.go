@@ -18,16 +18,7 @@ func Delete(u *usersvc.User, h hyphae.ExistingHypha) error {
 		WithUser(u)
 
 	originalText, _ := hyphae.FetchMycomarkupFile(h)
-	switch h := h.(type) {
-	case *hyphae.MediaHypha:
-		if h.HasTextFile() {
-			hop.WithFilesRemoved(h.MediaFilePath(), h.TextFilePath())
-		} else {
-			hop.WithFilesRemoved(h.MediaFilePath())
-		}
-	case *hyphae.TextualHypha:
-		hop.WithFilesRemoved(h.TextFilePath())
-	}
+	hop.WithFilesRemoved(hyphae.FilePaths(h)...)
 	if hop.Apply().HasErrors() {
 		return hop.Errs[0]
 	}

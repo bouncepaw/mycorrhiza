@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/history"
@@ -52,17 +51,16 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 	}
 
 	var (
-		re          = regexp.MustCompile(`(?i)` + oldHypha.CanonicalName())
-		replaceName = func(str string) string {
-			namepart := strings.TrimPrefix(str, files.HyphaeDir())
-			// Can we drop that util.CanonicalName?:
-			replaced := re.ReplaceAllString(util.CanonicalName(namepart), newName)
-			return path.Join(files.HyphaeDir(), replaced)
-		}
+		r              = renaming{hyphaeDir: files.HyphaeDir(), from: oldHypha.CanonicalName(), to: newName}
 		hyphaeToRename = findHyphaeToRename(oldHypha, recursive)
-		renameMap, err = renamingPairs(hyphaeToRename, replaceName)
+		newNames       = r.newNames(hyphaeToRename)
 	)
 
+	if firstTaken, ok := hyphae.AreFreeNames(newNames...); !ok {
+		return fmt.Errorf("Hypha %s already exists", firstTaken)
+	}
+
+	movedFiles, err := r.movedFiles(hyphaeToRename)
 	if err != nil {
 		return err
 	}
@@ -81,22 +79,22 @@ func Rename(oldHypha hyphae.ExistingHypha, newName string, recursive bool, leave
 			newName))
 	}
 
-	hop.WithFilesRenamed(renameMap)
+	hop.WithFilesRenamed(movedFiles)
 
 	if len(hop.Errs) != 0 {
 		return hop.Errs[0]
 	}
 
-	for _, h := range hyphaeToRename {
+	for i, h := range hyphaeToRename {
 		var (
-			oldName = h.CanonicalName()
-			newName = re.ReplaceAllString(oldName, newName)
+			hyphaOldName = h.CanonicalName()
+			hyphaNewName = newNames[i]
 		)
-		hyphae.RenameHyphaTo(h, newName, replaceName)
-		backlinks.UpdateBacklinksAfterRename(h, oldName)
-		catsvc.RenameHyphaInAllCategories(oldName, newName)
+		hyphae.RenameHyphaTo(h, hyphaNewName, movedFiles)
+		backlinks.UpdateBacklinksAfterRename(h, hyphaOldName)
+		catsvc.RenameHyphaInAllCategories(hyphaOldName, hyphaNewName)
 		if leaveRedirections {
-			if err := leaveRedirection(oldName, newName, hop); err != nil {
+			if err := leaveRedirection(hyphaOldName, hyphaNewName, hop); err != nil {
 				hop.WithErrAbort(err)
 				return err
 			}
@@ -137,25 +135,48 @@ func findHyphaeToRename(superhypha hyphae.ExistingHypha, recursive bool) []hypha
 	return hyphaList
 }
 
-func renamingPairs(hyphaeToRename []hyphae.ExistingHypha, replaceName func(string) string) (map[string]string, error) {
-	var (
-		renameMap = make(map[string]string)
-		newNames  = make([]string, 0, len(hyphaeToRename))
-	)
-	for _, h := range hyphaeToRename {
-		h.Lock()
-		newNames = append(newNames, replaceName(h.CanonicalName()))
-		if h.HasTextFile() {
-			renameMap[h.TextFilePath()] = replaceName(h.TextFilePath())
-		}
-		switch h := h.(type) {
-		case *hyphae.MediaHypha:
-			renameMap[h.MediaFilePath()] = replaceName(h.MediaFilePath())
-		}
-		h.Unlock()
+// renaming is the renaming of hypha from to to.
+// It applies to the subhyphae
+// of from as well: from/sub becomes to/sub. Names are substituted literally.
+type renaming struct {
+	hyphaeDir string
+	from, to  string
+}
+
+// name is r.from or one of its subhyphae.
+func (r renaming) newName(name string) string {
+	return r.to + strings.TrimPrefix(name, r.from)
+}
+
+func (r renaming) newNames(hs []hyphae.ExistingHypha) []string {
+	names := make([]string, len(hs))
+	for i, h := range hs {
+		names[i] = r.newName(h.CanonicalName())
 	}
-	if firstFailure, ok := hyphae.AreFreeNames(newNames...); !ok {
-		return nil, fmt.Errorf("Hypha %s already exists", firstFailure)
+	return names
+}
+
+func (r renaming) newFilePath(filePath string) (string, error) {
+	rel := util.CanonicalName(strings.TrimPrefix(filePath, r.hyphaeDir+"/"))
+	if !strings.HasPrefix(rel, r.from+".") && !strings.HasPrefix(rel, r.from+"/") {
+		return "", fmt.Errorf("file %s does not belong to hypha %s", filePath, r.from)
 	}
-	return renameMap, nil
+
+	newRel := r.newName(rel)
+	if r.to == "" || !files.IsInsideHyphaeDir(newRel) {
+		return "", fmt.Errorf("refusing to move file %s to %s", filePath, newRel)
+	}
+	return path.Join(r.hyphaeDir, newRel), nil
+}
+
+func (r renaming) movedFiles(hs []hyphae.ExistingHypha) (map[string]string, error) {
+	moved := make(map[string]string)
+	for _, filePath := range hyphae.FilePaths(hs...) {
+		newPath, err := r.newFilePath(filePath)
+		if err != nil {
+			return nil, err
+		}
+		moved[filePath] = newPath
+	}
+	return moved, nil
 }
