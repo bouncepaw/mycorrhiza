@@ -29,9 +29,9 @@ func Handler() http.Handler {
 	router.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, rq *http.Request) {
 			util.PrepareRq(rq)
+			w.Header().Set("X-Content-Type-Options", "nosniff")
 			w.Header().Add("Content-Security-Policy",
-				"default-src 'self'; "+
-					"img-src * data:; media-src *; style-src *; font-src * data:")
+				"default-src 'self'; img-src * data:; media-src *; style-src *; font-src * data:")
 			next.ServeHTTP(w, rq)
 		})
 	})

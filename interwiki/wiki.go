@@ -2,7 +2,9 @@ package interwikisvc
 
 import (
 	"fmt"
-	"log/slog"
+	"net/url"
+	"strings"
+	"unicode"
 
 	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
 	"github.com/bouncepaw/mycorrhiza/util"
@@ -16,17 +18,14 @@ type Wiki struct {
 func (w *Wiki) canonize() error {
 	switch {
 	case w.Name == "":
-		slog.Error("A site in the interwiki map has no name")
-		return fmt.Errorf("site with no name")
+		return fmt.Errorf("the name is not set")
 	case w.URL == "":
-		slog.Error("Site in the interwiki map has no URL", "name", w.Name)
-		return fmt.Errorf("site with no URL")
+		return fmt.Errorf("the URL is not set")
 	case !w.Engine.Valid():
-		slog.Error("Site in the interwiki map has an unknown engine",
-			"siteName", w.Name,
-			"engine", w.Engine,
-		)
-		return fmt.Errorf("unknown engine")
+		return fmt.Errorf("unknown engine %q", w.Engine)
+	}
+	if err := checkAddress(w.URL); err != nil {
+		return fmt.Errorf("URL: %w", err)
 	}
 
 	w.Name = util.CanonicalName(w.Name)
@@ -56,5 +55,29 @@ func (w *Wiki) canonize() error {
 		}
 	}
 
+	if err := checkAddress(w.LinkHrefFormat); err != nil {
+		return fmt.Errorf("link format: %w", err)
+	}
+	if err := checkAddress(w.ImgSrcFormat); err != nil {
+		return fmt.Errorf("image format: %w", err)
+	}
+	return nil
+}
+
+func checkAddress(s string) error {
+	for _, r := range s {
+		if unicode.IsSpace(r) || unicode.IsControl(r) || strings.ContainsRune("\"'<>`\\", r) {
+			return fmt.Errorf("forbidden character %q", r)
+		}
+	}
+
+	s = strings.NewReplacer("{NAME}", "name", "{BETULA-NAME}", "name").Replace(s)
+	u, err := url.Parse(s)
+	switch {
+	case err != nil:
+		return fmt.Errorf("not a valid URL")
+	case u.Scheme == "":
+		return fmt.Errorf("no scheme found in URL")
+	}
 	return nil
 }

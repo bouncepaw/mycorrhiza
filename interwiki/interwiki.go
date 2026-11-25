@@ -28,6 +28,8 @@ func Init(s *interwikistorage.Storage) error {
 	for _, entry := range record {
 		wiki := Wiki{WikiDTO: entry}
 		if err := wiki.canonize(); err != nil {
+			slog.Error("Invalid entry in the interwiki map; fix or remove it",
+				"name", entry.Name, "err", err)
 			return err
 		}
 		if err := addEntry(&wiki); err != nil {
