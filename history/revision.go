@@ -1,13 +1,16 @@
 package history
 
 import (
+	"cmp"
 	"fmt"
 	"html"
 	"html/template"
 	"log/slog"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -132,14 +135,49 @@ func (rev Revision) HyphaeLinksHTML() template.HTML {
 	return template.HTML(buf.String())
 }
 
+// gitLogFollowRenamesMany gets the files' history and merges it into a single []Revision. Fails at the first error encountered.
+func gitLogFollowRenamesMany(filesWildcard string) ([]Revision, error) {
+	matches, err := filepath.Glob(filesWildcard)
+	if err != nil {
+		return nil, err
+	}
+
+	var revsWithDuplicates []Revision
+	for _, r := range matches {
+		revs, err := gitLogFollowRenames(r)
+		if err != nil {
+			return nil, err
+		}
+		revsWithDuplicates = append(revsWithDuplicates, revs...)
+	}
+
+	slices.SortFunc(revsWithDuplicates, func(a, b Revision) int {
+		return cmp.Or(cmp.Compare(a.Hash, b.Hash), a.Time.Compare(b.Time))
+	})
+
+	deduplicatedRevs := slices.CompactFunc(revsWithDuplicates, func(a, b Revision) bool {
+		return cmp.Compare(a.Hash, b.Hash) == 0
+	})
+
+	// revs already sorted by hash and time
+	return deduplicatedRevs, nil
+}
+
+// gitLogFollowRenames the same as gitLog but used for single file history
+func gitLogFollowRenames(args ...string) ([]Revision, error) {
+	args = append([]string{"--follow", "--"}, args...)
+	return gitLog(args...)
+}
+
 // gitLog calls `git log` and parses the results.
 func gitLog(args ...string) ([]Revision, error) {
 	args = append([]string{
 		"log", "--abbrev-commit", "--no-merges",
 		"--pretty=format:%h\t%ae\t%at\t%s",
 	}, args...)
-	args = append(args, "--")
+	slog.Info("gitLog()", "args", args)
 	out, err := silentGitsh(args...)
+	slog.Info("gitLog()", "out", out.String())
 	if strings.Contains(out.String(), "bad revision 'HEAD'") {
 		// Then we have no recent changes! It's a hack.
 		return nil, nil
@@ -222,7 +260,12 @@ func RecentChanges(n int) []Revision {
 
 // Revisions returns slice of revisions for the given hypha name, ordered most recent first.
 func Revisions(hyphaName string) ([]Revision, error) {
-	revs, err := gitLog("--", hyphaName+".*")
+	ext := filepath.Ext(hyphaName)
+	if ext == "" { // treating an empty extension as a potential mycopage
+		hyphaName = hyphaName + ".myco"
+	}
+
+	revs, err := gitLogFollowRenamesMany(hyphaName + ".*")
 	slog.Info("Found revisions", "hyphaName", hyphaName, "n", len(revs), "err", err)
 	return revs, err
 }
