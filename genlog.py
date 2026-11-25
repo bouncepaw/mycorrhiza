@@ -12,7 +12,7 @@ def guess_version() -> str:
     with open(os.path.join(ROOT, 'help', 'en.myco'), encoding='utf-8') as f:
         content = f.read()
     # Extract version.
-    m = re.search(r'This is documentation for Mycorrhiza Wiki (\d+\.\d+(?:\.\d+)*(?:-rc\d+)?)\. ', content)
+    m = re.search(r'This is documentation for Mycorrhiza Wiki v?(\d+\.\d+(?:\.\d+)*(?:-rc\d+)?)\. ', content)
     if m is None:
         sys.exit(
             "Could not find the version in help/en.myco. "
