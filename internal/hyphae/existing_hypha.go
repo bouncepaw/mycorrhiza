@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/bouncepaw/mycorrhiza/util"
+	"github.com/bouncepaw/mycorrhiza/util/fp"
 )
 
 // ExistingHypha is not EmptyHypha. *MediaHypha and *TextualHypha implement this interface.
@@ -15,10 +16,29 @@ type ExistingHypha interface {
 	TextFilePath() string
 }
 
-// RenameHyphaTo renames a hypha and renames stored filepaths as needed. The actual files are not moved, move them yourself.
-func RenameHyphaTo(h ExistingHypha, newName string, replaceName func(string) string) {
-	// TODO: that replaceName is suspicious, get rid of it.
+func FilePaths(hs ...ExistingHypha) []string {
+	var paths []string
+	for _, h := range hs {
+		h.Lock()
+		if h.HasTextFile() {
+			paths = append(paths, h.TextFilePath())
+		}
+		if mh, ok := h.(*MediaHypha); ok {
+			paths = append(paths, mh.MediaFilePath())
+		}
+		h.Unlock()
+	}
+	return paths
+}
+
+// RenameHyphaTo renames a hypha and updates its stored file paths per
+// movedFiles. Paths not in movedFiles are
+// kept. The actual files are not moved, move them yourself.
+func RenameHyphaTo(h ExistingHypha, newName string, movedFiles map[string]string) {
 	newName = util.CanonicalName(newName)
+	moved := func(oldPath string) string {
+		return fp.CoalesceOrEmpty(movedFiles[oldPath], oldPath)
+	}
 	byNamesMutex.Lock()
 	h.Lock()
 	delete(byNames, h.CanonicalName())
@@ -26,11 +46,11 @@ func RenameHyphaTo(h ExistingHypha, newName string, replaceName func(string) str
 	switch h := h.(type) {
 	case *TextualHypha:
 		h.canonicalName = newName
-		h.mycoFilePath = replaceName(h.mycoFilePath)
+		h.mycoFilePath = moved(h.mycoFilePath)
 	case *MediaHypha:
 		h.canonicalName = newName
-		h.mycoFilePath = replaceName(h.mycoFilePath)
-		h.mediaFilePath = replaceName(h.mediaFilePath)
+		h.mycoFilePath = moved(h.mycoFilePath)
+		h.mediaFilePath = moved(h.mediaFilePath)
 	}
 
 	byNames[h.CanonicalName()] = h

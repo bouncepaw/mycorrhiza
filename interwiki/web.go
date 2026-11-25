@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bouncepaw/mycorrhiza/internal/cfg"
+	"github.com/bouncepaw/mycorrhiza/internal/user"
 	"github.com/bouncepaw/mycorrhiza/internal/user/domain"
 	"github.com/bouncepaw/mycorrhiza/interwiki/domain"
 	"github.com/bouncepaw/mycorrhiza/web/newtmpl"
@@ -26,25 +28,51 @@ func InitHandlers(rtr *mux.Router) {
 	rtr.HandleFunc("/interwiki/modify-entry/{target}", handlerModifyEntry).Methods(http.MethodPost)
 }
 
+// canEdit reports whether the user may change the interwiki map. Like the admin panel, it needs authorization to be on.
+func canEdit(u *usersvc.User) bool {
+	return cfg.UseAuth && u.CanProceed(userdomain.ActionEditInterwiki)
+}
+
+// prepareEdit checks that the user in rq may change the interwiki map, and reads and checks the entry in rq.
+// If either check fails, it writes an error page and returns false.
+func prepareEdit(w http.ResponseWriter, rq *http.Request) (Wiki, bool) {
+	meta := viewdata.MetaFrom(w, rq)
+	if !canEdit(meta.U) {
+		slog.Info("No rights to change the interwiki map", "username", meta.U.Name)
+		newtmpl.Error(meta, http.StatusForbidden,
+			"You must be an admin to change the interwiki map.", "/interwiki", "Go back to the interwiki map.")
+		return Wiki{}, false
+	}
+
+	wiki := readInterwikiEntryFromRequest(rq)
+	if err := wiki.canonize(); err != nil {
+		slog.Info("Invalid interwiki entry", "name", wiki.Name, "err", err)
+		newtmpl.Error(meta, http.StatusBadRequest,
+			"Invalid interwiki entry: "+err.Error()+".", "/interwiki", "Go back to the interwiki map.")
+		return Wiki{}, false
+	}
+	return wiki, true
+}
+
 func readInterwikiEntryFromRequest(rq *http.Request) Wiki {
-	wiki := Wiki{
+	return Wiki{WikiDTO: interwikidomain.WikiDTO{
 		Name:           rq.PostFormValue("name"),
 		Aliases:        strings.Split(rq.PostFormValue("aliases"), ","),
 		URL:            rq.PostFormValue("url"),
 		LinkHrefFormat: rq.PostFormValue("link-href-format"),
 		ImgSrcFormat:   rq.PostFormValue("img-src-format"),
 		Engine:         interwikidomain.WikiEngine(rq.PostFormValue("engine")),
-	}
-	wiki.canonize()
-	return wiki
+	}}
 }
 
 func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
+	newData, ok := prepareEdit(w, rq)
+	if !ok {
+		return
+	}
 	var (
 		oldData *Wiki
-		ok      bool
 		name    = mux.Vars(rq)["target"]
-		newData = readInterwikiEntryFromRequest(rq)
 	)
 
 	if oldData, ok = entriesByName[name]; !ok {
@@ -70,7 +98,10 @@ func handlerModifyEntry(w http.ResponseWriter, rq *http.Request) {
 }
 
 func handlerAddEntry(w http.ResponseWriter, rq *http.Request) {
-	wiki := readInterwikiEntryFromRequest(rq)
+	wiki, ok := prepareEdit(w, rq)
+	if !ok {
+		return
+	}
 	if err := addEntry(&wiki); err != nil {
 		viewNameTaken(viewdata.MetaFrom(w, rq), &wiki, err.Error(), "add-entry")
 		return
@@ -110,7 +141,7 @@ type interwikiData struct {
 func viewInterwiki(meta viewdata.Meta) {
 	if err := pageInterwiki.RenderDataTo(meta, &interwikiData{
 		Entries: listOfEntries,
-		CanEdit: meta.U.Group == userdomain.GroupAdmin,
+		CanEdit: canEdit(meta.U),
 		Error:   "",
 	}); err != nil {
 		slog.Error("Failed to execute page", "page", "interwiki", "err", err)

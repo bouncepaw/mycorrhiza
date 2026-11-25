@@ -201,6 +201,8 @@ func handlerText(w http.ResponseWriter, rq *http.Request) {
 
 // handlerBinary serves attachment of the hypha.
 func handlerBinary(w http.ResponseWriter, rq *http.Request) {
+	const csp = "sandbox; default-src 'none'; img-src * data:; media-src *; style-src *; font-src * data:"
+
 	util.PrepareRq(rq)
 	hyphaName := util.HyphaNameFromRq(rq, "binary")
 	switch h := hyphae.ByName(hyphaName).(type) {
@@ -210,7 +212,10 @@ func handlerBinary(w http.ResponseWriter, rq *http.Request) {
 			"hyphaName", h.CanonicalName())
 	case *hyphae.MediaHypha:
 		slog.Info("Serving media file", "path", h.MediaFilePath())
-		w.Header().Set("Content-Type", mimetype.FromExtension(filepath.Ext(h.MediaFilePath())))
+		w.Header().Set("Content-Type", mimetype.ForServing(filepath.Ext(h.MediaFilePath())))
+		// Disable scripts on user-uploaded HTML and XML.
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Add("Content-Security-Policy", csp)
 		http.ServeFile(w, rq, h.MediaFilePath())
 	}
 }

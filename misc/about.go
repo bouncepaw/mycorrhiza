@@ -33,7 +33,6 @@ func viewAbout(meta viewdata.Meta) {
 		"WikiName":          cfg.WikiName,
 		"HomeHypha":         cfg.HomeHypha,
 		"UserHypha":         cfg.UserHypha,
-		"TelegramEnabled":   cfg.TelegramEnabled,
 		"RegistrationLimit": cfg.RegistrationLimit,
 	}
 	if err := pageAbout.RenderDataTo(meta, &data); err != nil {

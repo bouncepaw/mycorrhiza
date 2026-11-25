@@ -24,10 +24,10 @@ func initPages() {
 	pageRevision = newtmpl.NewPage("hypha-revision.html")
 	pageMedia = newtmpl.NewPage("hypha-media.html")
 
-	pageAuthLock = newtmpl.NewPage("auth-telegram.html", "auth-lock.html")
-	pageAuthLogin = newtmpl.NewPage("auth-telegram.html", "auth-login.html")
+	pageAuthLock = newtmpl.NewPage("auth-lock.html")
+	pageAuthLogin = newtmpl.NewPage("auth-login.html")
 	pageAuthLogout = newtmpl.NewPage("auth-logout.html")
-	pageAuthRegister = newtmpl.NewPage("auth-telegram.html", "auth-register.html")
+	pageAuthRegister = newtmpl.NewPage("auth-register.html")
 
 	pageCatPage = newtmpl.NewPage("cat-page.html")
 	pageCatEdit = newtmpl.NewPage("cat-edit.html")

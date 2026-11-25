@@ -1,14 +1,9 @@
 package usersvc
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"sort"
-	"strings"
 	"time"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
@@ -66,7 +61,7 @@ func Register(
 		return fmt.Errorf("username ‘%s’ is already taken", username)
 	case !force && cfg.RegistrationLimit > 0 && Count() >= cfg.RegistrationLimit:
 		return fmt.Errorf("reached the limit of registered users (%d)", cfg.RegistrationLimit)
-	case password == "" && source != userdomain.SourceTelegram:
+	case password == "":
 		return fmt.Errorf("password must not be empty")
 	}
 
@@ -136,36 +131,4 @@ func cookie(nameSuffix, val string, t time.Time) *http.Cookie {
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	}
-}
-
-// TelegramAuthParamsAreValid is true if the given params are ok.
-func TelegramAuthParamsAreValid(params map[string][]string) bool {
-	// According to the Telegram documentation,
-	// > You can verify the authentication and the integrity of the data received by comparing the received hash parameter with the hexadecimal representation of the HMAC-SHA-256 signature of the data-check-string with the SHA256 hash of the bot's token used as a secret key.
-	tokenHash := sha256.New()
-	tokenHash.Write([]byte(cfg.TelegramBotToken))
-	secretKey := tokenHash.Sum(nil)
-
-	hash := hmac.New(sha256.New, secretKey)
-	hash.Write([]byte(telegramDataCheckString(params)))
-	hexHash := hex.EncodeToString(hash.Sum(nil))
-
-	passedHash := params["hash"][0]
-	return passedHash == hexHash
-}
-
-// According to the Telegram documentation,
-// > Data-check-string is a concatenation of all received fields, sorted in alphabetical order, in the format key=<value> with a line feed character ('\n', 0x0A) used as separator – e.g., 'auth_date=<auth_date>\nfirst_name=<first_name>\nid=<id>\nusername=<username>'.
-//
-// Note that hash is not used here.
-func telegramDataCheckString(params map[string][]string) string {
-	var lines []string
-	for key, value := range params {
-		if key == "hash" {
-			continue
-		}
-		lines = append(lines, fmt.Sprintf("%s=%s", key, value[0]))
-	}
-	sort.Strings(lines)
-	return strings.Join(lines, "\n")
 }

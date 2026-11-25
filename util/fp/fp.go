@@ -17,3 +17,13 @@ func FirstOrEmpty[T any](arr []T) T {
 	}
 	return arr[0]
 }
+
+func CoalesceOrEmpty[T comparable](ts ...T) T {
+	var zero T
+	for _, t := range ts {
+		if t != zero {
+			return t
+		}
+	}
+	return zero
+}

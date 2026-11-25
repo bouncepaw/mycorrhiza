@@ -19,6 +19,7 @@ const (
 	ActionUpdateHeaderLinks Action = "update-header-links"
 	ActionDelete            Action = "delete"
 	ActionReindex           Action = "reindex"
+	ActionEditInterwiki     Action = "edit-interwiki"
 	ActionAdmin             Action = "admin"
 	ActionAdminShutdown     Action = "admin/shutdown"
 )
@@ -47,6 +48,7 @@ var minimalRights = map[Action]GroupLevel{
 	ActionUpdateHeaderLinks: 3,
 	ActionDelete:            3,
 	ActionReindex:           4,
+	ActionEditInterwiki:     4,
 	ActionAdmin:             4,
 	ActionAdminShutdown:     4,
 }

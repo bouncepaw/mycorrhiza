@@ -16,7 +16,7 @@ def guess_version() -> str:
     if m is None:
         sys.exit(
             "Could not find the version in help/en.myco. "
-            "Make sure it contains 'This is documentation for Mycorrhiza Wiki 1.16.0. '."
+            "Make sure it contains 'This is documentation for Mycorrhiza Wiki v1.16.1. '."
         )
     return 'v' + m.group(1)
 

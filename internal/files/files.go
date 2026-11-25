@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/bouncepaw/mycorrhiza/internal/cfg"
 	"github.com/bouncepaw/mycorrhiza/web/static"
@@ -26,6 +27,20 @@ var paths struct {
 // needed rather than a concrete Git or the whole wiki storage path, so that we
 // could easily refactor things later if we'll ever support different storages.
 func HyphaeDir() string { return filepath.ToSlash(paths.gitRepo) }
+
+// IsInsideHyphaeDir is true if rel, a path relative to the hyphae directory,
+// stays outside its .git directory.
+func IsInsideHyphaeDir(rel string) bool {
+	if !filepath.IsLocal(rel) {
+		return false
+	}
+	for segment := range strings.SplitSeq(filepath.ToSlash(rel), "/") {
+		if strings.EqualFold(segment, ".git") {
+			return false
+		}
+	}
+	return true
+}
 
 // GitRepo returns the path to the Git repository of the wiki.
 func GitRepo() string { return paths.gitRepo }
